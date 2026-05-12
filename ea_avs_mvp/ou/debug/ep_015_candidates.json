@@ -1,0 +1,633 @@
+[
+  {
+    "candidate_id": 0,
+    "position": [
+      5.2396955490112305,
+      -1.600250005722046,
+      6.323934078216553
+    ],
+    "yaw": 0.781257688999176,
+    "geodesic_distance": 2.508413791656494,
+    "euclidean_distance_to_human": 1.4938279390335083,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 0.8666666666666667,
+      "S_center": 0.9226100696944682,
+      "S_dist": 0.769942891334696,
+      "C_move": 0.41806896527608234,
+      "Q": 0.7748967991506165,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 0.6666666666666666,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee"
+    ],
+    "invisible_keypoints": [
+      "left_ankle",
+      "right_ankle"
+    ]
+  },
+  {
+    "candidate_id": 1,
+    "position": [
+      6.291608810424805,
+      -1.600250005722046,
+      5.884594440460205
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.5042548179626465,
+    "euclidean_distance_to_human": 1.5,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 0.8666666666666667,
+      "S_center": 0.8924870670193427,
+      "S_dist": 0.7748374288832492,
+      "C_move": 0.584042469660441,
+      "Q": 0.7366564052484302,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 0.6666666666666666,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee"
+    ],
+    "invisible_keypoints": [
+      "left_ankle",
+      "right_ankle"
+    ]
+  },
+  {
+    "candidate_id": 2,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      6.323934078216553
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.7564778327941895,
+    "euclidean_distance_to_human": 1.151426076889038,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 3,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      7.384594440460205
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.8234174251556396,
+    "euclidean_distance_to_human": 0.4480867385864258,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 4,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      7.7005205154418945
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.936126232147217,
+    "euclidean_distance_to_human": 0.5482617616653442,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 5,
+    "position": [
+      6.291608810424805,
+      -1.600250005722046,
+      7.7005205154418945
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.536742687225342,
+    "euclidean_distance_to_human": 0.31592607498168945,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 6,
+    "position": [
+      5.5396952629089355,
+      -1.600250005722046,
+      7.7005205154418945
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.0462398529052734,
+    "euclidean_distance_to_human": 0.8155876398086548,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 7,
+    "position": [
+      4.791608810424805,
+      -1.600250005722046,
+      7.300520896911621
+    ],
+    "yaw": 1.5148059129714966,
+    "geodesic_distance": 2.141528606414795,
+    "euclidean_distance_to_human": 1.5023542642593384,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 0.8666666666666667,
+      "S_center": 0.9938751709880419,
+      "S_dist": 0.776696673816747,
+      "C_move": 0.3569214344024658,
+      "Q": 0.8027300820804647,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 0.6666666666666666,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee"
+    ],
+    "invisible_keypoints": [
+      "left_ankle",
+      "right_ankle"
+    ]
+  },
+  {
+    "candidate_id": 8,
+    "position": [
+      5.2396955490112305,
+      -1.600250005722046,
+      6.250520706176758
+    ],
+    "yaw": 0.7478308081626892,
+    "geodesic_distance": 2.581827163696289,
+    "euclidean_distance_to_human": 1.546817660331726,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 0.8666666666666667,
+      "S_center": 0.9228973305156399,
+      "S_dist": 0.8109364857800205,
+      "C_move": 0.43030452728271484,
+      "Q": 0.7807058578025892,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 0.6666666666666666,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee"
+    ],
+    "invisible_keypoints": [
+      "left_ankle",
+      "right_ankle"
+    ]
+  },
+  {
+    "candidate_id": 9,
+    "position": [
+      6.291608810424805,
+      -1.600250005722046,
+      5.384594440460205
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.8396201133728027,
+    "euclidean_distance_to_human": 2.0,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 1.0,
+      "S_center": 0.9191957846463664,
+      "S_dist": 1.0,
+      "C_move": 0.6399366855621338,
+      "Q": 0.8558518198168465,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 1.0,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee",
+      "left_ankle",
+      "right_ankle"
+    ],
+    "invisible_keypoints": []
+  },
+  {
+    "candidate_id": 10,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      5.970380783081055
+    ],
+    "yaw": -0.3068385124206543,
+    "geodesic_distance": 3.858811378479004,
+    "euclidean_distance_to_human": 1.4835033416748047,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 0.8666666666666667,
+      "S_center": 0.8961962293789568,
+      "S_dist": 0.7616919582860677,
+      "C_move": 0.6431352297465006,
+      "Q": 0.7229505915837049,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 0.6666666666666666,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee"
+    ],
+    "invisible_keypoints": [
+      "left_ankle",
+      "right_ankle"
+    ]
+  },
+  {
+    "candidate_id": 11,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      7.384594440460205
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.8234174251556396,
+    "euclidean_distance_to_human": 0.4480867385864258,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 12,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      7.7005205154418945
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.936126232147217,
+    "euclidean_distance_to_human": 0.5482617616653442,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 13,
+    "position": [
+      6.291608810424805,
+      -1.600250005722046,
+      7.7005205154418945
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.536742687225342,
+    "euclidean_distance_to_human": 0.31592607498168945,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 14,
+    "position": [
+      4.139695167541504,
+      -1.600250005722046,
+      7.750520706176758
+    ],
+    "yaw": 1.739232063293457,
+    "geodesic_distance": 2.2803568840026855,
+    "euclidean_distance_to_human": 2.1828043460845947,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 1.0,
+      "S_center": 0.9874716288034597,
+      "S_dist": 0.9664754154912927,
+      "C_move": 0.38005948066711426,
+      "Q": 0.9147775127255275,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 1.0,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee",
+      "left_ankle",
+      "right_ankle"
+    ],
+    "invisible_keypoints": []
+  },
+  {
+    "candidate_id": 15,
+    "position": [
+      4.291608810424805,
+      -1.600250005722046,
+      7.300520896911621
+    ],
+    "yaw": 1.5287842750549316,
+    "geodesic_distance": 1.9006654024124146,
+    "euclidean_distance_to_human": 2.0017662048339844,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 0.9333333333333333,
+      "S_center": 0.9965720168041643,
+      "S_dist": 0.9999968168627034,
+      "C_move": 0.3167775670687358,
+      "Q": 0.8959582533196263,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 0.8333333333333334,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee",
+      "right_ankle"
+    ],
+    "invisible_keypoints": [
+      "left_ankle"
+    ]
+  },
+  {
+    "candidate_id": 16,
+    "position": [
+      4.189695358276367,
+      -1.600250005722046,
+      5.800520896911621
+    ],
+    "yaw": 0.9249734878540039,
+    "geodesic_distance": 0.686970591545105,
+    "euclidean_distance_to_human": 2.63198184967041,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 1.0,
+      "S_center": 0.9628537447580418,
+      "S_dist": 0.6652767893619911,
+      "C_move": 0.11449509859085083,
+      "Q": 0.9027270871058363,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 1.0,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee",
+      "left_ankle",
+      "right_ankle"
+    ],
+    "invisible_keypoints": []
+  },
+  {
+    "candidate_id": 17,
+    "position": [
+      6.291608810424805,
+      -1.600250005722046,
+      4.884594440460205
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 4.253172874450684,
+    "euclidean_distance_to_human": 2.5,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 1.0,
+      "S_center": 0.9352934743900279,
+      "S_dist": 0.7748374288832492,
+      "C_move": 0.7088621457417806,
+      "Q": 0.8002537515062993,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 1.0,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee",
+      "left_ankle",
+      "right_ankle"
+    ],
+    "invisible_keypoints": []
+  },
+  {
+    "candidate_id": 18,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      5.900520324707031
+    ],
+    "yaw": -0.2932266294956207,
+    "geodesic_distance": 3.88712215423584,
+    "euclidean_distance_to_human": 1.5502444505691528,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 0.8666666666666667,
+      "S_center": 0.9002331506879302,
+      "S_dist": 0.8135009222710681,
+      "C_move": 0.64785369237264,
+      "Q": 0.7331760761172716,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 0.6666666666666666,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee"
+    ],
+    "invisible_keypoints": [
+      "left_ankle",
+      "right_ankle"
+    ]
+  },
+  {
+    "candidate_id": 19,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      7.384594440460205
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.8234174251556396,
+    "euclidean_distance_to_human": 0.4480867385864258,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 20,
+    "position": [
+      6.7396955490112305,
+      -1.600250005722046,
+      7.7005205154418945
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": 3.936126232147217,
+    "euclidean_distance_to_human": 0.5482617616653442,
+    "is_valid": false,
+    "invalid_reason": "out_of_distance_range"
+  },
+  {
+    "candidate_id": 21,
+    "position": [
+      NaN,
+      NaN,
+      NaN
+    ],
+    "yaw": 0.0,
+    "geodesic_distance": Infinity,
+    "euclidean_distance_to_human": Infinity,
+    "is_valid": false,
+    "invalid_reason": "not_navigable"
+  },
+  {
+    "candidate_id": 22,
+    "position": [
+      4.139695167541504,
+      -1.600250005722046,
+      7.750520706176758
+    ],
+    "yaw": 1.739232063293457,
+    "geodesic_distance": 2.2803568840026855,
+    "euclidean_distance_to_human": 2.1828043460845947,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 1.0,
+      "S_center": 0.9874716288034597,
+      "S_dist": 0.9664754154912927,
+      "C_move": 0.38005948066711426,
+      "Q": 0.9147775127255275,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 1.0,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee",
+      "left_ankle",
+      "right_ankle"
+    ],
+    "invisible_keypoints": []
+  },
+  {
+    "candidate_id": 23,
+    "position": [
+      3.7916088104248047,
+      -1.600250005722046,
+      7.384594440460205
+    ],
+    "yaw": 1.5707963705062866,
+    "geodesic_distance": 1.855129361152649,
+    "euclidean_distance_to_human": 2.5,
+    "is_valid": true,
+    "invalid_reason": "",
+    "score": {
+      "S_kp": 1.0,
+      "S_center": 0.9999999443449297,
+      "S_dist": 0.7748374288832492,
+      "C_move": 0.30918822685877484,
+      "Q": 0.8931298292738808,
+      "torso_visibility": 1.0,
+      "lower_body_visibility": 1.0,
+      "head_visibility": 1.0
+    },
+    "visible_keypoints": [
+      "head",
+      "neck",
+      "pelvis",
+      "left_shoulder",
+      "right_shoulder",
+      "left_hip",
+      "right_hip",
+      "left_knee",
+      "right_knee",
+      "left_ankle",
+      "right_ankle"
+    ],
+    "invisible_keypoints": []
+  }
+]
