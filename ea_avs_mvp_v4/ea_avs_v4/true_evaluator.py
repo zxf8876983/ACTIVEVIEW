@@ -11,24 +11,32 @@ v4.0 新增：
     - 真实遮挡判断分两级：
         1) 几何层：基于 Habitat 场景 mesh 的 ray casting（与 pred 相同，作为 fallback）
         2) 观测层：利用渲染深度图在关键点投影像素处做传感器级遮挡验证（true 独有）
-      两者结合使 true 比 pred 多使用"实际渲染观测"，相互独立。
+      观测层判定：occluded = median(3×3 有效深度) < z_cam - tolerance
+      （用前向深度 z_cam 而非欧氏距离，避免图像边缘误判；用中位数而非最小值，
+       避免轮廓边缘被单个前景像素误判）
 
 注意：
     - 必须在策略选择之后调用（渲染后）
     - 不参与策略选择
     - true 不包含移动代价 C_move
-    - obs 为 None（如 Oracle 离线评估）时，观测层不可用，自动退回几何层判断
+    - true_score["true_evaluation_source"] 标记评价口径：
+      "depth"（使用渲染深度）或 "geometry_fallback"（obs=None 或 depth 不可用）
+    - Oracle 只允许比较 "depth" 来源的候选点，保证同口径
 """
 
 from typing import Dict, List, Optional
 
 import numpy as np
 
-from .geometry import angle_in_camera_fov, gaussian_score
+from .geometry import (
+    angle_in_camera_fov,
+    compute_camera_intrinsics,
+    gaussian_score,
+)
 from .action_pose_library import KEYPOINT_GROUPS
 from .orientation import compute_relative_view_angle, compute_orientation_score
 from .action_part_weights import get_action_part_weights
-from .occlusion import compute_keypoint_occlusion, compute_occlusion_rate
+from .occlusion import compute_keypoint_occlusion, compute_occlusion_stats
 
 
 class TrueEvaluator:
@@ -51,18 +59,26 @@ class TrueEvaluator:
         view_yaw: float,
         keypoint_pos: np.ndarray,
         camera_pos: np.ndarray,
-    ):
+    ) -> dict:
         """利用渲染深度图对关键点做传感器级遮挡判断。
 
         v4.0：true 层比 pred 层多使用"实际渲染观测"验证遮挡，
         使 true 与 pred（仅静态地图 ray cast）相互独立。
 
-        投影约定与 geometry 模型一致：
+        遮挡判定使用"前向深度"：
+            occluded = sampled_depth < z_cam - tolerance
+        其中 z_cam 是关键点在相机坐标系中的前向深度。depth 图像存储的正是
+        前向深度，而图像边缘处欧氏距离恒大于前向深度，因此绝不能把 sampled_depth
+        与 三维欧氏距离 直接比较（会导致边缘像素误判为遮挡）。
+
+        3×3 邻域采样使用中位数而非最小值：避免关键点位于物体轮廓边缘时，
+        被单个邻近前景像素把 median 拉低而误判遮挡。
+
+        投影约定与 geometry 模型一致（相机前向 = +Z 模型方向）：
             - 相机前向（yaw+π 渲染后）= (sin yaw, 0, cos yaw)
             - 相机右向 = (-cos yaw, 0, sin yaw)
             - u = fx * x_cam / z_cam + u0
             - v = v0 - fx * y_cam / z_cam
-        该投影公式已通过"渲染深度 vs 射线命中距离"实证验证。
 
         参数：
             obs: render_at() 返回的观测字典（含 depth）。
@@ -72,20 +88,30 @@ class TrueEvaluator:
             camera_pos: 真实相机位置（= view_pos + camera_height）。
 
         返回：
-            (occluded: bool, depth_valid: bool, sampled_depth: Optional[float])
+            {
+                "occluded": bool,
+                "depth_valid": bool,
+                "sampled_depth": Optional[float],   # 3×3 有效深度中位数
+                "center_depth": Optional[float],    # 中心像素深度
+                "target_z_depth": Optional[float],  # 关键点前向深度 z_cam
+            }
             - depth_valid=False 表示深度图不可用/采样无效（调用方应退回几何判断）
         """
         if obs is None or obs.get("depth") is None:
-            return False, False, None
+            return {"occluded": False, "depth_valid": False,
+                    "sampled_depth": None, "center_depth": None,
+                    "target_z_depth": None}
 
         depth = np.asarray(obs["depth"])
         if depth.ndim == 3:
             depth = depth[..., 0]
         height, width = depth.shape
 
-        # 相机内参（方形像素，fx == fy）
-        hfov_rad = np.deg2rad(self.camera_cfg["hfov_deg"] / 2.0)
-        fx = (width / 2.0) / np.tan(hfov_rad)
+        # 统一相机内参（与预测模型 / Habitat render 同一套）
+        intrinsics = compute_camera_intrinsics(
+            width, height, self.camera_cfg["hfov_deg"]
+        )
+        fx = intrinsics["fx"]
 
         # 世界点 -> 相机坐标系
         v = np.array(keypoint_pos, dtype=np.float64) - np.array(camera_pos, dtype=np.float64)
@@ -94,8 +120,10 @@ class TrueEvaluator:
         forward = np.array([np.sin(th), 0.0, np.cos(th)])
         z_cam = float(v[0] * forward[0] + v[2] * forward[2])
         if z_cam <= 0.0:
-            # 关键点在相机后方，深度图无法采样（几何层已排除）
-            return False, False, None
+            # 关键点在相机后方，深度图无法采样（几何层会排除）
+            return {"occluded": False, "depth_valid": False,
+                    "sampled_depth": None, "center_depth": None,
+                    "target_z_depth": z_cam}
         x_cam = float(v[0] * right[0] + v[2] * right[2])
         y_cam = float(v[1])
 
@@ -103,24 +131,36 @@ class TrueEvaluator:
         v_px = height / 2.0 - fx * y_cam / z_cam
         ui, vi = int(round(u)), int(round(v_px))
 
-        # 采样 3x3 邻域的最小深度，容忍轻微投影误差
-        best_depth = None
+        # 收集 3×3 邻域中的所有有效深度，优先使用中位数（非最小值）
+        valid_depths = []
+        center_depth = None
         for du in (-1, 0, 1):
             for dv in (-1, 0, 1):
                 uu, vv = ui + du, vi + dv
                 if 0 <= uu < width and 0 <= vv < height:
                     dd = float(depth[vv, uu])
-                    if dd > 0.0 and (best_depth is None or dd < best_depth):
-                        best_depth = dd
+                    if dd > 0.0:
+                        valid_depths.append(dd)
+                        if du == 0 and dv == 0:
+                            center_depth = dd
 
-        if best_depth is None:
-            return False, False, None
+        if not valid_depths:
+            return {"occluded": False, "depth_valid": False,
+                    "sampled_depth": None, "center_depth": center_depth,
+                    "target_z_depth": z_cam}
 
-        ray_distance = float(np.linalg.norm(
-            np.array(keypoint_pos) - np.array(camera_pos)))
+        sampled_depth = float(np.median(valid_depths))
         tolerance = self.occ_cfg.get("target_tolerance", 0.08)
-        occluded = bool(best_depth < ray_distance - tolerance)
-        return occluded, True, best_depth
+        # 核心比较：采样深度 vs 关键点前向深度（z_cam），而非欧氏距离
+        occluded = bool(sampled_depth < z_cam - tolerance)
+
+        return {
+            "occluded": occluded,
+            "depth_valid": True,
+            "sampled_depth": sampled_depth,
+            "center_depth": center_depth,
+            "target_z_depth": z_cam,
+        }
 
     def score_view_true(
         self,
@@ -164,7 +204,8 @@ class TrueEvaluator:
             result = angle_in_camera_fov(
                 camera_base_pos=view_pos, camera_yaw=view_yaw, point=pos,
                 hfov_deg=self.camera_cfg["hfov_deg"],
-                vfov_deg=self.camera_cfg["vfov_deg"],
+                width=self.camera_cfg["width"],
+                height=self.camera_cfg["height"],
                 camera_height=self.camera_cfg["camera_height"],
                 min_depth=self.vis_cfg["min_depth"],
                 max_depth=self.vis_cfg["max_depth"],
@@ -191,36 +232,67 @@ class TrueEvaluator:
 
         occlusion_result = {}
         occlusion_source_true = {}
+        depth_valid_count = 0
+        depth_invalid_count = 0
         for name in kp_names:
             geom_info = geom_occlusion.get(name, {})
+            geom_valid = geom_info.get("valid", True)
             geom_occ = geom_info.get("occluded", False)
 
-            depth_occ, depth_valid, sampled_depth = self._depth_occlusion(
+            dres = self._depth_occlusion(
                 obs=obs, view_pos=view_pos, view_yaw=view_yaw,
                 keypoint_pos=human_skeleton[name], camera_pos=camera_pos,
             )
+            target_z = dres["target_z_depth"]
 
-            if depth_valid:
-                occ = depth_occ
-                source = "depth"
-                hit_distance = sampled_depth
-            else:
-                occ = geom_occ
-                source = "geom"
-                hit_distance = geom_info.get("hit_distance", float("inf"))
-
-            occlusion_result[name] = {
-                "occluded": occ,
-                "hit_distance": hit_distance,
-                "target_distance": geom_info.get("target_distance", 0.0),
-                "source": source,
+            entry = {
+                "target_z_depth": target_z,
+                "source": "geom",
             }
-            occlusion_source_true[name] = source
-            if occ:
+
+            if dres["depth_valid"]:
+                # 观测层：depth 可用，以渲染深度为准
+                occ = dres["occluded"]
+                entry.update({
+                    "occluded": occ,
+                    "valid": True,
+                    "status": "ok",
+                    "hit_distance": dres["sampled_depth"],
+                    "center_depth": dres["center_depth"],
+                    "source": "depth",
+                })
+                depth_valid_count += 1
+            elif geom_valid:
+                # 观测层不可用，退回几何层（ray cast 成功的结果）
+                occ = geom_occ
+                entry.update({
+                    "occluded": occ,
+                    "valid": True,
+                    "status": geom_info.get("status", "ok"),
+                    "hit_distance": geom_info.get("hit_distance", float("inf")),
+                    "source": "geom",
+                })
+                depth_invalid_count += 1
+            else:
+                # 深度不可用且几何 ray cast 也失败 → 状态 unknown（≠ 未遮挡）
+                pass  # 保持 status="raycast_error"
+                entry.update({
+                    "occluded": False,
+                    "valid": False,
+                    "status": "raycast_error",
+                    "hit_distance": None,
+                    "error": geom_info.get("error", ""),
+                })
+                depth_invalid_count += 1
+
+            occlusion_result[name] = entry
+            occlusion_source_true[name] = entry["source"]
+            if entry["occluded"]:
                 occluded_all.append(name)
 
         for name in kp_names:
-            if name in fov_visible and name not in occluded_all:
+            if (name in fov_visible and name not in occluded_all
+                    and occlusion_result.get(name, {}).get("valid", True)):
                 visible_occ.append(name)
 
         # =====================================================================
@@ -285,10 +357,21 @@ class TrueEvaluator:
         )
 
         # =====================================================================
-        # 7. 遮挡率统计
+        # 7. 遮挡率统计（只统计有效关键点，ray cast 失败不当作未遮挡）
         # =====================================================================
-        occlusion_rate_true = compute_occlusion_rate(occlusion_result, kp_names)
+        occ_stats = compute_occlusion_stats(occlusion_result, kp_names)
+        occlusion_rate_true = occ_stats["occlusion_rate"]
+        occlusion_valid_keypoint_count_true = occ_stats["occlusion_valid_keypoint_count"]
+        raycast_error_count_true = occ_stats["raycast_error_count"]
         occluded_keypoint_count_true = len(occluded_all)
+
+        # true_score 来源：是否真正使用了渲染 depth 作为评价口径
+        # （Oracle 只允许比较 depth 来源的候选）
+        true_evaluation_source = (
+            "depth"
+            if (obs is not None and obs.get("depth") is not None and depth_valid_count > 0)
+            else "geometry_fallback"
+        )
 
         # =====================================================================
         # 8. Q_true（v4.0，不含移动代价）
@@ -307,6 +390,13 @@ class TrueEvaluator:
             "S_kp_occ_true": float(S_kp_occ_true),
             "occlusion_rate_true": float(occlusion_rate_true),
             "occluded_keypoint_count_true": int(occluded_keypoint_count_true),
+            "occlusion_valid_keypoint_count_true": int(
+                occlusion_valid_keypoint_count_true),
+            "raycast_error_count_true": int(raycast_error_count_true),
+            "raycast_error_rate_true": occ_stats["raycast_error_rate"],
+            "depth_valid_keypoint_count_true": int(depth_valid_count),
+            "depth_invalid_keypoint_count_true": int(depth_invalid_count),
+            "true_evaluation_source": true_evaluation_source,
             "visible_keypoints_occ_true": visible_occ,
             "occluded_keypoints_true": occluded_all,
             "occlusion_source_true": occlusion_source_true,

@@ -50,7 +50,7 @@ from ea_avs_v4.ablation_policies import (
 from ea_avs_v4.oracle_policy import OraclePolicy, compute_oracle_gap
 from ea_avs_v4.metrics import MetricsWriter
 from ea_avs_v4.visualization import save_rgb_image, save_candidate_debug_json
-from ea_avs_v4.geometry import compute_look_at_yaw
+from ea_avs_v4.geometry import compute_look_at_yaw, compute_camera_intrinsics
 
 
 # =============================================================================
@@ -164,19 +164,34 @@ def compute_gains(
 
 
 def count_occlusion_errors(pred_score: dict) -> int:
-    """统计 pred_score 中 ray cast 失败的关键点数量（含 "error" 字段）。"""
+    """统计 pred_score 中 ray cast 失败的关键点数量。
+
+    优先使用 evaluator 输出的汇总字段 raycast_error_count_pred；
+    缺失时退回统计 occlusion_result 中 valid=False 的条目。
+    """
+    if not pred_score:
+        return 0
+    count = pred_score.get("raycast_error_count_pred")
+    if count is not None:
+        return int(count)
     occ = pred_score.get("occlusion_result", {}) if pred_score else {}
     if not isinstance(occ, dict):
         return 0
     return sum(1 for v in occ.values()
-               if isinstance(v, dict) and "error" in v)
+               if isinstance(v, dict) and not v.get("valid", True))
 
 
-def _render_and_score(
+def ensure_true_score(
     runner, true_evaluator, view, human_pos, human_yaw, pose_type,
-    skeleton, images_dir, ep_str, save_image: bool,
-) -> dict:
-    """渲染单个视角并计算 true_score（带异常保护）。
+    skeleton, images_dir, ep_str, save_image: bool, image_name=None,
+) -> None:
+    """为 view 计算 true_score（depth 口径），已渲染过则直接复用。
+
+    render 缓存：
+        - 若 view.true_score 已存在且 evaluation_source == "depth"（已真实渲染），
+          直接返回，不重复渲染。
+        - 否则渲染该视角（obs 含 depth），用 depth 口径评估。
+        - 渲染失败时退化为 obs=None 的 geometry_fallback 口径，并打印告警。
 
     参数：
         runner: HabitatRunner 实例。
@@ -186,14 +201,17 @@ def _render_and_score(
         images_dir: 图像输出目录。
         ep_str: 用于文件名的 episode 前缀，如 "ep_000"。
         save_image: 是否保存渲染图像。
-
-    返回：
-        渲染的观测字典（失败时返回 None）。
+        image_name: 自定义图像文件名；None 时用 f"{ep_str}_view_{id}.png"。
     """
+    # 已经是 depth 口径：跳过（避免重复渲染）
+    if (view.true_score
+            and view.true_score.get("true_evaluation_source") == "depth"):
+        return
+
     try:
         obs = runner.render_at(view.position, view.yaw)
         if save_image and obs["rgb"] is not None:
-            fname = f"{ep_str}_view_{view.candidate_id}.png"
+            fname = image_name or f"{ep_str}_view_{view.candidate_id}.png"
             save_rgb_image(obs["rgb"], os.path.join(images_dir, fname))
         view.true_score = true_evaluator.score_view_true(
             runner=runner, obs=obs, view_pos=view.position,
@@ -201,10 +219,21 @@ def _render_and_score(
             human_yaw=human_yaw, pose_type=pose_type,
             human_skeleton=skeleton,
         )
-        return obs
+        return
     except Exception as e:
-        print(f"    ⚠ 渲染/评估失败 (candidate {view.candidate_id}): {e}")
-        return None
+        print(f"    ⚠ 渲染失败 (candidate {view.candidate_id}): {e}")
+
+    # 兜底：obs=None → geometry_fallback 口径（Oracle 不会比较这类候选）
+    try:
+        view.true_score = true_evaluator.score_view_true(
+            runner=runner, obs=None, view_pos=view.position,
+            view_yaw=view.yaw, human_base_pos=human_pos,
+            human_yaw=human_yaw, pose_type=pose_type,
+            human_skeleton=skeleton,
+        )
+    except Exception as e:
+        print(f"    ⚠ true_score 兜底失败 (candidate {view.candidate_id}): {e}")
+        view.true_score = {}
 
 
 # =============================================================================
@@ -266,10 +295,12 @@ def run_one_episode(
         human_skeleton=skeleton, geodesic_distance=0.0,
     )
 
-    # 记录当前视角 ray cast 失败数（若为 0 但场景无遮挡仍正常，仅当 >0 告警）
+    # 记录当前视角 ray cast 失败数与遮挡判断有效性（>0 或无效时告警）
     occlusion_errors = count_occlusion_errors(current_view.pred_score)
-    if occlusion_errors > 0:
-        print(f"    ⚠ 当前视角 ray cast 失败关键点: {occlusion_errors} 个")
+    is_occ_valid = current_view.pred_score.get("is_occlusion_valid_pred", True)
+    if occlusion_errors > 0 or not is_occ_valid:
+        print(f"    ⚠ 当前视角 ray cast 失败关键点: {occlusion_errors} 个，"
+              f"遮挡判断有效性: {is_occ_valid}")
 
     # =====================================================================
     # 5. 采样候选位姿并计算 pred_score
@@ -310,85 +341,81 @@ def run_one_episode(
             selected.selected_by.append(policy.name)
 
     # =====================================================================
-    # 7. 渲染 current_view 与各策略选中位姿，计算 true_score
-    #    （同一视角被多个策略选中时只渲染一次）
+    # 7. 【评估阶段】统一渲染 current + 所有有效候选位姿，计算 depth 口径 true_score
+    #    ⚠ 在线策略选择已在第 6 步完成。此时渲染候选点不构成信息泄漏，
+    #      因为 pred 阶段（第 4-6 步）从未调用 render_at()。
+    #    渲染使用缓存：已被策略选中的位姿不会重复渲染。
     # =====================================================================
-    print(f"  渲染 current_view 与选中位姿...")
-    obs_current = _render_and_score(
+    print(f"  渲染 current 与所有候选位姿（评估阶段）...")
+
+    # 7.1 current_view（保存 current.png）
+    ensure_true_score(
         runner, true_evaluator, current_view, human_pos, human_yaw,
         pose_type, skeleton, images_dir, ep_str,
-        save_image=False,   # 当前视角图像在下方单独命名保存
+        save_image=save_images, image_name=f"{ep_str}_current.png",
     )
 
-    # current_view 图像 / true_score 单独处理（obs_current 可能为 None）
-    try:
-        if save_images and obs_current is not None and obs_current["rgb"] is not None:
-            save_rgb_image(obs_current["rgb"],
-                           os.path.join(images_dir, f"{ep_str}_current.png"))
-    except Exception as e:
-        print(f"    ⚠ 保存 current 图像失败: {e}")
-
-    if not current_view.true_score:
-        # render 失败时退化为离线 ray cast 评估
-        current_view.true_score = true_evaluator.score_view_true(
-            runner=runner, obs=None, view_pos=current_view.position,
-            view_yaw=current_view.yaw, human_base_pos=human_pos,
-            human_yaw=human_yaw, pose_type=pose_type, human_skeleton=skeleton,
-        )
-
-    # 对每个策略选中且非 current 的位姿渲染（去重）
-    rendered_candidate_ids = set()
+    # 7.2 各策略选中且非 current 的位姿（保存图像）
     for policy in policies:
         selected = selected_by_policy[policy.name]
-        if selected is current_view or selected.candidate_id in rendered_candidate_ids:
+        if selected is current_view:
             continue
-        obs = _render_and_score(
+        ensure_true_score(
             runner, true_evaluator, selected, human_pos, human_yaw,
-            pose_type, skeleton, images_dir, ep_str, save_image=save_images,
+            pose_type, skeleton, images_dir, ep_str,
+            save_image=save_images,
         )
-        if not selected.true_score:
-            selected.true_score = true_evaluator.score_view_true(
-                runner=runner, obs=obs, view_pos=selected.position,
-                view_yaw=selected.yaw, human_base_pos=human_pos,
-                human_yaw=human_yaw, pose_type=pose_type,
-                human_skeleton=skeleton,
-            )
-        rendered_candidate_ids.add(selected.candidate_id)
+
+    # 7.3 其余有效候选位姿：为 Oracle 补齐 depth 口径 true_score（不保存图像）
+    for cand in valid_candidates:
+        ensure_true_score(
+            runner, true_evaluator, cand, human_pos, human_yaw,
+            pose_type, skeleton, images_dir, ep_str,
+            save_image=False,
+        )
 
     # =====================================================================
     # 8. 【评估阶段】Oracle 离线上界
-    #    离线计算所有有效候选位姿 true_score（ray cast，无需渲染图像）
-    #    ⚠ Oracle 仅在评估阶段运行，不参与任何策略选择
+    #    Oracle 只比较 true_evaluation_source == "depth" 的候选位姿，
+    #    保证所有候选点使用同口径真实评价（不混用 geometry fallback）。
+    #    ⚠ Oracle 仅在评估阶段运行，不参与任何策略选择。
     # =====================================================================
     oracle_eval = None
     oracle_q_true = 0.0
     oracle_gap = 0.0
+    oracle_valid_true_count = 0
+    oracle_selected_candidate_id = None
     if oracle_enabled and oracle_policy is not None:
-        for cand in valid_candidates:
-            if not cand.true_score:
-                cand.true_score = true_evaluator.score_view_true(
-                    runner=runner, obs=None, view_pos=cand.position,
-                    view_yaw=cand.yaw, human_base_pos=human_pos,
-                    human_yaw=human_yaw, pose_type=pose_type,
-                    human_skeleton=skeleton,
-                )
-        oracle_view = oracle_policy.select(current_view, candidates)
-        if oracle_view is not current_view:
-            oracle_view.selected_by.append("Oracle-offline")
+        oracle_view, oracle_valid_true_count = oracle_policy.select(
+            current_view, candidates)
 
-        oracle_q_true = float(oracle_view.true_score.get("Q_true", 0.0))
-        ours_view = selected_by_policy["Ours"]
-        oracle_gap = compute_oracle_gap(oracle_view, ours_view, current_view)
+        if oracle_view is not None:
+            if oracle_view is not current_view:
+                oracle_view.selected_by.append("Oracle-offline")
+            oracle_q_true = float(oracle_view.true_score.get("Q_true", 0.0))
+            oracle_selected_candidate_id = oracle_view.candidate_id
+            ours_view = selected_by_policy["Ours"]
+            oracle_gap = compute_oracle_gap(oracle_view, ours_view, current_view)
 
-        oracle_eval = {
-            "oracle_selected_candidate_id": oracle_view.candidate_id,
-            "oracle_selected_is_current": (oracle_view is current_view),
-            "oracle_Q_true": oracle_q_true,
-            "ours_candidate_id": ours_view.candidate_id,
-            "ours_Q_true": float(ours_view.true_score.get("Q_true", 0.0))
-            if ours_view.true_score else 0.0,
-            "oracle_gap": oracle_gap,
-        }
+            oracle_eval = {
+                "oracle_selected_candidate_id": oracle_view.candidate_id,
+                "oracle_selected_is_current": (oracle_view is current_view),
+                "oracle_Q_true": oracle_q_true,
+                "oracle_valid_true_candidate_count": oracle_valid_true_count,
+                "ours_candidate_id": ours_view.candidate_id,
+                "ours_Q_true": float(ours_view.true_score.get("Q_true", 0.0))
+                if ours_view.true_score else 0.0,
+                "oracle_gap": oracle_gap,
+            }
+        else:
+            # 没有任何 depth 口径有效候选 → Oracle 上界不可用，标记异常
+            print("    ⚠ Oracle: 无 depth 口径有效候选位姿，上界不可用")
+            oracle_eval = {
+                "oracle_valid_true_candidate_count": 0,
+                "oracle_aborted": "no_depth_true_candidates",
+                "oracle_Q_true": None,
+                "oracle_gap": None,
+            }
 
     # =====================================================================
     # 9. 写 metrics.csv 行（每策略一行）
@@ -399,23 +426,12 @@ def run_one_episode(
 
         pred_score = selected.pred_score if selected.pred_score else current_view.pred_score
 
-        # true_score 兜底：若选中位姿缺失（渲染失败等），离线 ray cast 补充，
-        # 而不是静默使用 current_view 的 true_score
-        if not selected.true_score:
-            if not is_current:
-                try:
-                    selected.true_score = true_evaluator.score_view_true(
-                        runner=runner, obs=None, view_pos=selected.position,
-                        view_yaw=selected.yaw, human_base_pos=human_pos,
-                        human_yaw=human_yaw, pose_type=pose_type,
-                        human_skeleton=skeleton,
-                    )
-                except Exception as e:
-                    print(f"    ⚠ {policy.name} 选中位姿 true_score 兜底失败: {e}")
-            if not selected.true_score:
-                selected.true_score = dict(current_view.true_score) if current_view.true_score else {}
-                print(f"    ⚠ {policy.name} 使用 current_view 的 true_score 兜底")
-        true_score = selected.true_score
+        # true_score 已由评估阶段（ensure_true_score）保证存在；
+        # 极端情况下渲染与兜底均失败才回退 current_view 并告警
+        true_score = selected.true_score if selected.true_score else current_view.true_score
+        if not true_score:
+            print(f"    ⚠ {policy.name} 选中位姿与 current 均无 true_score")
+            true_score = {}
 
         gap = true_score.get("Q_true", 0.0) - pred_score.get("Q_pred", 0.0)
         (gain_ap_pred, gain_ap_true, gain_vis_pred, gain_vis_true,
@@ -460,6 +476,12 @@ def run_one_episode(
             "S_kp_occ_pred": pred_score.get("S_kp_occ_pred", 0.0),
             "occlusion_rate_pred": pred_score.get("occlusion_rate_pred", 0.0),
             "occluded_keypoint_count_pred": pred_score.get("occluded_keypoint_count_pred", 0),
+            "occlusion_valid_keypoint_count_pred": pred_score.get(
+                "occlusion_valid_keypoint_count_pred", 0),
+            "raycast_error_count_pred": pred_score.get("raycast_error_count_pred", 0),
+            "raycast_error_rate_pred": pred_score.get("raycast_error_rate_pred", 0.0),
+            "is_occlusion_valid_pred": int(
+                pred_score.get("is_occlusion_valid_pred", True)),
             "torso_visibility_occ_pred": pred_score.get("torso_visibility_occ_pred", 0.0),
             "lower_body_visibility_occ_pred": pred_score.get("lower_body_visibility_occ_pred", 0.0),
             "head_visibility_occ_pred": pred_score.get("head_visibility_occ_pred", 0.0),
@@ -480,6 +502,15 @@ def run_one_episode(
             "S_kp_occ_true": true_score.get("S_kp_occ_true", 0.0),
             "occlusion_rate_true": true_score.get("occlusion_rate_true", 0.0),
             "occluded_keypoint_count_true": true_score.get("occluded_keypoint_count_true", 0),
+            "occlusion_valid_keypoint_count_true": true_score.get(
+                "occlusion_valid_keypoint_count_true", 0),
+            "raycast_error_count_true": true_score.get("raycast_error_count_true", 0),
+            "raycast_error_rate_true": true_score.get("raycast_error_rate_true", 0.0),
+            "depth_valid_keypoint_count_true": true_score.get(
+                "depth_valid_keypoint_count_true", 0),
+            "depth_invalid_keypoint_count_true": true_score.get(
+                "depth_invalid_keypoint_count_true", 0),
+            "true_evaluation_source": true_score.get("true_evaluation_source", ""),
             "torso_visibility_occ_true": true_score.get("torso_visibility_occ_true", 0.0),
             "lower_body_visibility_occ_true": true_score.get("lower_body_visibility_occ_true", 0.0),
             "head_visibility_occ_true": true_score.get("head_visibility_occ_true", 0.0),
@@ -494,6 +525,8 @@ def run_one_episode(
             # ---- Oracle 指标 ----
             "oracle_Q_true": oracle_q_true,
             "oracle_gap": oracle_gap,
+            "oracle_valid_true_candidate_count": oracle_valid_true_count,
+            "oracle_selected_candidate_id": oracle_selected_candidate_id,
         }
         metrics_writer.write_metric_row(row)
 
@@ -501,12 +534,17 @@ def run_one_episode(
     # 10. 保存调试信息 + 写入 episode 摘要
     # =====================================================================
     debug_path = os.path.join(debug_dir, f"{ep_str}_candidates.json")
+    # 相机模型一致性 debug：预测几何模型 / Habitat render / depth 投影共用
+    camera_cfg = config["camera"]
+    camera_intrinsics = compute_camera_intrinsics(
+        camera_cfg["width"], camera_cfg["height"], camera_cfg["hfov_deg"])
     episode_info = {
         "episode_id": episode_id, "scene_id": scene_id,
         "pose_type": pose_type, "human_yaw": human_yaw,
         "human_pos": human_pos.tolist(),
         "robot_start_pos": robot_start_pos.tolist(),
         "occlusion_enabled": config["occlusion"].get("enabled", True),
+        "camera": camera_intrinsics,
     }
     save_candidate_debug_json(candidates, debug_path,
                               episode_info=episode_info, oracle_eval=oracle_eval)
@@ -518,11 +556,15 @@ def run_one_episode(
         "robot_start_pos": robot_start_pos.tolist(),
         "valid_candidate_count": len(valid_candidates),
         "occlusion_ray_errors": occlusion_errors,
+        "is_occlusion_valid_current": bool(
+            current_view.pred_score.get("is_occlusion_valid_pred", True)),
         "fixed_Q_pred": selected_by_policy["Fixed"].pred_score.get("Q_pred", 0.0),
         "ours_Q_pred": selected_by_policy["Ours"].pred_score.get("Q_pred", 0.0),
         "ours_selected_is_current": (selected_by_policy["Ours"] is current_view),
         "oracle_Q_true": oracle_q_true,
         "oracle_gap": oracle_gap,
+        "oracle_valid_true_candidate_count": oracle_valid_true_count,
+        "oracle_selected_candidate_id": oracle_selected_candidate_id,
     })
 
     return True

@@ -34,7 +34,7 @@ from .geometry import angle_in_camera_fov, gaussian_score
 from .action_pose_library import KEYPOINT_GROUPS
 from .orientation import compute_relative_view_angle, compute_orientation_score
 from .action_part_weights import get_action_part_weights
-from .occlusion import compute_keypoint_occlusion, compute_occlusion_rate
+from .occlusion import compute_keypoint_occlusion, compute_occlusion_stats
 
 
 class PredictiveEvaluator:
@@ -94,12 +94,13 @@ class PredictiveEvaluator:
         visible_occ = []
         horizontal_angles = []
 
-        # 逐关键点判断 FOV
+        # 逐关键点判断 FOV（VFOV 由统一相机内参推导）
         for name, pos in human_skeleton.items():
             result = angle_in_camera_fov(
                 camera_base_pos=view_pos, camera_yaw=view_yaw, point=pos,
                 hfov_deg=self.camera_cfg["hfov_deg"],
-                vfov_deg=self.camera_cfg["vfov_deg"],
+                width=self.camera_cfg["width"],
+                height=self.camera_cfg["height"],
                 camera_height=self.camera_cfg["camera_height"],
                 min_depth=self.vis_cfg["min_depth"],
                 max_depth=self.vis_cfg["max_depth"],
@@ -125,9 +126,13 @@ class PredictiveEvaluator:
             if occ_info.get("occluded", False):
                 occluded_all.append(name)
 
-        # visible_after_occlusion = in_fov AND NOT occluded
+        # visible_after_occlusion = in_fov AND NOT occluded AND 遮挡状态有效
+        # （ray cast 失败即无法确认可见性，不视为可见，避免乐观偏置）
         for name in kp_names:
-            if name in fov_visible and name not in occluded_all:
+            info = occlusion_result.get(name, {})
+            if (name in fov_visible
+                    and name not in occluded_all
+                    and info.get("valid", True)):
                 visible_occ.append(name)
 
         # =====================================================================
@@ -216,10 +221,22 @@ class PredictiveEvaluator:
         )
 
         # =====================================================================
-        # 10. 遮挡率统计（主要用于分析/消融，不参与 Q_pred 双重计权）
+        # 10. 遮挡率统计（只统计有效关键点；不参与 Q_pred 双重计权）
+        #     ray cast 失败不计入"未遮挡"，单独输出 error rate
         # =====================================================================
-        occlusion_rate_pred = compute_occlusion_rate(occlusion_result, kp_names)
+        occ_stats = compute_occlusion_stats(occlusion_result, kp_names)
+        occlusion_rate_pred = occ_stats["occlusion_rate"]
+        occlusion_valid_keypoint_count_pred = occ_stats["occlusion_valid_keypoint_count"]
+        raycast_error_count_pred = occ_stats["raycast_error_count"]
+        raycast_error_rate_pred = occ_stats["raycast_error_rate"]
         occluded_keypoint_count_pred = len(occluded_all)
+
+        # 单视角遮挡判断有效性：ray cast 失败率超过阈值则标记无效
+        max_error_rate = self.config.get("occlusion", {}).get(
+            "max_raycast_error_rate", 0.10)
+        is_occlusion_valid_pred = bool(
+            raycast_error_rate_pred <= max_error_rate
+        )
 
         # =====================================================================
         # 11. 最终 Q_pred（v4.0 公式）
@@ -238,7 +255,12 @@ class PredictiveEvaluator:
             "S_action_occ_pred": float(S_action_occ_pred),
             "S_kp_occ_pred": float(S_kp_occ_pred),
             "occlusion_rate_pred": float(occlusion_rate_pred),
+            "occlusion_valid_keypoint_count_pred": int(
+                occlusion_valid_keypoint_count_pred),
             "occluded_keypoint_count_pred": int(occluded_keypoint_count_pred),
+            "raycast_error_count_pred": int(raycast_error_count_pred),
+            "raycast_error_rate_pred": float(raycast_error_rate_pred),
+            "is_occlusion_valid_pred": is_occlusion_valid_pred,
             "visible_keypoints_occ_pred": visible_occ,
             "occluded_keypoints_pred": occluded_all,
             "torso_visibility_occ_pred": float(occ_group["torso"]),

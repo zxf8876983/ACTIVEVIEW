@@ -16,6 +16,17 @@ from typing import List, Optional
 
 from .candidate_sampler import CandidateView
 
+# true_score 评价来源常量（与 true_evaluator 保持一致）
+TRUE_SOURCE_DEPTH = "depth"
+TRUE_SOURCE_GEOMETRY = "geometry_fallback"
+
+
+def is_depth_true(view: CandidateView) -> bool:
+    """判断该位姿的 true_score 是否基于真实渲染 depth 评价。"""
+    if view is None or not view.true_score:
+        return False
+    return view.true_score.get("true_evaluation_source") == TRUE_SOURCE_DEPTH
+
 
 class OraclePolicy:
     """Oracle 上界策略。
@@ -23,6 +34,10 @@ class OraclePolicy:
     运行时机：
         仅在 evaluation phase（评估阶段）离线运行，此时所有位姿的 true_score
         已经计算完毕。
+
+    口径要求：
+        Oracle 只比较评价来源为 "depth"（真实渲染 depth-based）的候选位姿，
+        绝不混用 obs=None 的 geometry fallback true_score，保证上界同口径。
 
     ⚠ 在线选择阶段禁止使用 Oracle 的 Q_true 信息。
     """
@@ -33,26 +48,28 @@ class OraclePolicy:
         self,
         current_view: CandidateView,
         candidates: List[CandidateView],
-    ) -> CandidateView:
-        """根据 true_score 的 Q_true 选择最大位姿（允许停留在当前位置）。
+    ):
+        """根据 depth 口径的 Q_true 选择最大位姿（允许停留在当前位置）。
 
         参数：
             current_view: 当前视角。
             candidates: 候选位姿列表。
 
         返回：
-            Q_true 最大的位姿；无有效评分时返回 current_view。
+            (best_view, valid_true_count)
+            - best_view: Q_true 最大的 depth 口径位姿；无有效位姿时返回 None。
+            - valid_true_count: 满足 depth 口径且具备 Q_true 的位姿数量。
         """
         all_views = [current_view]
         all_views.extend(c for c in candidates if c.is_valid)
 
         scored = [
             v for v in all_views
-            if v.true_score and v.true_score.get("Q_true") is not None
+            if is_depth_true(v) and v.true_score.get("Q_true") is not None
         ]
         if not scored:
-            return current_view
-        return max(scored, key=lambda v: v.true_score["Q_true"])
+            return None, 0
+        return max(scored, key=lambda v: v.true_score["Q_true"]), len(scored)
 
 
 def compute_oracle_gap(

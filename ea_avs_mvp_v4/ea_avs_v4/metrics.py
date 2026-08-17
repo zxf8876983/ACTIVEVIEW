@@ -7,10 +7,14 @@
 
 v4.0 新增字段（相比 v3.0）：
     - 遮挡指标：occlusion_rate_pred/true, occluded_keypoint_count_pred/true
+    - ray cast 健康指标：raycast_error_count/rate_pred/true, is_occlusion_valid_pred
+    - depth 观测健康指标：depth_valid/invalid_keypoint_count_true
+    - true 评价口径：true_evaluation_source（depth / geometry_fallback）
     - 遮挡感知得分：S_action_occ_pred/true, S_kp_occ_pred/true
     - 遮挡后分组可见率：torso/lower_body/head/arms_visibility_occ_pred/true
     - 遮挡增益：occlusion_gain_true
-    - Oracle 指标：oracle_Q_true, oracle_gap
+    - Oracle 指标：oracle_Q_true, oracle_gap,
+      oracle_valid_true_candidate_count, oracle_selected_candidate_id
 """
 
 import csv
@@ -64,6 +68,9 @@ class MetricsWriter:
         # ---- v4.0 新增遮挡感知预测指标 ----
         "S_action_occ_pred", "S_kp_occ_pred",
         "occlusion_rate_pred", "occluded_keypoint_count_pred",
+        "occlusion_valid_keypoint_count_pred",
+        "raycast_error_count_pred", "raycast_error_rate_pred",
+        "is_occlusion_valid_pred",
         "torso_visibility_occ_pred", "lower_body_visibility_occ_pred",
         "head_visibility_occ_pred", "arms_visibility_occ_pred",
         # ---- 真实指标（v3.0 全字段）----
@@ -74,6 +81,10 @@ class MetricsWriter:
         # ---- v4.0 新增遮挡感知真实指标 ----
         "S_action_occ_true", "S_kp_occ_true",
         "occlusion_rate_true", "occluded_keypoint_count_true",
+        "occlusion_valid_keypoint_count_true",
+        "raycast_error_count_true", "raycast_error_rate_true",
+        "depth_valid_keypoint_count_true", "depth_invalid_keypoint_count_true",
+        "true_evaluation_source",
         "torso_visibility_occ_true", "lower_body_visibility_occ_true",
         "head_visibility_occ_true", "arms_visibility_occ_true",
         # ---- 差异 / 增益指标 ----
@@ -83,6 +94,7 @@ class MetricsWriter:
         "occlusion_gain_true",
         # ---- Oracle 上界指标 ----
         "oracle_Q_true", "oracle_gap",
+        "oracle_valid_true_candidate_count", "oracle_selected_candidate_id",
     ]
 
     def __init__(self, output_dir: str):

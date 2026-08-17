@@ -26,8 +26,9 @@ habitat:
 camera:
   width: 640
   height: 480
+  # v4.0 统一相机模型：仅 width / height / hfov_deg 为基础参数，
+  # VFOV 由 pinhole 模型自动推导（见 geometry.compute_camera_intrinsics）
   hfov_deg: 90
-  vfov_deg: 60
   camera_height: 1.2
   # depth 传感器近/远裁剪面（保证深度为公制真实距离）
   clip_near: 0.01
@@ -71,6 +72,8 @@ occlusion:
   ray_epsilon: 0.05      # 射线起点/目标的最小有效距离，防止自相交
   target_tolerance: 0.08 # 判定"目标前命中"的距离容差（米）
   min_hit_distance: 0.05 # 低于该距离的命中视为起点附近的初始命中，忽略
+  max_raycast_error_rate: 0.10   # 单视角 ray cast 允许的最大失败率；超过则该视角
+                                 # 遮挡判断标记为无效（is_occlusion_valid=False）
 
 # 不同姿态的动作关键部位权重（S_action_part / S_action_occ 使用）
 action_part_weights:
@@ -96,12 +99,10 @@ action_part_weights:
     arms: 0.10
 
 # 候选视角相对人体朝向的评分配置（S_orient）
+# 仅使用高斯评分的两个参数；front/side/back 离散打分未使用，已移除避免死配置
 orientation_score:
   preferred_angle_deg: 45
   sigma_deg: 35
-  front_score: 0.8
-  side_score: 0.7
-  back_score: 0.2
 
 # v4.0 预测评分权重
 #   S_action_occ_pred: 遮挡感知动作关键部位可见性（核心新增）
