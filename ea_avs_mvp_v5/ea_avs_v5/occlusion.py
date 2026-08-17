@@ -36,25 +36,29 @@ def compute_keypoint_occlusion(
     human_skeleton: Dict[str, np.ndarray],
     camera_height: float,
     config: dict,
+    humanoid_object_ids: set = None,
 ) -> dict:
-    """对整个人体骨架进行环境遮挡分析。
+    """对整个人体骨架进行遮挡分析。
 
     参数：
         runner: HabitatRunner 实例。
         view_pos: 视角位置（机器人基座位置），shape=(3,)。
         human_skeleton: 世界坐标人体骨架 {关键点名称: (3,) 坐标}。
         camera_height: 相机安装高度（米）。
-        config: 配置字典，需要 occlusion 配置段：
-            - enabled: 是否启用遮挡判断
-            - ray_epsilon / target_tolerance / min_hit_distance
+        config: 配置字典，需要 occlusion 配置段。
+        humanoid_object_ids: Humanoid 相关 object id 集合；传入时逐关键点
+            记录 occlusion_source（environment / humanoid_self）。
 
     返回：
         字典 {关键点名称:
             {"occluded": bool, "valid": bool, "status": str,
-             "hit_distance": float, "target_distance": float, ...}}
+             "hit_distance": float, "target_distance": float,
+             "occlusion_source": str, "hit_object_id": int|None, ...}}
         - status="ok"：ray cast 成功，valid=True
         - status="raycast_error"：ray cast 失败，valid=False，occluded=False
         （无法判断 ≠ 未遮挡，统计时排除）
+        - occlusion_source：v5.0 区分 environment / humanoid_self（仅当传入
+          humanoid_object_ids 且命中发生在目标前才有效；否则为环境）
         射线起点为真实相机位置：view_pos + [0, camera_height, 0]
     """
     occ_cfg = config.get("occlusion", {})
@@ -62,6 +66,7 @@ def compute_keypoint_occlusion(
     ray_epsilon = occ_cfg.get("ray_epsilon", 0.05)
     target_tolerance = occ_cfg.get("target_tolerance", 0.08)
     min_hit_distance = occ_cfg.get("min_hit_distance", 0.05)
+    humanoid_ids = set(humanoid_object_ids) if humanoid_object_ids else None
 
     camera_pos = np.array(view_pos, dtype=np.float64) + np.array(
         [0.0, camera_height, 0.0]
@@ -81,6 +86,8 @@ def compute_keypoint_occlusion(
                 "status": STATUS_OK,
                 "hit_distance": float("inf"),
                 "target_distance": target_distance,
+                "occlusion_source": "none",
+                "hit_object_id": None,
             }
             continue
 
@@ -92,6 +99,7 @@ def compute_keypoint_occlusion(
                 ray_epsilon=ray_epsilon,
                 target_tolerance=target_tolerance,
                 min_hit_distance=min_hit_distance,
+                humanoid_object_ids=humanoid_ids,
             )
             occlusion_result[name] = {
                 "occluded": ray_result["occluded"],
@@ -99,9 +107,11 @@ def compute_keypoint_occlusion(
                 "status": STATUS_OK,
                 "hit_distance": ray_result["hit_distance"],
                 "target_distance": ray_result["target_distance"],
+                "occlusion_source": ray_result["occlusion_source"],
+                "hit_object_id": ray_result["hit_object_id"],
+                "hit_is_humanoid": ray_result["hit_is_humanoid"],
             }
         except Exception as e:  # 单个关键点失败不中断整个骨架分析
-            # ⚠ 记录 WARNING，且失败状态为 raycast_error（不视为"未遮挡"）
             logger.warning(
                 "ray cast 失败（关键点 %s）: %s —— 状态标记为 raycast_error",
                 name, e,
@@ -112,6 +122,8 @@ def compute_keypoint_occlusion(
                 "status": STATUS_RAYCAST_ERROR,
                 "hit_distance": float("inf"),
                 "target_distance": target_distance,
+                "occlusion_source": "unknown",
+                "hit_object_id": None,
                 "error": str(e),
             }
 
@@ -124,13 +136,18 @@ def compute_occlusion_stats(
 ) -> dict:
     """计算遮挡统计（只统计 ray cast 成功的关键点，失败不当作未遮挡）。
 
+    v5.0 新增：按遮挡来源拆分 environment / humanoid_self 计数。
+
     返回：
         {
             "occlusion_rate": float,
-            "occlusion_valid_keypoint_count": int,  # ray cast 成功的关键点数
-            "occluded_valid_keypoint_count": int,   # 成功且被遮挡的关键点数
+            "occlusion_valid_keypoint_count": int,
+            "occluded_valid_keypoint_count": int,
             "raycast_error_count": int,
-            "raycast_error_rate": float,            # 失败数 / 目标关键点总数
+            "raycast_error_rate": float,
+            "environment_occluded_keypoint_count": int,
+            "self_occluded_keypoint_count": int,
+            "unknown_occlusion_keypoint_count": int,
         }
     """
     total = len(keypoint_names)
@@ -141,11 +158,17 @@ def compute_occlusion_stats(
             "occluded_valid_keypoint_count": 0,
             "raycast_error_count": 0,
             "raycast_error_rate": 0.0,
+            "environment_occluded_keypoint_count": 0,
+            "self_occluded_keypoint_count": 0,
+            "unknown_occlusion_keypoint_count": 0,
         }
 
     valid_count = 0
     occluded_valid_count = 0
     raycast_error_count = 0
+    env_count = 0
+    self_count = 0
+    unknown_occ_count = 0
 
     for name in keypoint_names:
         info = occlusion_result.get(name, {})
@@ -155,6 +178,13 @@ def compute_occlusion_stats(
         valid_count += 1
         if info.get("occluded", False):
             occluded_valid_count += 1
+            occ_source = info.get("occlusion_source", "environment")
+            if occ_source == "humanoid_self":
+                self_count += 1
+            elif occ_source == "unknown":
+                unknown_occ_count += 1
+            else:
+                env_count += 1
 
     occlusion_rate = (occluded_valid_count / valid_count) if valid_count > 0 else 0.0
     raycast_error_rate = raycast_error_count / total
@@ -165,6 +195,9 @@ def compute_occlusion_stats(
         "occluded_valid_keypoint_count": occluded_valid_count,
         "raycast_error_count": raycast_error_count,
         "raycast_error_rate": float(raycast_error_rate),
+        "environment_occluded_keypoint_count": env_count,
+        "self_occluded_keypoint_count": self_count,
+        "unknown_occlusion_keypoint_count": unknown_occ_count,
     }
 
 

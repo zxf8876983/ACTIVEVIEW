@@ -44,6 +44,7 @@ from ea_avs_v5.humanoid_assets import (
     resolve_humanoid_assets, validate_humanoid_assets,
 )
 from ea_avs_v5.humanoid_skeleton_adapter import get_humanoid_gt_skeleton
+from ea_avs_v5.humanoid_validation import validate_gt_skeleton
 from ea_avs_v5.action_pose_library import POSE_SKELETONS
 from ea_avs_v5.candidate_sampler import CandidateSampler, CandidateView
 from ea_avs_v5.predictive_evaluator import PredictiveEvaluator
@@ -98,9 +99,15 @@ def sample_valid_human_position(runner, config) -> np.ndarray:
 
 
 def sample_human_yaw(config) -> float:
-    human_cfg = config["human"] if "human" in config else None
-    if human_cfg and config["episode"].get("randomize_human_yaw", True):
-        yaw_deg = float(np.random.choice(human_cfg["yaw_candidates_deg"]))
+    """从 humanoid 配置采样 yaw（8 方向随机化）。
+
+    v5.0：yaw 候选来自 humanoid.yaw_candidates_deg（v5 配置无 human: 段）。
+    """
+    hcfg = config.get("humanoid", {})
+    candidates = hcfg.get(
+        "yaw_candidates_deg", [0, 45, 90, 135, 180, -135, -90, -45])
+    if config["episode"].get("randomize_human_yaw", True):
+        yaw_deg = float(np.random.choice(candidates))
         return np.deg2rad(yaw_deg)
     return 0.0
 
@@ -144,11 +151,13 @@ def compute_gains(pred_sel, pred_cur, true_sel, true_cur):
 def ensure_true_score(
     runner, true_evaluator, view, human_pos, human_yaw, pose_type,
     skeleton, images_dir, ep_str, save_image, save_depth,
+    humanoid_object_ids,
 ):
-    """渲染一个视角并计算 depth 口径 true_score（含缓存）。"""
+    """渲染一个视角并计算 depth 口径 true_score（含缓存），返回 obs。"""
     if (view.true_score
             and view.true_score.get("true_evaluation_source") == "depth"):
-        return
+        return None
+    obs = None
     try:
         obs = runner.render_at(view.position, view.yaw)
         if save_image and obs["rgb"] is not None:
@@ -156,13 +165,15 @@ def ensure_true_score(
             save_rgb_image(obs["rgb"], os.path.join(images_dir, fname))
         if save_depth and obs["depth"] is not None:
             os.makedirs(images_dir, exist_ok=True)
-            import numpy as _np
-            _np.save(os.path.join(images_dir, f"{ep_str}_view_{view.candidate_id}_depth.npy"),
-                     _np.asarray(obs["depth"], dtype=_np.float32))
+            _np = np
+            _np.save(os.path.join(
+                images_dir, f"{ep_str}_view_{view.candidate_id}_depth.npy"),
+                _np.asarray(obs["depth"], dtype=_np.float32))
         view.true_score = true_evaluator.score_view_true(
             runner=runner, obs=obs, view_pos=view.position,
             view_yaw=view.yaw, human_base_pos=human_pos, human_yaw=human_yaw,
             pose_type=pose_type, human_skeleton=skeleton,
+            humanoid_object_ids=humanoid_object_ids,
         )
     except Exception as e:
         print(f"    ⚠ 渲染失败 (candidate {view.candidate_id}): {e}")
@@ -171,11 +182,80 @@ def ensure_true_score(
                 runner=runner, obs=None, view_pos=view.position,
                 view_yaw=view.yaw, human_base_pos=human_pos,
                 human_yaw=human_yaw, pose_type=pose_type,
-                human_skeleton=skeleton,
+                human_skeleton=skeleton, humanoid_object_ids=humanoid_object_ids,
             )
         except Exception as e2:
             print(f"    ⚠ true_score 兜底失败: {e2}")
             view.true_score = {}
+    return obs
+
+
+def compute_humanoid_render_stats(
+    config, runner, obs, human_pos, human_yaw, human_skeleton,
+    view_pos, view_yaw,
+):
+    """真实测量 Humanoid 渲染是否成功（不硬编码）。
+
+    ✅ 语义传感器：当前场景无 semantic 标注且 Humanoid 无 semantic class
+       （已实测：semantic 恒为 0），因此采用 GT 锚定 depth 验证：
+       将 Humanoid GT 关键点投影到相机，在投影邻域内检查有效 metric depth
+       数量与比例，作为人体表面存在的代理。
+    ⚠ 该统计仅用于验收/metrics，绝不进入 Q_pred/策略选择。
+    """
+    camp_cfg = config["camera"]
+    val_cfg = config.get("humanoid_validation", {})
+    min_pixels = val_cfg.get("min_pixel_count", 100)
+    min_depth_ratio = val_cfg.get("min_depth_valid_ratio", 0.5)
+
+    rgb_ok = obs is not None and obs.get("rgb") is not None
+    depth_ok = obs is not None and obs.get("depth") is not None
+
+    # GT 锚定掩码
+    mask = None
+    if depth_ok:
+        from ea_avs_v5.humanoid_validation import (
+            compute_gt_anchored_humanoid_mask)
+        mask = compute_gt_anchored_humanoid_mask(
+            obs["depth"], camp_cfg["width"], camp_cfg["height"],
+            camp_cfg["hfov_deg"], view_pos, view_yaw,
+            camp_cfg["camera_height"], human_skeleton, pad=8,
+        )
+
+    from ea_avs_v5.humanoid_validation import validate_humanoid_render, \
+        compute_humanoid_depth_stats
+    if mask is not None:
+        pixel_count = int(mask.sum())
+        dstats = compute_humanoid_depth_stats(obs["depth"], mask)
+    else:
+        pixel_count = 0
+        dstats = {}
+
+    vres = validate_humanoid_render(
+        rgb_ok, depth_ok, mask, min_pixels, min_depth_ratio, obs["depth"]
+        if depth_ok else None)
+
+    h, w = (obs["depth"].shape[0], obs["depth"].shape[1]) if depth_ok else (0, 0)
+    ys, xs = (np.where(mask) if mask is not None and mask.sum() > 0
+              else (np.array([]), np.array([])))
+    bbox = ([int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())]
+            if len(xs) else None)
+
+    return {
+        "rgb_humanoid_visible": vres["humanoid_visible"],
+        "humanoid_pixel_count": pixel_count,
+        "humanoid_pixel_ratio": (pixel_count / float(h * w)
+                                 if h * w > 0 else 0.0),
+        "humanoid_bbox_x1": bbox[0] if bbox else None,
+        "humanoid_bbox_y1": bbox[1] if bbox else None,
+        "humanoid_bbox_x2": bbox[2] if bbox else None,
+        "humanoid_bbox_y2": bbox[3] if bbox else None,
+        "humanoid_depth_valid_pixel_count": dstats.get(
+            "humanoid_depth_valid_pixel_count", 0),
+        "humanoid_depth_valid_ratio": dstats.get(
+            "humanoid_depth_valid_ratio", 0.0),
+        "humanoid_depth_median": dstats.get("humanoid_depth_median"),
+        "humanoid_render_success": vres["humanoid_render_success"],
+    }
 
 
 # =============================================================================
@@ -198,10 +278,10 @@ def run_one_episode(
 
     # ---- 1. 采样 human base position + yaw ----
     human_pos = sample_valid_human_position(runner, config)
-    human_yaw = sample_human_yaw(config)
+    requested_yaw = sample_human_yaw(config)
 
     # ---- 2. 放置 / 重置 Humanoid（standing，episode 生命周期内持续存在）----
-    humanoid_manager.set_base_pose(human_pos, human_yaw)
+    humanoid_manager.set_base_pose(human_pos, requested_yaw)
     try:
         humanoid_manager.set_pose("standing")
     except Exception as e:
@@ -211,15 +291,34 @@ def run_one_episode(
         })
         return False
     hstate = humanoid_manager.get_state()
+    human_yaw = hstate.base_yaw          # 实际设置的 humanoid yaw
+    actual_yaw = hstate.actual_base_yaw  # 从 agent 读回的朝向
 
-    # ---- 3. 读取 Humanoid GT skeleton（link transforms 优先）----
-    legacy_skeleton = {
-        k: np.asarray(v, dtype=np.float32)
-        for k, v in POSE_SKELETONS["standing"].items()
-    }
-    gt_result = get_humanoid_gt_skeleton(humanoid_manager, legacy_skeleton)
+    # ---- 3. 读取 Humanoid GT skeleton（link transforms 优先，严格 15/15）----
+    strict_gt = config["humanoid"].get("strict_gt_skeleton", True)
+    legacy_skeleton = None
+    if not strict_gt:
+        legacy_skeleton = {
+            k: np.asarray(v, dtype=np.float32)
+            for k, v in POSE_SKELETONS["standing"].items()
+        }
+    gt_result = get_humanoid_gt_skeleton(
+        humanoid_manager, legacy_skeleton,
+        human_base_pos=human_pos, human_yaw=human_yaw, strict=strict_gt,
+    )
     skeleton = gt_result["skeleton"]
+    gt_validation = validate_gt_skeleton(gt_result, strict=strict_gt)
+    if not gt_validation["valid"]:
+        # 严格模式已抛错；此处为 debug 模式的显式失败处理
+        metrics_writer.write_episode_summary({
+            "episode_id": episode_id, "scene_id": scene_id, "status": "failed",
+            "reason": f"invalid_humanoid_gt_skeleton: {gt_validation['reason']}",
+        })
+        return False
     gt_skeleton_source = gt_result["source"]
+
+    # ---- 3b. Humanoid object ids（用于 environment/self occlusion 区分）----
+    humanoid_object_ids = humanoid_manager.get_humanoid_object_ids()
 
     # ---- 4. 生成 robot current pose ----
     robot_start_pos = sample_robot_start_position_around_human(
@@ -238,6 +337,7 @@ def run_one_episode(
         robot_start_pos=robot_start_pos, human_base_pos=human_pos,
         human_yaw=human_yaw, pose_type="standing",
         human_skeleton=skeleton, geodesic_distance=0.0,
+        humanoid_object_ids=humanoid_object_ids,
     )
 
     # ---- 6. 生成候选位姿 + pred_score ----
@@ -258,6 +358,7 @@ def run_one_episode(
             robot_start_pos=robot_start_pos, human_base_pos=human_pos,
             human_yaw=human_yaw, pose_type="standing",
             human_skeleton=skeleton, geodesic_distance=cand.geodesic_distance,
+            humanoid_object_ids=humanoid_object_ids,
         )
 
     # ---- 7. 在线策略选择（仅使用 Q_pred，禁止未来 RGB/depth/Q_true）----
@@ -269,11 +370,18 @@ def run_one_episode(
             selected.selected_by.append(policy.name)
 
     # ---- 8. 【Evaluation Phase】渲染 current + 策略选中位姿（含 Humanoid RGB-D）----
-    humanoid_render_success = True
-    ensure_true_score(
+    render_stats_curr = None
+    obs_curr = ensure_true_score(
         runner, true_evaluator, current_view, human_pos, human_yaw, "standing",
         skeleton, images_dir, ep_str, save_images, save_depth,
+        humanoid_object_ids,
     )
+    # 用 current_view 渲染作为 Humanoid 渲染验证
+    render_stats_curr = compute_humanoid_render_stats(
+        config, runner, obs_curr, human_pos, human_yaw, skeleton,
+        current_view.position, current_view.yaw)
+    humanoid_render_success = bool(render_stats_curr["humanoid_render_success"])
+
     for policy in policies:
         selected = selected_by_policy[policy.name]
         if selected is current_view:
@@ -281,6 +389,7 @@ def run_one_episode(
         ensure_true_score(
             runner, true_evaluator, selected, human_pos, human_yaw, "standing",
             skeleton, images_dir, ep_str, save_images, save_depth,
+            humanoid_object_ids,
         )
     # Oracle 补齐其余候选（depth 口径）
     if oracle_enabled and oracle_policy is not None:
@@ -288,6 +397,7 @@ def run_one_episode(
             ensure_true_score(
                 runner, true_evaluator, cand, human_pos, human_yaw, "standing",
                 skeleton, images_dir, ep_str, False, False,
+                humanoid_object_ids,
             )
 
     # ---- 9. Oracle 离线上界（同口径 depth Q_true）----
@@ -357,6 +467,12 @@ def run_one_episode(
                 "occlusion_valid_keypoint_count_pred", 0),
             "raycast_error_count_pred": pred_score.get("raycast_error_count_pred", 0),
             "raycast_error_rate_pred": pred_score.get("raycast_error_rate_pred", 0.0),
+            "environment_occluded_keypoint_count_pred": pred_score.get(
+                "environment_occluded_keypoint_count_pred", 0),
+            "self_occluded_keypoint_count_pred": pred_score.get(
+                "self_occluded_keypoint_count_pred", 0),
+            "unknown_occlusion_keypoint_count_pred": pred_score.get(
+                "unknown_occlusion_keypoint_count_pred", 0),
             "is_occlusion_valid_pred": int(pred_score.get("is_occlusion_valid_pred", True)),
             "torso_visibility_occ_pred": pred_score.get("torso_visibility_occ_pred", 0.0),
             "lower_body_visibility_occ_pred": pred_score.get("lower_body_visibility_occ_pred", 0.0),
@@ -381,6 +497,10 @@ def run_one_episode(
                 "occlusion_valid_keypoint_count_true", 0),
             "raycast_error_count_true": true_score.get("raycast_error_count_true", 0),
             "raycast_error_rate_true": true_score.get("raycast_error_rate_true", 0.0),
+            "environment_occluded_keypoint_count_true": true_score.get(
+                "environment_occluded_keypoint_count_true", 0),
+            "self_occluded_keypoint_count_true": true_score.get(
+                "self_occluded_keypoint_count_true", 0),
             "depth_valid_keypoint_count_true": true_score.get(
                 "depth_valid_keypoint_count_true", 0),
             "depth_invalid_keypoint_count_true": true_score.get(
@@ -412,8 +532,37 @@ def run_one_episode(
             "humanoid_base_z": hstate.base_position[2],
             "humanoid_yaw": hstate.base_yaw,
             "humanoid_gt_skeleton_source": gt_skeleton_source,
+            "humanoid_gt_keypoint_count": gt_validation["keypoint_count"],
+            "humanoid_gt_link_count": gt_validation["link_count"],
+            "humanoid_gt_fallback_count": gt_validation["fallback_count"],
             "humanoid_render_success": int(humanoid_render_success),
-            "humanoid_self_occlusion_supported_pred": 0,
+            "rgb_humanoid_visible": int(
+                render_stats_curr["rgb_humanoid_visible"] if render_stats_curr else 0),
+            "humanoid_pixel_count": render_stats_curr["humanoid_pixel_count"]
+            if render_stats_curr else 0,
+            "humanoid_pixel_ratio": render_stats_curr["humanoid_pixel_ratio"]
+            if render_stats_curr else 0.0,
+            "humanoid_bbox_x1": (render_stats_curr["humanoid_bbox_x1"]
+                                 if render_stats_curr else None),
+            "humanoid_bbox_y1": (render_stats_curr["humanoid_bbox_y1"]
+                                 if render_stats_curr else None),
+            "humanoid_bbox_x2": (render_stats_curr["humanoid_bbox_x2"]
+                                 if render_stats_curr else None),
+            "humanoid_bbox_y2": (render_stats_curr["humanoid_bbox_y2"]
+                                 if render_stats_curr else None),
+            "humanoid_depth_valid_pixel_count": (
+                render_stats_curr["humanoid_depth_valid_pixel_count"]
+                if render_stats_curr else 0),
+            "humanoid_depth_valid_ratio": (
+                render_stats_curr["humanoid_depth_valid_ratio"]
+                if render_stats_curr else 0.0),
+            "humanoid_depth_median": (
+                render_stats_curr["humanoid_depth_median"]
+                if render_stats_curr else None),
+            "requested_human_yaw": requested_yaw,
+            "actual_humanoid_yaw": actual_yaw,
+            "humanoid_self_occlusion_supported_pred": int(
+                config["humanoid"].get("raycast_self_occlusion_supported", False)),
         }
         metrics_writer.write_metric_row(row)
 
@@ -425,6 +574,8 @@ def run_one_episode(
     episode_info = {
         "episode_id": episode_id, "scene_id": scene_id,
         "pose_type": "standing", "human_yaw": human_yaw,
+        "requested_human_yaw": requested_yaw,
+        "actual_humanoid_yaw": actual_yaw,
         "human_pos": human_pos.tolist(),
         "robot_start_pos": robot_start_pos.tolist(),
         "humanoid": {
@@ -435,6 +586,13 @@ def run_one_episode(
                 "urdf": resolve_humanoid_assets(config).urdf_path,
             },
             "gt_skeleton_source": gt_skeleton_source,
+            "gt_skeleton_counts": {
+                "keypoint_count": gt_validation["keypoint_count"],
+                "link_count": gt_validation["link_count"],
+                "fallback_count": gt_validation["fallback_count"],
+                "missing_keypoints": gt_validation["missing_keypoints"],
+            },
+            "render_stats": render_stats_curr,
         },
         "camera": camera_intrinsics,
     }

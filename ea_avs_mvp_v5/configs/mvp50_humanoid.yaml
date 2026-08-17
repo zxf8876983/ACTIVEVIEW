@@ -51,17 +51,38 @@ humanoid:
     bending: null
     lying_fallen: null
 
+  # Humanoid base_yaw 随机化候选（8 方向）
+  yaw_candidates_deg: [0, 45, 90, 135, 180, -135, -90, -45]
+
+  # 模型 forward 轴（由 debug_humanoid_forward_axis.py 一次性确认）
+  # 允许值：+Z / -Z / +X / -X
+  forward_axis: "+Z"
+
+  # 正式模式：GT skeleton 必须 15/15 全部来自 Humanoid links，否则报错
+  strict_gt_skeleton: true
+
+  # 语义传感器（调试用）。注意：当前场景无 semantic 标注且 Humanoid 无
+  # semantic class，semantic 图像恒为 0，因此默认关闭，改用 GT 锚定 depth 验证
+  semantic_enabled: false
   semantic_id: 100
 
-  # v5.0 可选：启用 semantic sensor（调试用，确认 Humanoid 像素/面积）
-  # 仅用于调试，绝不作为真实视觉算法输入
-  semantic_enabled: false
+  # motion / pose 缺失时禁止静默使用错误动作
+  strict_motion_loading: true
 
   # Humanoid 放置时与地面的高度修正（默认由资源/config/API 推导）
   base_height_offset: 0.0
 
-  # motion / pose 缺失时禁止静默使用错误动作
-  strict_motion_loading: true
+  # v5.0：ray casting 是否检测到能命中 Humanoid articulated body 的能力。
+  # 已实测（debug_humanoid_self_occlusion.py）：射向 head/wrist/knee 会命中
+  # Humanoid link object，self-occlusion 可区分，因此为 true。
+  # 值来源是实际能力检测，不是硬编码猜测；如自遮挡 debug script 失败则改为 false。
+  raycast_self_occlusion_supported: true
+
+# v5.0 Humanoid 渲染/骨架验证阈值
+humanoid_validation:
+  min_pixel_count: 100       # Humanoid 可见像素阈值（GT 锚定 depth 有效像素）
+  min_depth_valid_ratio: 0.5 # Humanoid 区域内有效 metric depth 比例
+  max_short_walk_displacement: 2.0  # 短 walking smoke 允许的最大位移（米）
 
 episode:
   num_episodes: 20

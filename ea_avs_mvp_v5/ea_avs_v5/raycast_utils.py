@@ -35,8 +35,9 @@ def cast_ray_to_point(
     ray_epsilon: float = 0.05,
     target_tolerance: float = 0.08,
     min_hit_distance: float = 0.05,
+    humanoid_object_ids: set = None,
 ) -> dict:
-    """从 ray_origin 向 target_point 发射射线，判断目标是否被环境遮挡。
+    """从 ray_origin 向 target_point 发射射线，判断目标是否被遮挡。
 
     参数：
         runner: HabitatRunner 实例（提供 cast_ray 统一接口）。
@@ -44,33 +45,42 @@ def cast_ray_to_point(
         target_point: 目标点（关键点世界坐标），shape=(3,)。
         ray_epsilon: 起点/目标的最小有效距离，低于该值视为退化，不判遮挡。
         target_tolerance: 判定"目标前命中"的距离容差（米）。
-            命中距离小于 (target_distance - tolerance) 才判定为遮挡，
-            避免目标点本身贴近墙面时被误判。
-        min_hit_distance: 忽略起点附近（小于该距离）的初始命中，防止起点
-            与场景穿插造成的误判。
+        min_hit_distance: 忽略起点附近（小于该距离）的初始命中。
+        humanoid_object_ids: Humanoid 相关 object id 集合（用于区分
+            environment / humanoid_self 遮挡来源）；None 时统一记为
+            environment。
 
     返回：
         {
-            "hit": bool,           # 射线在射程内是否命中场景
-            "occluded": bool,      # 命中是否发生在目标点之前（被遮挡）
-            "hit_distance": float, # 最近命中距离（世界单位，米）；未命中为 inf
-            "target_distance": float, # 起点到目标点的距离（米）
-            "clearance": float,    # 目标距离 - 命中距离（被遮挡时为正，否则 0）
+            "hit": bool,
+            "occluded": bool,
+            "hit_distance": float,
+            "target_distance": float,
+            "clearance": float,
+            "hit_object_id": int|None,
+            "occlusion_source": "environment"|"humanoid_self"|"none"|"unknown",
+            "hit_is_humanoid": bool,
         }
+        occlusion_source：
+            - "none"：未命中或被忽略的起点附近命中
+            - "environment"：命中发生在目标前，且命中物体非 Humanoid
+            - "humanoid_self"：命中发生在目标前，且命中物体为 Humanoid
+              （人体其他部位提前遮挡，即 self-occlusion）
+            - "unknown"：目标距离退化或数据异常
     """
     origin = np.array(ray_origin, dtype=np.float64)
     target = np.array(target_point, dtype=np.float64)
 
     target_distance = float(np.linalg.norm(target - origin))
+    humanoid_ids = set(humanoid_object_ids) if humanoid_object_ids else set()
 
     # 退化情形：起点与目标几乎重合，无法做有意义的遮挡判断
     if target_distance <= ray_epsilon:
         return {
-            "hit": False,
-            "occluded": False,
-            "hit_distance": 0.0,
-            "target_distance": target_distance,
-            "clearance": 0.0,
+            "hit": False, "occluded": False, "hit_distance": 0.0,
+            "target_distance": target_distance, "clearance": 0.0,
+            "hit_object_id": None,
+            "occlusion_source": "unknown", "hit_is_humanoid": False,
         }
 
     # 射程比目标距离略长，确保能命中目标点附近的场景
@@ -81,35 +91,41 @@ def cast_ray_to_point(
 
     if not result["has_hits"]:
         return {
-            "hit": False,
-            "occluded": False,
-            "hit_distance": float("inf"),
-            "target_distance": target_distance,
-            "clearance": 0.0,
+            "hit": False, "occluded": False, "hit_distance": float("inf"),
+            "target_distance": target_distance, "clearance": 0.0,
+            "hit_object_id": None,
+            "occlusion_source": "none", "hit_is_humanoid": False,
         }
 
     hit_distance = float(result["hit_distance"])
+    hit_object_id = result.get("hit_object_id")
+    hit_is_humanoid = bool(hit_object_id in humanoid_ids)
 
-    # 忽略起点附近的初始命中（起点与场景穿插等数值问题）
+    # 忽略起点附近的初始命中
     if hit_distance < min_hit_distance:
         return {
-            "hit": True,
-            "occluded": False,
-            "hit_distance": hit_distance,
-            "target_distance": target_distance,
-            "clearance": 0.0,
+            "hit": True, "occluded": False,
+            "hit_distance": hit_distance, "target_distance": target_distance,
+            "clearance": 0.0, "hit_object_id": hit_object_id,
+            "occlusion_source": "none", "hit_is_humanoid": hit_is_humanoid,
         }
 
     # 核心判定：命中发生在目标点之前（含容差）则被遮挡
     occluded = bool(hit_distance < target_distance - target_tolerance)
     clearance = max(target_distance - hit_distance, 0.0) if occluded else 0.0
 
+    if not occluded:
+        occlusion_source = "none"
+    else:
+        occlusion_source = ("humanoid_self" if hit_is_humanoid
+                            else "environment")
+
     return {
-        "hit": True,
-        "occluded": occluded,
-        "hit_distance": hit_distance,
-        "target_distance": target_distance,
-        "clearance": clearance,
+        "hit": True, "occluded": occluded,
+        "hit_distance": hit_distance, "target_distance": target_distance,
+        "clearance": clearance, "hit_object_id": hit_object_id,
+        "occlusion_source": occlusion_source,
+        "hit_is_humanoid": hit_is_humanoid,
     }
 
 

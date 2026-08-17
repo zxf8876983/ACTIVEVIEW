@@ -134,10 +134,13 @@ class HumanoidMotionController:
     def step(self, dt: float) -> int:
         """推进动作动画（walking 时前进一帧；standing 静止）。
 
+        ⚠ walking 目标为**相对根节点的局部前进方向**（relative local walking
+        target），仅用于 smoke test 验证 animation pipeline，不用于主 NBV
+        实验中让人体自行移动。
+
         返回当前动作帧索引。
         """
         if self._current_state == WALKING:
-            # 每次前进约 motional fps * dt 帧（演示链路以 1 帧为最小步）
             n = max(1, int(round(self._motion_fps * dt)))
             for _ in range(n):
                 self.apply_walk_step(mn.Vector3(0.1, 0.0, 0.1))

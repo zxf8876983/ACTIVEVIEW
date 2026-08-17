@@ -172,6 +172,7 @@ class TrueEvaluator:
         human_yaw: float,
         pose_type: str,
         human_skeleton: Dict[str, np.ndarray],
+        humanoid_object_ids: set = None,
     ) -> dict:
         """对已选定的视角进行遮挡感知真实评估。
 
@@ -187,9 +188,16 @@ class TrueEvaluator:
             human_yaw: 人体朝向（弧度）。
             pose_type: 姿态类型。
             human_skeleton: 世界坐标人体骨架。
+            humanoid_object_ids: Humanoid object id 集合（遮挡来源分析用）。
 
         返回：
             {"S_action_occ_true", "S_kp_occ_true", "Q_true", ...含遮挡指标}
+
+        说明（v5.0 边界）：
+            Q_true 是基于几何/depth 的可见性与遮挡代理指标（joint-depth
+            visibility / occlusion proxy），不等同于真实视觉关键点检测成功率。
+            joint 中心通常位于人体内部，rendered depth 是人体表面。真正的
+            视觉关键点检测留待后续 Estimated-State 阶段。
         """
         # =====================================================================
         # 1. FOV 可见性与水平角
@@ -226,6 +234,7 @@ class TrueEvaluator:
             human_skeleton=human_skeleton,
             camera_height=self.camera_cfg["camera_height"],
             config=self.config,
+            humanoid_object_ids=humanoid_object_ids,
         )
         camera_pos = np.array(view_pos, dtype=np.float64) + np.array(
             [0.0, self.camera_cfg["camera_height"], 0.0])
@@ -364,6 +373,9 @@ class TrueEvaluator:
         occlusion_valid_keypoint_count_true = occ_stats["occlusion_valid_keypoint_count"]
         raycast_error_count_true = occ_stats["raycast_error_count"]
         occluded_keypoint_count_true = len(occluded_all)
+        environment_occluded_keypoint_count_true = occ_stats[
+            "environment_occluded_keypoint_count"]
+        self_occluded_keypoint_count_true = occ_stats["self_occluded_keypoint_count"]
 
         # true_score 来源：是否真正使用了渲染 depth 作为评价口径
         # （Oracle 只允许比较 depth 来源的候选）
@@ -394,6 +406,10 @@ class TrueEvaluator:
                 occlusion_valid_keypoint_count_true),
             "raycast_error_count_true": int(raycast_error_count_true),
             "raycast_error_rate_true": occ_stats["raycast_error_rate"],
+            "environment_occluded_keypoint_count_true": int(
+                environment_occluded_keypoint_count_true),
+            "self_occluded_keypoint_count_true": int(
+                self_occluded_keypoint_count_true),
             "depth_valid_keypoint_count_true": int(depth_valid_count),
             "depth_invalid_keypoint_count_true": int(depth_invalid_count),
             "true_evaluation_source": true_evaluation_source,

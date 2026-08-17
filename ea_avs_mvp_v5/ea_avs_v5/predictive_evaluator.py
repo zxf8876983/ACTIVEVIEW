@@ -66,6 +66,7 @@ class PredictiveEvaluator:
         pose_type: str,
         human_skeleton: Dict[str, np.ndarray],
         geodesic_distance: float,
+        humanoid_object_ids: set = None,
     ) -> dict:
         """对候选视角进行遮挡感知动作导向的预测评分。
 
@@ -81,6 +82,8 @@ class PredictiveEvaluator:
             pose_type: 姿态类型，如 "standing"。
             human_skeleton: 世界坐标人体骨架字典。
             geodesic_distance: 测地距离。
+            humanoid_object_ids: Humanoid 相关 object id 集合；传入时可将遮挡
+                来源区分为 environment / humanoid_self（不参与评分，仅供分析）。
 
         返回：
             见类头部注释：含 S_action_occ_pred / S_kp_occ_pred / Q_pred 等。
@@ -110,8 +113,7 @@ class PredictiveEvaluator:
                 fov_visible.append(name)
 
         # =====================================================================
-        # 2. 环境遮挡分析（v4.0 核心新增）
-        #    射线起点 = 真实相机位置 = view_pos + camera_height
+        # 2. 环境/自遮挡分析（v4.0 核心）—— 射线起点 = 真实相机位置
         # =====================================================================
         occlusion_result = compute_keypoint_occlusion(
             runner=runner,
@@ -119,6 +121,7 @@ class PredictiveEvaluator:
             human_skeleton=human_skeleton,
             camera_height=self.camera_cfg["camera_height"],
             config=self.config,
+            humanoid_object_ids=humanoid_object_ids,
         )
 
         for name in kp_names:
@@ -230,6 +233,12 @@ class PredictiveEvaluator:
         raycast_error_count_pred = occ_stats["raycast_error_count"]
         raycast_error_rate_pred = occ_stats["raycast_error_rate"]
         occluded_keypoint_count_pred = len(occluded_all)
+        # v5.0：遮挡来源拆分（环境 / 自遮挡 / 未知）
+        environment_occluded_keypoint_count_pred = occ_stats[
+            "environment_occluded_keypoint_count"]
+        self_occluded_keypoint_count_pred = occ_stats["self_occluded_keypoint_count"]
+        unknown_occlusion_keypoint_count_pred = occ_stats[
+            "unknown_occlusion_keypoint_count"]
 
         # 单视角遮挡判断有效性：ray cast 失败率超过阈值则标记无效
         max_error_rate = self.config.get("occlusion", {}).get(
@@ -260,6 +269,12 @@ class PredictiveEvaluator:
             "occluded_keypoint_count_pred": int(occluded_keypoint_count_pred),
             "raycast_error_count_pred": int(raycast_error_count_pred),
             "raycast_error_rate_pred": float(raycast_error_rate_pred),
+            "environment_occluded_keypoint_count_pred": int(
+                environment_occluded_keypoint_count_pred),
+            "self_occluded_keypoint_count_pred": int(
+                self_occluded_keypoint_count_pred),
+            "unknown_occlusion_keypoint_count_pred": int(
+                unknown_occlusion_keypoint_count_pred),
             "is_occlusion_valid_pred": is_occlusion_valid_pred,
             "visible_keypoints_occ_pred": visible_occ,
             "occluded_keypoints_pred": occluded_all,

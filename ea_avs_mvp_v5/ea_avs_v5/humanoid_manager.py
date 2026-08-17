@@ -121,6 +121,8 @@ class HumanoidManager:
         self._agent.base_pos = mn.Vector3(0.0, 0.0, 0.0)
         self._agent.base_rot = 0.0
         self.set_rest_position()
+        # 同步 walking controller 的世界基准到当前 base
+        self._sync_controller_base()
 
         logger.info("Humanoid object created: %s (robot sim id %d)",
                     self.assets.avatar_name, self._agent.get_robot_sim_id())
@@ -141,6 +143,7 @@ class HumanoidManager:
             self._motion.reset()
         self._state.pose_name = "standing"
         self._state.motion_frame = None
+        self._sync_controller_base()
 
     # ------------------------------------------------------------------
     # 位姿
@@ -151,15 +154,20 @@ class HumanoidManager:
 
         参数：
             position: 脚底中心（导航点），shape=(3,)。
-            yaw: 基准朝向（弧度）。真实 mesh 朝向可能与此不同，见
-                 get_humanoid_forward_vector 校准说明。
+            yaw: 基准朝向（弧度）。实际 mesh 朝向由 forward_axis 决定，
+                 该 yaw 作为 human_yaw 约定（见 get_humanoid_forward_vector）。
+
+        设置后会同步 walking controller 的世界基准。
         """
         self._agent.base_pos = mn.Vector3(
             float(position[0]), float(position[1]), float(position[2]))
         self._agent.base_rot = float(yaw)
         self._state.base_position = np.asarray(position, dtype=np.float32)
         self._state.base_yaw = float(yaw)
+        self._state.requested_yaw = float(yaw)
+        self._state.actual_base_yaw = float(self._agent.base_rot)
         self._update()
+        self._sync_controller_base()
 
     def set_pose(self, pose_name: str):
         """通过动作控制器设置姿态。
@@ -168,7 +176,8 @@ class HumanoidManager:
 
         注意：
             standing 用 set_rest_position（保持当前 base 位置，不覆盖）；
-            walking 才通过 controller 逐帧更新关节与基底变换。
+            walking 才通过 controller 逐帧更新关节与基底变换，且进入前
+            需同步 controller 世界基准（set_base_pose/reset 已完成）。
         """
         self._motion.set_state(pose_name)
         self._state.pose_name = pose_name
@@ -177,6 +186,7 @@ class HumanoidManager:
             # 保持 set_base_pose 设置的位置，仅应用静止关节姿态
             self.set_rest_position()
         else:
+            self._sync_controller_base()  # 进入 walking 前强制同步
             self._apply_controller_to_agent()
 
     def step_motion(self, dt: float):
@@ -187,12 +197,24 @@ class HumanoidManager:
         # 动画驱动后更新记录的 base 位置（get_state 从 agent 读取）
         self._sync_base_state()
 
+    def _sync_controller_base(self):
+        """将 walking controller 的世界基准与 Humanoid 当前 base 对齐。
+
+        Habitat 官方：controller.reset(base_transformation) 建立控制器当前
+        世界基准，避免后续 walking 相对位移时出现瞬移到原点的问题。
+        调用时机：load / set_base_pose / reset / 进入 walking 前。
+        """
+        if self._controller is None or self._agent is None:
+            return
+        self._controller.reset(self._agent.base_transformation)
+
     def _sync_base_state(self):
         """从 agent 读取当前脚底中心位置/朝向以同步 GT 状态。"""
         if self._agent is not None:
             bpos = np.asarray(self._agent.base_pos, dtype=np.float32).copy()
             self._state.base_position = bpos
             self._state.base_yaw = float(self._agent.base_rot)
+            self._state.actual_base_yaw = float(self._agent.base_rot)
 
     def _apply_controller_to_agent(self):
         """将 controller 计算出的关节/基底变换应用到 Humanoid mesh。"""
@@ -238,15 +260,60 @@ class HumanoidManager:
     def get_humanoid_forward_vector(self) -> np.ndarray:
         """计算 Humanoid 在 X-Z 平面上的前向向量（模型 forward 轴）。
 
-        v5.0 校准要求：不再假设 human_yaw 与 mesh 朝向一定一致。
-        通过 scene 根节点变换的第一列（+X）与 BaseForward 约定推导。
-        若资产内部 forward 约定与 v4.0 的 +Z 不一致，只在 SkeletonAdapter 层
-        修正，不在这里到处添加 magic +pi。
+        v5.0 前向校准：
+            不再假设 base_yaw=0 即 mesh 朝 +Z。human_yaw 表示"人面向的
+            X-Z 平面方向"，而 mesh 的真实前向基准轴由配置 humanoid.forward_axis
+            （+Z/-Z/+X/-X，由 debug_humanoid_forward_axis.py 一次性确认）决定。
+
+            统一约定：forward = RotY(base_yaw) · world_axis(forward_axis)
+            其中 base_yaw 由 set_base_pose 设置，与 human_yaw 一致。
+
+        所有模型的 forward convention 统一在此函数处理，禁止在别处散布
+        magic +pi / -pi/2。
         """
-        base_rot = self._state.base_yaw
-        # 约定 human_yaw 表示 X-Z 平面朝向；默认取 +Z 前向，符号由
-        # 校准测试（debug_humanoid_rgbd）确认后决定是否在 adapter 层翻转。
-        return np.array([np.sin(base_rot), 0.0, np.cos(base_rot)])
+        axis_name = self.humanoid_cfg.get("forward_axis", "+Z")
+        axis_map = {
+            "+Z": np.array([0.0, 0.0, 1.0]),
+            "-Z": np.array([0.0, 0.0, -1.0]),
+            "+X": np.array([1.0, 0.0, 0.0]),
+            "-X": np.array([-1.0, 0.0, 0.0]),
+        }
+        if axis_name not in axis_map:
+            raise ValueError(
+                f"humanoid.forward_axis 不合法: {axis_name}，允许 {list(axis_map)}")
+        local = axis_map[axis_name]
+        base_yaw = self._state.base_yaw
+        cos, sin = np.cos(base_yaw), np.sin(base_yaw)
+        # RotY(base_yaw): x' = cos*x + sin*z ; z' = -sin*x + cos*z
+        wx = cos * local[0] + sin * local[2]
+        wz = -sin * local[0] + cos * local[2]
+        return np.array([wx, 0.0, wz])
+
+    def get_humanoid_object_ids(self) -> set:
+        """返回 Humanoid 相关的 object id 集合（用于遮挡来源判定）。
+
+        v5.0：从 current Habitat API 读取：
+            - 人体 articulated object 自身的 object_id
+            - link_object_ids 中映射到的各 link object id
+        命中这些 id 的射线视为命中"人体自身"（self-occlusion / 目标表面）。
+        """
+        ids = set()
+        if self._agent is None:
+            return ids
+        obj = self._agent.sim_obj
+        try:
+            root_id = int(obj.object_id)
+            ids.add(root_id)
+        except Exception:
+            pass
+        try:
+            lo = obj.link_object_ids  # dict link_id -> object_id
+            if lo:
+                for _, oid in lo.items():
+                    ids.add(int(oid))
+        except Exception:
+            pass
+        return ids
 
     def get_state(self) -> HumanoidState:
         """返回当前 GT 状态副本（base 位置从 agent 实时读取）。"""
@@ -254,6 +321,8 @@ class HumanoidManager:
         return HumanoidState(
             base_position=self._state.base_position,
             base_yaw=self._state.base_yaw,
+            requested_yaw=self._state.requested_yaw,
+            actual_base_yaw=self._state.actual_base_yaw,
             pose_name=self._state.pose_name,
             motion_frame=self._state.motion_frame,
             semantic_id=self._state.semantic_id,

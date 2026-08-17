@@ -8,15 +8,15 @@ RGB-D Humanoid 可见性调试 —— debug_humanoid_rgbd.py
     2. 创建 Humanoid（standing）
     3. 放在可导航位置
     4. 在人体周围 4 个方向放置相机（前/左/后/右）
-    5. 分别 render RGB + depth
-    6. 保存结果到 outputs/humanoid_rgbd_debug/
+    5. 相机始终通过 compute_look_at_yaw 看向人体
+    6. 分别 render RGB + depth
+    7. 保存结果到 outputs/humanoid_rgbd_debug/
 
 验收：
+    - 四个方向相机都 look-at 人体（不用手工指定 yaw）
+    - humanoid_render_success 为真实测量（GT 锚定 depth 验证）
     - front / side / back 图像中人体外观明显不同
-    - 人体确实存在于 RGB
     - 人体对应位置在 depth 中有合理深度
-    - 家具可以真实遮挡人体（环境遮挡）
-    - 人体自身表面产生 self-occlusion
 
 运行命令：
     python scripts/debug_humanoid_rgbd.py --config configs/mvp50_humanoid.yaml
@@ -33,8 +33,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from ea_avs_v5.config import load_config
 from ea_avs_v5.habitat_runner import HabitatRunner
 from ea_avs_v5.humanoid_manager import HumanoidManager
+from ea_avs_v5.humanoid_skeleton_adapter import get_humanoid_gt_skeleton
 from ea_avs_v5.visualization import save_rgb_image
-from PIL import Image
+from ea_avs_v5.geometry import compute_look_at_yaw
 
 
 def save_depth_npy(depth, path):
@@ -63,23 +64,27 @@ def main():
         hpos = np.array(pt, dtype=np.float32)
         manager.set_base_pose(hpos, 0.0)
         manager.set_pose("standing")
-        hy = hpos[1]
-        cam_h = config["camera"]["camera_height"]
 
-        # 4 个方向：前(+Z)、左(+X 但观察从负侧)、后(-Z)、右
-        # humanoid forward 朝 +Z（base_yaw=0）
+        # 从 actual Humanoid 提取 GT skeleton（15/15），用于 GT 锚定验证
+        gt_result = get_humanoid_gt_skeleton(manager, strict=False)
+        skeleton = gt_result["skeleton"]
+
+        hy = hpos[1]
+        # 四个方向只定义相机 position；yaw 全部通过 compute_look_at_yaw 自动计算
         offsets = {
-            "front": (np.array([0, 0, 2.2], dtype=np.float32), 0.0),
-            "back": (np.array([0, 0, -2.2], dtype=np.float32), np.pi),
-            "left": (np.array([-2.2, 0, 0], dtype=np.float32), -np.pi / 2),
-            "right": (np.array([2.2, 0, 0], dtype=np.float32), np.pi / 2),
+            "front": np.array([0, 0, 2.2], dtype=np.float32),
+            "back": np.array([0, 0, -2.2], dtype=np.float32),
+            "left": np.array([-2.2, 0, 0], dtype=np.float32),
+            "right": np.array([2.2, 0, 0], dtype=np.float32),
         }
 
-        print(f"Humanoid 位于 {np.round(hpos, 3)}，在周围 4 方向渲染")
-        for side, (rel, yaw) in offsets.items():
+        print(f"Humanoid 位于 {np.round(hpos, 3)}，在周围 4 方向渲染（look-at human）")
+        for side, rel in offsets.items():
             cam_base = hpos + rel
             cam_base[1] = hy  # 相机在人体脚底同一高度上抬 camera_height
-            obs = runner.render_at(cam_base, yaw)
+            # ⚠ 禁止硬编码 yaw；统一看向人体
+            cam_yaw = compute_look_at_yaw(cam_base, hpos)
+            obs = runner.render_at(cam_base, cam_yaw)
             rgb = obs["rgb"]
             depth = obs["depth"]
 
@@ -94,12 +99,28 @@ def main():
                 dz = dz[..., 0]
             nz = dz[dz > 0]
             depth_range = f"{nz.min():.3f}~{nz.max():.3f}" if len(nz) else "empty"
-            print(f"  {side:6s}: rgb={rgb_path}  depth={depth_path} "
-                  f"depth_range={depth_range}")
+
+            # 真实测量 Humanoid 渲染
+            from ea_avs_v5.humanoid_validation import (
+                compute_gt_anchored_humanoid_mask, validate_humanoid_render)
+            mcfg = config["camera"]
+            vcfg = config.get("humanoid_validation", {})
+            mask = compute_gt_anchored_humanoid_mask(
+                depth, mcfg["width"], mcfg["height"], mcfg["hfov_deg"],
+                cam_base, cam_yaw, mcfg["camera_height"], skeleton, pad=8)
+            vres = validate_humanoid_render(
+                rgb is not None, depth is not None, mask,
+                vcfg.get("min_pixel_count", 100),
+                vcfg.get("min_depth_valid_ratio", 0.5), depth)
+            ok = "✅" if vres["humanoid_render_success"] else "⚠️"
+            print(f"  {ok} {side:6s}: rgb={rgb_path} depth={depth_path} "
+                  f"depth_range={depth_range} "
+                  f"pixel={vres['humanoid_pixel_count']} "
+                  f"render_ok={vres['humanoid_render_success']}")
 
         print(f"\n✅ RGB-D 已保存到 {out_dir}/")
         print("检查：人物应在 front/back/left/right 四个方向外观明显不同；")
-        print("      depth 在人体位置有合理深度值。")
+        print("      depth 在人体位置有合理深度值（GT 锚定验证）。")
 
     finally:
         manager.close()
