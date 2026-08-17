@@ -1,0 +1,140 @@
+# =============================================================================
+# 配置文件 —— mvp40_occlusion_aware.yaml
+# EA-AVS-MVP v4.0 实验配置文件 —— 遮挡感知动作导向主动观察位姿选择
+# =============================================================================
+#
+# 中文名称：面向老人动作感知的移动机器人主动视角选择 v4.0 —— 遮挡感知版本
+#
+# v4.0 相比 v3.0 新增配置段：
+#   habitat.enable_physics:         开启 physics（ray casting 的前提）
+#   occlusion:                      环境遮挡参数（ray 采样容差等）
+#   predictive_score.w_action_occ_pred: 遮挡感知动作部位预测权重
+#   true_score.w_action_occ_true:       遮挡感知动作部位真实权重
+#   oracle:                        Oracle 离线上界配置
+
+project:
+  name: "EA-AVS-MVP4.0"
+  seed: 42
+
+habitat:
+  scene_path: "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.glb"
+  navmesh_path: "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.navmesh"
+  use_habitat_lab: false
+  # ⚠ v4.0 必须开启 physics：cast_ray 依赖碰撞场景，physics 关闭时 ray 无命中
+  enable_physics: true
+
+camera:
+  width: 640
+  height: 480
+  hfov_deg: 90
+  vfov_deg: 60
+  camera_height: 1.2
+  # depth 传感器近/远裁剪面（保证深度为公制真实距离）
+  clip_near: 0.01
+  clip_far: 10.0
+
+episode:
+  num_episodes: 20
+  min_robot_human_distance: 1.5
+  max_robot_human_distance: 4.0
+  max_sampling_tries: 100
+  randomize_pose_type: true
+  randomize_human_yaw: true
+
+human:
+  pose_types: ["standing", "sitting", "lying_fallen", "bending"]
+  default_pose_type: "standing"
+  base_height_offset: 0.0
+  yaw_candidates_deg: [0, 45, 90, 135, 180, -135, -90, -45]
+
+candidate_sampling:
+  radii: [1.5, 2.0, 2.5]
+  angles_deg: [-135, -90, -45, 0, 45, 90, 135, 180]
+  min_distance_to_human: 1.2
+  max_distance_to_human: 3.0
+  max_geodesic_distance: 6.0
+
+visibility:
+  min_depth: 0.5
+  max_depth: 5.0
+
+# 默认关键点组权重（通用可见性 S_kp 使用，fallback）
+score_weights:
+  torso: 0.40
+  lower_body: 0.40
+  head: 0.10
+  arms: 0.10
+
+# v4.0 遮挡相关参数
+occlusion:
+  enabled: true          # 是否参与评分（false 时退化为 v3.0 纯 FOV 可见性）
+  ray_epsilon: 0.05      # 射线起点/目标的最小有效距离，防止自相交
+  target_tolerance: 0.08 # 判定"目标前命中"的距离容差（米）
+  min_hit_distance: 0.05 # 低于该距离的命中视为起点附近的初始命中，忽略
+
+# 不同姿态的动作关键部位权重（S_action_part / S_action_occ 使用）
+action_part_weights:
+  standing:
+    torso: 0.35
+    lower_body: 0.35
+    head: 0.20
+    arms: 0.10
+  sitting:
+    torso: 0.40
+    lower_body: 0.45
+    head: 0.10
+    arms: 0.05
+  lying_fallen:
+    torso: 0.40
+    lower_body: 0.35
+    head: 0.20
+    arms: 0.05
+  bending:
+    torso: 0.45
+    lower_body: 0.35
+    head: 0.10
+    arms: 0.10
+
+# 候选视角相对人体朝向的评分配置（S_orient）
+orientation_score:
+  preferred_angle_deg: 45
+  sigma_deg: 35
+  front_score: 0.8
+  side_score: 0.7
+  back_score: 0.2
+
+# v4.0 预测评分权重
+#   S_action_occ_pred: 遮挡感知动作关键部位可见性（核心新增）
+#   S_orient_pred:     人体相对观察方向
+#   S_center_pred:     关键点居中度
+#   S_dist_pred:       与人体距离
+#   C_move:            移动代价（减项）
+predictive_score:
+  w_action_occ_pred: 0.50
+  w_orient_pred: 0.15
+  w_center_pred: 0.10
+  w_dist_pred: 0.10
+  w_move: 0.15
+
+# v4.0 真实评分权重（不含移动代价）
+true_score:
+  w_action_occ_true: 0.60
+  w_orient_true: 0.15
+  w_center_true: 0.10
+  w_dist_true: 0.15
+
+movement:
+  allow_stay: true
+  stay_margin: 0.0
+
+distance_score:
+  optimal_distance: 2.0
+  sigma: 0.7
+
+oracle:
+  enabled: true    # 是否启用 Oracle 离线上界评估
+
+output:
+  save_images: true
+  save_candidate_json: true
+  save_csv: true
