@@ -60,6 +60,7 @@ def cast_ray_to_point(
         {
             "hit": bool,
             "occluded": bool,
+            "valid": bool,        # 遮挡判定是否可信（unknown=False）
             "hit_distance": float,
             "target_distance": float,
             "clearance": float,
@@ -71,13 +72,13 @@ def cast_ray_to_point(
         }
 
     分类顺序（5 态）：
-        1. 无真正提前 hit              → "none"      , occluded=False
-        2. 提前 hit 命中 target link   → "target_surface", occluded=False
+        1. 无真正提前 hit              → "none"      , occluded=False, valid=True
+        2. 提前 hit 命中 target link   → "target_surface", occluded=False, valid=True
            （目标 body part 本身被看见）
-        3. 提前 hit 命中其他 Humanoid link → "humanoid_self", occluded=True
-        4. 提前 hit 命中环境物体       → "environment", occluded=True
+        3. 提前 hit 命中其他 Humanoid link → "humanoid_self", occluded=True, valid=True
+        4. 提前 hit 命中环境物体       → "environment", occluded=True, valid=True
         5. object-id 映射无法可靠判定  → "unknown"   , valid=False（occluded=False）
-    ⚠ unknown 绝不视为 visible（调用方需处理 valid=False）。
+    ⚠ unknown 必须 valid=False：绝不进入 visible，也不进入有效遮挡率分母。
     """
     origin = np.array(ray_origin, dtype=np.float64)
     target = np.array(target_point, dtype=np.float64)
@@ -89,7 +90,8 @@ def cast_ray_to_point(
     # 退化情形：起点与目标几乎重合，无法做有意义的遮挡判断
     if target_distance <= ray_epsilon:
         return {
-            "hit": False, "occluded": False, "hit_distance": 0.0,
+            "hit": False, "occluded": False, "valid": False,
+            "hit_distance": 0.0,
             "target_distance": target_distance, "clearance": 0.0,
             "hit_object_id": None, "hit_is_humanoid": False,
             "hit_is_target_surface": False,
@@ -104,7 +106,8 @@ def cast_ray_to_point(
 
     if not result["has_hits"]:
         return {
-            "hit": False, "occluded": False, "hit_distance": float("inf"),
+            "hit": False, "occluded": False, "valid": True,
+            "hit_distance": float("inf"),
             "target_distance": target_distance, "clearance": 0.0,
             "hit_object_id": None, "hit_is_humanoid": False,
             "hit_is_target_surface": False,
@@ -119,7 +122,7 @@ def cast_ray_to_point(
     # 忽略起点附近的初始命中
     if hit_distance < min_hit_distance:
         return {
-            "hit": True, "occluded": False,
+            "hit": True, "occluded": False, "valid": True,
             "hit_distance": hit_distance, "target_distance": target_distance,
             "clearance": 0.0, "hit_object_id": hit_object_id,
             "hit_is_humanoid": hit_is_humanoid,
@@ -134,26 +137,30 @@ def cast_ray_to_point(
     if not genuinely_occluding:
         occluded = False
         occlusion_source = "none"
+        valid = True
     elif hit_is_target_surface:
         # 命中目标 body part 自身表面 → 目标可见，不算 self-occlusion
         occluded = False
         occlusion_source = "target_surface"
+        valid = True
     elif hit_is_humanoid:
         # 命中其他 Humanoid link → self-occlusion
         occluded = True
         occlusion_source = "humanoid_self"
+        valid = True
+    elif humanoid_ids:
+        # 明确知道命中物不是 Humanoid → environment
+        occluded = True
+        occlusion_source = "environment"
+        valid = True
     else:
-        if humanoid_ids:
-            # 明确知道命中物不是 Humanoid → environment
-            occluded = True
-            occlusion_source = "environment"
-        else:
-            # 无 humanoid id 信息可判定
-            occluded = False
-            occlusion_source = "unknown"
+        # 无 humanoid id 信息可判定 → unknown，valid=False
+        occluded = False
+        occlusion_source = "unknown"
+        valid = False
 
     return {
-        "hit": True, "occluded": occluded,
+        "hit": True, "occluded": occluded, "valid": valid,
         "hit_distance": hit_distance, "target_distance": target_distance,
         "clearance": clearance, "hit_object_id": hit_object_id,
         "hit_is_humanoid": hit_is_humanoid,

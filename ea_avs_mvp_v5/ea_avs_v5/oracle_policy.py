@@ -103,32 +103,53 @@ def compute_oracle_gap(
     oracle_view: CandidateView,
     ours_view: CandidateView,
     current_view: CandidateView,
-) -> float:
-    """计算 Oracle 与 Ours 的真实得分差距。
+    min_depth_coverage: float = 0.8,
+) -> dict:
+    """计算 Oracle 与 Ours 的真实得分差距（保证同口径）。
 
-    定义：
-        oracle_gap = oracle_Q_true - ours_Q_true
-
-    其中 ours_Q_true 取 Ours 选中位姿的 Q_true。
-    若 Ours 或 current 缺少 true_score，则按 0.0 处理。
+    v5.0 closure：只有 Oracle 与 Ours 的选中位姿都满足：
+        true_evaluation_source == "depth" 且 depth_coverage_true >= min_depth_coverage
+    才计算 gap；否则 gap=None。
 
     参数：
         oracle_view: Oracle 选中的上界位姿。
-        ours_view: Ours（FullOurs）选中的位姿。
-        current_view: 当前视角（作为 fallback 参考）。
+        ours_view: Ours 选中的位姿。
+        current_view: 当前视角（fallback 参考）。
+        min_depth_coverage: depth coverage 门槛。
 
     返回：
-        oracle_gap 浮点数。
+        {
+            "oracle_gap": float|None,
+            "oracle_gap_valid": bool,
+            "oracle_gap_reason": str|None,
+        }
     """
-    oracle_q = _safe_q_true(oracle_view, current_view)
-    ours_q = _safe_q_true(ours_view, current_view)
-    return float(oracle_q - ours_q)
+    def _view_eligible(view):
+        if view is None or not view.true_score:
+            return False
+        ts = view.true_score
+        if ts.get("true_evaluation_source") != "depth":
+            return False
+        return float(ts.get("depth_coverage_true", 0.0)) >= min_depth_coverage
 
+    # Oracle 不可用
+    if oracle_view is None or not oracle_view.true_score:
+        return {"oracle_gap": None, "oracle_gap_valid": False,
+                "oracle_gap_reason": "oracle_unavailable"}
 
-def _safe_q_true(view: CandidateView, fallback: CandidateView) -> float:
-    """安全获取 view 的 Q_true；缺失时退回 fallback 的 Q_true。"""
-    if view is None:
-        view = fallback
-    if view.true_score is None or not view.true_score:
-        view = fallback
-    return float(view.true_score.get("Q_true", 0.0))
+    oracle_q = float(oracle_view.true_score.get("Q_true", 0.0))
+
+    # Ours 同口径检查
+    if ours_view is None or not ours_view.true_score:
+        return {"oracle_gap": None, "oracle_gap_valid": False,
+                "oracle_gap_reason": "ours_true_missing"}
+    ours_q = float(ours_view.true_score.get("Q_true", 0.0))
+    if ours_view.true_score.get("true_evaluation_source") != "depth":
+        return {"oracle_gap": None, "oracle_gap_valid": False,
+                "oracle_gap_reason": "ours_geometry_fallback"}
+    if float(ours_view.true_score.get("depth_coverage_true", 0.0)) < min_depth_coverage:
+        return {"oracle_gap": None, "oracle_gap_valid": False,
+                "oracle_gap_reason": "ours_low_depth_coverage"}
+
+    return {"oracle_gap": float(oracle_q - ours_q), "oracle_gap_valid": True,
+            "oracle_gap_reason": None}

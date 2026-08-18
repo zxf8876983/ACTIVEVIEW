@@ -99,6 +99,16 @@ def main():
         print(f"[semantic] Humanoid semantic pixel ratio = {ratio:.4f}")
         print(f"[semantic] Humanoid semantic bbox = {bbox}")
 
+        # v5.0 closure：拆分 semantic 状态概念
+        print(f"[semantic] semantic_sensor_available = True")
+        print(f"[semantic] semantic_assignment_count = {n_set}")
+        print(f"[semantic] semantic_assignment_ok = {n_set > 0}")
+        if cnt > 0:
+            print(f"[semantic] humanoid_semantic_visible = True")
+        else:
+            print("[semantic] humanoid_semantic_visible = False "
+                  "(Humanoid 不在视野/被遮挡/看不到 —— 不是 semantic 系统不可用)")
+
         # 保存
         np.save(os.path.join(out_dir, "semantic.npy"), sem)
         mask_im = Image.fromarray((mask.astype(np.uint8)) * 255)
@@ -108,8 +118,12 @@ def main():
 
         if cnt > 0:
             print("[semantic] ✅ 成功：humanoid_validation_source 可使用 'semantic'")
+        elif n_set > 0:
+            print("[semantic] semantic sensor 与 assignment 均正常，但 pixel=0 ⇒ "
+                  "Humanoid 当前不可见（validation_source=semantic, render_success=False）")
+            print("  绝不回退 gt_depth_proxy（见 humanoid_validation 定义）")
         else:
-            print("[semantic] ⚠ semantic 像素仍为 0 → 回退 gt_depth_proxy")
+            print("[semantic] ⚠ semantic assignment 未成功 → 回退 gt_depth_proxy")
             print("  尝试过的 API：link scene node.semantic_id、"
                   "link visual node.semantic_id、root_scene_node.semantic_id")
 

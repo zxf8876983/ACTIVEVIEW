@@ -96,7 +96,7 @@ def compute_keypoint_occlusion(
                 "hit_object_id": None,
                 "hit_is_humanoid": False,
                 "hit_is_target_surface": False,
-                "occlusion_source": "none",
+                "occlusion_cause": "none",
             }
             continue
 
@@ -113,14 +113,14 @@ def compute_keypoint_occlusion(
             )
             occlusion_result[name] = {
                 "occluded": ray_result["occluded"],
-                "valid": True,
+                "valid": ray_result["valid"],   # unknown → False（不硬编码 True）
                 "status": STATUS_OK,
                 "hit_distance": ray_result["hit_distance"],
                 "target_distance": ray_result["target_distance"],
                 "hit_object_id": ray_result["hit_object_id"],
                 "hit_is_humanoid": ray_result["hit_is_humanoid"],
                 "hit_is_target_surface": ray_result["hit_is_target_surface"],
-                "occlusion_source": ray_result["occlusion_source"],
+                "occlusion_cause": ray_result["occlusion_source"],
             }
         except Exception as e:  # 单个关键点失败不中断整个骨架分析
             logger.warning(
@@ -136,7 +136,7 @@ def compute_keypoint_occlusion(
                 "hit_object_id": None,
                 "hit_is_humanoid": False,
                 "hit_is_target_surface": False,
-                "occlusion_source": "unknown",
+                "occlusion_cause": "unknown",
                 "error": str(e),
             }
 
@@ -146,10 +146,14 @@ def compute_keypoint_occlusion(
 def compute_occlusion_stats(
     occlusion_result: dict,
     keypoint_names: List[str],
+    cause_key: str = "occlusion_cause",
 ) -> dict:
-    """计算遮挡统计（只统计 ray cast 成功的关键点，失败不当作未遮挡）。
+    """计算遮挡统计（只统计遮挡判定可信的关键点）。
 
-    v5.0 新增：按遮挡来源拆分 environment / humanoid_self 计数。
+    v5.0 第三轮：
+        - 统一读取 cause_key（默认 "occlusion_cause"，兼容旧 "occlusion_source"）。
+        - unknown 与 raycast_error 分开统计：unknown 不因 valid=False 被丢弃。
+        - 缺失 cause 一律视为 unknown（禁止默认 environment）。
 
     返回：
         {
@@ -165,18 +169,19 @@ def compute_occlusion_stats(
         }
     """
     total = len(keypoint_names)
+    empty = {
+        "occlusion_rate": 0.0,
+        "occlusion_valid_keypoint_count": 0,
+        "occluded_valid_keypoint_count": 0,
+        "raycast_error_count": 0,
+        "raycast_error_rate": 0.0,
+        "target_surface_keypoint_count": 0,
+        "environment_occluded_keypoint_count": 0,
+        "self_occluded_keypoint_count": 0,
+        "unknown_occlusion_keypoint_count": 0,
+    }
     if total == 0:
-        return {
-            "occlusion_rate": 0.0,
-            "occlusion_valid_keypoint_count": 0,
-            "occluded_valid_keypoint_count": 0,
-            "raycast_error_count": 0,
-            "raycast_error_rate": 0.0,
-            "target_surface_keypoint_count": 0,
-            "environment_occluded_keypoint_count": 0,
-            "self_occluded_keypoint_count": 0,
-            "unknown_occlusion_keypoint_count": 0,
-        }
+        return empty
 
     valid_count = 0
     occluded_valid_count = 0
@@ -188,23 +193,32 @@ def compute_occlusion_stats(
 
     for name in keypoint_names:
         info = occlusion_result.get(name, {})
-        if not info.get("valid", True):
-            raycast_error_count += 1
+        # 缺失 cause 一律 unknown（禁止默认 environment）
+        cause = info.get(cause_key) or info.get("occlusion_source") or "unknown"
+        valid = bool(info.get("valid", True))
+
+        if cause == "unknown":
+            unknown_occ_count += 1
+            # unknown 即使 valid=False 也单独计入 unknown；不再并入 raycast_error
+            if valid:
+                # unknown 但 valid=True（理论不发生，防御）
+                continue
+        if not valid:
+            if info.get("status") == STATUS_RAYCAST_ERROR:
+                raycast_error_count += 1
             continue
         valid_count += 1
-        occ_source = info.get("occlusion_source", "environment")
-        if occ_source == "target_surface":
-            # 目标 body part 本身被看见，不计入 occluded、不计遮挡
+        if cause == "target_surface":
+            # 目标 body part 本身被看见，不计入 occluded
             target_surface_count += 1
             continue
         if info.get("occluded", False):
             occluded_valid_count += 1
-            if occ_source == "humanoid_self":
+            if cause == "humanoid_self":
                 self_count += 1
-            elif occ_source == "unknown":
-                unknown_occ_count += 1
-            else:
+            elif cause == "environment":
                 env_count += 1
+            # cause == unknown 已在上方统计，不再重复
 
     occlusion_rate = (occluded_valid_count / valid_count) if valid_count > 0 else 0.0
     raycast_error_rate = raycast_error_count / total

@@ -36,22 +36,33 @@ class _BaseAblationPolicy:
 
     name = "ablation"
     score_key = "Q_pred"
+    # 依赖遮挡评分的策略应过滤 is_occlusion_valid_pred=False 的候选；
+    # 不依赖遮挡的（Random/Nearest/Fixed 及纯 FOV/朝向）保持原定义。
+    requires_occlusion_valid = False
 
     def select(
         self,
         current_view: CandidateView,
         candidates: List[CandidateView],
     ) -> CandidateView:
-        all_views = [current_view]
-        all_views.extend(c for c in candidates if c.is_valid)
+        all_views = []
+        if current_view.pred_score and self._score_of(current_view) is not None:
+            if (not self.requires_occlusion_valid
+                    or current_view.pred_score.get("is_occlusion_valid_pred", False)):
+                all_views.append(current_view)
+        for c in candidates:
+            if not c.is_valid or not c.pred_score:
+                continue
+            if self._score_of(c) is None:
+                continue
+            if self.requires_occlusion_valid and not c.pred_score.get(
+                    "is_occlusion_valid_pred", False):
+                continue
+            all_views.append(c)
 
-        scored = [
-            v for v in all_views
-            if v.pred_score and self._score_of(v) is not None
-        ]
-        if not scored:
+        if not all_views:
             return current_view
-        return max(scored, key=self._score_of)
+        return max(all_views, key=self._score_of)
 
     def _score_of(self, view: CandidateView):
         return view.pred_score.get(self.score_key)
@@ -76,9 +87,13 @@ class OrientationOnlyPolicy(_BaseAblationPolicy):
 
 
 class OcclusionOnlyPolicy(_BaseAblationPolicy):
-    """仅使用遮挡后的通用关键点可见性。"""
+    """仅使用遮挡后的通用关键点可见性。
+
+    依赖遮挡评分 → 过滤 invalid-occlusion 候选。
+    """
     name = "OcclusionOnly"
     score_key = "S_kp_occ_pred"
+    requires_occlusion_valid = True
 
 
 class ActionOrientationPolicy(_BaseAblationPolicy):
@@ -118,3 +133,4 @@ class FullOursPolicy(_BaseAblationPolicy):
     """
     name = "FullOurs"
     score_key = "Q_pred"
+    requires_occlusion_valid = True

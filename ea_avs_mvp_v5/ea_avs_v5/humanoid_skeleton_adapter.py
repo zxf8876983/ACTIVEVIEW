@@ -175,14 +175,21 @@ def get_humanoid_gt_skeleton(
     if "left_hip" in skeleton and "right_hip" in skeleton:
         skeleton["pelvis"] = 0.5 * (skeleton["left_hip"] + skeleton["right_hip"])
         per_source["pelvis"] = "link_derived"
+        # pelvis 的 target surface link set：左右 hip + 实际 pelvis/root 邻接 link
+        # （不拼凑，基于实际 URDF link 元数据；缺失即可忽略）
         hip_oids = [oid for oid in (
             _object_id_for("left_hip"), _object_id_for("right_hip")) if oid is not None]
+        pelvis_oids = hip_oids
+        for extra in ("pelvis", "spine1", "root"):
+            oid = _object_id_for(extra)
+            if oid is not None and oid not in pelvis_oids:
+                pelvis_oids.append(oid)
         keypoint_meta["pelvis"] = {
             "source": "link_derived",
             "link_name": None,
             "link_id": None,
             "link_object_id": None,
-            "target_link_object_ids": hip_oids,
+            "target_link_object_ids": pelvis_oids,
         }
 
     direct_link_count = sum(1 for s in per_source.values() if s == "link")

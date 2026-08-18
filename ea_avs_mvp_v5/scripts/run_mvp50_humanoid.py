@@ -194,6 +194,7 @@ def ensure_true_score(
 
 def compute_humanoid_render_stats(
     config, obs, view_pos, view_yaw, human_skeleton, humanoid_semantic_ids,
+    semantic_assignment_ok=False, semantic_assignment_count=0,
 ):
     """优先级感知的 Humanoid 渲染统计（semantic -> GT-depth proxy -> unavailable）。
 
@@ -201,7 +202,8 @@ def compute_humanoid_render_stats(
     """
     from ea_avs_v5.humanoid_validation import compute_humanoid_render_stats as _stats
     return _stats(obs, config, view_pos, view_yaw, human_skeleton,
-                  humanoid_semantic_ids)
+                  humanoid_semantic_ids, semantic_assignment_ok,
+                  semantic_assignment_count)
 
 
 # ---- render stats 提取辅助（兼容 semantic 与 gt_depth_proxy 两种口径）----
@@ -315,8 +317,11 @@ def run_one_episode(
     # ---- 3c. 显式给 Humanoid link/visual node 设置 semantic id（验证用）----
     semantic_enabled = config["humanoid"].get("semantic_enabled", True)
     semantic_id = config["humanoid"].get("semantic_id", 100)
+    semantic_assignment_count = 0
     if semantic_enabled:
-        humanoid_manager.assign_semantic_id_to_links(semantic_id)
+        semantic_assignment_count = humanoid_manager.assign_semantic_id_to_links(
+            semantic_id)
+    semantic_assignment_ok = bool(semantic_enabled and semantic_assignment_count > 0)
     humanoid_semantic_ids = [semantic_id] if semantic_enabled else []
 
     # ---- 4. 生成 robot current pose ----
@@ -364,11 +369,19 @@ def run_one_episode(
 
     # ---- 7. 在线策略选择（仅使用 Q_pred，禁止未来 RGB/depth/Q_true）----
     selected_by_policy = {}
+    ours_sel_stats = None
+    # Ours 过滤 invalid-occlusion 候选，需读取其选后统计
     for policy in policies:
         selected = policy.select(current_view, candidates)
+        if policy.name == "Ours":
+            ours_sel_stats = getattr(policy, "last_selection_stats", None)
         selected_by_policy[policy.name] = selected
         if selected is not current_view:
             selected.selected_by.append(policy.name)
+    ours_excluded_invalid = (ours_sel_stats or {}).get(
+        "excluded_invalid_occ_count", 0)
+    ours_fell_back = bool((ours_sel_stats or {}).get(
+        "fell_back_to_current", False))
 
     # ---- 8. 【Evaluation Phase】渲染 current + 策略选中位姿（含 Humanoid RGB-D）
     #        计算当前视角 + 各策略选中视角的 Humanoid 渲染统计（不同视角分开）。
@@ -401,6 +414,7 @@ def run_one_episode(
     rs_curr = compute_humanoid_render_stats(
         config, obs_curr, current_view.position, current_view.yaw,
         skeleton, humanoid_semantic_ids,
+        semantic_assignment_ok, semantic_assignment_count,
     )
 
     # 8.3 各策略选中位姿 + Oracle 候选：渲染并缓存 obs
@@ -422,13 +436,18 @@ def run_one_episode(
         rs_sel = compute_humanoid_render_stats(
             config, obs_sel, sel.position, sel.yaw, skeleton,
             humanoid_semantic_ids,
+            semantic_assignment_ok, semantic_assignment_count,
         )
         selected_render_stats[policy.name] = rs_sel
 
-    # ---- 9. Oracle 离线上界（depth 口径 + depth_coverage 门槛）----
-    oracle_q_true, oracle_gap = 0.0, 0.0
+    # ---- 9. Oracle 离线上界（depth 口径 + depth_coverage 门槛 + 同口径 gap）----
+    oracle_q_true, oracle_gap = None, None
     oracle_valid, oracle_sel_id = 0, None
     oracle_depth_eligible, oracle_excluded = 0, 0
+    oracle_available = 0
+    oracle_gap_valid = 0
+    oracle_gap_reason = None
+    min_dc = config.get("oracle", {}).get("min_depth_coverage", 0.8)
     oracle_eval = None
     if oracle_enabled and oracle_policy is not None:
         oracle_view, odetail = oracle_policy.select(current_view, candidates)
@@ -436,27 +455,38 @@ def run_one_episode(
         oracle_depth_eligible = odetail["depth_eligible_count"]
         oracle_excluded = odetail["excluded_low_depth_coverage_count"]
         if oracle_view is not None:
+            oracle_available = 1
             oracle_q_true = float(oracle_view.true_score.get("Q_true", 0.0))
             oracle_sel_id = oracle_view.candidate_id
             ours_view = selected_by_policy["Ours"]
-            oracle_gap = compute_oracle_gap(oracle_view, ours_view, current_view)
+            gap_info = compute_oracle_gap(
+                oracle_view, ours_view, current_view, min_dc)
+            oracle_gap = gap_info["oracle_gap"]
+            oracle_gap_valid = int(gap_info["oracle_gap_valid"])
+            oracle_gap_reason = gap_info["oracle_gap_reason"]
             oracle_eval = {
                 "oracle_selected_candidate_id": oracle_view.candidate_id,
+                "oracle_available": oracle_available,
                 "oracle_Q_true": oracle_q_true,
                 "oracle_valid_true_candidate_count": oracle_valid,
                 "oracle_depth_eligible_candidate_count": oracle_depth_eligible,
                 "oracle_excluded_low_depth_coverage_count": oracle_excluded,
                 "oracle_gap": oracle_gap,
+                "oracle_gap_valid": oracle_gap_valid,
+                "oracle_gap_reason": oracle_gap_reason,
                 "note": "offline evaluation (upper bound, not deployable)",
             }
         else:
             oracle_eval = {
+                "oracle_available": 0,
                 "oracle_valid_true_candidate_count": oracle_valid,
                 "oracle_depth_eligible_candidate_count": 0,
                 "oracle_excluded_low_depth_coverage_count": oracle_excluded,
                 "oracle_aborted": "no_depth_coverage_eligible_candidates",
                 "oracle_Q_true": None,
                 "oracle_gap": None,
+                "oracle_gap_valid": 0,
+                "oracle_gap_reason": "oracle_unavailable",
             }
 
     # ---- 10. metrics.csv 行 ----
@@ -544,6 +574,10 @@ def run_one_episode(
                 "environment_occluded_keypoint_count_true", 0),
             "self_occluded_keypoint_count_true": true_score.get(
                 "self_occluded_keypoint_count_true", 0),
+            "target_surface_keypoint_count_true": true_score.get(
+                "target_surface_keypoint_count_true", 0),
+            "unknown_occlusion_keypoint_count_true": true_score.get(
+                "unknown_occlusion_keypoint_count_true", 0),
             # ---- v5.0 第三轮真实分析指标 ----
             "geometry_target_surface_count_true": true_score.get(
                 "geometry_target_surface_count_true", 0),
@@ -584,12 +618,27 @@ def run_one_episode(
             "occlusion_gain_true": g_occ_true,
             # Oracle
             "oracle_Q_true": oracle_q_true,
+            "oracle_available": oracle_available,
             "oracle_gap": oracle_gap,
+            "oracle_gap_valid": oracle_gap_valid,
+            "oracle_gap_reason": oracle_gap_reason,
             "oracle_valid_true_candidate_count": oracle_valid,
             "oracle_selected_candidate_id": oracle_sel_id,
             "oracle_depth_eligible_candidate_count": oracle_depth_eligible,
             "oracle_excluded_low_depth_coverage_count": oracle_excluded,
+            # ---- 在线选择有效性（Ours 过滤 invalid-occlusion）----
+            "selected_occlusion_valid_pred": int(
+                bool(pred_score.get("is_occlusion_valid_pred", True))),
+            "ours_invalid_occ_candidate_excluded_count": ours_excluded_invalid,
+            "ours_fallback_to_current_due_to_no_valid_occ_candidate": int(
+                ours_fell_back),
             # v5.0 Humanoid 状态
+            "semantic_sensor_available": int(rs_curr.get(
+                "semantic_sensor_available", False)),
+            "semantic_assignment_ok": int(rs_curr.get(
+                "semantic_assignment_ok", False)),
+            "semantic_assignment_count": int(rs_curr.get(
+                "semantic_assignment_count", 0)),
             "humanoid_enabled": int(config["humanoid"].get("enabled", True)),
             "humanoid_avatar_name": config["humanoid"]["avatar_name"],
             "humanoid_pose_name": hstate.pose_name,
@@ -618,6 +667,8 @@ def run_one_episode(
             "current_humanoid_bbox_y2": _rs_bbox(rs_curr, 3),
             "current_humanoid_depth_valid_ratio": rs_curr.get(
                 "humanoid_depth_valid_ratio", 0.0),
+            "current_humanoid_proxy_match_ratio": rs_curr.get(
+                "humanoid_proxy_match_ratio"),
             # ---- selected 视角渲染验证 ----
             "selected_humanoid_render_success": int(
                 selected_render_stats[policy.name]["humanoid_render_success"]),
@@ -633,11 +684,19 @@ def run_one_episode(
             "selected_humanoid_bbox_y2": _rs_bbox(selected_render_stats[policy.name], 3),
             "selected_humanoid_depth_valid_ratio": selected_render_stats[
                 policy.name].get("humanoid_depth_valid_ratio", 0.0),
+            "selected_humanoid_proxy_match_ratio": selected_render_stats[
+                policy.name].get("humanoid_proxy_match_ratio"),
             # ---- 渲染/可见性增益 ----
             "humanoid_pixel_gain": _rs_pixels(selected_render_stats[policy.name])
             - _rs_pixels(rs_curr),
-            "humanoid_proxy_match_gain": _rs_match_ratio(selected_render_stats[policy.name])
-            - _rs_match_ratio(rs_curr),
+            # proxy_match_gain 仅在 selected 与 current 都为 gt_depth_proxy 时有效
+            "humanoid_proxy_match_gain": (
+                _rs_match_ratio(selected_render_stats[policy.name])
+                - _rs_match_ratio(rs_curr)
+                if (selected_render_stats[policy.name].get("humanoid_validation_source")
+                    == "gt_depth_proxy"
+                    and rs_curr.get("humanoid_validation_source") == "gt_depth_proxy")
+                else None),
             "requested_human_yaw": requested_yaw,
             "actual_humanoid_yaw": actual_yaw,
             "humanoid_self_occlusion_status_pred": config["humanoid"].get(

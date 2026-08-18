@@ -86,6 +86,8 @@ class MetricsWriter:
         "raycast_error_count_true", "raycast_error_rate_true",
         "environment_occluded_keypoint_count_true",
         "self_occluded_keypoint_count_true",
+        "target_surface_keypoint_count_true",
+        "unknown_occlusion_keypoint_count_true",
         # ---- v5.0 第三轮真实分析指标 ----
         "geometry_target_surface_count_true",
         "geometry_environment_occluded_count_true",
@@ -108,11 +110,18 @@ class MetricsWriter:
         "visibility_gain_pred", "visibility_gain_true",
         "occlusion_gain_true",
         # ---- Oracle 上界指标 ----
-        "oracle_Q_true", "oracle_gap",
+        "oracle_Q_true", "oracle_available",
+        "oracle_gap", "oracle_gap_valid", "oracle_gap_reason",
         "oracle_valid_true_candidate_count", "oracle_selected_candidate_id",
         "oracle_depth_eligible_candidate_count",
         "oracle_excluded_low_depth_coverage_count",
-        # ---- v5.0 Humanoid 状态指标 ----
+        # ---- 在线选择有效性（Ours 过滤 invalid-occlusion）----
+        "selected_occlusion_valid_pred",
+        "ours_invalid_occ_candidate_excluded_count",
+        "ours_fallback_to_current_due_to_no_valid_occ_candidate",
+        # ---- v5.0 Humanoid 状态 ----
+        "semantic_sensor_available", "semantic_assignment_ok",
+        "semantic_assignment_count",
         "humanoid_enabled", "humanoid_avatar_name", "humanoid_pose_name",
         "humanoid_motion_frame",
         "humanoid_base_x", "humanoid_base_y", "humanoid_base_z",
@@ -132,6 +141,7 @@ class MetricsWriter:
         "current_humanoid_bbox_x1", "current_humanoid_bbox_y1",
         "current_humanoid_bbox_x2", "current_humanoid_bbox_y2",
         "current_humanoid_depth_valid_ratio",
+        "current_humanoid_proxy_match_ratio",
         # ---- selected 视角渲染验证（每策略各自的选中位姿）----
         "selected_humanoid_render_success",
         "selected_humanoid_validation_source",
@@ -142,6 +152,7 @@ class MetricsWriter:
         "selected_humanoid_bbox_x1", "selected_humanoid_bbox_y1",
         "selected_humanoid_bbox_x2", "selected_humanoid_bbox_y2",
         "selected_humanoid_depth_valid_ratio",
+        "selected_humanoid_proxy_match_ratio",
         # ---- 渲染/可见性增益 ----
         "humanoid_pixel_gain",
         "humanoid_proxy_match_gain",

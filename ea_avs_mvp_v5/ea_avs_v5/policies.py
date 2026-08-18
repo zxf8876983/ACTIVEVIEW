@@ -76,18 +76,61 @@ class OursPolicy:
     """
     name = "Ours"
 
+    def __init__(self):
+        self.last_selection_stats = {
+            "excluded_invalid_occ_count": 0,
+            "fell_back_to_current": False,
+            "fallback_reason": None,
+        }
+
     def select(
         self,
         current_view: CandidateView,
         candidates: List[CandidateView],
     ) -> CandidateView:
-        all_views = [current_view]
-        all_views.extend(c for c in candidates if c.is_valid)
+        """选择 Q_pred 最大的 eligible 位姿。
 
-        scored = [
-            v for v in all_views
-            if v.pred_score and v.pred_score.get("Q_pred") is not None
-        ]
-        if not scored:
-            return current_view
-        return max(scored, key=lambda v: v.pred_score["Q_pred"])
+        v5.0 closure：过滤 is_occlusion_valid_pred=False 的候选（遮挡判断不可信
+        的候选不能入选）。current_view 作为安全 fallback，但若其自身 occlusion
+        也 invalid，不会假装它 valid。
+
+        选后统计通过 self.last_selection_stats 暴露（主脚本读取）。
+        """
+        def is_occ_valid(v):
+            return bool(v.pred_score and v.pred_score.get(
+                "is_occlusion_valid_pred", False))
+
+        eligible = []
+        excluded = 0
+        for c in candidates:
+            if not c.is_valid:
+                continue
+            if not (c.pred_score and c.pred_score.get("Q_pred") is not None):
+                continue
+            if is_occ_valid(c):
+                eligible.append(c)
+            else:
+                excluded += 1
+
+        current_valid = bool(
+            current_view.pred_score
+            and current_view.pred_score.get("is_occlusion_valid_pred", False)
+            and current_view.pred_score.get("Q_pred") is not None)
+
+        if eligible:
+            self.last_selection_stats = {
+                "excluded_invalid_occ_count": excluded,
+                "fell_back_to_current": False,
+                "fallback_reason": None,
+            }
+            return max(eligible, key=lambda v: v.pred_score["Q_pred"])
+
+        # 无 eligible → 退回 current（即使 current occlusion invalid 也作安全兜底）
+        self.last_selection_stats = {
+            "excluded_invalid_occ_count": excluded,
+            "fell_back_to_current": True,
+            "fallback_reason": (
+                "no_valid_occ_candidate"
+                if not current_valid else "no_scored_candidate"),
+        }
+        return current_view

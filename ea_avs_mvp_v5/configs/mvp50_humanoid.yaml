@@ -73,14 +73,12 @@ humanoid:
   # Humanoid 放置时与地面的高度修正（默认由资源/config/API 推导）
   base_height_offset: 0.0
 
-  # self-occlusion raycast 能力状态（v5.0 第三轮更严谨）
-  # 仅"ray 命中人体"不足以证明 self-occlusion 分类可用；需 target_surface 与
-  # humanoid_self 两类样例都被观察到（见 debug_humanoid_self_occlusion.py）。
-  # 取值：validated / unsupported / inconclusive / unknown
-  # 实测：target_surface 机制已触发（back 命中自身 link 但差值<容差故为 none），
-  #       standing 姿态未自然出现 humanoid_self 样例 → inconclusive。
+  # self-occlusion raycast 能力状态（v5.0 closure 实测 8 环绕角度）
+  # 实测：humanoid_self_case=1（pelvis 被 torso 遮挡），target_surface 机制存在
+  #       （head/wrist 命中自身 link 但差值<容差故为 none，计 0），
+  #       environment=23。因 target_surface 无严格样例 → inconclusive。
   raycast_self_occlusion_status: "inconclusive"
-  raycast_self_occlusion_validation: "debug_humanoid_self_occlusion.py：target_surface 机制存在；standing 无 humanoid_self 样例，需更多姿态/视角复测"
+  raycast_self_occlusion_validation: "debug_humanoid_self_occlusion.py 8 角：self=1 样例，target_surface 机制存在但 count=0 → inconclusive；无需更多姿态"
 
 # v5.0 Humanoid 渲染/骨架验证阈值
 humanoid_validation:

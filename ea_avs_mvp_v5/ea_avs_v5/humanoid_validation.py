@@ -27,25 +27,39 @@ import numpy as np
 def compute_humanoid_semantic_stats(
     semantic: Optional[np.ndarray],
     humanoid_semantic_ids: List[int],
+    semantic_assignment_ok: bool = False,
 ) -> dict:
-    """在 semantic 图像可用时统计 Humanoid 像素（调试用）。
+    """统计 Humanoid semantic 像素（调试用）。
+
+    v5.0 closure：拆分三个概念——
+        semantic_sensor_available   : semantic 图像是否存在（非 None）
+        semantic_assignment_ok      : Humanoid 已成功设置 semantic id（调用方传入）
+        humanoid_semantic_visible   : Humanoid 像素数 > 0
+    禁止把 pixel_count==0 当作 semantic 不可用（"看不到人"≠"semantic 坏了"）。
 
     参数：
-        semantic: (H,W) uint32 语义图；None 或全 0 时无法判断。
-        humanoid_semantic_ids: Humanoid 相关 semantic id 集合（不假设单值）。
+        semantic: (H,W) uint32 语义图；None 表示无 semantic sensor。
+        humanoid_semantic_ids: Humanoid 相关 semantic id 集合。
+        semantic_assignment_ok: 本次 episode 是否已成功给 Humanoid 设置 semantic id。
 
     返回：
         {
-            "semantic_available": bool,
-            "humanoid_visible": bool,
+            "semantic_sensor_available": bool,
+            "semantic_assignment_ok": bool,
+            "semantic_available": bool,       # sensor AND assignment 均正常
+            "humanoid_semantic_visible": bool,
             "humanoid_pixel_count": int,
             "humanoid_pixel_ratio": float,
             "bbox": [x1,y1,x2,y2] | None,
         }
     """
-    if semantic is None or len(humanoid_semantic_ids) == 0:
+    sensor_available = semantic is not None
+    if not sensor_available or len(humanoid_semantic_ids) == 0:
         return {
-            "semantic_available": False, "humanoid_visible": False,
+            "semantic_sensor_available": sensor_available,
+            "semantic_assignment_ok": bool(semantic_assignment_ok),
+            "semantic_available": False,
+            "humanoid_semantic_visible": False,
             "humanoid_pixel_count": 0, "humanoid_pixel_ratio": 0.0,
             "bbox": None,
         }
@@ -61,8 +75,10 @@ def compute_humanoid_semantic_stats(
         ys, xs = np.where(mask)
         bbox = [int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())]
     return {
-        "semantic_available": count > 0,
-        "humanoid_visible": count > 0,
+        "semantic_sensor_available": True,
+        "semantic_assignment_ok": bool(semantic_assignment_ok),
+        "semantic_available": bool(semantic_assignment_ok),
+        "humanoid_semantic_visible": count > 0,
         "humanoid_pixel_count": count,
         "humanoid_pixel_ratio": ratio,
         "bbox": bbox,
@@ -292,6 +308,8 @@ def compute_humanoid_render_stats(
     view_yaw,
     human_skeleton,
     humanoid_semantic_ids,
+    semantic_assignment_ok: bool = False,
+    semantic_assignment_count: int = 0,
     camera_cfg=None,
 ) -> dict:
     """优先级感知的统一 Humanoid 渲染统计（评估阶段使用，不进 Q_pred）。
@@ -332,6 +350,10 @@ def compute_humanoid_render_stats(
     out = {
         "humanoid_validation_source": "unavailable",
         "humanoid_render_success": False,
+        "semantic_sensor_available": semantic is not None,
+        "semantic_assignment_ok": bool(semantic_assignment_ok),
+        "semantic_assignment_count": int(semantic_assignment_count),
+        "humanoid_depth_valid_ratio": 0.0,
         "humanoid_semantic_visible": False,
         "humanoid_semantic_pixel_count": 0,
         "humanoid_semantic_pixel_ratio": 0.0,
@@ -344,11 +366,13 @@ def compute_humanoid_render_stats(
     }
 
     # ---- Priority 1: semantic ----
-    sem_stats = compute_humanoid_semantic_stats(semantic, humanoid_semantic_ids)
+    # 只要 semantic sensor 存在 且 assignment 成功，就始终走 semantic 分支；
+    # pixel_count==0（人体不在视野/被遮挡）→ visible=False，但绝不 fallback proxy。
+    sem_stats = compute_humanoid_semantic_stats(
+        semantic, humanoid_semantic_ids, semantic_assignment_ok)
     if sem_stats["semantic_available"]:
         sc = sem_stats["humanoid_pixel_count"]
         sbbox = sem_stats["bbox"]
-        # 人体语义区域内 depth 有效性（可选）
         sem_mask = None
         if semantic is not None and humanoid_semantic_ids:
             sem_arr = np.asarray(semantic)
@@ -357,14 +381,15 @@ def compute_humanoid_render_stats(
             sem_mask = np.isin(sem_arr, list(humanoid_semantic_ids))
         sem_depth_stats = compute_humanoid_depth_stats(
             obs["depth"] if depth_ok else None, sem_mask)
+        depth_valid_ratio = sem_depth_stats.get("humanoid_depth_valid_ratio", 0.0)
         out.update({
             "humanoid_validation_source": "semantic",
-            "humanoid_semantic_visible": sem_stats["humanoid_visible"],
+            "humanoid_semantic_visible": sem_stats["humanoid_semantic_visible"],
             "humanoid_semantic_pixel_count": sc,
             "humanoid_semantic_pixel_ratio": sem_stats["humanoid_pixel_ratio"],
             "humanoid_semantic_bbox": sbbox,
+            "humanoid_depth_valid_ratio": depth_valid_ratio,
         })
-        depth_valid_ratio = sem_depth_stats.get("humanoid_depth_valid_ratio", 0.0)
         out["humanoid_render_success"] = bool(
             rgb_ok and depth_ok and sc >= min_pixels
             and depth_valid_ratio >= min_depth_ratio)

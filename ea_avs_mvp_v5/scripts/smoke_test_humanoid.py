@@ -84,9 +84,11 @@ def main():
             report("Standing pose applied", False, f": {e}")
 
         # 显式设置 semantic id（semantic 验证用）
+        sem_assign_count = 0
         if config["humanoid"].get("semantic_enabled", True):
-            manager.assign_semantic_id_to_links(
+            sem_assign_count = manager.assign_semantic_id_to_links(
                 config["humanoid"].get("semantic_id", 100))
+        sem_assign_ok = bool(sem_assign_count > 0)
 
         try:
             gt_result = get_humanoid_gt_skeleton(manager, strict=True)
@@ -116,7 +118,8 @@ def main():
             semantic_ids = [config["humanoid"].get("semantic_id", 100)] \
                 if config["humanoid"].get("semantic_enabled", True) else []
             rs = compute_humanoid_render_stats(
-                obs, config, camera_base, cam_yaw, skeleton, semantic_ids)
+                obs, config, camera_base, cam_yaw, skeleton, semantic_ids,
+                sem_assign_ok, sem_assign_count)
             report(
                 "RGB contains humanoid (semantic/GT-depth)",
                 rs["humanoid_render_success"],
