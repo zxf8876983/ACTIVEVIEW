@@ -58,12 +58,13 @@ humanoid:
   # 允许值：+Z / -Z / +X / -X
   forward_axis: "+Z"
 
-  # 正式模式：GT skeleton 必须 15/15 全部来自 Humanoid links，否则报错
+  # 正式模式：GT skeleton 必须 15 个全部来自 Humanoid（直接 link + link_derived），
+  # fallback=0，否则报错
   strict_gt_skeleton: true
 
-  # 语义传感器（调试用）。注意：当前场景无 semantic 标注且 Humanoid 无
-  # semantic class，semantic 图像恒为 0，因此默认关闭，改用 GT 锚定 depth 验证
-  semantic_enabled: false
+  # 语义传感器。v5.0 第三轮已实现：显式给 Humanoid link/visual scene node 设
+  # semantic_id 后 semantic 图会非 0（实测）。默认开启用于验证。
+  semantic_enabled: true
   semantic_id: 100
 
   # motion / pose 缺失时禁止静默使用错误动作
@@ -72,17 +73,21 @@ humanoid:
   # Humanoid 放置时与地面的高度修正（默认由资源/config/API 推导）
   base_height_offset: 0.0
 
-  # v5.0：ray casting 是否检测到能命中 Humanoid articulated body 的能力。
-  # 已实测（debug_humanoid_self_occlusion.py）：射向 head/wrist/knee 会命中
-  # Humanoid link object，self-occlusion 可区分，因此为 true。
-  # 值来源是实际能力检测，不是硬编码猜测；如自遮挡 debug script 失败则改为 false。
-  raycast_self_occlusion_supported: true
+  # self-occlusion raycast 能力状态（v5.0 第三轮更严谨）
+  # 仅"ray 命中人体"不足以证明 self-occlusion 分类可用；需 target_surface 与
+  # humanoid_self 两类样例都被观察到（见 debug_humanoid_self_occlusion.py）。
+  # 取值：validated / unsupported / inconclusive / unknown
+  # 实测：target_surface 机制已触发（back 命中自身 link 但差值<容差故为 none），
+  #       standing 姿态未自然出现 humanoid_self 样例 → inconclusive。
+  raycast_self_occlusion_status: "inconclusive"
+  raycast_self_occlusion_validation: "debug_humanoid_self_occlusion.py：target_surface 机制存在；standing 无 humanoid_self 样例，需更多姿态/视角复测"
 
 # v5.0 Humanoid 渲染/骨架验证阈值
 humanoid_validation:
-  min_pixel_count: 100       # Humanoid 可见像素阈值（GT 锚定 depth 有效像素）
+  min_pixel_count: 100       # Humanoid 可见像素阈值（semantic 或 GT 锚定 depth proxy）
   min_depth_valid_ratio: 0.5 # Humanoid 区域内有效 metric depth 比例
   max_short_walk_displacement: 2.0  # 短 walking smoke 允许的最大位移（米）
+  depth_match_tolerance: 0.5 # GT 锚定 depth proxy 中 |depth - z| 匹配容差（米）
 
 episode:
   num_episodes: 20
@@ -165,6 +170,7 @@ distance_score:
 
 oracle:
   enabled: true
+  min_depth_coverage: 0.8   # Oracle 只比较 depth 来源且 depth_coverage 达标的候选
 
 output:
   save_images: true

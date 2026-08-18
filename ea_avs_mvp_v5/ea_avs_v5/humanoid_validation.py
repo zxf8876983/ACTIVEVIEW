@@ -129,7 +129,7 @@ def compute_humanoid_depth_stats(
     }
 
 
-def compute_gt_anchored_humanoid_mask(
+def compute_gt_anchored_depth_proxy(
     depth: Optional[np.ndarray],
     width: int,
     height: int,
@@ -139,12 +139,19 @@ def compute_gt_anchored_humanoid_mask(
     camera_height: float,
     human_keypoints: Dict[str, np.ndarray],
     pad: int = 10,
-) -> Optional[np.ndarray]:
-    """基于 GT 骨架投影的 Humanoid 区域掩码（semantic 不可用时的 fallback）。
+    depth_match_tolerance: float = 0.5,
+) -> Optional[dict]:
+    """基于 GT 骨架投影的 depth proxy（semantic 不可用时的 fallback）。
 
-    将 Humanoid GT 关键点投影到相机图像，在关键点周围 pad 邻域标记为
-    Humanoid 区域，再结合 depth：区域内存在有效 metric depth ≈ 关键点深度
-    的像素才视为人体表面（区分环境背景）。
+    ⚠ 这只是 GT-anchored rendered-depth proxy，不是精确 Humanoid segmentation。
+
+    两层结构（彻底消除循环定义）：
+        第一层 candidate_region_mask：仅由 GT 关键点投影 + pad 生成。
+            **不使用 depth>0，也不使用 |depth-z|<阈值**（避免"构造时已按 depth
+            过滤、统计 ratio 又天然≈1"的逻辑循环）。
+        第二层 depth_match_mask：candidate_region_mask AND depth>0 AND
+            |depth - 该关键点 target_z| < depth_match_tolerance。
+            每个关键点有各自 target z，因此逐关键点 patch 统计，用统一 z。
 
     参数：
         depth: (H,W) 渲染深度。
@@ -153,10 +160,18 @@ def compute_gt_anchored_humanoid_mask(
         view_yaw: 相机朝向（模型约定 +Z）。
         camera_height: 相机高度。
         human_keypoints: Humanoid GT 世界坐标关键点。
-        pad: 投影点周围像素宽带的半径。
+        pad: 投影点周围像素宽带半径。
+        depth_match_tolerance: |depth - z| 匹配容差（米）。
 
     返回：
-        (H,W) bool 掩码；投影退化或 depth 不可用时返回 None。
+        {
+            "candidate_region_mask": (H,W) bool,
+            "depth_match_mask": (H,W) bool,
+            "candidate_region_pixel_count": int,
+            "depth_match_pixel_count": int,
+            "depth_match_ratio": float,   # depth_match / candidate_region
+        }
+        深度不可用/无可投影关键点时返回 None。
     """
     if depth is None or not human_keypoints:
         return None
@@ -165,7 +180,6 @@ def compute_gt_anchored_humanoid_mask(
         dep = dep[..., 0]
     h, w = dep.shape
 
-    # 复用与 true_evaluator._depth_occlusion 相同的投影约定
     fx = (width / 2.0) / np.tan(np.deg2rad(hfov_deg) / 2.0)
     cam_pos = np.array(view_pos, dtype=np.float64) + np.array(
         [0.0, camera_height, 0.0])
@@ -173,7 +187,11 @@ def compute_gt_anchored_humanoid_mask(
     right = np.array([-np.cos(th), 0.0, np.sin(th)])
     forward = np.array([np.sin(th), 0.0, np.cos(th)])
 
-    mask = np.zeros((h, w), dtype=bool)
+    # 第一层：candidate_region（仅投影 + pad，不依赖 depth）
+    candidate_region = np.zeros((h, w), dtype=bool)
+    # 逐关键点记录 z_target 用于第二层匹配
+    per_kp_z = []
+
     for kp in human_keypoints.values():
         v = np.array(kp, dtype=np.float64) - cam_pos
         z_cam = float(v[0] * forward[0] + v[2] * forward[2])
@@ -188,11 +206,27 @@ def compute_gt_anchored_humanoid_mask(
         lo_y, hi_y = max(0, vi - pad), min(h - 1, vi + pad)
         if lo_x > hi_x or lo_y > hi_y:
             continue
-        # 区域内存在有效深度且落在关键点 z_cam 一个容差范围内（人体表面）
+        candidate_region[lo_y:hi_y + 1, lo_x:hi_x + 1] = True
+        per_kp_z.append((lo_y, hi_y, lo_x, hi_x, z_cam))
+
+    # 第二层：depth_match（candidate_region AND depth>0 AND 各自 z 匹配）
+    depth_match = np.zeros((h, w), dtype=bool)
+    for (lo_y, hi_y, lo_x, hi_x, z_cam) in per_kp_z:
         region = dep[lo_y:hi_y + 1, lo_x:hi_x + 1]
-        mask[lo_y:hi_y + 1, lo_x:hi_x + 1] |= (region > 0) & (
-            np.abs(region - z_cam) < 0.5)
-    return mask
+        match = (region > 0) & (np.abs(region - z_cam) < depth_match_tolerance)
+        depth_match[lo_y:hi_y + 1, lo_x:hi_x + 1] |= match
+
+    candidate_count = int(candidate_region.sum())
+    depth_match_count = int(depth_match.sum())
+    ratio = (depth_match_count / candidate_count
+             if candidate_count > 0 else 0.0)
+    return {
+        "candidate_region_mask": candidate_region,
+        "depth_match_mask": depth_match,
+        "candidate_region_pixel_count": candidate_count,
+        "depth_match_pixel_count": depth_match_count,
+        "depth_match_ratio": ratio,
+    }
 
 
 def validate_humanoid_render(
@@ -251,6 +285,124 @@ def validate_humanoid_render(
     }
 
 
+def compute_humanoid_render_stats(
+    obs,
+    config: dict,
+    view_pos,
+    view_yaw,
+    human_skeleton,
+    humanoid_semantic_ids,
+    camera_cfg=None,
+) -> dict:
+    """优先级感知的统一 Humanoid 渲染统计（评估阶段使用，不进 Q_pred）。
+
+    优先级：
+        Priority 1: semantic —— 真实 Humanoid semantic 像素（已显式设置
+            link/visual node semantic_id 后可用，实测非 0）。
+        Priority 2: GT-depth proxy —— semantic 不可用时的 fallback。
+        Priority 3: unavailable。
+
+    返回：
+        {
+            "humanoid_validation_source": "semantic"|"gt_depth_proxy"|"unavailable",
+            "humanoid_render_success": bool,
+            # 语义口径
+            "humanoid_semantic_visible": bool,
+            "humanoid_semantic_pixel_count": int,
+            "humanoid_semantic_pixel_ratio": float,
+            "humanoid_semantic_bbox": [x1,y1,x2,y2]|None,
+            # GT-depth proxy 口径
+            "humanoid_proxy_visible": bool,
+            "humanoid_proxy_pixel_count": int,      # depth_match_pixel_count
+            "humanoid_proxy_candidate_region_count": int,
+            "humanoid_proxy_match_ratio": float,    # depth_match / candidate_region
+            "humanoid_proxy_bbox": [x1,y1,x2,y2]|None,
+        }
+    """
+    camera_cfg = camera_cfg or config.get("camera", {})
+    val_cfg = config.get("humanoid_validation", {})
+    min_pixels = val_cfg.get("min_pixel_count", 100)
+    min_depth_ratio = val_cfg.get("min_depth_valid_ratio", 0.5)
+    depth_tol = val_cfg.get("depth_match_tolerance", 0.5)
+
+    rgb_ok = obs is not None and obs.get("rgb") is not None
+    depth_ok = obs is not None and obs.get("depth") is not None
+    semantic = obs.get("semantic") if obs is not None else None
+
+    out = {
+        "humanoid_validation_source": "unavailable",
+        "humanoid_render_success": False,
+        "humanoid_semantic_visible": False,
+        "humanoid_semantic_pixel_count": 0,
+        "humanoid_semantic_pixel_ratio": 0.0,
+        "humanoid_semantic_bbox": None,
+        "humanoid_proxy_visible": False,
+        "humanoid_proxy_pixel_count": 0,
+        "humanoid_proxy_candidate_region_count": 0,
+        "humanoid_proxy_match_ratio": 0.0,
+        "humanoid_proxy_bbox": None,
+    }
+
+    # ---- Priority 1: semantic ----
+    sem_stats = compute_humanoid_semantic_stats(semantic, humanoid_semantic_ids)
+    if sem_stats["semantic_available"]:
+        sc = sem_stats["humanoid_pixel_count"]
+        sbbox = sem_stats["bbox"]
+        # 人体语义区域内 depth 有效性（可选）
+        sem_mask = None
+        if semantic is not None and humanoid_semantic_ids:
+            sem_arr = np.asarray(semantic)
+            if sem_arr.ndim == 3:
+                sem_arr = sem_arr[..., 0]
+            sem_mask = np.isin(sem_arr, list(humanoid_semantic_ids))
+        sem_depth_stats = compute_humanoid_depth_stats(
+            obs["depth"] if depth_ok else None, sem_mask)
+        out.update({
+            "humanoid_validation_source": "semantic",
+            "humanoid_semantic_visible": sem_stats["humanoid_visible"],
+            "humanoid_semantic_pixel_count": sc,
+            "humanoid_semantic_pixel_ratio": sem_stats["humanoid_pixel_ratio"],
+            "humanoid_semantic_bbox": sbbox,
+        })
+        depth_valid_ratio = sem_depth_stats.get("humanoid_depth_valid_ratio", 0.0)
+        out["humanoid_render_success"] = bool(
+            rgb_ok and depth_ok and sc >= min_pixels
+            and depth_valid_ratio >= min_depth_ratio)
+        return out
+
+    # ---- Priority 2: GT-depth proxy ----
+    if depth_ok and human_skeleton:
+        proxy = compute_gt_anchored_depth_proxy(
+            obs["depth"], camera_cfg["width"], camera_cfg["height"],
+            camera_cfg["hfov_deg"], view_pos, view_yaw,
+            camera_cfg["camera_height"], human_skeleton,
+            pad=8, depth_match_tolerance=depth_tol)
+        if proxy is not None:
+            match_cnt = proxy["depth_match_pixel_count"]
+            cand_cnt = proxy["candidate_region_pixel_count"]
+            match_ratio = proxy["depth_match_ratio"]
+            bbox = None
+            dm = proxy["depth_match_mask"]
+            if match_cnt > 0:
+                ys, xs = np.where(dm)
+                bbox = [int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())]
+            out.update({
+                "humanoid_validation_source": "gt_depth_proxy",
+                "humanoid_proxy_visible": bool(match_cnt >= min_pixels),
+                "humanoid_proxy_pixel_count": match_cnt,
+                "humanoid_proxy_candidate_region_count": cand_cnt,
+                "humanoid_proxy_match_ratio": match_ratio,
+                "humanoid_proxy_bbox": bbox,
+            })
+            out["humanoid_render_success"] = bool(
+                rgb_ok and depth_ok and match_cnt >= min_pixels
+                and match_ratio >= min_depth_ratio)
+        return out
+
+    # ---- Priority 3: unavailable ----
+    return out
+
+
 def validate_gt_skeleton(gt_result: dict, strict: bool = True) -> dict:
     """校验 GT skeleton 完整性。
 
@@ -265,19 +417,23 @@ def validate_gt_skeleton(gt_result: dict, strict: bool = True) -> dict:
             "reason": str|None,
             "source": str,
             "keypoint_count": int,
-            "link_count": int,
+            "direct_link_count": int,
+            "link_derived_count": int,
             "fallback_count": int,
             "missing_keypoints": list,
         }
 
     抛出异常：
-        RuntimeError: strict=True 且不满足 15/15 Humanoid links。
+        RuntimeError: strict=True 且不满足 15 个 Humanoid-derived keypoints。
     """
     source = gt_result.get("source", "")
     skeleton = gt_result.get("skeleton", {})
     per_source = gt_result.get("per_keypoint_source", {})
     keypoint_count = len(skeleton)
-    link_count = sum(1 for s in per_source.values() if s != "legacy")
+    direct_link_count = gt_result.get("direct_link_count",
+        sum(1 for s in per_source.values() if s == "link"))
+    link_derived_count = gt_result.get("link_derived_count",
+        sum(1 for s in per_source.values() if s == "link_derived"))
     fallback_count = sum(1 for s in per_source.values() if s == "legacy")
     missing = [
         k for k in (
@@ -290,13 +446,15 @@ def validate_gt_skeleton(gt_result: dict, strict: bool = True) -> dict:
         if k not in skeleton
     ]
 
+    derived_total = direct_link_count + link_derived_count
     valid = (source == "habitat_humanoid_gt"
-             and link_count == 15 and fallback_count == 0 and not missing)
+             and derived_total == 15 and fallback_count == 0 and not missing)
     reason = None
     if source != "habitat_humanoid_gt":
         reason = f"gt_source={source}"
-    elif link_count != 15:
-        reason = f"link_count={link_count}/15"
+    elif derived_total != 15:
+        reason = f"derived_total={derived_total}/15 " \
+                 f"(direct={direct_link_count}, derived={link_derived_count})"
     elif fallback_count > 0:
         reason = f"fallback_count={fallback_count}"
     elif missing:
@@ -309,6 +467,8 @@ def validate_gt_skeleton(gt_result: dict, strict: bool = True) -> dict:
     return {
         "valid": valid, "reason": reason,
         "source": source, "keypoint_count": keypoint_count,
-        "link_count": link_count, "fallback_count": fallback_count,
+        "direct_link_count": direct_link_count,
+        "link_derived_count": link_derived_count,
+        "fallback_count": fallback_count,
         "missing_keypoints": missing,
     }

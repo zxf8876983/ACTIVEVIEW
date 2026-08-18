@@ -59,6 +59,10 @@ def main():
 
     try:
         manager.load()
+        # 显式设置 semantic id（semantic sensor 验证用）
+        if config["humanoid"].get("semantic_enabled", True):
+            manager.assign_semantic_id_to_links(
+                config["humanoid"].get("semantic_id", 100))
         # 放置到导航点，standing
         pt = runner.sample_navigable_point()
         hpos = np.array(pt, dtype=np.float32)
@@ -100,23 +104,18 @@ def main():
             nz = dz[dz > 0]
             depth_range = f"{nz.min():.3f}~{nz.max():.3f}" if len(nz) else "empty"
 
-            # 真实测量 Humanoid 渲染
-            from ea_avs_v5.humanoid_validation import (
-                compute_gt_anchored_humanoid_mask, validate_humanoid_render)
-            mcfg = config["camera"]
-            vcfg = config.get("humanoid_validation", {})
-            mask = compute_gt_anchored_humanoid_mask(
-                depth, mcfg["width"], mcfg["height"], mcfg["hfov_deg"],
-                cam_base, cam_yaw, mcfg["camera_height"], skeleton, pad=8)
-            vres = validate_humanoid_render(
-                rgb is not None, depth is not None, mask,
-                vcfg.get("min_pixel_count", 100),
-                vcfg.get("min_depth_valid_ratio", 0.5), depth)
-            ok = "✅" if vres["humanoid_render_success"] else "⚠️"
+            # 真实测量 Humanoid 渲染（优先级：semantic -> GT-depth proxy）
+            from ea_avs_v5.humanoid_validation import compute_humanoid_render_stats
+            semantic_ids = [config["humanoid"].get("semantic_id", 100)] \
+                if config["humanoid"].get("semantic_enabled", True) else []
+            rs = compute_humanoid_render_stats(
+                obs, config, cam_base, cam_yaw, skeleton, semantic_ids)
+            ok = "✅" if rs["humanoid_render_success"] else "⚠️"
             print(f"  {ok} {side:6s}: rgb={rgb_path} depth={depth_path} "
                   f"depth_range={depth_range} "
-                  f"pixel={vres['humanoid_pixel_count']} "
-                  f"render_ok={vres['humanoid_render_success']}")
+                  f"validation={rs['humanoid_validation_source']} "
+                  f"pixel={rs.get('humanoid_semantic_pixel_count') or rs.get('humanoid_proxy_pixel_count', 0)} "
+                  f"render_ok={rs['humanoid_render_success']}")
 
         print(f"\n✅ RGB-D 已保存到 {out_dir}/")
         print("检查：人物应在 front/back/left/right 四个方向外观明显不同；")

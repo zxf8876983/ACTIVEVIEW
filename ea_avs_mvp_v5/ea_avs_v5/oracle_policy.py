@@ -35,41 +35,68 @@ class OraclePolicy:
         仅在 evaluation phase（评估阶段）离线运行，此时所有位姿的 true_score
         已经计算完毕。
 
-    口径要求：
-        Oracle 只比较评价来源为 "depth"（真实渲染 depth-based）的候选位姿，
-        绝不混用 obs=None 的 geometry fallback true_score，保证上界同口径。
+    口径要求（v5.0 第三轮）：
+        Oracle 只比较 评价来源 == "depth" 且 depth_coverage_true >= min_depth_coverage
+        的候选位姿，绝不混用 geometry fallback / 低 depth 覆盖的候选，保证上界
+        真正同口径。同时统计被 depth_coverage 门槛排除的候选数。
 
     ⚠ 在线选择阶段禁止使用 Oracle 的 Q_true 信息。
     """
 
     name = "Oracle"
 
+    def __init__(self, min_depth_coverage: float = 0.8):
+        self.min_depth_coverage = min_depth_coverage
+
     def select(
         self,
         current_view: CandidateView,
         candidates: List[CandidateView],
     ):
-        """根据 depth 口径的 Q_true 选择最大位姿（允许停留在当前位置）。
+        """根据 depth 口径 + depth_coverage 门槛选择最大位姿。
 
         参数：
             current_view: 当前视角。
             candidates: 候选位姿列表。
 
         返回：
-            (best_view, valid_true_count)
-            - best_view: Q_true 最大的 depth 口径位姿；无有效位姿时返回 None。
-            - valid_true_count: 满足 depth 口径且具备 Q_true 的位姿数量。
+            (best_view, detail)
+            detail = {
+                "valid_true_count": 满足"depth 来源"的位姿数,
+                "depth_eligible_count": depth 覆盖达标位姿数,
+                "excluded_low_depth_coverage_count": 因覆盖不足被排除的位姿数,
+            }
+            best_view：Q_true 最大的达标位姿；无达标位姿时返回 None。
         """
         all_views = [current_view]
         all_views.extend(c for c in candidates if c.is_valid)
 
-        scored = [
+        depth_views = [
             v for v in all_views
             if is_depth_true(v) and v.true_score.get("Q_true") is not None
         ]
-        if not scored:
-            return None, 0
-        return max(scored, key=lambda v: v.true_score["Q_true"]), len(scored)
+        eligible = []
+        excluded = 0
+        for v in all_views:
+            if is_depth_true(v) and v.true_score.get("Q_true") is not None:
+                dc = v.true_score.get("depth_coverage_true", 0.0)
+                if dc >= self.min_depth_coverage:
+                    eligible.append(v)
+                else:
+                    excluded += 1
+
+        if not eligible:
+            return None, {
+                "valid_true_count": len(depth_views),
+                "depth_eligible_count": 0,
+                "excluded_low_depth_coverage_count": excluded,
+            }
+        best = max(eligible, key=lambda v: v.true_score["Q_true"])
+        return best, {
+            "valid_true_count": len(depth_views),
+            "depth_eligible_count": len(eligible),
+            "excluded_low_depth_coverage_count": excluded,
+        }
 
 
 def compute_oracle_gap(

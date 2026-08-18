@@ -108,7 +108,7 @@ def get_humanoid_gt_skeleton(
     human_yaw: float = 0.0,
     strict: bool = True,
 ) -> dict:
-    """从 Humanoid 实际关节/链接状态构建 GT skeleton。
+    """从 Humanoid 实际关节/链接状态构建 GT skeleton（含 keypoint_meta）。
 
     参数：
         humanoid_manager: HumanoidManager 实例（须已 load）。
@@ -116,22 +116,45 @@ def get_humanoid_gt_skeleton(
             被转换为世界坐标后使用）。
         human_base_pos: Humanoid 脚底中心世界坐标（用于 legacy 转换）。
         human_yaw: Humanoid 实际朝向（用于 legacy 旋转）。
-        strict: 严格模式。True 时要求 15/15 全部来自 links。
+        strict: 严格模式。True 时要求 15 个 Humanoid-derived keypoints 且
+            fallback=0。
 
     返回：
         {
             "skeleton": {关键点: 世界坐标},
+            "keypoint_meta": {
+                关键点: {
+                    "source": "link" | "link_derived" | "legacy",
+                    "link_name": str|None,
+                    "link_id": int|None,        # 本地 link_id
+                    "link_object_id": int|None, # Habitat object_id（可匹配 hit）
+                    "target_link_object_ids": list[int],  # 用于 self-occlusion
+                },
+            },
             "source": "habitat_humanoid_gt" | "mixed" | "legacy_fallback",
-            "per_keypoint_source": {关键点: "link"|"link_midpoint_hips"|"legacy"},
+            "per_keypoint_source": {关键点: "link"|"link_derived"|"legacy"},
+            "keypoint_count": int,
+            "direct_link_count": int,
+            "link_derived_count": int,
+            "fallback_count": int,
+            "missing_keypoints": list,
         }
 
     抛出异常：
-        RuntimeError: strict=True 且不满足 15/15 Humanoid links。
+        RuntimeError: strict=True 且不满足 15 个 Humanoid-derived keypoints。
     """
     skeleton: Dict[str, np.ndarray] = {}
     per_source: Dict[str, str] = {}
+    keypoint_meta: Dict[str, dict] = {}
 
-    # 1) 优先从 link transforms 取可用关键点
+    # link 元数据（link_name -> {link_id, object_id}），用于 self-occlusion 判定
+    link_meta = humanoid_manager.get_humanoid_link_metadata()
+
+    def _object_id_for(link_name):
+        m = link_meta.get(link_name)
+        return m["object_id"] if m else None
+
+    # 1) 优先从 link transforms 取直接 link 关键点
     for link_name, kp in LINK_TO_KEYPOINT.items():
         if kp == "pelvis":
             continue
@@ -139,19 +162,35 @@ def get_humanoid_gt_skeleton(
         if pos is not None:
             skeleton[kp] = pos
             per_source[kp] = "link"
+            m = link_meta.get(link_name, {})
+            keypoint_meta[kp] = {
+                "source": "link",
+                "link_name": link_name,
+                "link_id": m.get("link_id"),
+                "link_object_id": m.get("object_id"),
+                "target_link_object_ids": [m["object_id"]] if m.get("object_id") is not None else [],
+            }
 
-    # 2) pelvis 由左右髋中点近似
+    # 2) pelvis：由左右髋中点推导（Humanoid-derived point，非直接 link）
     if "left_hip" in skeleton and "right_hip" in skeleton:
         skeleton["pelvis"] = 0.5 * (skeleton["left_hip"] + skeleton["right_hip"])
-        per_source["pelvis"] = "link_midpoint_hips"
+        per_source["pelvis"] = "link_derived"
+        hip_oids = [oid for oid in (
+            _object_id_for("left_hip"), _object_id_for("right_hip")) if oid is not None]
+        keypoint_meta["pelvis"] = {
+            "source": "link_derived",
+            "link_name": None,
+            "link_id": None,
+            "link_object_id": None,
+            "target_link_object_ids": hip_oids,
+        }
 
-    link_count = sum(1 for s in per_source.values() if s != "legacy")
+    direct_link_count = sum(1 for s in per_source.values() if s == "link")
+    link_derived_count = sum(1 for s in per_source.values() if s == "link_derived")
 
     # 3) legacy fallback（debug 模式）：转换为世界坐标后补缺失关键点
-    if fallback_skeleton is not None and (not strict or link_count < 15):
+    if fallback_skeleton is not None and (not strict or direct_link_count + link_derived_count < 15):
         legacy_world = fallback_skeleton
-        # 若 legacy 明显是局部坐标（数量多且 y 值小），进行世界转换
-        # 默认视为局部坐标，用 human_base_pos/yaw 转换
         if human_base_pos is not None:
             legacy_world = transform_legacy_local_skeleton_to_world(
                 fallback_skeleton, human_base_pos, human_yaw)
@@ -159,23 +198,32 @@ def get_humanoid_gt_skeleton(
             if kp not in skeleton and kp in legacy_world:
                 skeleton[kp] = np.asarray(legacy_world[kp], dtype=np.float64)
                 per_source[kp] = "legacy"
+                keypoint_meta[kp] = {
+                    "source": "legacy",
+                    "link_name": None,
+                    "link_id": None,
+                    "link_object_id": None,
+                    "target_link_object_ids": [],
+                }
 
     # 4) 来源判定
     total = len(skeleton)
     fallback_count = sum(1 for s in per_source.values() if s == "legacy")
     if total == 0:
         source = "legacy_fallback"
-    elif link_count == total and fallback_count == 0:
+    elif fallback_count == 0 and (direct_link_count + link_derived_count) == total:
         source = "habitat_humanoid_gt"
     else:
         source = "mixed"
 
     result = {
         "skeleton": skeleton,
+        "keypoint_meta": keypoint_meta,
         "source": source,
         "per_keypoint_source": per_source,
         "keypoint_count": total,
-        "link_count": link_count,
+        "direct_link_count": direct_link_count,
+        "link_derived_count": link_derived_count,
         "fallback_count": fallback_count,
         "missing_keypoints": [k for k in ALL_KEYPOINTS if k not in skeleton],
     }

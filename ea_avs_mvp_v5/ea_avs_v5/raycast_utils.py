@@ -36,19 +36,25 @@ def cast_ray_to_point(
     target_tolerance: float = 0.08,
     min_hit_distance: float = 0.05,
     humanoid_object_ids: set = None,
+    target_link_object_ids: set = None,
 ) -> dict:
-    """从 ray_origin 向 target_point 发射射线，判断目标是否被遮挡。
+    """从 ray_origin 向 target_point 发射射线，执行 5 态遮挡分类。
 
     参数：
         runner: HabitatRunner 实例（提供 cast_ray 统一接口）。
         ray_origin: 射线起点（真实相机位置），shape=(3,)。
         target_point: 目标点（关键点世界坐标），shape=(3,)。
-        ray_epsilon: 起点/目标的最小有效距离，低于该值视为退化，不判遮挡。
+        ray_epsilon: 起点/目标的最小有效距离，低于该值视为退化。
         target_tolerance: 判定"目标前命中"的距离容差（米）。
+            仍保留 hit_distance < target_distance - target_tolerance 以排除
+            目标点附近命中/数值误差/目标碰撞表面与 joint center 的小距离。
         min_hit_distance: 忽略起点附近（小于该距离）的初始命中。
-        humanoid_object_ids: Humanoid 相关 object id 集合（用于区分
-            environment / humanoid_self 遮挡来源）；None 时统一记为
-            environment。
+        humanoid_object_ids: 所有 Humanoid root/link 对应的 Habitat object id
+            （用于 humanoid_self 判定）。
+        target_link_object_ids: 当前 target keypoint 对应 body part 的 Habitat
+            object id（用于 target_surface 判定）。若为 None，则无法区分
+            target_surface 与 humanoid_self，此时命中该 Humanoid 一律按
+            humanoid_self。
 
     返回：
         {
@@ -58,29 +64,36 @@ def cast_ray_to_point(
             "target_distance": float,
             "clearance": float,
             "hit_object_id": int|None,
-            "occlusion_source": "environment"|"humanoid_self"|"none"|"unknown",
             "hit_is_humanoid": bool,
+            "hit_is_target_surface": bool,
+            "occlusion_source": "none"|"target_surface"|"environment"
+                                |"humanoid_self"|"unknown",
         }
-        occlusion_source：
-            - "none"：未命中或被忽略的起点附近命中
-            - "environment"：命中发生在目标前，且命中物体非 Humanoid
-            - "humanoid_self"：命中发生在目标前，且命中物体为 Humanoid
-              （人体其他部位提前遮挡，即 self-occlusion）
-            - "unknown"：目标距离退化或数据异常
+
+    分类顺序（5 态）：
+        1. 无真正提前 hit              → "none"      , occluded=False
+        2. 提前 hit 命中 target link   → "target_surface", occluded=False
+           （目标 body part 本身被看见）
+        3. 提前 hit 命中其他 Humanoid link → "humanoid_self", occluded=True
+        4. 提前 hit 命中环境物体       → "environment", occluded=True
+        5. object-id 映射无法可靠判定  → "unknown"   , valid=False（occluded=False）
+    ⚠ unknown 绝不视为 visible（调用方需处理 valid=False）。
     """
     origin = np.array(ray_origin, dtype=np.float64)
     target = np.array(target_point, dtype=np.float64)
 
     target_distance = float(np.linalg.norm(target - origin))
     humanoid_ids = set(humanoid_object_ids) if humanoid_object_ids else set()
+    target_ids = set(target_link_object_ids) if target_link_object_ids else set()
 
     # 退化情形：起点与目标几乎重合，无法做有意义的遮挡判断
     if target_distance <= ray_epsilon:
         return {
             "hit": False, "occluded": False, "hit_distance": 0.0,
             "target_distance": target_distance, "clearance": 0.0,
-            "hit_object_id": None,
-            "occlusion_source": "unknown", "hit_is_humanoid": False,
+            "hit_object_id": None, "hit_is_humanoid": False,
+            "hit_is_target_surface": False,
+            "occlusion_source": "unknown",
         }
 
     # 射程比目标距离略长，确保能命中目标点附近的场景
@@ -93,13 +106,15 @@ def cast_ray_to_point(
         return {
             "hit": False, "occluded": False, "hit_distance": float("inf"),
             "target_distance": target_distance, "clearance": 0.0,
-            "hit_object_id": None,
-            "occlusion_source": "none", "hit_is_humanoid": False,
+            "hit_object_id": None, "hit_is_humanoid": False,
+            "hit_is_target_surface": False,
+            "occlusion_source": "none",
         }
 
     hit_distance = float(result["hit_distance"])
     hit_object_id = result.get("hit_object_id")
     hit_is_humanoid = bool(hit_object_id in humanoid_ids)
+    hit_is_target_surface = bool(hit_object_id in target_ids)
 
     # 忽略起点附近的初始命中
     if hit_distance < min_hit_distance:
@@ -107,25 +122,43 @@ def cast_ray_to_point(
             "hit": True, "occluded": False,
             "hit_distance": hit_distance, "target_distance": target_distance,
             "clearance": 0.0, "hit_object_id": hit_object_id,
-            "occlusion_source": "none", "hit_is_humanoid": hit_is_humanoid,
+            "hit_is_humanoid": hit_is_humanoid,
+            "hit_is_target_surface": hit_is_target_surface,
+            "occlusion_source": "none",
         }
 
-    # 核心判定：命中发生在目标点之前（含容差）则被遮挡
-    occluded = bool(hit_distance < target_distance - target_tolerance)
-    clearance = max(target_distance - hit_distance, 0.0) if occluded else 0.0
+    # 核心判定：是否发生真正提前 hit（排除目标点附近/精度容差）
+    genuinely_occluding = bool(hit_distance < target_distance - target_tolerance)
+    clearance = max(target_distance - hit_distance, 0.0) if genuinely_occluding else 0.0
 
-    if not occluded:
+    if not genuinely_occluding:
+        occluded = False
         occlusion_source = "none"
+    elif hit_is_target_surface:
+        # 命中目标 body part 自身表面 → 目标可见，不算 self-occlusion
+        occluded = False
+        occlusion_source = "target_surface"
+    elif hit_is_humanoid:
+        # 命中其他 Humanoid link → self-occlusion
+        occluded = True
+        occlusion_source = "humanoid_self"
     else:
-        occlusion_source = ("humanoid_self" if hit_is_humanoid
-                            else "environment")
+        if humanoid_ids:
+            # 明确知道命中物不是 Humanoid → environment
+            occluded = True
+            occlusion_source = "environment"
+        else:
+            # 无 humanoid id 信息可判定
+            occluded = False
+            occlusion_source = "unknown"
 
     return {
         "hit": True, "occluded": occluded,
         "hit_distance": hit_distance, "target_distance": target_distance,
         "clearance": clearance, "hit_object_id": hit_object_id,
-        "occlusion_source": occlusion_source,
         "hit_is_humanoid": hit_is_humanoid,
+        "hit_is_target_surface": hit_is_target_surface,
+        "occlusion_source": occlusion_source,
     }
 
 

@@ -290,12 +290,15 @@ class HumanoidManager:
         return np.array([wx, 0.0, wz])
 
     def get_humanoid_object_ids(self) -> set:
-        """返回 Humanoid 相关的 object id 集合（用于遮挡来源判定）。
+        """返回 Humanoid 相关的 Habitat object id 集合（用于遮挡来源判定）。
 
-        v5.0：从 current Habitat API 读取：
-            - 人体 articulated object 自身的 object_id
-            - link_object_ids 中映射到的各 link object id
-        命中这些 id 的射线视为命中"人体自身"（self-occlusion / 目标表面）。
+        ⚠ 本机实测（habitat-sim 0.3.3）：
+            link_object_ids          = {Habitat object_id: 本地 link_id}
+            link_ids_to_object_ids   = {本地 link_id: Habitat object_id}
+            raycast hit.object_id 是 Habitat object_id。
+        因此必须取 link_object_ids 的 **keys**（object_id），不能取 values
+        （values 是本地 link_id，无法与 hit_object_id 匹配）。
+        额外加入 articulated root 的 object_id。
         """
         ids = set()
         if self._agent is None:
@@ -307,13 +310,105 @@ class HumanoidManager:
         except Exception:
             pass
         try:
-            lo = obj.link_object_ids  # dict link_id -> object_id
+            lo = obj.link_object_ids  # {object_id: link_id}
             if lo:
-                for _, oid in lo.items():
+                for oid in lo.keys():
                     ids.add(int(oid))
         except Exception:
             pass
         return ids
+
+    def get_humanoid_link_metadata(self) -> dict:
+        """返回 Humanoid link 元数据（用于 self-occlusion target 判定）。
+
+        输出：
+            {
+                link_name: {
+                    "link_name": str,
+                    "link_id": int,           # 本地 link_id
+                    "object_id": int,         # Habitat object_id（可匹配 hit）
+                },
+                ...
+            }
+        """
+        meta = {}
+        if self._agent is None:
+            return meta
+        obj = self._agent.sim_obj
+        try:
+            lo = obj.link_object_ids        # {object_id: link_id}
+            lt2o = obj.link_ids_to_object_ids  # {link_id: object_id}
+        except Exception:
+            return meta
+        for oid, lid in lo.items():
+            try:
+                name = obj.get_link_name(lid)
+            except Exception:
+                name = None
+            if name is None:
+                continue
+            meta[name] = {
+                "link_name": name,
+                "link_id": int(lid),
+                "object_id": int(oid),
+            }
+        # 补充：某些 link 可能只在 lt2o 中出现（防御性），按名称去重
+        if lt2o is not None:
+            for lid, oid in lt2o.items():
+                try:
+                    name = obj.get_link_name(lid)
+                except Exception:
+                    name = None
+                if name is None or name in meta:
+                    continue
+                meta[name] = {
+                    "link_name": name,
+                    "link_id": int(lid),
+                    "object_id": int(oid),
+                }
+        return meta
+
+    def assign_semantic_id_to_links(self, semantic_id: int) -> int:
+        """显式给 Humanoid 的 link scene node 与 visual node 设置 semantic_id。
+
+        ⚠ 本机实测（habitat-sim 0.3.3）：仅依赖 URDF 加载的 Humanoid 默认
+        semantic sensor 全 0；显式对每个 link scene node + visual node 设置
+        semantic_id 后，semantic 图像才在该 id 处非 0。
+
+        参数：
+            semantic_id: 要设置的语义标号（如 100）。
+
+        返回：
+            成功设置的 link scene node 数量。
+        """
+        if self._agent is None:
+            return 0
+        obj = self._agent.sim_obj
+        count = 0
+        try:
+            lo = obj.link_object_ids
+            link_ids = set(lo.values())  # {object_id: link_id} -> link_ids
+        except Exception:
+            return 0
+        for lid in link_ids:
+            try:
+                node = obj.get_link_scene_node(lid)
+                node.semantic_id = semantic_id
+                count += 1
+            except Exception:
+                pass
+            # visual node 也设置（semantic sensor 作用于实际 render node）
+            try:
+                for vn in obj.get_link_visual_nodes(lid):
+                    vn.semantic_id = semantic_id
+            except Exception:
+                pass
+        # 根节点（防御性）
+        try:
+            obj.root_scene_node.semantic_id = semantic_id
+        except Exception:
+            pass
+        return count
 
     def get_state(self) -> HumanoidState:
         """返回当前 GT 状态副本（base 位置从 agent 实时读取）。"""

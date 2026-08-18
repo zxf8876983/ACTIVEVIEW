@@ -83,6 +83,11 @@ def main():
         except Exception as e:
             report("Standing pose applied", False, f": {e}")
 
+        # 显式设置 semantic id（semantic 验证用）
+        if config["humanoid"].get("semantic_enabled", True):
+            manager.assign_semantic_id_to_links(
+                config["humanoid"].get("semantic_id", 100))
+
         try:
             gt_result = get_humanoid_gt_skeleton(manager, strict=True)
             skeleton = gt_result["skeleton"]
@@ -105,25 +110,22 @@ def main():
         depth_ok = obs["depth"] is not None
         report("Depth available", depth_ok)
 
-        # Humanoid 渲染验证：GT 锚定 depth（不用图像方差）
+        # Humanoid 渲染验证：semantic -> GT-depth proxy（不用图像方差）
         if skeleton is not None and depth_ok:
-            from ea_avs_v5.humanoid_validation import (
-                compute_gt_anchored_humanoid_mask, validate_humanoid_render)
-            mask = compute_gt_anchored_humanoid_mask(
-                obs["depth"], mcfg["width"], mcfg["height"], mcfg["hfov_deg"],
-                camera_base, cam_yaw, mcfg["camera_height"], skeleton, pad=8)
-            vres = validate_humanoid_render(
-                rgb_ok, depth_ok, mask,
-                vcfg.get("min_pixel_count", 100),
-                vcfg.get("min_depth_valid_ratio", 0.5), obs["depth"])
+            from ea_avs_v5.humanoid_validation import compute_humanoid_render_stats
+            semantic_ids = [config["humanoid"].get("semantic_id", 100)] \
+                if config["humanoid"].get("semantic_enabled", True) else []
+            rs = compute_humanoid_render_stats(
+                obs, config, camera_base, cam_yaw, skeleton, semantic_ids)
             report(
-                "RGB contains humanoid (GT-anchored depth)",
-                vres["humanoid_render_success"],
-                f": pixel={vres['humanoid_pixel_count']} "
-                f"depth_valid={vres['humanoid_depth_valid_ratio']:.2f}",
+                "RGB contains humanoid (semantic/GT-depth)",
+                rs["humanoid_render_success"],
+                f": validation={rs['humanoid_validation_source']} "
+                f"pixel={rs.get('humanoid_semantic_pixel_count') or rs.get('humanoid_proxy_pixel_count', 0)} "
+                f"match={rs.get('humanoid_proxy_match_ratio', rs.get('humanoid_depth_valid_ratio', 0)):.2f}",
             )
         else:
-            report("RGB contains humanoid (GT-anchored depth)", False,
+            report("RGB contains humanoid (semantic/GT-depth)", False,
                    ": 无法获取 GT skeleton 或 depth")
 
         # ---- Stage B: walking motion（验证动画链路；joint 变化 + 无 teleport）----

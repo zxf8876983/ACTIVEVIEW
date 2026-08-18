@@ -67,6 +67,7 @@ class PredictiveEvaluator:
         human_skeleton: Dict[str, np.ndarray],
         geodesic_distance: float,
         humanoid_object_ids: set = None,
+        keypoint_meta: dict = None,
     ) -> dict:
         """对候选视角进行遮挡感知动作导向的预测评分。
 
@@ -82,8 +83,9 @@ class PredictiveEvaluator:
             pose_type: 姿态类型，如 "standing"。
             human_skeleton: 世界坐标人体骨架字典。
             geodesic_distance: 测地距离。
-            humanoid_object_ids: Humanoid 相关 object id 集合；传入时可将遮挡
-                来源区分为 environment / humanoid_self（不参与评分，仅供分析）。
+            humanoid_object_ids: Humanoid 相关 object id 集合（仅供分析）。
+            keypoint_meta: 关键点→target link 元数据，用于区分 target_surface
+                与 humanoid_self（不参与评分，仅供分析）。
 
         返回：
             见类头部注释：含 S_action_occ_pred / S_kp_occ_pred / Q_pred 等。
@@ -122,6 +124,7 @@ class PredictiveEvaluator:
             camera_height=self.camera_cfg["camera_height"],
             config=self.config,
             humanoid_object_ids=humanoid_object_ids,
+            keypoint_meta=keypoint_meta,
         )
 
         for name in kp_names:
@@ -233,7 +236,9 @@ class PredictiveEvaluator:
         raycast_error_count_pred = occ_stats["raycast_error_count"]
         raycast_error_rate_pred = occ_stats["raycast_error_rate"]
         occluded_keypoint_count_pred = len(occluded_all)
-        # v5.0：遮挡来源拆分（环境 / 自遮挡 / 未知）
+        # v5.0：遮挡来源拆分（target_surface 不计入 occluded / 环境 / 自遮挡 / 未知）
+        target_surface_keypoint_count_pred = occ_stats[
+            "target_surface_keypoint_count"]
         environment_occluded_keypoint_count_pred = occ_stats[
             "environment_occluded_keypoint_count"]
         self_occluded_keypoint_count_pred = occ_stats["self_occluded_keypoint_count"]
@@ -269,6 +274,8 @@ class PredictiveEvaluator:
             "occluded_keypoint_count_pred": int(occluded_keypoint_count_pred),
             "raycast_error_count_pred": int(raycast_error_count_pred),
             "raycast_error_rate_pred": float(raycast_error_rate_pred),
+            "target_surface_keypoint_count_pred": int(
+                target_surface_keypoint_count_pred),
             "environment_occluded_keypoint_count_pred": int(
                 environment_occluded_keypoint_count_pred),
             "self_occluded_keypoint_count_pred": int(

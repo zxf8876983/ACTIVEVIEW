@@ -37,8 +37,9 @@ def compute_keypoint_occlusion(
     camera_height: float,
     config: dict,
     humanoid_object_ids: set = None,
+    keypoint_meta: dict = None,
 ) -> dict:
-    """对整个人体骨架进行遮挡分析。
+    """对整个人体骨架进行遮挡分析（5 态分类）。
 
     参数：
         runner: HabitatRunner 实例。
@@ -46,19 +47,20 @@ def compute_keypoint_occlusion(
         human_skeleton: 世界坐标人体骨架 {关键点名称: (3,) 坐标}。
         camera_height: 相机安装高度（米）。
         config: 配置字典，需要 occlusion 配置段。
-        humanoid_object_ids: Humanoid 相关 object id 集合；传入时逐关键点
-            记录 occlusion_source（environment / humanoid_self）。
+        humanoid_object_ids: 所有 Humanoid root/link 的 Habitat object id。
+        keypoint_meta: 关键点→target link 元数据（含 target_link_object_ids），
+            用于区分 target_surface 与 humanoid_self。
 
     返回：
         字典 {关键点名称:
             {"occluded": bool, "valid": bool, "status": str,
              "hit_distance": float, "target_distance": float,
-             "occlusion_source": str, "hit_object_id": int|None, ...}}
-        - status="ok"：ray cast 成功，valid=True
-        - status="raycast_error"：ray cast 失败，valid=False，occluded=False
-        （无法判断 ≠ 未遮挡，统计时排除）
-        - occlusion_source：v5.0 区分 environment / humanoid_self（仅当传入
-          humanoid_object_ids 且命中发生在目标前才有效；否则为环境）
+             "hit_object_id": int|None,
+             "hit_is_humanoid": bool, "hit_is_target_surface": bool,
+             "occlusion_source": str, ...}}
+        occlusion_source ∈ {none, target_surface, environment, humanoid_self, unknown}
+        - status="raycast_error" / occlusion_source="unknown" → valid=False
+          （unknown 绝不视为可见）
         射线起点为真实相机位置：view_pos + [0, camera_height, 0]
     """
     occ_cfg = config.get("occlusion", {})
@@ -67,6 +69,7 @@ def compute_keypoint_occlusion(
     target_tolerance = occ_cfg.get("target_tolerance", 0.08)
     min_hit_distance = occ_cfg.get("min_hit_distance", 0.05)
     humanoid_ids = set(humanoid_object_ids) if humanoid_object_ids else None
+    meta = keypoint_meta or {}
 
     camera_pos = np.array(view_pos, dtype=np.float64) + np.array(
         [0.0, camera_height, 0.0]
@@ -78,6 +81,10 @@ def compute_keypoint_occlusion(
         target_distance = float(np.linalg.norm(
             np.array(keypoint_pos) - camera_pos))
 
+        # 该关键点对应的 target link object ids（self-occlusion 判定）
+        tm = meta.get(name, {})
+        target_ids = tm.get("target_link_object_ids") or None
+
         # 遮挡关闭时：所有关键点视为未遮挡（valid=True，status=ok）
         if not enabled:
             occlusion_result[name] = {
@@ -86,8 +93,10 @@ def compute_keypoint_occlusion(
                 "status": STATUS_OK,
                 "hit_distance": float("inf"),
                 "target_distance": target_distance,
-                "occlusion_source": "none",
                 "hit_object_id": None,
+                "hit_is_humanoid": False,
+                "hit_is_target_surface": False,
+                "occlusion_source": "none",
             }
             continue
 
@@ -100,6 +109,7 @@ def compute_keypoint_occlusion(
                 target_tolerance=target_tolerance,
                 min_hit_distance=min_hit_distance,
                 humanoid_object_ids=humanoid_ids,
+                target_link_object_ids=target_ids,
             )
             occlusion_result[name] = {
                 "occluded": ray_result["occluded"],
@@ -107,9 +117,10 @@ def compute_keypoint_occlusion(
                 "status": STATUS_OK,
                 "hit_distance": ray_result["hit_distance"],
                 "target_distance": ray_result["target_distance"],
-                "occlusion_source": ray_result["occlusion_source"],
                 "hit_object_id": ray_result["hit_object_id"],
                 "hit_is_humanoid": ray_result["hit_is_humanoid"],
+                "hit_is_target_surface": ray_result["hit_is_target_surface"],
+                "occlusion_source": ray_result["occlusion_source"],
             }
         except Exception as e:  # 单个关键点失败不中断整个骨架分析
             logger.warning(
@@ -122,8 +133,10 @@ def compute_keypoint_occlusion(
                 "status": STATUS_RAYCAST_ERROR,
                 "hit_distance": float("inf"),
                 "target_distance": target_distance,
-                "occlusion_source": "unknown",
                 "hit_object_id": None,
+                "hit_is_humanoid": False,
+                "hit_is_target_surface": False,
+                "occlusion_source": "unknown",
                 "error": str(e),
             }
 
@@ -145,6 +158,7 @@ def compute_occlusion_stats(
             "occluded_valid_keypoint_count": int,
             "raycast_error_count": int,
             "raycast_error_rate": float,
+            "target_surface_keypoint_count": int,
             "environment_occluded_keypoint_count": int,
             "self_occluded_keypoint_count": int,
             "unknown_occlusion_keypoint_count": int,
@@ -158,6 +172,7 @@ def compute_occlusion_stats(
             "occluded_valid_keypoint_count": 0,
             "raycast_error_count": 0,
             "raycast_error_rate": 0.0,
+            "target_surface_keypoint_count": 0,
             "environment_occluded_keypoint_count": 0,
             "self_occluded_keypoint_count": 0,
             "unknown_occlusion_keypoint_count": 0,
@@ -166,6 +181,7 @@ def compute_occlusion_stats(
     valid_count = 0
     occluded_valid_count = 0
     raycast_error_count = 0
+    target_surface_count = 0
     env_count = 0
     self_count = 0
     unknown_occ_count = 0
@@ -176,9 +192,13 @@ def compute_occlusion_stats(
             raycast_error_count += 1
             continue
         valid_count += 1
+        occ_source = info.get("occlusion_source", "environment")
+        if occ_source == "target_surface":
+            # 目标 body part 本身被看见，不计入 occluded、不计遮挡
+            target_surface_count += 1
+            continue
         if info.get("occluded", False):
             occluded_valid_count += 1
-            occ_source = info.get("occlusion_source", "environment")
             if occ_source == "humanoid_self":
                 self_count += 1
             elif occ_source == "unknown":
@@ -195,6 +215,7 @@ def compute_occlusion_stats(
         "occluded_valid_keypoint_count": occluded_valid_count,
         "raycast_error_count": raycast_error_count,
         "raycast_error_rate": float(raycast_error_rate),
+        "target_surface_keypoint_count": target_surface_count,
         "environment_occluded_keypoint_count": env_count,
         "self_occluded_keypoint_count": self_count,
         "unknown_occlusion_keypoint_count": unknown_occ_count,

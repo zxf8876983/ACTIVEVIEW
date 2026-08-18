@@ -21,7 +21,16 @@ v4.0 新增：
     - true 不包含移动代价 C_move
     - true_score["true_evaluation_source"] 标记评价口径：
       "depth"（使用渲染深度）或 "geometry_fallback"（obs=None 或 depth 不可用）
-    - Oracle 只允许比较 "depth" 来源的候选点，保证同口径
+    - Oracle 只允许比较 "depth" 来源且 depth_coverage_true 达标的候选点，
+      保证同口径
+
+v5.0 第三轮（概念分离）：
+    - evaluation_source ∈ {depth, geometry, none}：判定依据
+    - occlusion_cause ∈ {none, target_surface, environment, humanoid_self,
+      unknown}：遮挡原因（由几何 raycast 提供 hint）
+    - depth 只能判断 occluded（前方是否有更近表面），不能区分环境/自遮挡；
+      geometry 提供 cause。两者冲突（如 depth 说 occluded 而 geometry 说 none）
+      时记 occlusion_cause=unknown 并记录 disagreement。
 """
 
 from typing import Dict, List, Optional
@@ -173,11 +182,23 @@ class TrueEvaluator:
         pose_type: str,
         human_skeleton: Dict[str, np.ndarray],
         humanoid_object_ids: set = None,
+        keypoint_meta: dict = None,
     ) -> dict:
         """对已选定的视角进行遮挡感知真实评估。
 
         ⚠ 必须在策略选择并 render_at() 之后调用。
         ⚠ 不参与策略选择。
+
+        概念分离（v5.0 第三轮）：
+            - evaluation_source：该关键点的遮挡判定依据
+              ∈ {"depth", "geometry", "none"}
+            - occlusion_cause：遮挡的"原因"（几何 raycast 提供的 hint）
+              ∈ {"none", "target_surface", "environment", "humanoid_self", "unknown"}
+            - depth 只判断"joint 前方是否有更近表面"（occluded）；它不能区分
+              该表面是桌子还是人体躯干。
+            - geometry raycast 提供 occlusion_cause。
+            - 若 depth 判定 occluded 而 geometry 判定 none → cause=unknown，
+              并记录 depth_geometry_disagreement。
 
         参数：
             runner: HabitatRunner 实例（提供 ray casting）。
@@ -189,9 +210,10 @@ class TrueEvaluator:
             pose_type: 姿态类型。
             human_skeleton: 世界坐标人体骨架。
             humanoid_object_ids: Humanoid object id 集合（遮挡来源分析用）。
+            keypoint_meta: 关键点→target link 元数据（区分 target_surface/self）。
 
         返回：
-            {"S_action_occ_true", "S_kp_occ_true", "Q_true", ...含遮挡指标}
+            {"S_action_occ_true", "S_kp_occ_true", "Q_true", ...含遮挡/深度覆盖指标}
 
         说明（v5.0 边界）：
             Q_true 是基于几何/depth 的可见性与遮挡代理指标（joint-depth
@@ -223,10 +245,10 @@ class TrueEvaluator:
                 fov_visible.append(name)
 
         # =====================================================================
-        # 2. 环境遮挡分析（v4.0）
-        #    先用静态地图 ray cast 得到几何遮挡；再用渲染深度图做传感器级
-        #    独立验证（true 层独有，pred 层不可见未来图像）。
-        #    visible_after_occlusion = in_fov AND NOT occluded
+        # 2. 遮挡分析（v5.0 第三轮：分离 evaluation_source 与 occlusion_cause）
+        #    - geometry raycast 提供 occluded(bool) 与 occlusion_cause hint
+        #    - rendered depth 独立判断 joint 前方是否有更近表面（occluded）
+        #    - depth 决定 occluded；geometry 提供 cause；冲突时记 disagreement
         # =====================================================================
         geom_occlusion = compute_keypoint_occlusion(
             runner=runner,
@@ -235,6 +257,7 @@ class TrueEvaluator:
             camera_height=self.camera_cfg["camera_height"],
             config=self.config,
             humanoid_object_ids=humanoid_object_ids,
+            keypoint_meta=keypoint_meta,
         )
         camera_pos = np.array(view_pos, dtype=np.float64) + np.array(
             [0.0, self.camera_cfg["camera_height"], 0.0])
@@ -243,10 +266,20 @@ class TrueEvaluator:
         occlusion_source_true = {}
         depth_valid_count = 0
         depth_invalid_count = 0
+        # ---- 分析计数 ----
+        geom_target_surface_count = 0
+        geom_environment_count = 0
+        geom_self_count = 0
+        geom_unknown_count = 0
+        depth_occluded_count = 0
+        geo_disc_agreement_count = 0
+        geo_disc_disagreement_count = 0
+
         for name in kp_names:
             geom_info = geom_occlusion.get(name, {})
             geom_valid = geom_info.get("valid", True)
             geom_occ = geom_info.get("occluded", False)
+            geom_cause = geom_info.get("occlusion_source", "unknown")
 
             dres = self._depth_occlusion(
                 obs=obs, view_pos=view_pos, view_yaw=view_yaw,
@@ -254,48 +287,81 @@ class TrueEvaluator:
             )
             target_z = dres["target_z_depth"]
 
+            # 几何 cause 计数（仅在 geometry 有效时）
+            if geom_valid:
+                if geom_cause == "target_surface":
+                    geom_target_surface_count += 1
+                elif geom_cause == "environment":
+                    geom_environment_count += 1
+                elif geom_cause == "humanoid_self":
+                    geom_self_count += 1
+                elif geom_cause == "unknown":
+                    geom_unknown_count += 1
+
             entry = {
                 "target_z_depth": target_z,
-                "source": "geom",
+                "evaluation_source": "geometry",
+                "occlusion_cause": geom_cause if geom_valid else "unknown",
+                "geometry_occluded": bool(geom_occ),
+                "geometry_occlusion_cause": geom_cause if geom_valid else "unknown",
             }
 
             if dres["depth_valid"]:
-                # 观测层：depth 可用，以渲染深度为准
-                occ = dres["occluded"]
+                # 观测层：depth 判定是否 occluded；geometry 提供 cause
+                depth_occ = dres["occluded"]
+                if depth_occ:
+                    depth_occluded_count += 1
                 entry.update({
-                    "occluded": occ,
+                    "occluded": bool(depth_occ),
+                    "depth_occluded": bool(depth_occ),
                     "valid": True,
                     "status": "ok",
                     "hit_distance": dres["sampled_depth"],
                     "center_depth": dres["center_depth"],
-                    "source": "depth",
+                    "evaluation_source": "depth",
+                    "sampled_depth": dres["sampled_depth"],
                 })
                 depth_valid_count += 1
+                # depth vs geometry 一致性
+                agreement = (bool(depth_occ) == bool(geom_occ))
+                entry["depth_geometry_occlusion_agreement"] = agreement
+                if agreement:
+                    geo_disc_agreement_count += 1
+                else:
+                    geo_disc_disagreement_count += 1
+                    # depth 说 occluded 但 geometry 说 none → cause=unknown
+                    if depth_occ and not geom_occ:
+                        entry["occlusion_cause"] = "unknown"
             elif geom_valid:
                 # 观测层不可用，退回几何层（ray cast 成功的结果）
                 occ = geom_occ
                 entry.update({
-                    "occluded": occ,
+                    "occluded": bool(occ),
+                    "depth_occluded": None,
+                    "depth_geometry_occlusion_agreement": None,
                     "valid": True,
                     "status": geom_info.get("status", "ok"),
                     "hit_distance": geom_info.get("hit_distance", float("inf")),
-                    "source": "geom",
+                    "evaluation_source": "geometry",
+                    "occlusion_cause": geom_cause,
                 })
                 depth_invalid_count += 1
             else:
-                # 深度不可用且几何 ray cast 也失败 → 状态 unknown（≠ 未遮挡）
-                pass  # 保持 status="raycast_error"
+                # 深度不可用且几何 ray cast 也失败 → unknown（≠ 未遮挡）
                 entry.update({
                     "occluded": False,
+                    "depth_occluded": None,
                     "valid": False,
                     "status": "raycast_error",
                     "hit_distance": None,
+                    "evaluation_source": "geometry",
+                    "occlusion_cause": "unknown",
                     "error": geom_info.get("error", ""),
                 })
                 depth_invalid_count += 1
 
             occlusion_result[name] = entry
-            occlusion_source_true[name] = entry["source"]
+            occlusion_source_true[name] = "depth" if entry["evaluation_source"] == "depth" else "geom"
             if entry["occluded"]:
                 occluded_all.append(name)
 
@@ -377,8 +443,29 @@ class TrueEvaluator:
             "environment_occluded_keypoint_count"]
         self_occluded_keypoint_count_true = occ_stats["self_occluded_keypoint_count"]
 
+        # ---- v5.0 第三轮：几何层 cause 统计（true 层分析）----
+        total_geom_determined = (
+            geom_target_surface_count + geom_environment_count
+            + geom_self_count + geom_unknown_count)
+        depth_geometry_occlusion_agreement_rate = (
+            geo_disc_agreement_count / total_geom_determined
+            if total_geom_determined > 0 else None)
+
+        # ---- depth coverage（Oracle 同口径门槛）----
+        # depth 有效且在 FOV 内的关键点数
+        fov_kp_names = [n for n in kp_names if n in fov_visible]
+        depth_valid_in_fov_count = sum(
+            1 for n in fov_kp_names
+            if occlusion_result.get(n, {}).get("evaluation_source") == "depth"
+            and occlusion_result.get(n, {}).get("valid", False)
+        )
+        fov_visible_keypoint_count_true = len(fov_kp_names)
+        depth_coverage_true = (
+            depth_valid_in_fov_count / max(fov_visible_keypoint_count_true, 1)
+            if fov_visible_keypoint_count_true > 0 else 0.0)
+
         # true_score 来源：是否真正使用了渲染 depth 作为评价口径
-        # （Oracle 只允许比较 depth 来源的候选）
+        # （Oracle 只允许比较 depth 来源 + depth_coverage 达标的部分候选）
         true_evaluation_source = (
             "depth"
             if (obs is not None and obs.get("depth") is not None and depth_valid_count > 0)
@@ -410,6 +497,22 @@ class TrueEvaluator:
                 environment_occluded_keypoint_count_true),
             "self_occluded_keypoint_count_true": int(
                 self_occluded_keypoint_count_true),
+            # ---- v5.0 第三轮：几何 cause 分析 ----
+            "geometry_target_surface_count_true": int(geom_target_surface_count),
+            "geometry_environment_occluded_count_true": int(geom_environment_count),
+            "geometry_self_occluded_count_true": int(geom_self_count),
+            "geometry_unknown_count_true": int(geom_unknown_count),
+            "depth_occluded_keypoint_count_true": int(depth_occluded_count),
+            "depth_geometry_occlusion_agreement_count": int(
+                geo_disc_agreement_count),
+            "depth_geometry_occlusion_disagreement_count": int(
+                geo_disc_disagreement_count),
+            "depth_geometry_occlusion_agreement_rate": (
+                depth_geometry_occlusion_agreement_rate),
+            # ---- depth coverage（Oracle 同口径门槛）----
+            "fov_visible_keypoint_count_true": int(fov_visible_keypoint_count_true),
+            "depth_valid_in_fov_count_true": int(depth_valid_in_fov_count),
+            "depth_coverage_true": float(depth_coverage_true),
             "depth_valid_keypoint_count_true": int(depth_valid_count),
             "depth_invalid_keypoint_count_true": int(depth_invalid_count),
             "true_evaluation_source": true_evaluation_source,
