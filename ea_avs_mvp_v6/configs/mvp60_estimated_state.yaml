@@ -1,0 +1,182 @@
+# =============================================================================
+# 配置文件 —— mvp60_estimated_state.yaml
+# EA-AVS-MVP v6.0 实验配置文件 —— 基于当前 RGB-D 人体状态估计的主动视角选择
+# =============================================================================
+#
+# 中文名称：面向老人动作感知的移动机器人主动视角选择 v6.0 —— 估计状态版本
+#
+# v6.0 相比 v5.0 的核心新增：
+#   1. Current RGB-D -> 2D Pose -> Depth Lifting -> EstimatedHumanState
+#   2. 估计状态驱动的局部候选采样与预测评分（零 GT 泄漏）
+#   3. 三支路对照：EstimatedState-Ours（主方法）、GTState-Ours（特权基线）、Oracle-NBV（离线上界）
+
+project:
+  name: "EA-AVS-MVP6.0"
+  seed: 42
+
+habitat:
+  scene_path: "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.glb"
+  navmesh_path: "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.navmesh"
+  use_habitat_lab: false
+  enable_physics: true   # Humanoid 是 articulated agent，ray casting 亦依赖 physics
+
+camera:
+  width: 640
+  height: 480
+  hfov_deg: 90
+  camera_height: 1.2
+  clip_near: 0.01
+  clip_far: 10.0
+
+humanoid:
+  enabled: true
+  assets_root: "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/habitat_humanoids"
+  avatar_name: "neutral_0"
+  motion_mode: "official"
+  default_pose: "standing"
+  supported_official_states:
+    - standing
+    - walking
+  research_pose_files:
+    sitting: null
+    bending: null
+    lying_fallen: null
+  yaw_candidates_deg: [0, 45, 90, 135, 180, -135, -90, -45]
+  forward_axis: "+Z"
+  strict_gt_skeleton: true
+  semantic_enabled: true
+  semantic_id: 100
+  strict_motion_loading: true
+  base_height_offset: 0.0
+  raycast_self_occlusion_status: "inconclusive"
+  raycast_self_occlusion_validation: "debug_humanoid_self_occlusion.py"
+
+humanoid_validation:
+  min_pixel_count: 100
+  min_depth_valid_ratio: 0.5
+  max_short_walk_displacement: 2.0
+  depth_match_tolerance: 0.5
+
+# ===== v6.0 视觉感知与状态估计配置 =====
+perception:
+  pose_backend: "torchvision"  # torchvision / rtmpose / mock
+  device: "cuda:0"
+  model_path: null
+  min_pose_score: 0.30
+  min_keypoint_confidence: 0.30
+  max_people: 1
+
+human_state_estimation:
+  min_2d_keypoints: 6
+  min_3d_keypoints: 4
+  min_torso_keypoints_3d: 2
+
+  depth_patch_size: 5
+  depth_min_m: 0.3
+  depth_max_m: 8.0
+  max_depth_spread_m: 0.5
+
+  require_human_position: true
+  require_orientation: true
+
+  orientation:
+    yaw_offset_deg: 0.0
+    forward_sign: 1
+    min_bilateral_pair_confidence: 0.30
+
+  skeleton_completion:
+    enabled: true
+    template: "standing_generic"
+    allow_gt_fallback: false
+
+estimated_state_policy:
+  invalid_state_behavior: "stay"  # 估计失效时安全停在原地
+
+# ===== Episode 与候选采样配置 =====
+episode:
+  num_episodes: 20
+  min_robot_human_distance: 1.5
+  max_robot_human_distance: 4.0
+  max_sampling_tries: 100
+  randomize_human_yaw: true
+
+candidate_sampling:
+  radii: [1.5, 2.0, 2.5]
+  angles_deg: [-135, -90, -45, 0, 45, 90, 135, 180]
+  min_distance_to_human: 1.2
+  max_distance_to_human: 3.0
+  max_geodesic_distance: 6.0
+
+visibility:
+  min_depth: 0.5
+  max_depth: 5.0
+
+occlusion:
+  enabled: true
+  ray_epsilon: 0.05
+  target_tolerance: 0.08
+  min_hit_distance: 0.05
+  max_raycast_error_rate: 0.10
+
+score_weights:
+  torso: 0.40
+  lower_body: 0.40
+  head: 0.10
+  arms: 0.10
+
+action_part_weights:
+  standing:
+    torso: 0.35
+    lower_body: 0.35
+    head: 0.20
+    arms: 0.10
+  sitting:
+    torso: 0.40
+    lower_body: 0.45
+    head: 0.10
+    arms: 0.05
+  lying_fallen:
+    torso: 0.40
+    lower_body: 0.35
+    head: 0.20
+    arms: 0.05
+  bending:
+    torso: 0.45
+    lower_body: 0.35
+    head: 0.10
+    arms: 0.10
+
+orientation_score:
+  preferred_angle_deg: 45
+  sigma_deg: 35
+
+predictive_score:
+  w_action_occ_pred: 0.50
+  w_orient_pred: 0.15
+  w_center_pred: 0.10
+  w_dist_pred: 0.10
+  w_move: 0.15
+
+true_score:
+  w_action_occ_true: 0.60
+  w_orient_true: 0.15
+  w_center_true: 0.10
+  w_dist_true: 0.15
+
+movement:
+  allow_stay: true
+  stay_margin: 0.0
+
+distance_score:
+  optimal_distance: 2.0
+  sigma: 0.7
+
+oracle:
+  enabled: true
+  min_depth_coverage: 0.8
+
+output:
+  save_images: true
+  save_depth: true
+  save_debug_json: true
+  save_video: false
