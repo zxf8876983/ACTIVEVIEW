@@ -6,7 +6,7 @@
     对整个人体骨架进行环境与自身遮挡分析，统计遮挡率与有效性。
     支持两条独立路径：
         1. GT-State: compute_keypoint_occlusion (5 态分类，含 object-ID 辨识)
-        2. Estimated-State: compute_estimated_keypoint_occlusion (GT-free 几何光路遮挡)
+        2. Estimated-State: compute_estimated_keypoint_occlusion (Static-scene-only 3 态几何遮挡)
 """
 
 import logging
@@ -114,10 +114,10 @@ def compute_estimated_keypoint_occlusion(
     camera_height: float,
     config: dict,
 ) -> dict:
-    """Estimated-State 路径：GT-free 几何光路遮挡检测。
+    """Estimated-State 路径：Static-scene-only 几何光路遮挡检测。
 
     严禁传入任何 humanoid_object_ids 或 keypoint_meta。
-    仅使用当前场景已知几何进行光路遮挡判定。
+    仅使用静态场景几何（static stage mesh）进行光路遮挡判定。
     """
     occ_cfg = config.get("occlusion", {})
     enabled = occ_cfg.get("enabled", True)
@@ -253,7 +253,7 @@ def compute_estimated_occlusion_stats(
     occlusion_result: dict,
     keypoint_names: List[str],
 ) -> dict:
-    """Estimated-State 遮挡统计指标（GT-free，仅统计 clear/blocked/unknown）。"""
+    """Estimated-State 遮挡统计指标（Static-scene-only，统计 clear/static_scene_blocked/unknown）。"""
     total = len(keypoint_names)
     empty = {
         "occlusion_rate": 0.0,
@@ -262,6 +262,7 @@ def compute_estimated_occlusion_stats(
         "raycast_error_count": 0,
         "raycast_error_rate": 0.0,
         "estimated_clear_keypoint_count": 0,
+        "estimated_static_blocked_keypoint_count": 0,
         "estimated_blocked_keypoint_count": 0,
         "estimated_unknown_keypoint_count": 0,
         "self_occluded_keypoint_count": 0,
@@ -288,7 +289,7 @@ def compute_estimated_occlusion_stats(
             continue
 
         valid_count += 1
-        if info.get("occluded", False) or cause == "estimated_geometric_blocked":
+        if info.get("occluded", False) or cause in ("static_scene_blocked", "estimated_geometric_blocked"):
             occluded_valid_count += 1
             blocked_count += 1
         else:
@@ -304,6 +305,7 @@ def compute_estimated_occlusion_stats(
         "raycast_error_count": raycast_error_count,
         "raycast_error_rate": float(raycast_error_rate),
         "estimated_clear_keypoint_count": clear_count,
+        "estimated_static_blocked_keypoint_count": blocked_count,
         "estimated_blocked_keypoint_count": blocked_count,
         "estimated_unknown_keypoint_count": unknown_count,
         "self_occluded_keypoint_count": 0,

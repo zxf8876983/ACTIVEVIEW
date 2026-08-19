@@ -5,10 +5,11 @@
 功能：
     定义与记录 v6.0 的核心科研指标：
         1. 状态估计精度（位置误差、XZ 平面位置误差、朝向误差、MPJPE、3D 可观测关节数、尺度等）
-        2. 候选空间偏移（Candidate center shift、各 pool 有效候选数）
-        3. Shared-Pool 离线纯状态分析（协议 A：决策一致性、位置偏差、Q_true 差距）
+        2. 候选空间偏移（Candidate center shift XYZ 与 XZ、各 pool 有效候选数）
+        3. Shared-Pool 离线纯状态分析（协议 A：决策一致性、候选 ID、位置偏差、Q_true 差距）
         4. Oracle 离线上界与同口径 Gap（Oracle-GTPool vs GTState-Ours, Oracle-EstPool vs EstimatedState-Ours）
         5. 端到端系统级对比（协议 C：EstimatedState-Ours vs GTState-Ours vs Baselines）
+        6. GT 骨架完整性指标（15 关节覆盖度、link 派生统计、fallback 计数）
 """
 
 import csv
@@ -197,11 +198,12 @@ class MetricsWriter:
 
         # 2. Candidate pool shift
         summary["mean_candidate_center_shift_m"] = agg_mean(["candidate_shift_metrics", "candidate_center_shift_m"])
+        summary["mean_candidate_center_shift_xz_m"] = agg_mean(["candidate_shift_metrics", "candidate_center_shift_xz_m"])
         summary["mean_valid_candidates_est_pool"] = agg_mean(["candidate_shift_metrics", "valid_candidate_count_est_pool"])
         summary["mean_valid_candidates_gt_pool"] = agg_mean(["candidate_shift_metrics", "valid_candidate_count_gt_pool"])
 
-        # 3. Occlusion stats
-        summary["mean_estimated_blocked_keypoint_count"] = agg_mean(["occlusion_summary", "estimated_blocked_keypoint_count"])
+        # 3. Estimated static occlusion stats
+        summary["mean_estimated_static_blocked_keypoint_count"] = agg_mean(["occlusion_summary", "estimated_static_blocked_keypoint_count"])
         summary["mean_estimated_unknown_keypoint_count"] = agg_mean(["occlusion_summary", "estimated_unknown_keypoint_count"])
         summary["stay_fallback_count"] = sum(1 for r in records if r.get("policy_results", {}).get("EstimatedState-Ours", {}).get("is_stay_fallback", False))
 
@@ -223,5 +225,12 @@ class MetricsWriter:
         summary["mean_Q_true_OracleEstPool"] = agg_mean(["oracle_results", "Oracle-EstPool", "true_score", "Q_true"])
         summary["mean_oracle_gap_gt_pool"] = agg_mean(["oracle_results", "oracle_gap_gt_pool"])
         summary["mean_oracle_gap_est_pool"] = agg_mean(["oracle_results", "oracle_gap_est_pool"])
+        summary["oracle_pool_mismatch_count"] = sum(1 for r in records if r.get("oracle_results", {}).get("oracle_gap_reason_est_pool") == "pool_mismatch" or r.get("oracle_results", {}).get("oracle_gap_reason_gt_pool") == "pool_mismatch")
+        summary["oracle_not_upper_bound_count"] = sum(1 for r in records if r.get("oracle_results", {}).get("oracle_gap_reason_est_pool") == "oracle_not_upper_bound" or r.get("oracle_results", {}).get("oracle_gap_reason_gt_pool") == "oracle_not_upper_bound")
+
+        # 7. GT Skeleton metrics
+        summary["mean_gt_skeleton_keypoint_count"] = agg_mean(["gt_skeleton_metrics", "gt_skeleton_keypoint_count"])
+        summary["gt_skeleton_failure_count"] = sum(1 for r in records if not r.get("gt_skeleton_metrics", {}).get("gt_skeleton_valid", False))
+        summary["gt_skeleton_fallback_count"] = sum(r.get("gt_skeleton_metrics", {}).get("gt_skeleton_fallback_count", 0) for r in records)
 
         return summary

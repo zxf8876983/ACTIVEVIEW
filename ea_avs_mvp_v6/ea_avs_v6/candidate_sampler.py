@@ -4,10 +4,11 @@
 
 功能：
     围绕目标人体位置生成候选观察位姿，并通过导航网格与测地距离进行可达性过滤。
+    支持显式 pool_id 标识（"gt_pool" / "est_pool" / "shared_pool"），为 Oracle Gap 计算提供身份保障。
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Optional
 import numpy as np
 
 from .geometry import compute_look_at_yaw
@@ -23,6 +24,7 @@ class CandidateView:
     euclidean_distance_to_human: float
     is_valid: bool
     invalid_reason: str = ""
+    pool_id: Optional[str] = None  # "gt_pool" | "est_pool" | "shared_pool"
     pred_score: dict = field(default_factory=dict)
     true_score: dict = field(default_factory=dict)
     selected_by: list = field(default_factory=list)
@@ -39,6 +41,7 @@ class CandidateSampler:
         human_pos: np.ndarray,
         robot_pos: np.ndarray,
         runner,
+        pool_id: Optional[str] = None,
     ) -> List[CandidateView]:
         """围绕人体采样候选位姿，过滤不可达点。
 
@@ -46,6 +49,7 @@ class CandidateSampler:
             human_pos: 人体世界位置（在估计状态路径中为 estimated_human_position，在 GT 路径中为 gt_human_pos）。
             robot_pos: 机器人起始位置，shape=(3,)。
             runner: HabitatRunner 实例。
+            pool_id: 候选池标识字符串（如 "gt_pool", "est_pool"）。
 
         返回：
             CandidateView 列表。
@@ -76,6 +80,7 @@ class CandidateSampler:
                         geodesic_distance=float("inf"),
                         euclidean_distance_to_human=float("inf"),
                         is_valid=False, invalid_reason="not_navigable",
+                        pool_id=pool_id,
                     ))
                     candidate_id += 1
                     continue
@@ -89,6 +94,7 @@ class CandidateSampler:
                         geodesic_distance=geo_dist,
                         euclidean_distance_to_human=euclidean_dist,
                         is_valid=False, invalid_reason="out_of_distance_range",
+                        pool_id=pool_id,
                     ))
                     candidate_id += 1
                     continue
@@ -101,6 +107,7 @@ class CandidateSampler:
                         geodesic_distance=geo_dist,
                         euclidean_distance_to_human=euclidean_dist,
                         is_valid=False, invalid_reason=reason,
+                        pool_id=pool_id,
                     ))
                     candidate_id += 1
                     continue
@@ -112,6 +119,7 @@ class CandidateSampler:
                     geodesic_distance=geo_dist,
                     euclidean_distance_to_human=euclidean_dist,
                     is_valid=True,
+                    pool_id=pool_id,
                 ))
                 candidate_id += 1
 

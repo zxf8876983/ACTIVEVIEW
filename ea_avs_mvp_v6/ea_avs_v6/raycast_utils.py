@@ -6,7 +6,7 @@
     封装 Habitat 场景几何射线检测。
     明确分离两条路径：
         1. GT-State: object-ID-aware 5 态遮挡分类（target_surface / humanoid_self / environment / none / unknown）
-        2. Estimated-State: GT-free 几何光路遮挡检测（clear / estimated_geometric_blocked / unknown）
+        2. Estimated-State: Static-scene-only 3 态遮挡分类（clear / static_scene_blocked / unknown）
 """
 
 from typing import Dict, Optional, Set
@@ -114,14 +114,14 @@ def cast_ray_to_estimated_point(
     target_tolerance: float = 0.12,
     min_hit_distance: float = 0.05,
 ) -> dict:
-    """Estimated-State 路径：GT-free 几何光路遮挡检测。
+    """Estimated-State 路径：Static-scene-only 几何光路遮挡检测。
 
     科研设计：
-        - 严禁输入 humanoid_object_ids、target_link_object_ids、gt_skeleton、keypoint_meta。
-        - 仅使用当前已知场景几何做 raycast。
+        - 严禁输入任何 GT 变量（humanoid_object_ids、target_link_object_ids、gt_skeleton、keypoint_meta）。
+        - 仅使用静态场景几何（static stage mesh）做 raycast，自动忽略真实 Humanoid 及动态物体。
         - 3 态分类：
             - clear: valid=True, occluded=False, occlusion_source="clear"
-            - estimated_geometric_blocked: valid=True, occluded=True, occlusion_source="estimated_geometric_blocked"
+            - static_scene_blocked: valid=True, occluded=True, occlusion_source="static_scene_blocked"
             - unknown: valid=False, occluded=False, occlusion_source="unknown"
     """
     origin = np.array(ray_origin, dtype=np.float64)
@@ -144,7 +144,10 @@ def cast_ray_to_estimated_point(
     direction = unit_direction(origin, target)
 
     try:
-        result = runner.cast_ray(origin, direction, max_distance)
+        if hasattr(runner, "cast_ray_static_scene"):
+            result = runner.cast_ray_static_scene(origin, direction, max_distance)
+        else:
+            result = runner.cast_ray(origin, direction, max_distance)
     except Exception:
         return {
             "hit": False,
@@ -203,7 +206,7 @@ def cast_ray_to_estimated_point(
             "hit_distance": hit_distance,
             "target_distance": target_distance,
             "clearance": clearance,
-            "occlusion_source": "estimated_geometric_blocked",
+            "occlusion_source": "static_scene_blocked",
         }
 
 

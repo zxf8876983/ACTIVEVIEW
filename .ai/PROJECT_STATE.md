@@ -2,7 +2,6 @@
 
 Last Updated: 2026-08-20  
 Active Branch: main  
-Active Scientific Code Baseline: 56088e6  
 Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Researchers
 
 > **Runtime Git State Note**: 当前 Repository HEAD 属于运行时 Git 状态，不在本文件中静态保存。代码模型若需获取当前真实仓库状态，请直接查询 Git (`git rev-parse --short HEAD` / `git status --short`)。
@@ -10,7 +9,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：ACTIVEVIEW v6.0 第一轮 Scientific Rigor Fix 已完成并全量验证 (Implemented & Scientifically Validated)。
+- **项目阶段**：ACTIVEVIEW v6.0 最终封版修复已完成并全量验证 (Final Closure Implemented & Scientifically Validated)。
 - **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> 未来版本`），各版本保留独立目录与设计文档。核心功能全链路跑通前暂不重构为单一 `src/`。
 
 ---
@@ -18,7 +17,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ## 2. Active Development Version
 - **Version**: v6.0 (6.0.0)
 - **Active Development Specification**: `EA_AVS_MVP60_Code_Generation_Document.md`
-- **Implementation Status**: IMPLEMENTED & RIGOROUSLY VALIDATED
+- **Implementation Status**: FINAL CLOSURE IMPLEMENTED & RIGOROUSLY VALIDATED
 - **Development Code Directory**: `ea_avs_mvp_v6/`
 
 ---
@@ -43,19 +42,25 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 - **v3.0 (`ea_avs_mvp_v3/`)**: 引入多姿态骨架（standing, sitting, lying_fallen, bending）、人体朝向建模（`human_yaw`）与动作关键部位加权评分（`S_action_part`）。
 - **v4.0 (`ea_avs_mvp_v4/`)**: 引入物理引擎 Ray Casting 实现环境障碍物遮挡检测，提出遮挡感知评分（`S_action_occ`）、消融策略体系与同口径 Oracle 离线上界。
 - **v5.0 (`ea_avs_mvp_v5/`)**: 接入真实 Habitat KinematicHumanoid（`neutral_0`）与 RGB-D/语义渲染，由 URDF link 派生 15 关节 GT 骨架，实现 5 类遮挡判定与决策闭环（前一稳定基线）。
-- **v6.0 (`ea_avs_mvp_v6/`, 已实现并通过科研严谨性修复)**: 构建当前 RGB-D 状态估计前端，完成 3D 双侧解剖推导、GT-free 几何遮挡检测、解耦候选池 (Est-Pool / GT-Pool / Shared-Pool) 以及同口径 Oracle 评测体系。
+- **v6.0 (`ea_avs_mvp_v6/`, 最终封版修复完成)**: 
+  1. Static-Scene-Only 射线检测彻底消除对真实 Humanoid 铰接碰撞体的隐式 GT 泄漏；
+  2. 修复 Shared-Pool GT 支路打分一致性，确保在同一 GT-centered 几何空间严谨对比 GT vs Est 评分；
+  3. 建立 Oracle Candidate-Pool Identity Guard，跨池返回 `pool_mismatch`，上界破坏返回 `oracle_not_upper_bound`，杜绝 `max(0)` 掩盖错误；
+  4. 恢复 `strict_gt_skeleton=True` 特权基线与评测约束；
+  5. 补充 15 项纯 Python 严谨性单元测试套件。
 
 ---
 
 ## 6. Current v6 Implemented Capabilities & Verified Results
-- **GT-free 几何光路遮挡检测**：实现 `cast_ray_to_estimated_point`，支持 `0.12m` 容差带与 3 态分类（`clear`, `estimated_geometric_blocked`, `unknown`），严格过滤 `valid=False` 关键点进入 `visible_occ`。
-- **Yaw 坐标与前向向量统一**：对齐 Habitat KinematicHumanoid URDF 原生坐标系与项目全局 $+Z$ 约定，8 方向校准实测中位数绝对误差降至 **0.97°**，平均绝对误差 **3.03°**。
+- **Static-Scene-Only 射线检测**：实现 `HabitatRunner.cast_ray_static_scene`，仅以 `stage_id` 为遮挡物，自动穿透/忽略 Humanoid 动态碰撞体，3 态分类（`clear`, `static_scene_blocked`, `unknown`）。
+- **Yaw 坐标与前向向量统一**：对齐 Habitat KinematicHumanoid URDF 原生坐标系与项目全局 $+Z$ 约定，8 方向校准实测中位数绝对误差降至 **0.97°**，平均绝对误差 **3.03°**，输出 PASS exit code 0。
 - **3D Bilateral 中点解剖推导**：移除 neck / pelvis 在 2D midpoint 像素上的深度采样，直接由 3D 左右肩与左右髋中点几何推导。
 - **尺度感知与 6 级基座位置估计**：尺度估计前置，基座位置优先级为双踝 -> 单踝 -> 骨盆 -> 髋中点 -> 躯干均值 -> 可见关节中位数，统一读取 `POSE_SKELETONS["standing"]`。
-- **解耦候选池与三协议评估**：
-  - 协议 A (Shared-Pool 离线分析): 决策一致率 50%，$Q_{true}$ Gap 0.070。
-  - 协议 B (Candidate Shift 分析): 平均采样中心偏移 0.417m。
-  - 协议 C (端到端系统级主实验): `EstimatedState-Ours` ($Q_{true}=0.488$) 对比 `GTState-Ours` ($Q_{true}=0.561$)，同口径 Oracle Gap 分别为 0.031 (EstPool) 与 0.023 (GTPool)。
+- **解耦候选池与三协议评估**（20 episodes 实测）：
+  - 协议 A (Shared-Pool 离线分析): 决策一致率 35%，位置平均偏差 1.094m，$Q_{true}$ Gap 0.105。
+  - 协议 B (Candidate Shift 分析): 平均采样中心偏移 0.298m (XZ 偏移 0.269m)。
+  - 协议 C (端到端系统级主实验): `EstimatedState-Ours` ($Q_{true}=0.470$) 对比 `GTState-Ours` ($Q_{true}=0.566$)，端到端 Gap 0.096；同口径 Oracle Gap 分别为 0.058 (EstPool) 与 0.036 (GTPool)。
+  - Oracle 跨池冲突与上界破坏计数均为 0 (`oracle_pool_mismatch_count: 0`, `oracle_not_upper_bound_count: 0`)。
 - **三重零 GT 泄漏防御**：通过 Guard A (AST 语法树禁词扫描)、Guard B (Runner Humanoid 访问阻断)、Guard C (未来候选观测运行时 Sentinel 拦截)。
 
 ---
@@ -73,10 +78,6 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ## 8. Current Stable Point
 - **Active Branch**: `main`
 - **Active Scientific Code Baseline**: `02bc45e` - `refactor(v5.0): final closure - current-vs-candidate competition, invalid-occlusion validity, geometry cause counts`
-- **Recent Key Scientific Commits**:
-  - `56088e6`: feat(v6.0): implement estimated-state active view selection architecture and validation suite
-  - `1a4b0e5`: docs(v6.0): add estimated-state NBV development specification
-  - `02bc45e`: v5.0 final closure (current-vs-candidate competition, invalid-occlusion validity, closure unit test)
 
 ---
 

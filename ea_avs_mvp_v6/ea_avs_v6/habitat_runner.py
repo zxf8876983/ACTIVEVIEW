@@ -203,6 +203,80 @@ class HabitatRunner:
             "hit_object_id": int(best_hit.object_id),
         }
 
+    def cast_ray_static_scene(
+        self,
+        origin: np.ndarray,
+        direction: np.ndarray,
+        max_distance: float,
+    ) -> Dict[str, Optional[object]]:
+        """仅针对静态场景 (Static stage mesh) 执行射线检测，自动忽略任何 dynamic / articulated humanoid 碰撞体。
+
+        科学严谨性保证：
+            - 不访问 humanoid_manager，不使用 get_humanoid_object_ids()。
+            - 仅依靠 Habitat-Sim 原生的 stage_id 区分静态场景与动态/铰接物体。
+            - 杜绝 Estimated-State active perception 借用真实 Humanoid articulated collision geometry。
+        """
+        dir_norm = float(np.linalg.norm(direction))
+        if dir_norm < 1e-8:
+            return {
+                "has_hits": False,
+                "hit_point": None,
+                "hit_distance": None,
+                "hit_object_id": None,
+                "hit_source": "none",
+            }
+        unit_dir = np.array(direction, dtype=np.float64) / dir_norm
+
+        ray = geo.Ray(
+            origin=np.array(origin, dtype=np.float64),
+            direction=unit_dir,
+        )
+        results = self.sim.cast_ray(
+            ray, max_distance=float(max_distance), buffer_distance=0.0
+        )
+
+        if not results.has_hits():
+            return {
+                "has_hits": False,
+                "hit_point": None,
+                "hit_distance": None,
+                "hit_object_id": None,
+                "hit_source": "none",
+            }
+
+        stage_id = getattr(habitat_sim, "stage_id", 0)
+        best_static_hit = None
+        best_static_dist = float("inf")
+        had_dynamic_hit = False
+
+        for hit in results.hits:
+            hit_obj_id = int(hit.object_id)
+            if hit_obj_id == stage_id:
+                hit_point = np.array(hit.point, dtype=np.float64)
+                dist = float(np.linalg.norm(hit_point - origin))
+                if dist < best_static_dist:
+                    best_static_dist = dist
+                    best_static_hit = hit
+            else:
+                had_dynamic_hit = True
+
+        if best_static_hit is None:
+            return {
+                "has_hits": False,
+                "hit_point": None,
+                "hit_distance": None,
+                "hit_object_id": None,
+                "hit_source": "dynamic_ignored" if had_dynamic_hit else "none",
+            }
+
+        return {
+            "has_hits": True,
+            "hit_point": np.array(best_static_hit.point, dtype=np.float64),
+            "hit_distance": best_static_dist,
+            "hit_object_id": stage_id,
+            "hit_source": "stage",
+        }
+
     def close(self):
         if self._sim is not None:
             self._sim.close()
@@ -211,3 +285,4 @@ class HabitatRunner:
 
     def __del__(self):
         self.close()
+

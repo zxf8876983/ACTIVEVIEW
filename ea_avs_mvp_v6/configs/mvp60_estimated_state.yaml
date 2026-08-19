@@ -7,10 +7,10 @@
 #
 # v6.0 相比 v5.0 的核心新增：
 #   1. Current RGB-D -> 2D Pose -> Depth Lifting (3D Bilateral derivation) -> EstimatedHumanState
-#   2. 估计状态驱动的局部候选采样与预测评分（零 GT 泄漏，GT-free 几何光路遮挡检测）
+#   2. 估计状态驱动的局部候选采样与预测评分（零 GT 泄漏，Static-scene-only 几何光路遮挡检测）
 #   3. 三层对照：
 #      - 协议 A: Shared-Pool 离线纯状态分析
-#      - 协议 B: Candidate Generation Shift 分析
+#      - 协议 B: Candidate Generation Shift 分析 (XYZ 与 XZ)
 #      - 协议 C: EstimatedState-Ours (主方法) vs GTState-Ours (特权基线) vs Oracle-GTPool / Oracle-EstPool
 
 project:
@@ -92,6 +92,12 @@ human_state_estimation:
     enabled: true
     template: "standing"
     allow_gt_fallback: false
+
+orientation_calibration:
+  min_valid_rate: 0.75
+  max_mean_error_deg: 20.0
+  max_median_error_deg: 15.0
+  max_error_deg: 45.0
 
 estimated_state_policy:
   invalid_state_behavior: "stay"  # 估计失效时安全停在原地

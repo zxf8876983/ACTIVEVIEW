@@ -55,7 +55,8 @@ def main():
         humanoid.set_base_pose(human_pos, human_yaw)
         humanoid.set_pose("standing")
 
-        gt_info = get_humanoid_gt_skeleton(humanoid, strict=False)
+        strict_gt = config.get("humanoid", {}).get("strict_gt_skeleton", True)
+        gt_info = get_humanoid_gt_skeleton(humanoid, strict=strict_gt)
         gt_skeleton = gt_info["skeleton"]
 
         # 采样机器人起始位置 (1.5m ~ 3.5m 且测地可达)
@@ -77,9 +78,8 @@ def main():
             # Fallback
             robot_pos = runner.snap_point(human_pos + np.array([1.5, 0.0, 0.0], dtype=np.float32))
 
-        dx = human_pos[0] - robot_pos[0]
-        dz = human_pos[2] - robot_pos[2]
-        robot_yaw = float(np.arctan2(dx, dz))
+        from ea_avs_v6.geometry import compute_look_at_yaw
+        robot_yaw = compute_look_at_yaw(robot_pos, human_pos)
 
         obs = runner.render_at(robot_pos, robot_yaw)
         cam_state = runner.get_camera_state(robot_pos, robot_yaw)

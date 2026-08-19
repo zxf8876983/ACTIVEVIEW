@@ -4,8 +4,8 @@
 
 功能：
     对 v6.0 的估计状态主决策链路执行三重防护审计：
-        1. Guard A: 严格 AST 语法树遍历，扫描线上模块禁止出现任何 GT 变量引用；
-        2. Guard B: 检查 Estimated 评估模块绝不通过 runner 间接访问 Humanoid Identity；
+        1. Guard A: 严格 AST 语法树遍历，扫描线上模块及 Estimated 函数内部禁止出现任何 GT 变量与对象引用；
+        2. Guard B: 检查 Estimated 评估模块与射线模块绝不通过 runner 间接访问 Humanoid Identity；
         3. Guard C: 运行时未来观测拦截 Sentinel，断言在线候选评分与决策过程中 render_at 调用次数为 0。
 """
 
@@ -30,7 +30,7 @@ class TestNoGTLeakage(unittest.TestCase):
         self.pkg_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ea_avs_v6")
 
     def test_guard_a_ast_forbidden_names(self):
-        """Guard A: 静态 AST 遍历，扫描线上模块绝无 GT 变量名引用。"""
+        """Guard A: 静态 AST 遍历，扫描线上模块及 Estimated 函数内部绝无 GT 变量名引用。"""
         forbidden_names = {
             "gt_human_pos",
             "gt_human_yaw",
@@ -39,21 +39,23 @@ class TestNoGTLeakage(unittest.TestCase):
             "target_link_object_ids",
             "keypoint_meta",
             "semantic_mask",
+            "humanoid_manager",
+            "_humanoid_manager",
         }
 
-        files_to_scan = [
+        # 1. 整文件扫描模块 (这些文件 100% 属于估计状态链路)
+        entire_files_to_scan = [
             "human_state_estimator.py",
             "estimated_predictive_evaluator.py",
             "candidate_sampler.py",
         ]
 
-        for fname in files_to_scan:
+        for fname in entire_files_to_scan:
             fpath = os.path.join(self.pkg_dir, fname)
             with open(fpath, "r", encoding="utf-8") as f:
                 tree = ast.parse(f.read(), filename=fname)
 
             for node in ast.walk(tree):
-                # 检查变量名、属性名、参数名
                 if isinstance(node, ast.Name) and node.id in forbidden_names:
                     self.fail(f"在 {fname} (Line {node.lineno}) 发现直接读取禁止的 GT 变量: '{node.id}'")
                 elif isinstance(node, ast.Attribute) and node.attr in forbidden_names:
@@ -61,8 +63,29 @@ class TestNoGTLeakage(unittest.TestCase):
                 elif isinstance(node, ast.arg) and node.arg in forbidden_names:
                     self.fail(f"在 {fname} (Line {node.lineno}) 发现函数参数包含禁止的 GT 入参: '{node.arg}'")
 
+        # 2. 函数级精准扫描模块 (包含 GT 与 Estimated 两条路径的公共文件)
+        func_scan_targets = {
+            "raycast_utils.py": ["cast_ray_to_estimated_point"],
+            "occlusion.py": ["compute_estimated_keypoint_occlusion", "compute_estimated_occlusion_stats"],
+        }
+
+        for fname, func_names in func_scan_targets.items():
+            fpath = os.path.join(self.pkg_dir, fname)
+            with open(fpath, "r", encoding="utf-8") as f:
+                tree = ast.parse(f.read(), filename=fname)
+
+            for node in tree.body:
+                if isinstance(node, ast.FunctionDef) and node.name in func_names:
+                    for sub in ast.walk(node):
+                        if isinstance(sub, ast.Name) and sub.id in forbidden_names:
+                            self.fail(f"在 {fname} 函数 {node.name} (Line {sub.lineno}) 发现禁止的 GT 变量: '{sub.id}'")
+                        elif isinstance(sub, ast.Attribute) and sub.attr in forbidden_names:
+                            self.fail(f"在 {fname} 函数 {node.name} (Line {sub.lineno}) 发现禁止的 GT 属性: '{sub.attr}'")
+                        elif isinstance(sub, ast.arg) and sub.arg in forbidden_names:
+                            self.fail(f"在 {fname} 函数 {node.name} (Line {sub.lineno}) 发现禁止的 GT 入参: '{sub.arg}'")
+
     def test_guard_b_no_runner_humanoid_access(self):
-        """Guard B: 检查 EstimatedPredictiveEvaluator 绝无通过 runner 偷取 Humanoid identity。"""
+        """Guard B: 检查 EstimatedPredictiveEvaluator 与 static raycast 绝无通过 runner 偷取 Humanoid identity。"""
         fpath = os.path.join(self.pkg_dir, "estimated_predictive_evaluator.py")
         with open(fpath, "r", encoding="utf-8") as f:
             tree = ast.parse(f.read(), filename="estimated_predictive_evaluator.py")
@@ -98,6 +121,9 @@ class TestNoGTLeakage(unittest.TestCase):
             def geodesic_distance(self, p1, p2):
                 return float(np.linalg.norm(np.array(p1) - np.array(p2)))
 
+            def cast_ray_static_scene(self, origin, direction, max_distance):
+                return {"has_hits": False, "hit_point": None, "hit_distance": None, "hit_source": "none"}
+
             def cast_ray(self, origin, direction, max_distance):
                 return {"has_hits": False}
 
@@ -126,8 +152,8 @@ class TestNoGTLeakage(unittest.TestCase):
         robot_pos = np.array([0.0, 0.0, 0.0])
 
         # 1. 候选点采样
-        cands = sampler.sample(est_state.human_position_world, robot_pos, sentinel_runner)
-        curr_view = CandidateView(0, robot_pos, 0.0, 0.0, 2.0, True)
+        cands = sampler.sample(est_state.human_position_world, robot_pos, sentinel_runner, pool_id="est_pool")
+        curr_view = CandidateView(0, robot_pos, 0.0, 0.0, 2.0, True, pool_id="est_pool")
 
         # 2. 预测打分
         curr_view.pred_score = evaluator.score_view_pred(sentinel_runner, curr_view.position, curr_view.yaw, robot_pos, est_state, 0.0)

@@ -4,10 +4,11 @@
 
 功能：
     遍历多个不同的人体 GT 朝向角（Yaw），测量 2D 检测与双侧 3D 解剖几何推导出的
-    朝向角与 GT 朝向角的差异，输出 mean / median / max yaw error 及 valid rate。
+    朝向角与 GT 朝向角的差异，依据配置阈值评估输出 PASS/FAIL exit code。
 """
 
 import argparse
+import sys
 import numpy as np
 
 from ea_avs_v6.config import load_config
@@ -73,18 +74,41 @@ def main():
             print(f"{deg:<15.1f} | {'None':<15} | {'N/A':<15} | {state.failure_reason:<20}")
 
     print("=" * 75)
+    runner.close()
+
+    calib_cfg = config.get("orientation_calibration", {})
+    min_valid_rate = calib_cfg.get("min_valid_rate", 0.75)
+    max_mean_err = calib_cfg.get("max_mean_error_deg", 20.0)
+    max_median_err = calib_cfg.get("max_median_error_deg", 15.0)
+    max_single_err = calib_cfg.get("max_error_deg", 45.0)
+
+    valid_rate = valid_count / len(test_yaws_deg)
+
     if errors:
         mean_err = float(np.mean(errors))
         median_err = float(np.median(errors))
         max_err = float(np.max(errors))
-        print(f"[CalibrateYaw] Valid Count: {valid_count}/{len(test_yaws_deg)} ({valid_count/len(test_yaws_deg)*100:.1f}%)")
-        print(f"[CalibrateYaw] Mean Absolute Yaw Error:   {mean_err:.2f}°")
-        print(f"[CalibrateYaw] Median Absolute Yaw Error: {median_err:.2f}°")
-        print(f"[CalibrateYaw] Max Absolute Yaw Error:    {max_err:.2f}°")
+        print(f"[CalibrateYaw] Valid Count: {valid_count}/{len(test_yaws_deg)} ({valid_rate*100:.1f}%)")
+        print(f"[CalibrateYaw] Mean Absolute Yaw Error:   {mean_err:.2f}° (Threshold: <={max_mean_err}°)")
+        print(f"[CalibrateYaw] Median Absolute Yaw Error: {median_err:.2f}° (Threshold: <={max_median_err}°)")
+        print(f"[CalibrateYaw] Max Absolute Yaw Error:    {max_err:.2f}° (Threshold: <={max_single_err}°)")
+
+        passed = bool(
+            valid_rate >= min_valid_rate
+            and mean_err <= max_mean_err
+            and median_err <= max_median_err
+            and max_err <= max_single_err
+        )
     else:
         print("[CalibrateYaw] No valid yaw estimations produced.")
+        passed = False
 
-    runner.close()
+    if passed:
+        print(f"\n[CalibrateYaw] RESULT: PASS\n")
+        sys.exit(0)
+    else:
+        print(f"\n[CalibrateYaw] RESULT: FAIL\n")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

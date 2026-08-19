@@ -53,6 +53,7 @@ class TorchvisionPoseBackend(PoseBackend):
         device: str = "cuda:0",
         min_pose_score: float = 0.30,
         min_keypoint_confidence: float = 0.30,
+        max_people: int = 1,
         model_path: Optional[str] = None,
     ):
         import torch
@@ -65,6 +66,7 @@ class TorchvisionPoseBackend(PoseBackend):
         self.device = torch.device(device if torch.cuda.is_available() and "cuda" in device else "cpu")
         self.min_pose_score = min_pose_score
         self.min_keypoint_confidence = min_keypoint_confidence
+        self.max_people = max_people
         self.backend_name = "torchvision_keypointrcnn"
 
         # 加载官方预训练权重
@@ -137,37 +139,44 @@ class TorchvisionPoseBackend(PoseBackend):
                 )
             )
 
-        # 按置信度排序
+        # 按置信度排序并截断至 max_people
         detections.sort(key=lambda d: d.score, reverse=True)
-        return detections
+        return detections[:self.max_people]
 
 
 class MockPoseBackend(PoseBackend):
     """测试与无模型环境专用的 Mock 姿态检测后端。"""
 
-    def __init__(self, preset_detections: Optional[List[Pose2DDetection]] = None):
+    def __init__(
+        self,
+        preset_detections: Optional[List[Pose2DDetection]] = None,
+        max_people: int = 1,
+    ):
         self.preset_detections = preset_detections or []
+        self.max_people = max_people
         self.backend_name = "mock_pose_backend"
 
     def set_preset_detections(self, detections: List[Pose2DDetection]):
         self.preset_detections = detections
 
     def infer(self, rgb: np.ndarray) -> List[Pose2DDetection]:
-        return self.preset_detections
+        return self.preset_detections[:self.max_people]
 
 
 def create_pose_backend(config: dict) -> PoseBackend:
     """根据配置创建 PoseBackend 实例。未知类型严格抛出 ValueError。"""
     p_cfg = config.get("perception", {})
     backend_type = p_cfg.get("pose_backend", "torchvision").lower()
+    max_people = int(p_cfg.get("max_people", 1))
 
     if backend_type == "mock":
-        return MockPoseBackend()
+        return MockPoseBackend(max_people=max_people)
     elif backend_type in ("torchvision", "keypointrcnn"):
         return TorchvisionPoseBackend(
             device=p_cfg.get("device", "cuda:0"),
             min_pose_score=p_cfg.get("min_pose_score", 0.30),
             min_keypoint_confidence=p_cfg.get("min_keypoint_confidence", 0.30),
+            max_people=max_people,
             model_path=p_cfg.get("model_path"),
         )
     else:
