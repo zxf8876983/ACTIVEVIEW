@@ -6,7 +6,8 @@ Habitat 模拟器封装模块 —— habitat_runner.py
     封装 Habitat-Sim 模拟器的初始化与核心操作，包括相机渲染、射线检测与导航网格。
 """
 
-from typing import Dict, Optional
+from __future__ import annotations
+from typing import Dict, Optional, Any
 import numpy as np
 
 try:
@@ -21,6 +22,25 @@ except ImportError:
 from .geometry import compute_camera_intrinsics
 
 
+def resolve_stage_id(habitat_sim_module=None) -> int:
+    """解析并返回 Habitat-Sim 原生 stage_id。
+
+    科学严谨性保证：
+        - 严禁静默猜测默认值（如 0 或 -1）。
+        - 若 habitat_sim 模块未提供 stage_id，立即抛出 RuntimeError fail-fast，
+          杜绝在无法严格识别静态场景网格边界时执行静态射线检测。
+    """
+    sim_mod = habitat_sim_module if habitat_sim_module is not None else habitat_sim
+    if sim_mod is None:
+        raise RuntimeError("habitat_sim is unavailable; cannot resolve static stage ID.")
+    if not hasattr(sim_mod, "stage_id"):
+        raise RuntimeError(
+            "habitat_sim.stage_id is unavailable; "
+            "static-scene-only raycast cannot be guaranteed."
+        )
+    return int(sim_mod.stage_id)
+
+
 class HabitatRunner:
     """Habitat-Sim 运行器。"""
 
@@ -28,6 +48,7 @@ class HabitatRunner:
         self.config = config
         self._sim: Optional[habitat_sim.Simulator] = None
         self._humanoid_manager = None
+        self._stage_id = resolve_stage_id(habitat_sim)
         self._init_simulator()
 
     def _init_simulator(self):
@@ -95,6 +116,10 @@ class HabitatRunner:
 
     def attach_humanoid_manager(self, manager):
         self._humanoid_manager = manager
+
+    @property
+    def stage_id(self) -> int:
+        return self._stage_id
 
     @property
     def humanoid_manager(self):
@@ -244,7 +269,7 @@ class HabitatRunner:
                 "hit_source": "none",
             }
 
-        stage_id = getattr(habitat_sim, "stage_id", 0)
+        stage_id = self._stage_id
         best_static_hit = None
         best_static_dist = float("inf")
         had_dynamic_hit = False

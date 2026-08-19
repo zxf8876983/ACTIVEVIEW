@@ -3,10 +3,11 @@
 =========================================================
 
 功能：
-    对 v6.0 的估计状态主决策链路执行三重防护审计：
-        1. Guard A: 严格 AST 语法树遍历，扫描线上模块及 Estimated 函数内部禁止出现任何 GT 变量与对象引用；
-        2. Guard B: 检查 Estimated 评估模块与射线模块绝不通过 runner 间接访问 Humanoid Identity；
-        3. Guard C: 运行时未来观测拦截 Sentinel，断言在线候选评分与决策过程中 render_at 调用次数为 0。
+    对 v6.0 的估计状态主决策链路执行严格防护审计：
+        1. Guard A1: AST 语法树遍历，扫描线上模块及 Estimated 函数内部禁止出现任何 GT 变量与属性引用；
+        2. Guard A2: 严格 AST 语法树断言，cast_ray_to_estimated_point 绝对禁止调用 generic runner.cast_ray，只能调用 cast_ray_static_scene；
+        3. Guard B: 检查 Estimated 评估模块与射线模块绝不通过 runner 间接访问 Humanoid Identity；
+        4. Guard C: 运行时未来观测拦截 Sentinel，断言在线候选评分与决策过程中 render_at 调用次数为 0。
 """
 
 import ast
@@ -29,8 +30,8 @@ class TestNoGTLeakage(unittest.TestCase):
     def setUp(self):
         self.pkg_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ea_avs_v6")
 
-    def test_guard_a_ast_forbidden_names(self):
-        """Guard A: 静态 AST 遍历，扫描线上模块及 Estimated 函数内部绝无 GT 变量名引用。"""
+    def test_guard_a1_ast_forbidden_names(self):
+        """Guard A1: 静态 AST 遍历，扫描线上模块及 Estimated 函数内部绝无 GT 变量名引用。"""
         forbidden_names = {
             "gt_human_pos",
             "gt_human_yaw",
@@ -84,6 +85,33 @@ class TestNoGTLeakage(unittest.TestCase):
                         elif isinstance(sub, ast.arg) and sub.arg in forbidden_names:
                             self.fail(f"在 {fname} 函数 {node.name} (Line {sub.lineno}) 发现禁止的 GT 入参: '{sub.arg}'")
 
+    def test_guard_a2_no_generic_cast_ray_in_estimated_path(self):
+        """Guard A2: 静态 AST 检查，cast_ray_to_estimated_point 内部绝对禁止出现 runner.cast_ray 调用。"""
+        fpath = os.path.join(self.pkg_dir, "raycast_utils.py")
+        with open(fpath, "r", encoding="utf-8") as f:
+            tree = ast.parse(f.read(), filename="raycast_utils.py")
+
+        target_func = None
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef) and node.name == "cast_ray_to_estimated_point":
+                target_func = node
+                break
+
+        self.assertIsNotNone(target_func, "未找到 cast_ray_to_estimated_point 函数定义")
+
+        has_static_call = False
+        for sub in ast.walk(target_func):
+            if isinstance(sub, ast.Call) and isinstance(sub.func, ast.Attribute):
+                if sub.func.attr == "cast_ray":
+                    self.fail(
+                        f"在 cast_ray_to_estimated_point (Line {sub.lineno}) 发现违规调用 generic full-collision runner.cast_ray！"
+                        "必须严格使用 cast_ray_static_scene，无 fallback。"
+                    )
+                elif sub.func.attr == "cast_ray_static_scene":
+                    has_static_call = True
+
+        self.assertTrue(has_static_call, "cast_ray_to_estimated_point 必须包含 cast_ray_static_scene 调用")
+
     def test_guard_b_no_runner_humanoid_access(self):
         """Guard B: 检查 EstimatedPredictiveEvaluator 与 static raycast 绝无通过 runner 偷取 Humanoid identity。"""
         fpath = os.path.join(self.pkg_dir, "estimated_predictive_evaluator.py")
@@ -96,11 +124,12 @@ class TestNoGTLeakage(unittest.TestCase):
             "get_humanoid_object_ids",
             "get_humanoid_gt_skeleton",
             "get_articulated_object_manager",
+            "cast_ray",
         }
 
         for node in ast.walk(tree):
             if isinstance(node, ast.Attribute) and node.attr in forbidden_attributes:
-                self.fail(f"在 estimated_predictive_evaluator.py (Line {node.lineno}) 发现非法访问 Humanoid 属性: '{node.attr}'")
+                self.fail(f"在 estimated_predictive_evaluator.py (Line {node.lineno}) 发现非法访问属性: '{node.attr}'")
 
     def test_guard_c_future_render_runtime_sentinel(self):
         """Guard C: 运行时 Sentinel 保护，确保在线候选打分与选择过程中绝不调用 render_at。"""
@@ -123,9 +152,6 @@ class TestNoGTLeakage(unittest.TestCase):
 
             def cast_ray_static_scene(self, origin, direction, max_distance):
                 return {"has_hits": False, "hit_point": None, "hit_distance": None, "hit_source": "none"}
-
-            def cast_ray(self, origin, direction, max_distance):
-                return {"has_hits": False}
 
         cfg = {
             "camera": {"width": 640, "height": 480, "hfov_deg": 90, "camera_height": 1.2},

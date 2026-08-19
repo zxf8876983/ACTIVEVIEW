@@ -8,7 +8,7 @@
         当射线经过真实 Humanoid 身体时：
         - full_collision_ray (GT 路径) 会击中 Humanoid 铰接碰撞体 (object_id > 0)；
         - static_scene_ray (Estimated 路径) 必须自动忽略 Humanoid 身体，
-          继续寻找后方的 static stage 或返回 clear。
+          仅允许命中 stage_id 或返回 clear，绝不返回 Humanoid object ID。
 """
 
 import argparse
@@ -40,6 +40,8 @@ def main():
     print("=======================================================\n")
 
     runner = HabitatRunner(config)
+    print(f"[HabitatRunner] Resolved stage_id: {runner.stage_id}")
+
     humanoid = HumanoidManager(runner, config)
     humanoid.load()
     runner.attach_humanoid_manager(humanoid)
@@ -59,6 +61,8 @@ def main():
     print(f"Torso Pos:         {torso_pos.tolist()}")
     print(f"Humanoid Object IDs: {humanoid_oids}\n")
 
+    passed = True
+
     # -------------------------------------------------------------
     # Case 1: 射向 Humanoid Torso (核心验证)
     # -------------------------------------------------------------
@@ -75,6 +79,14 @@ def main():
     print(f"Estimated Evaluator:  occluded={est_res['occluded']}, valid={est_res['valid']}, cause={est_res['occlusion_source']}")
     print(f"GT Evaluator:         occluded={gt_res['occluded']}, valid={gt_res['valid']}, cause={gt_res['occlusion_source']}")
 
+    if static_ray_torso["has_hits"]:
+        if static_ray_torso["hit_object_id"] != runner.stage_id:
+            print(f"[FAIL] static_ray_torso hit_object_id {static_ray_torso['hit_object_id']} != stage_id {runner.stage_id}")
+            passed = False
+        if static_ray_torso["hit_object_id"] in humanoid_oids:
+            print("[FAIL] static_ray_torso hit Humanoid articulated object ID!")
+            passed = False
+
     # -------------------------------------------------------------
     # Case 2: 射向地面 / 墙体
     # -------------------------------------------------------------
@@ -86,6 +98,11 @@ def main():
     print(f"Full Collision Ray:   has_hits={full_ray_floor['has_hits']}, dist={full_ray_floor['hit_distance']:.3f}m, obj_id={full_ray_floor['hit_object_id']}")
     print(f"Static Scene Ray:     has_hits={static_ray_floor['has_hits']}, dist={static_ray_floor['hit_distance']:.3f}m, obj_id={static_ray_floor['hit_object_id']}, source={static_ray_floor['hit_source']}")
 
+    if static_ray_floor["has_hits"]:
+        if static_ray_floor["hit_object_id"] != runner.stage_id:
+            print(f"[FAIL] static_ray_floor hit_object_id {static_ray_floor['hit_object_id']} != stage_id {runner.stage_id}")
+            passed = False
+
     # -------------------------------------------------------------
     # Case 3: 射向空旷天花板 / 空旷无障碍区域
     # -------------------------------------------------------------
@@ -96,19 +113,20 @@ def main():
     print(f"Static Scene Ray:     has_hits={static_ray_up['has_hits']}, dist={static_ray_up['hit_distance']}, source={static_ray_up['hit_source']}")
 
     # -------------------------------------------------------------
-    # 核心断言：Static Scene Ray 绝不命中 Humanoid 身体
+    # 核心断言与退出码
     # -------------------------------------------------------------
-    stage_id = getattr(habitat_sim, "stage_id", 0)
     if full_ray_torso["has_hits"] and full_ray_torso["hit_object_id"] in humanoid_oids:
-        assert (
-            not static_ray_torso["has_hits"]
-            or static_ray_torso["hit_object_id"] == stage_id
-        ), "CRITICAL: static_scene_ray failed to ignore humanoid articulated object!"
-        print("\n[VERIFICATION SUCCESS] Static scene raycast cleanly ignores Humanoid articulated collision body!")
-    else:
-        print("\n[VERIFICATION NOTICE] Humanoid ray was unobstructed by mesh.")
+        if static_ray_torso["has_hits"] and static_ray_torso["hit_object_id"] != runner.stage_id:
+            passed = False
 
     runner.close()
+
+    if passed:
+        print("\n[VERIFICATION SUCCESS] Static scene raycast cleanly ignores Humanoid articulated collision body! (PASS)\n")
+        sys.exit(0)
+    else:
+        print("\n[VERIFICATION FAILURE] Static scene raycast failed verification! (FAIL)\n")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

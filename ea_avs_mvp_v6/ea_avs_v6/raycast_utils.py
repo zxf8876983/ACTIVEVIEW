@@ -143,12 +143,7 @@ def cast_ray_to_estimated_point(
     max_distance = target_distance + max(min_hit_distance, 0.1)
     direction = unit_direction(origin, target)
 
-    try:
-        if hasattr(runner, "cast_ray_static_scene"):
-            result = runner.cast_ray_static_scene(origin, direction, max_distance)
-        else:
-            result = runner.cast_ray(origin, direction, max_distance)
-    except Exception:
+    if not hasattr(runner, "cast_ray_static_scene"):
         return {
             "hit": False,
             "occluded": False,
@@ -157,6 +152,21 @@ def cast_ray_to_estimated_point(
             "target_distance": target_distance,
             "clearance": 0.0,
             "occlusion_source": "unknown",
+            "failure_reason": "static_scene_raycast_unavailable",
+        }
+
+    try:
+        result = runner.cast_ray_static_scene(origin, direction, max_distance)
+    except Exception as exc:
+        return {
+            "hit": False,
+            "occluded": False,
+            "valid": False,
+            "hit_distance": float("inf"),
+            "target_distance": target_distance,
+            "clearance": 0.0,
+            "occlusion_source": "unknown",
+            "failure_reason": f"static_scene_raycast_error:{type(exc).__name__}",
         }
 
     if not result.get("has_hits", False):

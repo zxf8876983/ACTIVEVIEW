@@ -56,6 +56,7 @@ from ea_avs_v6.action_pose_library import POSE_SKELETONS
 from ea_avs_v6.raycast_utils import cast_ray_to_estimated_point
 from ea_avs_v6.estimated_predictive_evaluator import EstimatedPredictiveEvaluator
 from ea_avs_v6.humanoid_validation import validate_gt_skeleton
+from ea_avs_v6.habitat_runner import resolve_stage_id
 
 
 class TestV60PurePython(unittest.TestCase):
@@ -461,6 +462,50 @@ class TestV60PurePython(unittest.TestCase):
         }
         with self.assertRaises(RuntimeError):
             validate_gt_skeleton(incomplete_skeleton_result, strict=True)
+
+    def test_16_estimated_raycast_without_static_api_fails_closed(self):
+        """TEST 16: 验证在 Runner 缺失 cast_ray_static_scene API 时，Estimated ray 严格 fail-closed 返回 valid=False/unknown，且绝不调用 generic full-collision cast_ray。"""
+        class RunnerWithoutStaticAPI:
+            def __init__(self):
+                self.generic_called = False
+
+            def cast_ray(self, *args, **kwargs):
+                self.generic_called = True
+                raise AssertionError("Estimated-State must never call generic full-collision cast_ray")
+
+        runner = RunnerWithoutStaticAPI()
+        result = cast_ray_to_estimated_point(
+            runner=runner,
+            ray_origin=np.array([0.0, 0.0, 0.0]),
+            target_point=np.array([0.0, 0.0, 2.0]),
+        )
+
+        self.assertFalse(result["valid"])
+        self.assertFalse(result["occluded"])
+        self.assertEqual(result["occlusion_source"], "unknown")
+        self.assertEqual(result.get("failure_reason"), "static_scene_raycast_unavailable")
+        self.assertFalse(runner.generic_called, "generic full-collision cast_ray must not be called")
+
+    def test_17_missing_stage_id_fails_fast(self):
+        """TEST 17: 验证 resolve_stage_id 在缺少 habitat_sim.stage_id 时严格抛出 RuntimeError，禁止使用猜测默认值。"""
+        class FakeHabitatSimWithoutStageId:
+            pass
+
+        class FakeHabitatSimWithStageId:
+            stage_id = 0
+
+        # 1. 缺少 stage_id 必须抛出 RuntimeError
+        with self.assertRaises(RuntimeError):
+            resolve_stage_id(FakeHabitatSimWithoutStageId())
+
+        # 2. 传入 None 必须抛出 RuntimeError
+        with self.assertRaises(RuntimeError):
+            resolve_stage_id(None)
+
+        # 3. 具备 stage_id 必须正确解析为 int
+        sid = resolve_stage_id(FakeHabitatSimWithStageId())
+        self.assertEqual(sid, 0)
+        self.assertIsInstance(sid, int)
 
 
 if __name__ == "__main__":
