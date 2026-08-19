@@ -9,7 +9,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：EA-AVS-MVP v6.0 最终封口修复已完成，已正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)。
+- **项目阶段**：v6.0 保持正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)；当前完成 v7.0 前置动作数据基础设施建设 (v7.0 Pre-Development Motion Asset Infrastructure)。
 - **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> 未来版本`），各版本保留独立目录与设计文档。核心功能全链路跑通前暂不重构为单一 `src/`。
 
 ---
@@ -19,6 +19,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 - **Active Development Specification**: `EA_AVS_MVP60_Code_Generation_Document.md`
 - **Implementation Status**: CLOSED / FINALIZED & RIGOROUSLY VALIDATED
 - **Development Code Directory**: `ea_avs_mvp_v6/`
+- **Pre-Development Infrastructure**: `tools/motion_assets/` (BABEL / AMASS Elderly Motion Asset Pipeline)
 
 ---
 
@@ -30,9 +31,17 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ---
 
-## 4. Scientific Definition & Architecture (v6.0)
-ACTIVEVIEW v6.0 构建了由当前 RGB-D 驱动的 Estimated-State 单步主动观察位姿选择框架。
-在线 `EstimatedState-Ours` 仅使用视觉估计人体状态、导航信息和严格的静态场景几何；当静态场景射线能力不可用时采用 fail-closed 策略（`valid=False / unknown`），不允许静默退化到 full-collision raycast，因此绝不会使用真实 Humanoid articulated-body 碰撞几何。GT-State 和同候选池 Oracle 仅作为特权基线与离线评估参考。
+## 4. Motion Asset Infrastructure (v7.0 Pre-Development)
+- **数据根目录解析**：统一使用相对路径 `../../data/ActiveView`（支持 `ACTIVEVIEW_DATA_ROOT` 环境变量覆盖）。
+- **BABEL 标注同步与解析**：同步 `babel_v1.0_release`（train, val, extra_train, extra_val），建立 token-aware 动作筛选器，解析出 10,370 条候选动作片段。
+- **老人 5 类典型动作定义**：
+  1. `standing` (自然站立、静止站立)
+  2. `sitting` (坐下、坐姿端坐)
+  3. `bending` (弯腰、拾物)
+  4. `reaching` (触及、前伸伸手)
+  5. `fall_related` (高置信跌倒与人工确认倒地姿态)
+- **Feasibility Set**：精选 17 条高质量 frame-level 动作序列，覆盖 5 个核心 AMASS 子库（`BMLrub`, `CMU`, `EKUT`, `EyesJapanDataset`, `KIT`）。
+- **AMASS 工具链**：实现官方认证下载器（`download_amass_required.py`）、手动下载指引清单（`manual_download_required.md`）、本地文件索引与 Habitat Schema 兼容性检查器（`index_amass_files.py`）及 12 项测试套件。
 
 ---
 
@@ -85,7 +94,7 @@ ACTIVEVIEW v6.0 构建了由当前 RGB-D 驱动的 Estimated-State 单步主动�
 ---
 
 ## 9. Expected Next Phase
-- **后续版本演进 (v7+)**：计划在 Estimated-State 基础上引入动作假设不确定性建模（Action Hypothesis & Uncertainty）、缺失证据恢复评分（Evidence Recovery Score）与下游动作识别网络增益验证。
+- **v7.0 动作感知主动视角选择**：在 Estimated-State 基础上引入动作假设不确定性建模（Action Hypothesis & Uncertainty）、缺失证据恢复评分（Evidence Recovery Score）与基于真实 AMASS / BABEL 动作的 Habitat Humanoid 动作序列驱动。
 - **工程重构计划**：在全链路科学闭环验证完成后，再统一进行单主线 `src/` 代码重构。
 
 ---

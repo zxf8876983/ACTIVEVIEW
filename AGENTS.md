@@ -14,7 +14,7 @@
 2. .ai/PROJECT_STATE.md (项目短期状态记忆: 当前阶段、活跃版本、已实现能力与未决问题)
 3. .ai/CURRENT_TASK.md (当前任务定义: 检查是否有待执行或持久化的具体任务)
 4. .ai/HANDOFF.md (跨模型交接记录: 检查是否有前任 Agent 留下的未完成交接)
-5. 当前活跃版本对应的 Version Specification MD (如 EA_AVS_MVP50_Code_Generation_Document.md)
+5. 当前活跃版本对应的 Version Specification MD (由 .ai/PROJECT_STATE.md 指定)
 6. 与当前任务直接相关的局部代码文件
 ```
 
@@ -24,46 +24,68 @@
 
 ## 2. 当前活跃版本与目录结构 (Active Version & Repository Map)
 
+活跃版本与当前规范由 `.ai/PROJECT_STATE.md` 动态声明。代码模型每次接手任务时，必须以 `PROJECT_STATE.md` 指向的 active version 为准，严禁在代码或提示词中写死特定版本号。
+
 | 目录 / 文件 | 状态 | 说明 |
 |---|---|---|
-| **`ea_avs_mvp_v5/`** | **当前活跃实现 (Active)** | 真实 Humanoid + RGB-D 渲染 + GT-State 支路 + 遮挡感知主动视角选择 |
-| **`EA_AVS_MVP50_Code_Generation_Document.md`** | **当前规范文档 (Active Spec)** | v5.0 设计规范、接口定义与严谨性要求 |
-| `ea_avs_mvp/` ~ `ea_avs_mvp_v4/` | 历史版本 (Historical) | **只读 (Read-Only)**。历史科研原型快照，默认严禁修改 |
-| `EA_AVS_MVP01` ~ `MVP40_Document.md` | 历史规范文档 | 只读历史参考 |
+| **`ea_avs_mvp_v6/`** | **当前活跃实现 (Active / Closed)** | 当前 RGB-D 驱动的 Estimated-State 主动视角选择闭环 |
+| **`EA_AVS_MVP60_Code_Generation_Document.md`** | **当前规范文档 (Active Spec)** | v6.0 设计规范、接口定义与严谨性要求 |
+| `ea_avs_mvp/` ~ `ea_avs_mvp_v5/` | 历史版本 (Historical) | **只读 (Read-Only)**。历史科研原型快照，默认严禁修改 |
+| `EA_AVS_MVP01` ~ `MVP50_Document.md` | 历史规范文档 | 只读历史参考 |
 | `.ai/` | 上下文基础设施 | `PROJECT_STATE.md`, `CURRENT_TASK.md`, `HANDOFF.md` |
-
-> **注意**：活跃版本由 `.ai/PROJECT_STATE.md` 中的声明动态指定。若未来升级至 v6/v7，以 `PROJECT_STATE.md` 中指向的 active version 为准，请勿在代码或提示词中将“永远是 v5”写死。
 
 ---
 
-## 3. 科研开发核心规则 (Scientific Development Rules)
+## 3. 源码仓库与运行时数据物理边界 (Repository & Runtime Data Boundary)
 
-### 3.1 最小修改原则 (Minimal Modification Principle)
+为保证 Git 代码仓库轻量化并规范大规模实验数据的存储，ACTIVEVIEW 采用源码与运行时数据物理隔离机制：
+
+- **Git 源码仓库根目录 (Source Repository Root)**：
+  `/home/zxf/WorkSpace/code/code/ActiveView/`
+  用于保存 Python 源码、配置文件（YAML/JSON）、单元测试、脚本、Version Specifications、科研文档与必要的小型 metadata。
+- **运行时数据根目录 (Runtime Data Root)**：
+  `/home/zxf/WorkSpace/code/data/ActiveView/`
+  用于保存数据集（`datasets/`）、外部资产（`assets/`）、缓存（`cache/`）、实验运行输出（`runs/`）、模型权重（`checkpoints/`）、批量可视化（`visualizations/`）、日志（`logs/`）与临时文件（`tmp/`）。
+- **统一环境变量**：
+  `ACTIVEVIEW_DATA_ROOT=/home/zxf/WorkSpace/code/data/ActiveView`
+
+### 长期数据边界规则：
+1. **禁止大文件入库**：Coding Agent 严禁将大型 runtime artifacts（RGB/Depth/Semantic 大图、视频、npy/npz 中间数组、pt/pth/ckpt 权重等）写入 Git 仓库；
+2. **外部数据目录归属**：所有大规模实验产物必须写入 `$ACTIVEVIEW_DATA_ROOT`；
+3. **禁止软链接混淆**：不要在 Git 仓库内部创建指向外部数据目录的符号链接；
+4. **新版本优先使用环境变量**：未来新开发版本（v7+）涉及数据集、缓存、输出路径时，统一通过 `ACTIVEVIEW_DATA_ROOT` 环境变量解析；
+5. **历史版本保护**：v1–v6 历史实现不因本次规范做回溯性大规模重构；该规则从未来新开发版本开始严格执行。
+
+---
+
+## 4. 科研开发核心规则 (Scientific Development Rules)
+
+### 4.1 最小修改原则 (Minimal Modification Principle)
 1. **理解先行**：先阅读相关代码与规范，再进行最小范围修改。
 2. **拒绝顺手重构**：不做未经明确要求的目录移动、架构重写或“代码整洁度”整理。
-3. **过渡期架构尊重**：项目处于科研原型探索期，在核心闭环跑通前保持 `v1 -> v2 -> ... -> v5 -> 未来v6` 的独立版本目录模式，**严禁私自将多版本合并为单一 `src/`**。
+3. **过渡期架构尊重**：项目处于科研原型探索期，在核心闭环跑通前保持独立版本目录模式，**严禁私自将多版本合并为单一 `src/`**。
 
-### 3.2 科研边界与实验协议保护 (Research Boundary Protection)
+### 4.2 科研边界与实验协议保护 (Research Boundary Protection)
 未经明确科研授权，**严禁自行变更以下任何科学定义与实验协议**：
 * 科研问题定义（单步/One-shot 主动观察位姿重选择）；
 * 数据划分与场景配置；
 * 评价指标计算公式（Visibility, Action Part Score, Orientation Score, Occlusion Rate 等）；
 * **Pred / True 信息边界**；
-* **Oracle 离线上界定义**（必须在同 aperture / 同 depth 口径下比较）；
+* **Oracle 离线上界定义**（必须在同 aperture / 同 depth / 同 candidate pool 口径下比较）；
 * 候选点采样空间（radii, angles, candidate aperture）；
 * Baseline 策略定义（Fixed, Random, Nearest, 消融策略）；
 * 随机种子策略与实验评测环境参数；
 * **严禁为了获得“更漂亮的实验数字”而静默放宽或篡改实验协议与判定阈值**。
 
-### 3.3 严格防止未来观测信息泄漏 (No Future Observation Leakage)
+### 4.3 严格防止未来观测信息泄漏 (No Future Observation Leakage)
 ACTIVEVIEW 是主动视角选择研究：
-* **决策时（Decision-time）**：策略选择（尤其是 `OursPolicy`）只能使用预测评分 `Q_pred`（基于当前已知地图几何、先验或当前状态估计）。**严禁在选择候选点阶段调用渲染器偷看候选点的未来 RGB、Depth 或真实遮挡状态**。
+* **决策时（Decision-time）**：策略选择（尤其是 `EstimatedState-Ours` / `GTState-Ours`）只能使用预测评分 `Q_pred`（基于当前已知地图几何、先验或当前状态估计）。**严禁在选择候选点阶段调用渲染器偷看候选点的未来 RGB、Depth 或真实遮挡状态**。
 * **评估时（Evaluation-time）**：选中位姿渲染后的真实观测（`*_true`）仅供后验评估与指标记录，绝不能反向影响决策。
 * 若任务需求存在破坏该边界的风险，必须立即终止并向用户报告。
 
 ---
 
-## 4. 修改后的验证要求 (Validation Requirements)
+## 5. 修改后的验证要求 (Validation Requirements)
 
 Agent 每次必须根据以下优先级确定当前任务的验证命令：
 1. **`.ai/CURRENT_TASK.md`** 中显式声明的 Validation Plan
@@ -71,20 +93,19 @@ Agent 每次必须根据以下优先级确定当前任务的验证命令：
 3. **当前 active version 的 Version Specification**（设计文档中的验证要求）
 4. **当前版本已有的 tests / smoke / debug 脚本**
 
-### Current v5 Default Validation Commands
-当前 v5.0 活跃版本下的默认验证命令示例：
+### 默认验证命令示例 (以当前 active version 为准)
+当前活跃版本下的默认验证命令示例：
 1. **轻量语法与导入检查**：
    ```bash
-   python -m compileall ea_avs_mvp_v5
+   python -m compileall <active_version_dir>
    ```
 2. **纯 Python 逻辑与策略单元测试**（无需 Habitat 物理引擎）：
    ```bash
-   python ea_avs_mvp_v5/scripts/test_v50_closure_policy.py
+   python <active_version_dir>/scripts/test_*_pure_python.py
    ```
 3. **功能脚本 / Smoke Test / Debug 脚本**（在具备完整仿真环境时按需运行）：
    ```bash
-   cd ea_avs_mvp_v5
-   python scripts/run_mvp50_humanoid.py --config configs/mvp50_humanoid.yaml --episodes 1
+   python <active_version_dir>/scripts/run_*.py --config <active_version_dir>/configs/*.yaml --episodes 1
    ```
 
 ### 诚实报告原则 (Honest Validation Reporting)
@@ -94,7 +115,7 @@ Agent 每次必须根据以下优先级确定当前任务的验证命令：
 
 ---
 
-## 5. 跨 Agent 交接规范 (Handoff Rules)
+## 6. 跨 Agent 交接规范 (Handoff Rules)
 
 当遇到以下情况时：
 * 即将切换代码模型（如 Claude Code → Codex / DeepSeek / Gemini 等）；
@@ -107,7 +128,7 @@ Agent 每次必须根据以下优先级确定当前任务的验证命令：
 
 ---
 
-## 6. 上下文维护原则 (Context Maintenance Principles)
+## 7. 上下文维护原则 (Context Maintenance Principles)
 
 - **代码变化** -> 由 Git commit / commit history 记录
 - **科研阶段 / active version / 关键能力变化** -> 更新 `.ai/PROJECT_STATE.md`

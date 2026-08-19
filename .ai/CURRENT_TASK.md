@@ -3,58 +3,49 @@
 Status: COMPLETED
 
 ## Task
-ACTIVEVIEW v6.0 Final Fail-Closed Hardening & Closure
+ACTIVEVIEW v7.0 Pre-Development — Elderly Motion Asset Preparation & Infrastructure
 
 ## Objective
-对 `ea_avs_mvp_v6/` 完成最终封口修复 (Fail-Closed Hardening & Closure)：
-1. 彻底删除 Estimated-State 路径中对 generic full-collision `runner.cast_ray` 的静默 fallback，改为严格 fail-closed (`valid=False`, `occlusion_source="unknown"`)；
-2. 消除 Habitat static `stage_id` 的猜测默认值，使用 `resolve_stage_id`，缺失时严格 fail-fast 抛出 `RuntimeError`；
-3. 增加 Guard A2 AST 静态硬断言，禁止 `cast_ray_to_estimated_point` 内部出现任何 `runner.cast_ray` 调用；
-4. 补充 TEST 16（No Static API Fail-Closed）与 TEST 17（Missing stage_id Fail-Fast）纯 Python 测试；
-5. 最终验证全套测试与 20 episodes 主实验，正式完成 EA-AVS-MVP v6.0 封版定稿。
+建立面向 v7.0 助老场景动作感知的 BABEL / AMASS 动作资产准备与前置基础设施：
+1. 建立统一外部数据根目录规范（基于相对路径 `../../data/ActiveView`，支持 `ACTIVEVIEW_DATA_ROOT` 覆盖）；
+2. 同步并解析 BABEL annotations（train, val, extra_train, extra_val）；
+3. 筛选面向室内老人监护的 5 类典型动作（standing, sitting, bending, reaching, fall_related）；
+4. 选定第一轮 17 条高质量 Motion Feasibility Set（涉及 5 个核心 AMASS 子库：BMLrub, CMU, EKUT, EyesJapanDataset, KIT）；
+5. 实现 AMASS 官方 Portal 自动化登录、资源映射与 Dry-Run 预检工具，并生成完整手动下载指引清单；
+6. 实现本地 AMASS 文件索引与 Habitat MotionConverterSMPLX 数据 Schema 兼容性检查工具；
+7. 建立 12 项纯 Python 单元测试套件 (`tools/motion_assets/tests/test_motion_assets.py`)；
+8. 严格保证 v6.0 代码与科学规范 100% 不受影响，第三方大数据不入库，无凭据泄露。
 
-## Active Development Version
-- **Version**: v6.0 (6.0.0 — CLOSED / FINALIZED)
-- **Code Directory**: `ea_avs_mvp_v6/`
+## Current Version Status
+- **Active Code Version**: v6.0 (6.0.0 — CLOSED / FINALIZED, Read-Only)
+- **Pre-Development Stage**: v7.0 Elderly Motion Asset Infrastructure
 - **Active Specification**: `EA_AVS_MVP60_Code_Generation_Document.md`
 
-## Starting Stable Version
-- **Version**: v5.0 (5.0.0)
-- **Stable Code**: `ea_avs_mvp_v5/`
-- **Active Scientific Code Baseline**: `02bc45e`
-
-## Required Work Completed
-1. **Estimated Raycast Fail-Closed Hardening (`raycast_utils.py`)**:
-   - `cast_ray_to_estimated_point` 完全删除 `runner.cast_ray` fallback。
-   - 当 `runner` 缺少 `cast_ray_static_scene` 时返回 `valid=False`, `occlusion_source="unknown"`, `failure_reason="static_scene_raycast_unavailable"`。
-   - 当调用抛出异常时返回 `valid=False`, `occlusion_source="unknown"`, `failure_reason="static_scene_raycast_error:..."`。
-2. **Explicit Stage ID Resolution & Fail-Fast (`habitat_runner.py`)**:
-   - 增加 `resolve_stage_id(habitat_sim_module)`，缺失 `stage_id` 属性时抛出 `RuntimeError`。
-   - `HabitatRunner.__init__` 初始化时解析并缓存 `self._stage_id`，提供 `stage_id` 属性。
-   - `cast_ray_static_scene` 直接使用 `self._stage_id`，禁止使用任何默认猜测值。
-3. **AST Guard A2 Hard Assertion (`test_no_gt_leakage.py`)**:
-   - 扫描 `cast_ray_to_estimated_point` 函数语法树，若出现 `.cast_ray` 调用直接 fail，并断言存在 `.cast_ray_static_scene` 调用。
-4. **Pure Python Hardening Tests (`test_v60_pure_python.py`)**:
-   - 增加 TEST 16: `test_16_estimated_raycast_without_static_api_fails_closed` (PASS)。
-   - 增加 TEST 17: `test_17_missing_stage_id_fails_fast` (PASS)。
-5. **Static Raycast Debug Script (`debug_static_scene_raycast.py`)**:
-   - 打印 `[HabitatRunner] Resolved stage_id: 0`。
-   - 验证 full collision 命中 Humanoid (dist=2.02m, obj_id=12) 而 static ray 击中 stage (dist=2.31m, obj_id=0, source=stage)，输出 PASS (exit code 0)。
-6. **Orientation Calibration (`calibrate_estimated_orientation.py`)**:
-   - 8 方向校准实测中位数误差 0.97°，平均误差 3.03°，输出 PASS (exit code 0)。
-7. **20-Episode Final Validation Experiment (`outputs/mvp60_final_validation/`)**:
-   - 运行完成且无任何 static API failure，数据与图表落盘成功。
-
-## Do Not Change (Strict Invariants Maintained)
-- `ea_avs_mvp/` ~ `ea_avs_mvp_v5/` 历史实现保持只读，Git diff 为 0 行。
-- 在线决策阶段（`EstimatedState-Ours`）严禁接收或读取任何 Humanoid GT 变量。
-- 严禁在选择前调用渲染器获取未来候选点的 RGB/Depth/Semantic 观测。
-- 状态估计失效或 static raycast 能力缺失时安全停留在当前位姿（`stay`），严禁静默回退使用 GT 或 full collision raycast。
+## Work Completed
+1. **Data Paths & Unified Root (`tools/motion_assets/data_paths.py`)**:
+   - 解析默认相对路径 `../../data/ActiveView`，支持 `ACTIVEVIEW_DATA_ROOT` 环境变量覆盖。
+   - 建立 `datasets/`, `assets/`, `cache/`, `runs/`, `logs/`, `tmp/` 等标准子目录。
+2. **BABEL Sync & Elderly Action Selector (`tools/motion_assets/select_babel_elderly_actions.py`)**:
+   - 解析 10,370 条候选动作片段，涵盖 5 类老人典型动作。
+   - 选定 17 条高质量 feasibility 动作片段（standing: 3, sitting: 3, bending: 3, reaching: 3, fall_related: 5）。
+   - 产出候选池 JSON/CSV、`feasibility_manifest.json/csv`、`summary.json`、`amass_subdatasets.txt`。
+3. **AMASS Portal Downloader & Verifier (`tools/motion_assets/download_amass_required.py`)**:
+   - 仅从环境变量 `AMASS_EMAIL` / `AMASS_PASSWORD` 读取凭据，杜绝文件硬编码与密码打印。
+   - 模拟官方登录认证，成功实现 `LOGIN_OK`，并从 Downloads 页面自动解析匹配 5 个子库的下载接口。
+   - 实现安全解压防 Path Traversal 逃逸与归档校验。
+   - 生成 `manual_download_required.md/json` 手动下载指引。
+4. **AMASS Indexer & Habitat Schema Compatibility (`tools/motion_assets/index_amass_files.py`)**:
+   - 建立 BABEL `feat_p` 到本地 NPZ 文件的鲁棒匹配。
+   - 检查 `trans`, `root_orient`, `poses`, `mocap_frame_rate` 等 Habitat 所需关键字段。
+   - 计算时间戳到 frame index 映射，导出 `motion_asset_manifest.json` 与 `habitat_motion_compatibility.csv`。
+5. **Unit Tests Suite (`tools/motion_assets/tests/test_motion_assets.py`)**:
+   - 包含 12 项严谨性单元测试，全部通过（12/12 PASS）。
+6. **Documentation (`tools/motion_assets/README.md`)**:
+   - 编写完整的工具使用指南与安全规范。
 
 ## Validation Plan Execution Results
-- [x] 语法与编译检查: `python -m compileall ea_avs_mvp_v6` (PASS)
-- [x] 纯 Python 17 项单元与逻辑测试: `PYTHONPATH=ea_avs_mvp_v6 python ea_avs_mvp_v6/scripts/test_v60_pure_python.py` (PASS, 17/17)
-- [x] No-GT-Leakage 静态与运行时隔离测试: `PYTHONPATH=ea_avs_mvp_v6 python ea_avs_mvp_v6/scripts/test_no_gt_leakage.py` (PASS, 4/4)
-- [x] Static Raycast 静态场景射线检测验证: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/debug_static_scene_raycast.py --config ea_avs_mvp_v6/configs/mvp60_estimated_state.yaml` (PASS, exit code 0)
-- [x] 朝向校准验证: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/calibrate_estimated_orientation.py --config ea_avs_mvp_v6/configs/mvp60_estimated_state.yaml` (PASS, exit code 0)
-- [x] 主功能 20 Episodes 闭环运行: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/run_mvp60_estimated_state.py --config ea_avs_mvp_v6/configs/mvp60_estimated_state.yaml --episodes 20 --output_dir outputs/mvp60_final_validation` (PASS, code 0)
+- [x] Motion Assets 12 项单元测试: `python3 -m unittest tools.motion_assets.tests.test_motion_assets` (PASS, 12/12)
+- [x] BABEL 动作筛选器运行: `python3 -m tools.motion_assets.select_babel_elderly_actions` (PASS, 10370 segments, 17 feasibility items)
+- [x] AMASS Portal Downloader Dry-Run: `python3 -m tools.motion_assets.download_amass_required --dry-run` (PASS, LOGIN_OK, 5 resources mapped)
+- [x] AMASS Indexer & Schema Checker: `python3 -m tools.motion_assets.index_amass_files` (PASS, manifest exported)
+- [x] v6.0 回归测试: `python3 ea_avs_mvp_v6/scripts/test_v60_pure_python.py` & `test_no_gt_leakage.py` (PASS, 21/21)

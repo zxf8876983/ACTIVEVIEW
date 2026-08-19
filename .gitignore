@@ -2,7 +2,22 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Experiment outputs
-outputs/
 .pytest_cache/
+
+# Runtime outputs & data
+outputs/
+**/outputs/
+runs/
+**/runs/
+cache/
+**/cache/
+checkpoints/
+**/checkpoints/
+visualizations/
+**/visualizations/
+logs/
+**/logs/
+tmp/
+**/tmp/
+datasets/
+**/datasets/
