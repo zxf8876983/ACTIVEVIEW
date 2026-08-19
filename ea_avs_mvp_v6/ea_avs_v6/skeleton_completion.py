@@ -6,6 +6,7 @@
     结合观测到的 3D 关节、估计的人体中心、朝向（Yaw）与尺度，
     以标准站立姿态（canonical standing template）构建完整的 Proxy 骨架。
     严格记录关键点来源，杜绝静默读取 Humanoid GT 补全。
+    未知模板类型时严格显式报错 (raise ValueError)，禁止静默 fallback。
 """
 
 from typing import Dict, Tuple
@@ -20,8 +21,12 @@ class SkeletonCompleter:
     """Proxy 骨架补全器。"""
 
     def __init__(self, template_name: str = "standing"):
+        if template_name not in POSE_SKELETONS:
+            raise ValueError(
+                f"Unsupported skeleton template: '{template_name}'. Supported: {list(POSE_SKELETONS.keys())}"
+            )
         self.template_name = template_name
-        self.canonical_template = POSE_SKELETONS.get(template_name, POSE_SKELETONS["standing"])
+        self.canonical_template = POSE_SKELETONS[template_name]
 
     def complete_skeleton(
         self,

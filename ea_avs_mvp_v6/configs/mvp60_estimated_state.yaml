@@ -6,9 +6,12 @@
 # 中文名称：面向老人动作感知的移动机器人主动视角选择 v6.0 —— 估计状态版本
 #
 # v6.0 相比 v5.0 的核心新增：
-#   1. Current RGB-D -> 2D Pose -> Depth Lifting -> EstimatedHumanState
-#   2. 估计状态驱动的局部候选采样与预测评分（零 GT 泄漏）
-#   3. 三支路对照：EstimatedState-Ours（主方法）、GTState-Ours（特权基线）、Oracle-NBV（离线上界）
+#   1. Current RGB-D -> 2D Pose -> Depth Lifting (3D Bilateral derivation) -> EstimatedHumanState
+#   2. 估计状态驱动的局部候选采样与预测评分（零 GT 泄漏，GT-free 几何光路遮挡检测）
+#   3. 三层对照：
+#      - 协议 A: Shared-Pool 离线纯状态分析
+#      - 协议 B: Candidate Generation Shift 分析
+#      - 协议 C: EstimatedState-Ours (主方法) vs GTState-Ours (特权基线) vs Oracle-GTPool / Oracle-EstPool
 
 project:
   name: "EA-AVS-MVP6.0"
@@ -59,7 +62,7 @@ humanoid_validation:
 
 # ===== v6.0 视觉感知与状态估计配置 =====
 perception:
-  pose_backend: "torchvision"  # torchvision / rtmpose / mock
+  pose_backend: "torchvision"  # torchvision / mock (未知类型严格抛错)
   device: "cuda:0"
   model_path: null
   min_pose_score: 0.30
@@ -72,6 +75,7 @@ human_state_estimation:
   min_torso_keypoints_3d: 2
 
   depth_patch_size: 5
+  min_valid_depth_pixels: 3
   depth_min_m: 0.3
   depth_max_m: 8.0
   max_depth_spread_m: 0.5
@@ -86,7 +90,7 @@ human_state_estimation:
 
   skeleton_completion:
     enabled: true
-    template: "standing_generic"
+    template: "standing"
     allow_gt_fallback: false
 
 estimated_state_policy:
@@ -115,7 +119,9 @@ occlusion:
   enabled: true
   ray_epsilon: 0.05
   target_tolerance: 0.08
+  estimated_target_tolerance: 0.12
   min_hit_distance: 0.05
+  max_invalid_occlusion_rate: 0.10
   max_raycast_error_rate: 0.10
 
 score_weights:

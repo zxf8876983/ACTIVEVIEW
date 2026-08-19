@@ -119,12 +119,13 @@ class OrientationEstimator:
             src = "hips_only"
 
         # 从横向向量（右指向左）推导前向向量：
-        # 从 2D 视觉提升得到的 3D 坐标中，人面向 +Z (yaw=0) 时，其解剖左肩在 +X，解剖右肩在 -X，v_lat = (+1, 0)
-        # 对应的人体正面朝向为 +Z (0, 1)，因此：
-        # raw_fwd_x = -v_lat.z
-        # raw_fwd_z = v_lat.x
-        raw_fwd_x = -v_lat[1]
-        raw_fwd_z = v_lat[0]
+        # 项目规范 (POSE_SKELETONS["standing"]) 约定：人面向 +Z (yaw=0) 时，
+        # 解剖左肩在 -X，解剖右肩在 +X，v_lat = left - right = (-1, 0)
+        # 前向向量应为 (0, 1) (+Z)，因此：
+        # raw_fwd_x = v_lat.z
+        # raw_fwd_z = -v_lat.x
+        raw_fwd_x = v_lat[1]
+        raw_fwd_z = -v_lat[0]
 
         # 结合配置的符号修正与一次性校准 offset
         raw_yaw = float(np.arctan2(raw_fwd_x, raw_fwd_z))

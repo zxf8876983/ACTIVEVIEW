@@ -5,6 +5,13 @@
 功能：
     对 2D 关键点进行稳健邻域深度采样，并基于统一 pinhole 相机内参及当前相机外参
     完成 3D 相机坐标与世界坐标提升（Lifting）。
+
+科学严谨性修正：
+    - neck 与 pelvis 严禁在 2D midpoint 像素上二次采样 depth。
+    - 采用 3D 双侧对称关节中点推导（Bilateral 3D midpoint derivation）：
+      neck_3d = 0.5 * (left_shoulder_3d + right_shoulder_3d)
+      pelvis_3d = 0.5 * (left_hip_3d + right_hip_3d)
+    - 增加 min_valid_depth_pixels (默认 3) 过滤单像素噪声。
 """
 
 from dataclasses import dataclass
@@ -34,7 +41,7 @@ class EstimatedJoint3D:
     confidence_2d: float
     depth_valid: bool
     observable_3d: bool
-    source: str  # "observed_2d" | "derived_2d" | "template_completion" | "missing"
+    source: str  # "observed_2d" | "derived_3d" | "template_completion" | "missing"
     uncertainty: Optional[float] = None
 
 
@@ -46,6 +53,7 @@ def sample_depth_at_pixel(
     min_depth: float = 0.3,
     max_depth: float = 8.0,
     max_spread: float = 0.5,
+    min_valid_pixels: int = 3,
 ) -> DepthSample:
     """在指定像素 (u, v) 周围小邻域内稳健采样公制深度。
 
@@ -57,6 +65,7 @@ def sample_depth_at_pixel(
         min_depth: 有效深度下限。
         max_depth: 有效深度上限。
         max_spread: 允许的最大局部深度波动（MAD）。
+        min_valid_pixels: patch 内最少有效深度像素数。
 
     返回：
         DepthSample 对象。
@@ -83,8 +92,10 @@ def sample_depth_at_pixel(
     valid_mask = (patch >= min_depth) & (patch <= max_depth)
     valid_depths = patch[valid_mask]
 
-    if valid_depths.size == 0:
-        return DepthSample(False, None, 0, patch_size, None, "no_valid_depth_in_patch")
+    if valid_depths.size < min_valid_pixels:
+        return DepthSample(
+            False, None, int(valid_depths.size), patch_size, None, "insufficient_valid_depth_pixels"
+        )
 
     # 稳健中位数深度
     median_d = float(np.median(valid_depths))
@@ -161,15 +172,26 @@ def lift_2d_keypoints_to_3d(
     camera_height: float,
     depth_config: dict,
 ) -> Dict[str, EstimatedJoint3D]:
-    """将全体 2D 关键点字典提升为 3D 关节字典。"""
+    """将全体 2D 关键点字典提升为 3D 关节字典。
+
+    注意：
+        1. 针对直接观测关节（肩、髋、肘、腕、膝、踝、头部）执行 2D -> 局部深度采样 -> 3D 逆投影。
+        2. 针对 neck 与 pelvis 派生关节，严禁在 2D midpoint 像素上采 depth，
+           而是基于 3D 左右肩与 3D 左右髋的中点进行 3D 空间几何推导 (derived_3d)。
+    """
     patch_size = depth_config.get("depth_patch_size", 5)
     min_depth = depth_config.get("depth_min_m", 0.3)
     max_depth = depth_config.get("depth_max_m", 8.0)
     max_spread = depth_config.get("max_depth_spread_m", 0.5)
+    min_valid_pixels = depth_config.get("min_valid_depth_pixels", 3)
 
     joints_3d: Dict[str, EstimatedJoint3D] = {}
 
+    # 1. 提升 COCO 直接观测关节 (跳过 neck 和 pelvis)
     for name, kpt in keypoints_2d.items():
+        if name in ("neck", "pelvis"):
+            continue
+
         if not kpt.detected:
             joints_3d[name] = EstimatedJoint3D(
                 name=name,
@@ -191,6 +213,7 @@ def lift_2d_keypoints_to_3d(
             min_depth=min_depth,
             max_depth=max_depth,
             max_spread=max_spread,
+            min_valid_pixels=min_valid_pixels,
         )
 
         if sample.valid and sample.depth_m is not None:
@@ -224,5 +247,83 @@ def lift_2d_keypoints_to_3d(
                 source="missing",
                 uncertainty=sample.spread,
             )
+
+    # 2. 严谨派生 3D neck (基于 3D 左右肩中点)
+    l_sh = joints_3d.get("left_shoulder")
+    r_sh = joints_3d.get("right_shoulder")
+    if (
+        l_sh and r_sh and l_sh.observable_3d and r_sh.observable_3d
+        and l_sh.position_world is not None and r_sh.position_world is not None
+    ):
+        pos_world = 0.5 * (l_sh.position_world + r_sh.position_world)
+        pos_cam = (
+            0.5 * (l_sh.position_camera + r_sh.position_camera)
+            if (l_sh.position_camera is not None and r_sh.position_camera is not None)
+            else None
+        )
+        conf = float((l_sh.confidence_2d + r_sh.confidence_2d) / 2.0)
+        unc = max(l_sh.uncertainty or 0.0, r_sh.uncertainty or 0.0)
+        joints_3d["neck"] = EstimatedJoint3D(
+            name="neck",
+            position_world=pos_world,
+            position_camera=pos_cam,
+            confidence_2d=conf,
+            depth_valid=True,
+            observable_3d=True,
+            source="derived_3d",
+            uncertainty=unc,
+        )
+    else:
+        kpt_neck = keypoints_2d.get("neck")
+        conf_neck = kpt_neck.confidence if kpt_neck else 0.0
+        joints_3d["neck"] = EstimatedJoint3D(
+            name="neck",
+            position_world=None,
+            position_camera=None,
+            confidence_2d=conf_neck,
+            depth_valid=False,
+            observable_3d=False,
+            source="missing",
+            uncertainty=None,
+        )
+
+    # 3. 严谨派生 3D pelvis (基于 3D 左右髋中点)
+    l_hip = joints_3d.get("left_hip")
+    r_hip = joints_3d.get("right_hip")
+    if (
+        l_hip and r_hip and l_hip.observable_3d and r_hip.observable_3d
+        and l_hip.position_world is not None and r_hip.position_world is not None
+    ):
+        pos_world = 0.5 * (l_hip.position_world + r_hip.position_world)
+        pos_cam = (
+            0.5 * (l_hip.position_camera + r_hip.position_camera)
+            if (l_hip.position_camera is not None and r_hip.position_camera is not None)
+            else None
+        )
+        conf = float((l_hip.confidence_2d + r_hip.confidence_2d) / 2.0)
+        unc = max(l_hip.uncertainty or 0.0, r_hip.uncertainty or 0.0)
+        joints_3d["pelvis"] = EstimatedJoint3D(
+            name="pelvis",
+            position_world=pos_world,
+            position_camera=pos_cam,
+            confidence_2d=conf,
+            depth_valid=True,
+            observable_3d=True,
+            source="derived_3d",
+            uncertainty=unc,
+        )
+    else:
+        kpt_pelvis = keypoints_2d.get("pelvis")
+        conf_pelvis = kpt_pelvis.confidence if kpt_pelvis else 0.0
+        joints_3d["pelvis"] = EstimatedJoint3D(
+            name="pelvis",
+            position_world=None,
+            position_camera=None,
+            confidence_2d=conf_pelvis,
+            depth_valid=False,
+            observable_3d=False,
+            source="missing",
+            uncertainty=None,
+        )
 
     return joints_3d

@@ -3,10 +3,17 @@
 Status: COMPLETED
 
 ## Task
-Implement ACTIVEVIEW v6.0: Estimated-State Active Observation Pose Selection
+ACTIVEVIEW v6.0 Scientific Rigor Fix & Multi-Protocol Validation
 
 ## Objective
-按照当前仓库中的 `EA_AVS_MVP60_Code_Generation_Document.md` 规范，实现从“当前 RGB-D 观测估计人体状态”到“驱动主动观察位姿选择”的完整科研代码实现 `ea_avs_mvp_v6/`，严格保护 Pred/True 与零 GT 泄漏信息边界，并建立与 GT-State baseline 及 Oracle 离线上界的系统对照。
+对 `ea_avs_mvp_v6/` 执行第一轮 Scientific Rigor Fix：
+1. 修复 Estimated-State 遮挡预测自洽性与 `visible_occ` 严格有效性过滤（GT-free 几何光路遮挡检测）；
+2. 统一人体 Yaw 坐标系约定与前向向量，完成 8 方向校准；
+3. 解耦候选池（Est-Pool / GT-Pool / Shared-Pool），建立同口径 Oracle-GTPool 与 Oracle-EstPool 上界与 Gap 计算体系；
+4. 调整状态估计流水线顺序（尺度感知前置）并建立 6 级下肢/骨盆基座位置估计优先级；
+5. 采用 3D Bilateral 中点解剖推导 Neck 与 Pelvis，消除 2D midpoint 深度采样误差；
+6. 完善 AST 禁词、Runner 隔离与未来观测拦截三重零 GT 泄漏防御；
+7. 完善异常边界处理与有限性校验。
 
 ## Active Development Version
 - **Version**: v6.0 (6.0.0)
@@ -19,32 +26,25 @@ Implement ACTIVEVIEW v6.0: Estimated-State Active Observation Pose Selection
 - **Active Scientific Code Baseline**: `02bc45e`
 
 ## Required Work Completed
-1. **Perception Frontend & Adapters**:
-   - `pose_backend.py`: 支持通用 COCO-17 关键点检测器抽象、TorchVision KeypointRCNN 后端适配器与离线 Mock 后端。
-   - `keypoint_schema.py`: 统一 COCO-17 到 EA-AVS 15-keypoint schema 的映射与颈部/骨盆中点派生关系。
-   - `depth_lifter.py`: 稳健局部 5x5 邻域深度采样、MAD 波动过滤与相机/世界坐标 3D 逆投影。
-2. **State Estimation Core**:
-   - `orientation_estimator.py`: 基于双侧解剖学对称对（肩/髋）的鲁棒躯干朝向（yaw）估计。
-   - `skeleton_completion.py`: 基于观测 3D 关节、估计朝向、中心和尺度的 Proxy 全身骨架构建（杜绝 GT 补全）。
-   - `estimated_human_state.py` & `state_validation.py`: 状态数据结构与有效性验证规则。
-   - `human_state_estimator.py`: 统一封装 Current RGB-D -> EstimatedHumanState 前端（无任何 GT 入参）。
-3. **Estimated-State NBV Pipeline**:
-   - `candidate_sampler.py`: 以 `estimated_human_position` 为中心的候选观察位姿采样。
-   - `estimated_predictive_evaluator.py`: 基于估计状态的候选预测评分器（零 GT 泄漏）。
-   - `predictive_evaluator.py`: GT 状态预测评分器（供 GTState-Ours 特权基线使用）。
-   - `policies.py`: `EstimatedStateOursPolicy`（支持 current-vs-candidate 竞优、stay 及感知失效安全兜底）、`GTStateOursPolicy` 及基线策略。
-   - `oracle_policy.py`: 离线同口径 Oracle-NBV 评估与 Oracle Gap / Estimation Gap 计算。
-   - `metrics.py`: 状态估计误差与三支路比较指标落盘工具。
-   - `visualization.py`: 2D/3D 姿态检测与候选视角可视化输出。
-4. **Validation & Debug Scripts**:
-   - `scripts/smoke_test_pose_backend.py` (PASS)
-   - `scripts/debug_current_rgbd_pose.py` (PASS)
-   - `scripts/debug_depth_lifting.py` (PASS)
-   - `scripts/calibrate_estimated_orientation.py` (PASS)
-   - `scripts/compare_gt_estimated_state.py` (PASS)
-   - `scripts/test_no_gt_leakage.py` (PASS, 3/3)
-   - `scripts/test_v60_pure_python.py` (PASS, 7/7)
-   - `scripts/run_mvp60_estimated_state.py` (PASS, 20 episodes)
+1. **Core Modules Rigor Updates**:
+   - `raycast_utils.py`: 增加 `cast_ray_to_estimated_point`（GT-free 3 态分类，0.12m 容差带）。
+   - `occlusion.py`: 增加 `compute_estimated_keypoint_occlusion` 与 `compute_estimated_occlusion_stats`。
+   - `estimated_predictive_evaluator.py`: 严格条件 `in_fov and occ_valid and not is_occ` 过滤 `visible_occ`，失效返回 15 点。
+   - `depth_lifter.py`: 3D 双侧解剖推导 neck/pelvis，移除 2D midpoint 深度采样，增加 `min_valid_depth_pixels`。
+   - `human_state_estimator.py`: 尺度估计前置，6 级基座位置估计优先级，读取 `POSE_SKELETONS["standing"]`。
+   - `humanoid_manager.py`: 对齐 Habitat KinematicHumanoid URDF 原生正面与全局 $+Z$ 坐标系。
+   - `orientation_estimator.py`: 统一解剖左右肩与前向向量推导公式。
+   - `oracle_policy.py`: 区分 Oracle-GTPool 与 Oracle-EstPool，计算同口径 Gap，拒绝跨池伪负 Gap。
+   - `skeleton_completion.py` & `pose_backend.py`: 未知类型显式抛出 `ValueError`。
+   - `state_validation.py`: 增加有限性与数值合理范围校验。
+   - `metrics.py`: 扩展三协议指标记录与 Summary 汇总统计。
+   - `configs/mvp60_estimated_state.yaml`: 规范配置参数字段。
+2. **Validation & Test Scripts**:
+   - `scripts/test_v60_pure_python.py`: 覆盖 10 项纯 Python 科学严谨性测试 (PASS, 8/8 test methods)。
+   - `scripts/test_no_gt_leakage.py`: 实现 Guard A、B、C 三重静态与运行时防护断言 (PASS, 3/3)。
+   - `scripts/calibrate_estimated_orientation.py`: 实测 8 方向校准中位数误差 0.97°，平均误差 3.03° (PASS)。
+   - `scripts/compare_gt_estimated_state.py`: 8 episode 状态对比批处理运行通过 (PASS)。
+   - `scripts/run_mvp60_estimated_state.py`: 20 episode 闭环实验运行完成，数据落盘至 `outputs/mvp60_rigor_validation/` (PASS)。
 
 ## Do Not Change (Strict Invariants Maintained)
 - `ea_avs_mvp/` ~ `ea_avs_mvp_v5/` 历史实现保持只读，Git diff 为 0 行。
@@ -54,9 +54,8 @@ Implement ACTIVEVIEW v6.0: Estimated-State Active Observation Pose Selection
 
 ## Validation Plan Execution Results
 - [x] 语法与编译检查: `python -m compileall ea_avs_mvp_v6` (PASS)
-- [x] 纯 Python 单元与逻辑测试: `PYTHONPATH=ea_avs_mvp_v6 python ea_avs_mvp_v6/scripts/test_v60_pure_python.py` (PASS, 7/7)
+- [x] 纯 Python 单元与逻辑测试: `PYTHONPATH=ea_avs_mvp_v6 python ea_avs_mvp_v6/scripts/test_v60_pure_python.py` (PASS, 8/8)
 - [x] No-GT-Leakage 静态与运行时隔离测试: `PYTHONPATH=ea_avs_mvp_v6 python ea_avs_mvp_v6/scripts/test_no_gt_leakage.py` (PASS, 3/3)
-- [x] 视觉前端与状态估计 Debug 验证: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/debug_depth_lifting.py` (PASS)
-- [x] 朝向校准验证: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/calibrate_estimated_orientation.py` (PASS)
-- [x] 状态对比批处理: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/compare_gt_estimated_state.py --episodes 5` (PASS)
-- [x] 主功能 20 Episodes 闭环运行: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/run_mvp60_estimated_state.py --config ea_avs_mvp_v6/configs/mvp60_estimated_state.yaml --episodes 20` (PASS, code 0)
+- [x] 朝向校准验证: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/calibrate_estimated_orientation.py --config ea_avs_mvp_v6/configs/mvp60_estimated_state.yaml` (PASS, median error 0.97°)
+- [x] 状态对比批处理: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/compare_gt_estimated_state.py --config ea_avs_mvp_v6/configs/mvp60_estimated_state.yaml --episodes 8` (PASS)
+- [x] 主功能 20 Episodes 闭环运行: `PYTHONPATH=ea_avs_mvp_v6 /home/zxf/anaconda3/envs/habitat/bin/python ea_avs_mvp_v6/scripts/run_mvp60_estimated_state.py --config ea_avs_mvp_v6/configs/mvp60_estimated_state.yaml --episodes 20 --output_dir outputs/mvp60_rigor_validation` (PASS, code 0)

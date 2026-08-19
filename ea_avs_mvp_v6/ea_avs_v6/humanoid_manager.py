@@ -116,11 +116,12 @@ class HumanoidManager:
     def set_base_pose(self, position: np.ndarray, yaw: float):
         self._agent.base_pos = mn.Vector3(
             float(position[0]), float(position[1]), float(position[2]))
-        self._agent.base_rot = float(yaw)
+        # KinematicHumanoid URDF 原生正面为 -X，旋转 +pi/2 对齐 ACTIVEVIEW 的 +Z 轴约定
+        self._agent.base_rot = float(yaw + np.pi / 2.0)
         self._state.base_position = np.asarray(position, dtype=np.float32)
         self._state.base_yaw = float(yaw)
         self._state.requested_yaw = float(yaw)
-        self._state.actual_base_yaw = float(self._agent.base_rot)
+        self._state.actual_base_yaw = float(yaw)
         self._update()
         self._sync_controller_base()
 
@@ -149,8 +150,8 @@ class HumanoidManager:
         if self._agent is not None:
             bpos = np.asarray(self._agent.base_pos, dtype=np.float32).copy()
             self._state.base_position = bpos
-            self._state.base_yaw = float(self._agent.base_rot)
-            self._state.actual_base_yaw = float(self._agent.base_rot)
+            self._state.base_yaw = float(self._agent.base_rot - np.pi / 2.0)
+            self._state.actual_base_yaw = float(self._state.base_yaw)
 
     def _apply_controller_to_agent(self):
         if self._controller is None or self._agent is None:

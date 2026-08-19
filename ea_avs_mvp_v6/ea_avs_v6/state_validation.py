@@ -3,11 +3,12 @@
 =================================================
 
 功能：
-    依据配置阈值对 EstimatedHumanState 进行全面有效性检验，
+    依据配置阈值与数值有效性（Finite / NaN / Inf）对 EstimatedHumanState 进行全面检验，
     不合格时返回明确的 failure_reason，触发安全兜底，严禁静默回退 GT。
 """
 
 from typing import Optional, Tuple
+import numpy as np
 from .estimated_human_state import EstimatedHumanState
 from .action_pose_library import KEYPOINT_GROUPS
 
@@ -53,12 +54,29 @@ def validate_estimated_state(
     if torso_3d_count < min_torso_3d:
         return False, f"insufficient_torso_3d_keypoints_{torso_3d_count}<{min_torso_3d}"
 
-    # 5. 检查人体位置
-    if req_pos and (state.human_position_world is None or state.human_position_source == "invalid"):
-        return False, "human_position_invalid"
+    # 5. 检查人体位置存在性与有限性 (finite check)
+    if req_pos:
+        if state.human_position_world is None or state.human_position_source == "invalid":
+            return False, "human_position_invalid"
+        if not np.all(np.isfinite(state.human_position_world)):
+            return False, "human_position_non_finite"
 
-    # 6. 检查人体朝向
-    if req_orient and (state.human_yaw is None or state.yaw_source == "invalid"):
-        return False, "human_orientation_invalid"
+    # 6. 检查人体朝向存在性与有限性 (finite check)
+    if req_orient:
+        if state.human_yaw is None or state.yaw_source == "invalid":
+            return False, "human_orientation_invalid"
+        if not np.isfinite(state.human_yaw):
+            return False, "human_yaw_non_finite"
+
+    # 7. 检查人体尺度比例有限性与合理范围 [0.4, 2.5]
+    if state.body_scale is not None:
+        if not np.isfinite(state.body_scale) or not (0.4 <= state.body_scale <= 2.5):
+            return False, f"body_scale_out_of_range_{state.body_scale}"
+
+    # 8. 检查 Proxy 骨架各关节坐标有限性
+    if state.proxy_full_skeleton:
+        for k, pt in state.proxy_full_skeleton.items():
+            if pt is None or not np.all(np.isfinite(pt)):
+                return False, f"proxy_joint_non_finite_{k}"
 
     return True, None

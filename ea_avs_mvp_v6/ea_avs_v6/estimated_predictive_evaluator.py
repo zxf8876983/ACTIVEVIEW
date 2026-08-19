@@ -7,8 +7,10 @@
     对候选观察位姿进行遮挡感知预测评分。
 
 重要科学约束：
-    - 严禁传入或读取任何 Humanoid GT 变量。
-    - 保持与 v5.0 完全相同的评分公式，以干净分离状态估计带来的误差。
+    - 严禁传入或读取任何 Humanoid GT 变量及 object IDs。
+    - 遮挡预测采用 GT-free 几何光路检测。
+    - 严格检查 occ_valid：valid=False 的关键点绝不计入 visible_occ。
+    - 保持与主实验完全相同的预测评分权重公式。
 """
 
 from typing import Dict, List, Optional
@@ -16,14 +18,18 @@ import numpy as np
 
 from .geometry import angle_in_camera_fov, gaussian_score
 from .action_pose_library import KEYPOINT_GROUPS
+from .keypoint_schema import EA_AVS_15_KEYPOINTS
 from .orientation import compute_relative_view_angle, compute_orientation_score
 from .action_part_weights import get_action_part_weights
-from .occlusion import compute_keypoint_occlusion, compute_occlusion_stats
+from .occlusion import (
+    compute_estimated_keypoint_occlusion,
+    compute_estimated_occlusion_stats,
+)
 from .estimated_human_state import EstimatedHumanState
 
 
 class EstimatedPredictiveEvaluator:
-    """基于估计状态的候选视角预测评估器。"""
+    """基于估计状态的候选视角预测评估器（GT-Free）。"""
 
     GROUP_NAMES = ["torso", "lower_body", "head", "arms"]
 
@@ -48,7 +54,7 @@ class EstimatedPredictiveEvaluator:
         """对候选视角进行基于 EstimatedHumanState 的预测评分。
 
         参数：
-            runner: HabitatRunner 实例（用于静态地图几何 ray casting）。
+            runner: HabitatRunner 实例（用于静态地图几何 ray casting，不访问 humanoid_manager）。
             view_pos: 候选视角位置。
             view_yaw: 候选视角朝向（弧度）。
             robot_start_pos: 机器人起始位置。
@@ -79,7 +85,7 @@ class EstimatedPredictiveEvaluator:
                 "occluded_keypoints_pred": [],
                 "fov_visible_keypoints_pred": [],
                 "is_occlusion_valid_pred": False,
-                "invalid_occlusion_keypoint_count_pred": len(self.GROUP_NAMES),
+                "invalid_occlusion_keypoint_count_pred": len(EA_AVS_15_KEYPOINTS),
                 "invalid_occlusion_keypoint_rate_pred": 1.0,
                 "is_estimated_state": True,
             }
@@ -89,15 +95,13 @@ class EstimatedPredictiveEvaluator:
         proxy_skeleton = estimated_state.proxy_full_skeleton
         kp_names = list(proxy_skeleton.keys())
 
-        # 2. 基于已知场景地图做几何射线遮挡检测 (不传入 GT ids)
-        occlusion_map = compute_keypoint_occlusion(
+        # 2. 基于已知场景地图做 GT-free 几何光路射线遮挡检测
+        occlusion_map = compute_estimated_keypoint_occlusion(
             runner=runner,
             view_pos=view_pos,
-            human_skeleton=proxy_skeleton,
+            proxy_skeleton=proxy_skeleton,
             camera_height=self.camera_cfg["camera_height"],
             config=self.config,
-            humanoid_object_ids=None,
-            keypoint_meta=None,
         )
 
         fov_visible = []
@@ -119,17 +123,19 @@ class EstimatedPredictiveEvaluator:
             )
 
             occ_info = occlusion_map.get(name, {})
-            is_occ = occ_info.get("occluded", False)
+            occ_valid = bool(occ_info.get("valid", False))
+            is_occ = bool(occ_info.get("occluded", False))
             in_fov = fov_res["in_fov"]
 
             if in_fov:
                 fov_visible.append(name)
                 horizontal_angles.append(fov_res["horizontal_angle"])
 
-            if is_occ:
+            if is_occ and occ_valid:
                 occluded_all.append(name)
 
-            if in_fov and not is_occ:
+            # 核心科学修正：只有在 FOV 内、遮挡判定有效且未被遮挡时才允许进入 visible_occ
+            if in_fov and occ_valid and not is_occ:
                 visible_occ.append(name)
 
         # 3. 动作部位权重与可见性
@@ -185,10 +191,12 @@ class EstimatedPredictiveEvaluator:
             - w_move * C_move
         )
 
-        occ_stats = compute_occlusion_stats(occlusion_map, kp_names)
+        occ_stats = compute_estimated_occlusion_stats(occlusion_map, kp_names)
         invalid_cnt = len(kp_names) - occ_stats["occlusion_valid_keypoint_count"]
         invalid_rate = invalid_cnt / float(len(kp_names)) if kp_names else 1.0
-        max_invalid_rate = float(self.occ_cfg.get("max_raycast_error_rate", 0.10))
+        max_invalid_rate = float(
+            self.occ_cfg.get("max_invalid_occlusion_rate", self.occ_cfg.get("max_raycast_error_rate", 0.10))
+        )
         is_occ_valid = invalid_rate <= max_invalid_rate
 
         res = {

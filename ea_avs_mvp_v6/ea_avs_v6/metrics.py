@@ -3,10 +3,12 @@
 ======================================
 
 功能：
-    定义与记录 v6.0 的三大核心指标：
-        1. 状态估计精度（位置误差、朝向误差、MPJPE、3D 可观测关节数）
-        2. 策略选择质量与比较（EstimatedState-Ours vs GTState-Ours vs Baselines vs Oracle）
-        3. 动作导向真实得分（Q_true, S_action_occ_true, 遮挡率, Oracle Gap, Estimation Gap）
+    定义与记录 v6.0 的核心科研指标：
+        1. 状态估计精度（位置误差、XZ 平面位置误差、朝向误差、MPJPE、3D 可观测关节数、尺度等）
+        2. 候选空间偏移（Candidate center shift、各 pool 有效候选数）
+        3. Shared-Pool 离线纯状态分析（协议 A：决策一致性、位置偏差、Q_true 差距）
+        4. Oracle 离线上界与同口径 Gap（Oracle-GTPool vs GTState-Ours, Oracle-EstPool vs EstimatedState-Ours）
+        5. 端到端系统级对比（协议 C：EstimatedState-Ours vs GTState-Ours vs Baselines）
 """
 
 import csv
@@ -25,17 +27,7 @@ def compute_state_estimation_metrics(
     gt_human_yaw: float,
     gt_skeleton: Dict[str, np.ndarray],
 ) -> dict:
-    """计算当前 RGB-D 人体状态估计与 GT 之间的精度误差。
-
-    参数：
-        estimated_state: 估计的人体状态。
-        gt_human_pos: GT 人体位置 shape=(3,)。
-        gt_human_yaw: GT 人体朝向角（弧度）。
-        gt_skeleton: GT 人体 15 关键点世界坐标字典。
-
-    返回：
-        状态估计误差指标字典。
-    """
+    """计算当前 RGB-D 人体状态估计与 GT 之间的精度误差。"""
     if not estimated_state.valid or estimated_state.human_position_world is None:
         return {
             "state_valid": False,
@@ -49,6 +41,11 @@ def compute_state_estimation_metrics(
             "num_visible_2d_keypoints": len(estimated_state.visible_2d_keypoints),
             "num_observable_3d_keypoints": len(estimated_state.observable_3d_keypoints),
             "num_template_completed_keypoints": len(estimated_state.template_completed_keypoints),
+            "human_position_source": estimated_state.human_position_source,
+            "yaw_source": estimated_state.yaw_source,
+            "body_scale": estimated_state.body_scale,
+            "state_confidence": estimated_state.state_confidence,
+            "initial_view_gt_aligned": True,
         }
 
     est_pos = estimated_state.human_position_world
@@ -95,6 +92,11 @@ def compute_state_estimation_metrics(
         "num_visible_2d_keypoints": len(estimated_state.visible_2d_keypoints),
         "num_observable_3d_keypoints": len(estimated_state.observable_3d_keypoints),
         "num_template_completed_keypoints": len(estimated_state.template_completed_keypoints),
+        "human_position_source": estimated_state.human_position_source,
+        "yaw_source": estimated_state.yaw_source,
+        "body_scale": estimated_state.body_scale,
+        "state_confidence": estimated_state.state_confidence,
+        "initial_view_gt_aligned": True,
     }
 
 
@@ -108,22 +110,15 @@ class MetricsWriter:
         self.jsonl_path = os.path.join(output_dir, "episodes.jsonl")
         self.summary_path = os.path.join(output_dir, "summary.json")
         self.records: List[dict] = []
-        self._csv_file = None
-        self._csv_writer = None
 
     def log_episode(self, episode_data: dict):
         self.records.append(episode_data)
 
-        # 写入 JSONL
         with open(self.jsonl_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(episode_data, ensure_ascii=False) + "\n")
 
-        # 写入 CSV (在 close 时统一格式化写入，或使用固定字段)
-        pass
-
     def close(self):
         if self.records:
-            # 统一计算所有 records 的平坦字段集合
             flat_records = [self._flatten_dict(r) for r in self.records]
             all_fields = []
             seen = set()
@@ -174,22 +169,59 @@ class MetricsWriter:
                     vals.append(cur)
             return float(np.mean(vals)) if vals else None
 
-        # 估计指标聚合
+        def agg_median(key_path):
+            vals = []
+            for r in records:
+                cur = r
+                for k in key_path:
+                    if isinstance(cur, dict) and k in cur:
+                        cur = cur[k]
+                    else:
+                        cur = None
+                        break
+                if cur is not None and isinstance(cur, (int, float)) and not np.isnan(cur):
+                    vals.append(cur)
+            return float(np.median(vals)) if vals else None
+
+        # 1. State estimation
+        valid_states = sum(1 for r in records if r.get("estimation_metrics", {}).get("state_valid", False))
+        summary["valid_state_count"] = valid_states
+        summary["valid_state_rate"] = valid_states / float(len(records)) if records else 0.0
         summary["mean_pos_error_m"] = agg_mean(["estimation_metrics", "pos_error_m"])
         summary["mean_pos_error_xz_m"] = agg_mean(["estimation_metrics", "pos_error_xz_m"])
         summary["mean_yaw_error_deg"] = agg_mean(["estimation_metrics", "yaw_error_deg"])
+        summary["median_yaw_error_deg"] = agg_median(["estimation_metrics", "yaw_error_deg"])
+        summary["mean_observable_joint_error_m"] = agg_mean(["estimation_metrics", "observable_joint_error_mean_m"])
         summary["mean_proxy_mpjpe_m"] = agg_mean(["estimation_metrics", "proxy_skeleton_mpjpe_m"])
-        summary["mean_observable_3d_keypoints"] = agg_mean(["estimation_metrics", "num_observable_3d_keypoints"])
+        summary["mean_num_observable_3d_keypoints"] = agg_mean(["estimation_metrics", "num_observable_3d_keypoints"])
 
-        # 策略真实得分聚合
-        for pol in ["EstimatedState-Ours", "GTState-Ours", "Fixed", "Random", "Nearest", "Oracle"]:
+        # 2. Candidate pool shift
+        summary["mean_candidate_center_shift_m"] = agg_mean(["candidate_shift_metrics", "candidate_center_shift_m"])
+        summary["mean_valid_candidates_est_pool"] = agg_mean(["candidate_shift_metrics", "valid_candidate_count_est_pool"])
+        summary["mean_valid_candidates_gt_pool"] = agg_mean(["candidate_shift_metrics", "valid_candidate_count_gt_pool"])
+
+        # 3. Occlusion stats
+        summary["mean_estimated_blocked_keypoint_count"] = agg_mean(["occlusion_summary", "estimated_blocked_keypoint_count"])
+        summary["mean_estimated_unknown_keypoint_count"] = agg_mean(["occlusion_summary", "estimated_unknown_keypoint_count"])
+        summary["stay_fallback_count"] = sum(1 for r in records if r.get("policy_results", {}).get("EstimatedState-Ours", {}).get("is_stay_fallback", False))
+
+        # 4. Shared pool (Protocol A)
+        summary["shared_pool_selected_agreement_rate"] = agg_mean(["shared_pool_metrics", "shared_pool_selected_agreement"])
+        summary["shared_pool_selected_position_distance_m"] = agg_mean(["shared_pool_metrics", "shared_pool_selected_position_distance_m"])
+        summary["shared_pool_mean_q_true_gap"] = agg_mean(["shared_pool_metrics", "shared_pool_q_true_gap"])
+
+        # 5. End-to-End results (Protocol C)
+        for pol in ["EstimatedState-Ours", "GTState-Ours", "Fixed", "Random", "Nearest"]:
             summary[f"mean_Q_true_{pol}"] = agg_mean(["policy_results", pol, "true_score", "Q_true"])
             summary[f"mean_S_action_occ_true_{pol}"] = agg_mean(["policy_results", pol, "true_score", "S_action_occ_true"])
             summary[f"mean_occlusion_rate_true_{pol}"] = agg_mean(["policy_results", pol, "true_score", "occlusion_rate_true"])
 
-        summary["mean_oracle_gap_est"] = agg_mean(["comparative_metrics", "oracle_gap_est"])
-        summary["mean_oracle_gap_gt"] = agg_mean(["comparative_metrics", "oracle_gap_gt"])
-        summary["mean_estimation_gap"] = agg_mean(["comparative_metrics", "estimation_gap"])
-        summary["policy_agreement_rate"] = agg_mean(["comparative_metrics", "estimated_gt_agreement"])
+        summary["mean_end_to_end_gt_est_q_true_gap"] = agg_mean(["comparative_metrics", "end_to_end_gt_est_q_true_gap"])
+
+        # 6. Oracle Upper Bounds & Same-Pool Gaps
+        summary["mean_Q_true_OracleGTPool"] = agg_mean(["oracle_results", "Oracle-GTPool", "true_score", "Q_true"])
+        summary["mean_Q_true_OracleEstPool"] = agg_mean(["oracle_results", "Oracle-EstPool", "true_score", "Q_true"])
+        summary["mean_oracle_gap_gt_pool"] = agg_mean(["oracle_results", "oracle_gap_gt_pool"])
+        summary["mean_oracle_gap_est_pool"] = agg_mean(["oracle_results", "oracle_gap_est_pool"])
 
         return summary

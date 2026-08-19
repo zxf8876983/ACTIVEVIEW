@@ -5,6 +5,7 @@
 功能：
     提供通用 2D 人体姿态检测后端接口与实现，包括基于 TorchVision KeypointRCNN 的实现
     以及离线测试使用的 Mock 后端。
+    未知类型严格显式报错 (raise ValueError)，禁止静默 fallback。
 """
 
 from abc import ABC, abstractmethod
@@ -112,12 +113,11 @@ class TorchvisionPoseBackend(PoseBackend):
             for j, name in enumerate(COCO_17_KEYPOINTS):
                 u = float(kpts_raw[j, 0])
                 v = float(kpts_raw[j, 1])
-                # 如果有专门的 keypoint_scores 使用之，否则使用 visibility / 1.0
                 if keypoint_scores is not None:
                     conf = float(keypoint_scores[i, j])
                 else:
                     conf = float(kpts_raw[j, 2])
-                    if conf > 1.0:  # normalize if necessary
+                    if conf > 1.0:
                         conf = 1.0 if conf > 0 else 0.0
                 coco_dict[name] = (u, v, conf)
 
@@ -157,7 +157,7 @@ class MockPoseBackend(PoseBackend):
 
 
 def create_pose_backend(config: dict) -> PoseBackend:
-    """根据配置创建 PoseBackend 实例。"""
+    """根据配置创建 PoseBackend 实例。未知类型严格抛出 ValueError。"""
     p_cfg = config.get("perception", {})
     backend_type = p_cfg.get("pose_backend", "torchvision").lower()
 
@@ -171,9 +171,6 @@ def create_pose_backend(config: dict) -> PoseBackend:
             model_path=p_cfg.get("model_path"),
         )
     else:
-        # 默认回退 torchvision
-        return TorchvisionPoseBackend(
-            device=p_cfg.get("device", "cuda:0"),
-            min_pose_score=p_cfg.get("min_pose_score", 0.30),
-            min_keypoint_confidence=p_cfg.get("min_keypoint_confidence", 0.30),
+        raise ValueError(
+            f"Unsupported pose backend: '{backend_type}'. Supported backends are: ['torchvision', 'mock']"
         )
