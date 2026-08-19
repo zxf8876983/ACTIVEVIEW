@@ -271,6 +271,7 @@ class TrueEvaluator:
         geom_environment_count = 0
         geom_self_count = 0
         geom_unknown_count = 0
+        geom_none_count = 0
         depth_occluded_count = 0
         geo_disc_agreement_count = 0
         geo_disc_disagreement_count = 0
@@ -289,16 +290,20 @@ class TrueEvaluator:
             depth_valid = bool(dres["depth_valid"])
             depth_occ = bool(dres["occluded"]) if depth_valid else None
 
-            # 几何 cause 计数（仅 geometry 有效时）
-            if geom_valid:
-                if geom_cause == "target_surface":
-                    geom_target_surface_count += 1
-                elif geom_cause == "environment":
-                    geom_environment_count += 1
-                elif geom_cause == "humanoid_self":
-                    geom_self_count += 1
-                elif geom_cause == "unknown":
-                    geom_unknown_count += 1
+            # 几何 cause 计数（unknown/invalid 必须统计，不能被 if geom_valid 丢掉）
+            if geom_cause == "unknown" or not geom_valid:
+                geom_unknown_count += 1
+            elif geom_cause == "target_surface":
+                geom_target_surface_count += 1
+            elif geom_cause == "environment":
+                geom_environment_count += 1
+            elif geom_cause == "humanoid_self":
+                geom_self_count += 1
+            elif geom_cause not in ("none",):
+                # 未识别的 cause 也作为 unknown（防御性处理）
+                geom_unknown_count += 1
+            else:
+                geom_none_count += 1
 
             if depth_valid:
                 depth_valid_count += 1
@@ -526,6 +531,7 @@ class TrueEvaluator:
             "geometry_environment_occluded_count_true": int(geom_environment_count),
             "geometry_self_occluded_count_true": int(geom_self_count),
             "geometry_unknown_count_true": int(geom_unknown_count),
+            "geometry_none_count_true": int(geom_none_count),
             "depth_occluded_keypoint_count_true": int(depth_occluded_count),
             "depth_geometry_occlusion_agreement_count": int(
                 geo_disc_agreement_count),

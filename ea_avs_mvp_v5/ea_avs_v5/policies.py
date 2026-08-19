@@ -100,8 +100,19 @@ class OursPolicy:
             return bool(v.pred_score and v.pred_score.get(
                 "is_occlusion_valid_pred", False))
 
+        current_valid = bool(
+            current_view.pred_score
+            and current_view.pred_score.get("is_occlusion_valid_pred", False)
+            and current_view.pred_score.get("Q_pred") is not None)
+
         eligible = []
         excluded = 0
+
+        # current_view 必须参与正常 Q_pred 竞争；只有 invalid 时才不进入
+        # eligible，但仍可作为最终安全 fallback。
+        if current_valid:
+            eligible.append(current_view)
+
         for c in candidates:
             if not c.is_valid:
                 continue
@@ -112,25 +123,25 @@ class OursPolicy:
             else:
                 excluded += 1
 
-        current_valid = bool(
-            current_view.pred_score
-            and current_view.pred_score.get("is_occlusion_valid_pred", False)
-            and current_view.pred_score.get("Q_pred") is not None)
-
         if eligible:
+            selected = max(eligible, key=lambda v: v.pred_score["Q_pred"])
             self.last_selection_stats = {
                 "excluded_invalid_occ_count": excluded,
+                "eligible_candidate_count": len(eligible),
+                "current_occ_valid": current_valid,
+                "selected_is_current": selected is current_view,
                 "fell_back_to_current": False,
                 "fallback_reason": None,
             }
-            return max(eligible, key=lambda v: v.pred_score["Q_pred"])
+            return selected
 
-        # 无 eligible → 退回 current（即使 current occlusion invalid 也作安全兜底）
+        # 无 eligible → 退回 current（即使 current invalid 也作安全兜底）
         self.last_selection_stats = {
             "excluded_invalid_occ_count": excluded,
+            "eligible_candidate_count": 0,
+            "current_occ_valid": current_valid,
+            "selected_is_current": True,
             "fell_back_to_current": True,
-            "fallback_reason": (
-                "no_valid_occ_candidate"
-                if not current_valid else "no_scored_candidate"),
+            "fallback_reason": "no_valid_occ_view",
         }
         return current_view

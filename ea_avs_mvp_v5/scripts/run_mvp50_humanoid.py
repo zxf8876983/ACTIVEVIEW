@@ -538,6 +538,10 @@ def run_one_episode(
                 "occlusion_valid_keypoint_count_pred", 0),
             "raycast_error_count_pred": pred_score.get("raycast_error_count_pred", 0),
             "raycast_error_rate_pred": pred_score.get("raycast_error_rate_pred", 0.0),
+            "invalid_occlusion_keypoint_count_pred": pred_score.get(
+                "invalid_occlusion_keypoint_count_pred", 0),
+            "invalid_occlusion_keypoint_rate_pred": pred_score.get(
+                "invalid_occlusion_keypoint_rate_pred", 0.0),
             "target_surface_keypoint_count_pred": pred_score.get(
                 "target_surface_keypoint_count_pred", 0),
             "environment_occluded_keypoint_count_pred": pred_score.get(
@@ -587,6 +591,8 @@ def run_one_episode(
                 "geometry_self_occluded_count_true", 0),
             "geometry_unknown_count_true": true_score.get(
                 "geometry_unknown_count_true", 0),
+            "geometry_none_count_true": true_score.get(
+                "geometry_none_count_true", 0),
             "depth_occluded_keypoint_count_true": true_score.get(
                 "depth_occluded_keypoint_count_true", 0),
             "depth_geometry_occlusion_agreement_count": true_score.get(
@@ -632,6 +638,10 @@ def run_one_episode(
             "ours_invalid_occ_candidate_excluded_count": ours_excluded_invalid,
             "ours_fallback_to_current_due_to_no_valid_occ_candidate": int(
                 ours_fell_back),
+            "ours_stay_by_score": int(
+                policy.name == "Ours" and is_current and not ours_fell_back),
+            "ours_stay_by_fallback": int(
+                policy.name == "Ours" and ours_fell_back),
             # v5.0 Humanoid 状态
             "semantic_sensor_available": int(rs_curr.get(
                 "semantic_sensor_available", False)),

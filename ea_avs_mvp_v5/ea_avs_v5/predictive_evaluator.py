@@ -245,11 +245,24 @@ class PredictiveEvaluator:
         unknown_occlusion_keypoint_count_pred = occ_stats[
             "unknown_occlusion_keypoint_count"]
 
-        # 单视角遮挡判断有效性：ray cast 失败率超过阈值则标记无效
-        max_error_rate = self.config.get("occlusion", {}).get(
-            "max_raycast_error_rate", 0.10)
+        # candidate validity 必须覆盖所有 valid=False keypoints（包括 unknown），
+        # 不能只检查 raycast exception rate。
+        total_kp_count = len(kp_names)
+        invalid_occlusion_keypoint_count_pred = (
+            total_kp_count - occlusion_valid_keypoint_count_pred)
+        invalid_occlusion_keypoint_rate_pred = (
+            invalid_occlusion_keypoint_count_pred / total_kp_count
+            if total_kp_count > 0 else 1.0)
+
+        # 兼容旧配置名：max_raycast_error_rate 现在实际限制所有 invalid
+        # occlusion keypoints 的比例；可用新字段覆盖。
+        occ_cfg = self.config.get("occlusion", {})
+        max_invalid_rate = occ_cfg.get(
+            "max_invalid_occlusion_rate",
+            occ_cfg.get("max_raycast_error_rate", 0.10),
+        )
         is_occlusion_valid_pred = bool(
-            raycast_error_rate_pred <= max_error_rate
+            invalid_occlusion_keypoint_rate_pred <= max_invalid_rate
         )
 
         # =====================================================================
@@ -274,6 +287,10 @@ class PredictiveEvaluator:
             "occluded_keypoint_count_pred": int(occluded_keypoint_count_pred),
             "raycast_error_count_pred": int(raycast_error_count_pred),
             "raycast_error_rate_pred": float(raycast_error_rate_pred),
+            "invalid_occlusion_keypoint_count_pred": int(
+                invalid_occlusion_keypoint_count_pred),
+            "invalid_occlusion_keypoint_rate_pred": float(
+                invalid_occlusion_keypoint_rate_pred),
             "target_surface_keypoint_count_pred": int(
                 target_surface_keypoint_count_pred),
             "environment_occluded_keypoint_count_pred": int(
