@@ -1,9 +1,11 @@
 # ACTIVEVIEW Project State
 
 Last Updated: 2026-08-19  
-Repository HEAD: 76706d0 (main)  
+Active Branch: main  
 Active Scientific Code Baseline: 02bc45e  
 Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Researchers
+
+> **Runtime Git State Note**: 当前 Repository HEAD 属于运行时 Git 状态，不在本文件中静态保存。代码模型若需获取当前真实仓库状态，请直接查询 Git (`git rev-parse --short HEAD` / `git status --short`)。
 
 ---
 
@@ -70,8 +72,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ## 8. Current Stable Point
 - **Active Branch**: `main`
-- **Repository HEAD**: `76706d0` (infra context setup)
-- **Latest v5 Scientific-Code Commit**: `02bc45e` - `refactor(v5.0): final closure - current-vs-candidate competition, invalid-occlusion validity, geometry cause counts`
+- **Active Scientific Code Baseline**: `02bc45e` - `refactor(v5.0): final closure - current-vs-candidate competition, invalid-occlusion validity, geometry cause counts`
 - **Recent Key Scientific Commits**:
   - `02bc45e`: v5.0 final closure (current-vs-candidate competition, invalid-occlusion validity, closure unit test)
   - `aab699a`: v5.0 closure fix (unknown validity, target-surface occlusion, semantic invisible, oracle same-aperture gap)
