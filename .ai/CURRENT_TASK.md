@@ -33,9 +33,10 @@ Status: [PENDING / IN_PROGRESS / BLOCKED / COMPLETED]
 [Relevant background, motivation, or design rationale]
 
 ### Relevant Files
-- Target Code: `ea_avs_mvp_v5/...`
-- Target Configs: `ea_avs_mvp_v5/configs/...`
-- Specification: `EA_AVS_MVP50_Code_Generation_Document.md`
+- Active Code Directory: [Read from .ai/PROJECT_STATE.md]
+- Target Files:
+- Target Configs:
+- Active Version Specification: [Read from .ai/PROJECT_STATE.md]
 
 ### Required Changes
 1. [Change item 1]
@@ -43,14 +44,17 @@ Status: [PENDING / IN_PROGRESS / BLOCKED / COMPLETED]
 3. [Change item 3]
 
 ### Do Not Change (Strict Invariants)
-- [e.g., Do not touch v1-v4 code]
+- [e.g., Do not touch historical read-only version directories]
 - [e.g., Do not break Pred/True separation]
 - [e.g., Do not modify evaluation protocol]
 
 ### Validation Plan
-- [ ] Syntax check: `python -m compileall ea_avs_mvp_v5`
-- [ ] Policy unit test: `python ea_avs_mvp_v5/scripts/test_v50_closure_policy.py`
-- [ ] Smoke test: `cd ea_avs_mvp_v5 && python scripts/run_mvp50_humanoid.py --episodes 1` (If Habitat available)
+- [ ] Syntax / import check:
+- [ ] Unit / logic test:
+- [ ] Smoke / integration test:
+- [ ] Environment-dependent validation:
+
+> Note: Validation commands must be resolved from the current active version; do not reuse old-version commands blindly.
 
 ### Deliverables
 - Code changes in target files

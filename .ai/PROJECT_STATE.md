@@ -1,7 +1,8 @@
 # ACTIVEVIEW Project State
 
 Last Updated: 2026-08-19  
-Current Git HEAD: 02bc45e (main)  
+Repository HEAD: 76706d0 (main)  
+Active Scientific Code Baseline: 02bc45e  
 Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Researchers
 
 ---
@@ -69,8 +70,9 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ## 8. Current Stable Point
 - **Active Branch**: `main`
-- **Current HEAD**: `02bc45e` - `refactor(v5.0): final closure - current-vs-candidate competition, invalid-occlusion validity, geometry cause counts`
-- **Recent Important Commits**:
+- **Repository HEAD**: `76706d0` (infra context setup)
+- **Latest v5 Scientific-Code Commit**: `02bc45e` - `refactor(v5.0): final closure - current-vs-candidate competition, invalid-occlusion validity, geometry cause counts`
+- **Recent Key Scientific Commits**:
   - `02bc45e`: v5.0 final closure (current-vs-candidate competition, invalid-occlusion validity, closure unit test)
   - `aab699a`: v5.0 closure fix (unknown validity, target-surface occlusion, semantic invisible, oracle same-aperture gap)
   - `46a615e`: v5.0 rigor fix round 3 (object IDs, 5-way self-occlusion, semantic mask, depth coverage)
@@ -80,8 +82,8 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 9. Expected Next Phase
-- **后续版本演进 (v6/v7)**：计划引入真实视觉前端（RGB-D -> 姿态估计 -> 不确定性建模）与动作分类网络增益验证。
-- **工程重构计划**：在全链路科学闭环验证完成后，再统一进行单主线 `src/` 代码重构。
+- **后续版本演进 (v6/v7+)**：后续预计仍需要若干大版本继续完成端到端功能闭环。潜在方向包括真实视觉状态估计、姿态估计（Pose Estimation）、不确定性建模以及下游动作识别增益验证，但具体哪个功能属于 v6、v7 或更后续版本，不在当前 PROJECT_STATE 中预先固定，应以后续正式 Version Specification 为准。
+- **工程重构计划**：在核心科学功能闭环跑通后，再另行统一进行单主线 `src/` 代码重构。
 
 ---
 

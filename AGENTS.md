@@ -65,8 +65,14 @@ ACTIVEVIEW 是主动视角选择研究：
 
 ## 4. 修改后的验证要求 (Validation Requirements)
 
-Agent 完成代码修改后，必须执行与修改范围相符的验证：
+Agent 每次必须根据以下优先级确定当前任务的验证命令：
+1. **`.ai/CURRENT_TASK.md`** 中显式声明的 Validation Plan
+2. **`.ai/PROJECT_STATE.md`** 指向的 active version
+3. **当前 active version 的 Version Specification**（设计文档中的验证要求）
+4. **当前版本已有的 tests / smoke / debug 脚本**
 
+### Current v5 Default Validation Commands
+当前 v5.0 活跃版本下的默认验证命令示例：
 1. **轻量语法与导入检查**：
    ```bash
    python -m compileall ea_avs_mvp_v5
@@ -80,10 +86,11 @@ Agent 完成代码修改后，必须执行与修改范围相符的验证：
    cd ea_avs_mvp_v5
    python scripts/run_mvp50_humanoid.py --config configs/mvp50_humanoid.yaml --episodes 1
    ```
-4. **诚实报告原则**：
-   * 严禁声称执行了未实际运行的测试。
-   * 若因缺少 Habitat-Sim / GPU / 资源资产 / 依赖包导致无法运行某些测试，必须明确记录为：
-     `NOT RUN: <具体原因>`。
+
+### 诚实报告原则 (Honest Validation Reporting)
+* 严禁声称执行了未实际运行的测试。
+* 若因缺少 Habitat-Sim / GPU / 资源资产 / 依赖包导致无法运行某些测试，必须明确记录为：
+  `NOT RUN: <具体原因>`。
 
 ---
 
@@ -97,3 +104,14 @@ Agent 完成代码修改后，必须执行与修改范围相符的验证：
 * 用户明确要求生成交接记录；
 
 **必须在退出前更新 `.ai/HANDOFF.md`**。请根据实际执行情况填写当前分支、HEAD、未提交变更、已完成事项、未执行的测试及下一步建议。任务彻底闭环后，交接状态应重置为 `Status: CLEAN`。
+
+---
+
+## 6. 上下文维护原则 (Context Maintenance Principles)
+
+- **代码变化** -> 由 Git commit / commit history 记录
+- **科研阶段 / active version / 关键能力变化** -> 更新 `.ai/PROJECT_STATE.md`
+- **复杂或跨会话任务** -> 写入 `.ai/CURRENT_TASK.md`
+- **任务中途切换模型或中断** -> 写入 `.ai/HANDOFF.md`
+- **长期工作规则变化** -> 更新 `AGENTS.md`
+> 普通小 bug 修复或单轮局部修改不需要同时维护所有上下文 Markdown 文件，避免过度维护开销。
