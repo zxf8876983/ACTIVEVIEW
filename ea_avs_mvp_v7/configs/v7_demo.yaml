@@ -1,0 +1,30 @@
+# ACTIVEVIEW v7.0 综合演示统一配置文件 (configs/v7_demo.yaml)
+
+scene:
+  scene_id: "apartment_1"
+  floor_height: -1.60
+
+human:
+  avatar_name: "neutral_0"
+  action: "fall_related"
+  motion_id: "fall_related_3522"
+  initial_position: [1.5, -1.60, 4.0]
+  initial_yaw_deg: 0.0
+  scale: 1.0
+
+robot:
+  initial_position: [1.5, -1.60, 6.8]
+  initial_yaw_deg: 0.0
+
+camera:
+  height: 1.2
+  hfov: 90.0
+  width: 640
+  height_px: 480
+
+demo:
+  num_frames: 15
+  fps: 10.0
+  playback_fps: 30.0
+  output_dir: "visualizations/v7_final_demo"
+  runs_dir: "runs/v7_final_demo"

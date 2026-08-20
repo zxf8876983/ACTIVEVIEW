@@ -66,14 +66,14 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ## 6. Current Research Roadmap & Future Directions
 
-### v7.0: Humanoid-driven Active Perception Simulation Environment
-- **当前状态**：v7.0 Habitat Humanoid rendering verified (COMPLETED)：
-  1. AMASS motion pipeline (标准化读取与四元数转换)
-  2. Habitat humanoid playback (KinematicHumanoid 54 关节姿态驱动、场景物理地面高程对齐与相对位移动态补偿)
-  3. Robot RGB-D observation (解耦 robot_pose 与 camera_pose)
-  4. Episode generation (多动作多视角标准化 Episode 存储)
-  5. Motion validity evaluation (多维动力学 ActionMotionMetrics)
-  6. Visualization & video generation (统一 Demo 入口与 MP4 视频生成)
+### v7.0: Humanoid-driven Active Perception Simulation Environment (FINALIZED & FROZEN)
+- **当前状态**：v7.0 拟人化主动感知仿真环境与数据集平台已正式定稿并冻结 (COMPLETED & FINALIZED)：
+  1. **Humanoid rendering verified**: 场景地面几何校准 ($Y_{\text{floor}} = -1.60\text{m}$) 与相对位移动态下沉补偿，确保正常站立、坐下与摔倒触地；
+  2. **Motion pipeline verified**: AMASS / BABEL 动作资产标准化读取、SMPL-X 四元数转换与回放；
+  3. **RGB-D generation verified**: 移动机器人底盘位姿与相机传感器解耦，输出对齐的 RGB、Depth 与 16 关键点 3D 世界坐标真值；
+  4. **Episode generation verified**: 标准结构化 Episode 数据集落盘 (`runs/episode_xxx/` 包含 `rgb/`, `depth/`, `human_pose/`, `metadata.json`)；
+  5. **Demo pipeline finalized**: 统一主入口 `python -m ea_avs_mvp_v7.scripts.run_v7_demo` 自动生成演示数据与 MP4 视频至 `visualizations/v7_final_demo/`；
+  6. **Configuration solidified**: 统一由 `configs/humanoid.yaml` 与 `configs/v7_demo.yaml` 管理，无代码硬编码。
 - **空间几何与动作位移核心规范 (Key Spatial Invariants)**：
   - **场景物理地面高程**：`apartment_1.glb` 物理地面标高为 $Y = -1.60\text{m}$（天花板 $Y = +1.14\text{m}$），严禁盲目假设 $Y = 0.0\text{m}$；
   - **相对位移与下沉补偿**：KinematicHumanoid 自带 $+0.90\text{m}$ 骨盆偏移，`apply_motion_frame` 统一采用相对位移公式 $\text{mat}[:3, 3] = [T_x(t)-T_x(0), T_y(t)-0.90, T_z(t)-T_z(0)]$，杜绝原点绝对叠加的同时完整保留坐下与摔倒触地真实下沉。

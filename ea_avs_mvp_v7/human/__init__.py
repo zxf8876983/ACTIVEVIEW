@@ -12,6 +12,7 @@ from .keypoint_mapping import (
     validate_keypoints,
 )
 from .humanoid_agent import HumanoidAgent, resolve_humanoid_urdf_path
+from .human_spawn import sample_human_position, get_default_human_orientation
 
 __all__ = [
     "ActionMotionMetrics",
@@ -24,4 +25,6 @@ __all__ = [
     "validate_keypoints",
     "HumanoidAgent",
     "resolve_humanoid_urdf_path",
+    "sample_human_position",
+    "get_default_human_orientation",
 ]

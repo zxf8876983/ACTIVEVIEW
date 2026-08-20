@@ -4,18 +4,22 @@ Episode 数据集生成器 —— episode_generator.py
 
 职责：
     1. 编排 Habitat 室内场景、Humanoid 动作回放、移动机器人多视角观测与数据录制；
-    2. 生成符合规范的 Episode 目录结构：
-       episode_xxx/
-       ├── rgb/
-       │   └── frame_000000.png
-       ├── depth/
-       │   └── frame_000000.npy
-       └── metadata.json
+    2. 生成符合 v7.0 规范的 Episode 目录结构：
+       data/ActiveView/runs/
+       └── episode_xxx/
+           ├── rgb/
+           │   └── frame_000000.png
+           ├── depth/
+           │   └── frame_000000.npy
+           ├── human_pose/
+           │   └── frame_000000.json
+           └── metadata.json
     3. 输出标准 Episode 对象并支持全量数据集构建。
 """
 
 import json
 import logging
+import math
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -72,6 +76,10 @@ class EpisodeGenerator:
         self.humanoid.set_base_pose(human_position, human_yaw_rad)
         self.robot.set_pose(camera_position, camera_yaw_deg)
 
+        # 计算底盘四元数
+        yaw_rad = math.radians(float(camera_yaw_deg))
+        robot_rotation_quat = [0.0, float(math.sin(yaw_rad / 2.0)), 0.0, float(math.cos(yaw_rad / 2.0))]
+
         # 2. 初始化动作播放器
         motion_player.reset()
         total_frames = motion_player.total_frames
@@ -83,13 +91,14 @@ class EpisodeGenerator:
         action_label = motion_player.action_label
         babel_sid = motion_player.metadata.get("babel_sid", "0")
         motion_id = f"{action_class}_{babel_sid}"
+        avatar_name = self.humanoid.config.get("avatar_name", "neutral_0")
 
         episode_frames: List[EpisodeFrame] = []
         frames_metadata_list: List[Dict[str, Any]] = []
 
         logger.info("Generating episode '%s' (%d frames)...", episode_id, len(frame_indices))
 
-        for f_idx in frame_indices:
+        for idx, f_idx in enumerate(frame_indices):
             motion_player.seek(f_idx)
             pose_info = motion_player.get_current_pose()
 
@@ -107,8 +116,8 @@ class EpisodeGenerator:
             cam_mat = self.sensor.get_camera_pose_matrix().tolist()
 
             f_meta = FrameMetadata(
-                frame_index=pose_info["frame_index"],
-                timestamp=pose_info["timestamp"],
+                frame_index=idx,
+                timestamp=float(pose_info["timestamp"]),
                 action_class=action_class,
                 action_label=action_label,
                 babel_sid=babel_sid,
@@ -121,30 +130,28 @@ class EpisodeGenerator:
                 human_pose_gt_world=gt_joints,
             )
 
-            # 录制 RGB/Depth 到磁盘
+            # 录制 RGB/Depth/Human Pose 到磁盘
             self.recorder.record_frame(
                 target_dir=ep_dir,
-                frame_idx=f_idx,
+                frame_idx=idx,
                 rgb=obs.get("rgb"),
                 depth=obs.get("depth"),
                 metadata=f_meta,
+                human_pose_gt=gt_joints,
             )
 
             frame_entry = {
-                "frame_id": f_meta.frame_index,
-                "timestamp": f_meta.timestamp,
-                "robot_pose": [float(x) for x in camera_position] + [float(camera_yaw_deg)],
-                "camera_pose": f_meta.camera_pose_matrix,
-                "camera_intrinsics": f_meta.camera_intrinsics,
-                "human_pose_gt": f_meta.human_pose_gt_world,
+                "frame_id": idx,
+                "timestamp": float(pose_info["timestamp"]),
                 "rgb_path": f_meta.rgb_relative_path,
                 "depth_path": f_meta.depth_relative_path,
+                "human_pose_gt": gt_joints,
             }
             frames_metadata_list.append(frame_entry)
 
             ep_frame = EpisodeFrame(
-                frame_index=f_meta.frame_index,
-                timestamp=f_meta.timestamp,
+                frame_index=idx,
+                timestamp=float(pose_info["timestamp"]),
                 camera_position=f_meta.camera_position,
                 camera_yaw_deg=f_meta.camera_yaw_deg,
                 camera_pose_matrix=f_meta.camera_pose_matrix,
@@ -160,17 +167,27 @@ class EpisodeGenerator:
             )
             episode_frames.append(ep_frame)
 
-        # 3. 输出 Episode 顶层 metadata.json
+        # 3. 输出符合标准 schema 的顶层 metadata.json
         full_metadata = {
             "scene_id": self.env.scene_id,
             "episode_id": episode_id,
-            "action_class": action_class,
-            "action_label": action_label,
-            "motion_id": motion_id,
-            "num_frames": len(episode_frames),
-            "robot_pose": [float(x) for x in camera_position] + [float(camera_yaw_deg)],
-            "camera_pose": self.sensor.get_camera_pose_matrix().tolist(),
-            "human_pose_gt": self.humanoid.get_gt_joint_positions(),
+            "human": {
+                "avatar": avatar_name,
+                "motion_id": motion_id,
+                "action_class": action_class,
+                "action_label": action_label,
+            },
+            "robot": {
+                "initial_pose": {
+                    "position": [float(x) for x in camera_position],
+                    "yaw_deg": float(camera_yaw_deg),
+                    "rotation_quat": robot_rotation_quat,
+                },
+                "camera_pose": {
+                    "extrinsic": self.sensor.get_camera_pose_matrix().tolist(),
+                    "intrinsic": self.sensor.intrinsics,
+                },
+            },
             "frames": frames_metadata_list,
         }
         self.recorder.record_episode_metadata(ep_dir, full_metadata)

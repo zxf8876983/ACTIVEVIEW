@@ -1,43 +1,32 @@
 # ACTIVEVIEW Current Task
 
-Status: COMPLETED
+Status: COMPLETED (v7.0 FINALIZED)
 
 ## Task
-ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Environment (Humanoid Floor & Motion Grounding Completed)
+ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Environment (Finalized & Frozen)
 
 ## Objective
-完成 Habitat 室内场景、KinematicHumanoid 人形模型与 AMASS 动捕动作的全链路空间几何对齐与地面贴合：
-1. **场景物理高程标定与对齐**：
-   - 明确 `apartment_1.glb` 物理地面标高 $Y_{\text{floor}} \approx -1.60\text{m}$（天花板 $Y_{\text{ceiling}} \approx +1.14\text{m}$），严禁盲目假设 $Y=0.0\text{m}$ 为地面；
-   - 规范人体与机器人基座对齐（开阔客厅）：
-     - Humanoid: `[1.5, -1.60, 4.0]`, `yaw = 0.0 deg`
-     - Robot: `[1.5, -1.60, 6.8]`, `yaw = 0.0 deg`（面向 -Z 轴，相机高度 $-1.60 + 1.20 = -0.40\text{m}$）
-2. **AMASS 动态位移与骨盆基座相对补偿机制**：
-   - 解决 AMASS 全局绝对原点与 Habitat `KinematicHumanoid` 自带 $+0.9\text{m}$ 变换的叠加问题；
-   - 在 `apply_motion_frame` 中实现相对位移补偿：
-     $$\text{mat}[:3, 3] = [T_x(t) - T_x(0), T_y(t) - 0.90, T_z(t) - T_z(0)]$$
-   - 确保 `standing` 笔直站立、`sitting` 正常坐下、`fall_related` 完整摔倒触地（高度下落达 $0.523\text{m}$，全身落地 $Y=-1.44\text{m}$）。
-3. **完整闭环全量通过**：
-   ```text
-   AMASS Motion (Schema A/B)
-           ↓
-   Habitat Motion Format (MotionConverterSMPLX)
-           ↓
-   Humanoid 动作播放 (KinematicHumanoid neutral_0 with relative offset)
-           ↓
-   Robot RGB-D Observation (RGB + Depth + 3D Pose GT)
-           ↓
-   Episode Dataset (data/ActiveView/runs/ & visualizations/v7_demo/)
-   ```
-
-## Key Technical Findings & Gotchas (核心技术要点记录)
-1. **场景坐标系原点 $\neq$ 地面**：
-   - 3D 资产（如 Habitat test scenes / Gibson / Matterport3D）的原点通常为建模坐标系原点。在 `apartment_1.glb` 中，$Y=0.0\text{m}$ 处于距离物理地面 $1.60\text{m}$ 的半空；若硬编码 $Y=0.0\text{m}$，人体将悬挂在天花板附近。
-2. **KinematicHumanoid 与 AMASS 变换叠加**：
-   - `KinematicHumanoid` 的 `base_transformation` 内部已经包含 $+0.90\text{m}$ 的腰骨盆高度偏置；
-   - AMASS 的平移数据初始帧通常也是 $\approx 0.90\text{m}$；
-   - 若直接传入 AMASS 绝对平移，$0.9 + 0.9 = 1.8\text{m}$ 会导致严重上浮；若直接全部清零平移，则会导致下蹲、坐下、摔倒等垂向下沉动作失效（腰部被死锁在站立高度）；
-   - **正确做法**：采用相对位移补偿 $T_y(t) - 0.90$，保留动作内部真实的动态下沉与位移。
+完成 ACTIVEVIEW v7.0 版本的最终收尾与冻结（Finalization & Freezing）：
+1. **Humanoid 配置固化**：
+   - 固化 `configs/humanoid.yaml`（`avatar_name: neutral_0`, `ground_offset: 0.0`, `scale: 1.0`, `default_yaw: 0.0`, `assets_root`, `floor_height: -1.60`）；
+   - 消除散落在代码中的硬编码数值。
+2. **Demo 配置固化**：
+   - 建立 `configs/v7_demo.yaml` 统一管理场景、机器人、Humanoid 放置与输出路径；
+   - `run_v7_demo.py` 统一读取配置并支持 CLI 参数一键重载。
+3. **统一 Demo 入口与视频自动生成**：
+   - 保留规范化主入口 `python -m ea_avs_mvp_v7.scripts.run_v7_demo`；
+   - 自动生成 RGB、Depth、Human Pose GT、`metadata.json` 与 `visualizations/v7_final_demo/v7_demo.mp4`。
+4. **Episode 数据格式规范化**：
+   - 统一输出结构：`data/ActiveView/runs/episode_xxx/`（`rgb/`, `depth/`, `human_pose/`, `metadata.json`）；
+   - 逐帧持久化 16 关节 3D GT 姿态至 `human_pose/frame_000000.json`。
+5. **端到端流水线全量验证**：
+   - 新增 `scripts/verify_v7_pipeline.py`，一键校验 `AMASS -> MotionConverter -> Habitat Motion -> Humanoid -> RGB-D -> GT Pose -> Episode` 全链路。
+6. **Human Placement 接口解耦**：
+   - 新增 `human/human_spawn.py` 提供 `sample_human_position()` 物理地面放置接口（预留 v8 扩展，不包含任何主动选择算法）。
+7. **代码与脚本清理**：
+   - 清理所有单次调试脚本，规范保留核心工具。
+8. **测试套件整理**：
+   - 组织 `tests/unit/`, `tests/integration/`, `tests/smoke/` 30 项测试，全部 PASS。
 
 ## Explicit Prohibitions & Non-Goals (严格遵守)
 - ❌ 不实现 NBV 视角选择算法
@@ -50,19 +39,16 @@ ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Env
 - ❌ 不将 AMASS / BABEL 原始大型数据提交至 Git
 
 ## Current Version Status
-- **Active Development Version**: v7.0 (7.0.0 — COMPLETED / FINALIZED)
+- **Active Development Version**: v7.0 (7.0.0 — FINALIZED & FROZEN)
 - **Active Specification**: `EA_AVS_MVP70_Code_Generation_Document.md`
 - **Previous Stable Baseline**: v6.0 (6.0.0 — CLOSED / FINALIZED, Read-Only)
 
 ## Validation Plan Execution Results
-- [x] Humanoid 地面着地独立验证: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.debug_humanoid_grounding` (PASS)
-- [x] 独立空间姿态与坐标调试: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.debug_humanoid_pose` (PASS)
-- [x] Humanoid 可见性独立调试: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.debug_humanoid_visibility` (PASS)
-- [x] 极简 Humanoid 独立渲染 Demo: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.render_humanoid_only_demo` (PASS)
-- [x] 统一演示入口与视频生成: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.run_v7_demo --action fall_related --num-frames 15` (PASS)
+- [x] 统一综合 Demo 演示: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.run_v7_demo` (PASS)
+- [x] 流水线全量验证: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.verify_v7_pipeline` (PASS)
 - [x] 3 类动作全量闭环: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.validate_three_actions` (PASS)
 - [x] Habitat 端到端最小闭环 Smoke Test: `conda run -n habitat python -m ea_avs_mvp_v7.scripts.run_smoke_test --action fall_related --num-frames 10` (PASS)
-- [x] v7.0 纯 Python 单元/集成/冒烟测试: `python3 -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 22/22)
+- [x] v7.0 纯 Python 单元/集成/冒烟测试: `python3 -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 30/30)
 - [x] Motion Assets 单元测试: `python3 -m unittest tools.motion_assets.tests.test_motion_assets` (PASS, 14/14)
 - [x] v6.0 纯 Python 回归测试: `PYTHONPATH=ea_avs_mvp_v6 python3 ea_avs_mvp_v6/scripts/test_v60_pure_python.py` (PASS, 17/17)
 - [x] v6.0 No-GT-Leakage 守卫测试: `PYTHONPATH=ea_avs_mvp_v6 python3 ea_avs_mvp_v6/scripts/test_no_gt_leakage.py` (PASS, 4/4)

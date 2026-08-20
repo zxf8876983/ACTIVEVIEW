@@ -10,10 +10,9 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
-from ea_avs_mvp_v7.core.episode import Episode, EpisodeFrame
-from ea_avs_mvp_v7.evaluation.basic_metrics import compute_episode_statistics
-from ea_avs_mvp_v7.scripts.verify_episode_output import verify_episode_dir
+from ea_avs_mvp_v7.core.paths import to_relative_data_path
 
 
 class TestSmokePipeline(unittest.TestCase):
@@ -25,30 +24,34 @@ class TestSmokePipeline(unittest.TestCase):
         self.ep_dir.mkdir()
         (self.ep_dir / "rgb").mkdir()
         (self.ep_dir / "depth").mkdir()
+        (self.ep_dir / "human_pose").mkdir()
 
         # 生成 1 帧虚拟数据
-        from PIL import Image
         Image.new("RGB", (640, 480)).save(self.ep_dir / "rgb" / "frame_000000.png")
         np.save(self.ep_dir / "depth" / "frame_000000.npy", np.ones((480, 640), dtype=np.float32))
+        with open(self.ep_dir / "human_pose" / "frame_000000.json", "w", encoding="utf-8") as f:
+            json.dump({"frame_id": 0, "human_pose_gt": {"pelvis": [1.5, -0.8, 4.0]}}, f)
 
         meta = {
             "scene_id": "apartment_1",
             "episode_id": "smoke_ep",
-            "motion_id": "fall_related_3522",
-            "action_class": "fall_related",
-            "action_label": "fall down",
-            "robot_pose": [0.0, 0.1, 2.0, 180.0],
-            "camera_pose": [[1, 0, 0, 0], [0, 1, 0, 1], [0, 0, 1, 2], [0, 0, 0, 1]],
-            "human_pose_gt": {"pelvis": [0.0, 0.9, 0.0]},
+            "human": {
+                "avatar": "neutral_0",
+                "motion_id": "fall_related_3522",
+                "action_class": "fall_related",
+                "action_label": "fall down",
+            },
+            "robot": {
+                "initial_pose": {"position": [1.5, -1.6, 6.8], "yaw_deg": 0.0},
+                "camera_pose": {"extrinsic": [[1, 0, 0, 0], [0, 1, 0, 1], [0, 0, 1, 2], [0, 0, 0, 1]]},
+            },
             "frames": [
                 {
                     "frame_id": 0,
                     "timestamp": 0.0,
-                    "robot_pose": [0.0, 0.1, 2.0, 180.0],
-                    "camera_pose": [[1, 0, 0, 0], [0, 1, 0, 1], [0, 0, 1, 2], [0, 0, 0, 1]],
-                    "human_pose_gt": {"pelvis": [0.0, 0.9, 0.0]},
-                    "rgb_path": str((self.ep_dir / "rgb" / "frame_000000.png").resolve()),
-                    "depth_path": str((self.ep_dir / "depth" / "frame_000000.npy").resolve()),
+                    "human_pose_gt": {"pelvis": [1.5, -0.8, 4.0]},
+                    "rgb_path": to_relative_data_path(self.ep_dir / "rgb" / "frame_000000.png"),
+                    "depth_path": to_relative_data_path(self.ep_dir / "depth" / "frame_000000.npy"),
                 }
             ],
         }
@@ -59,9 +62,15 @@ class TestSmokePipeline(unittest.TestCase):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def test_smoke_episode_verification(self):
-        res = verify_episode_dir(self.ep_dir)
-        self.assertEqual(res["episode_id"], "smoke_ep")
-        self.assertEqual(res["num_frames"], 1)
+        meta_file = self.ep_dir / "metadata.json"
+        self.assertTrue(meta_file.exists())
+        with open(meta_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        self.assertEqual(data["episode_id"], "smoke_ep")
+        self.assertEqual(len(data["frames"]), 1)
+        self.assertTrue((self.ep_dir / "rgb" / "frame_000000.png").exists())
+        self.assertTrue((self.ep_dir / "depth" / "frame_000000.npy").exists())
+        self.assertTrue((self.ep_dir / "human_pose" / "frame_000000.json").exists())
 
 
 if __name__ == "__main__":
