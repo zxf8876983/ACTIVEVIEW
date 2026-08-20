@@ -24,6 +24,7 @@ class V8Config:
     robot: Dict[str, Any] = field(default_factory=dict)
     camera: Dict[str, Any] = field(default_factory=dict)
     viewpoint: Dict[str, Any] = field(default_factory=dict)
+    evaluation: Dict[str, Any] = field(default_factory=dict)
     simulation: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -33,6 +34,7 @@ class V8Config:
             "robot": self.robot,
             "camera": self.camera,
             "viewpoint": self.viewpoint,
+            "evaluation": self.evaluation,
             "simulation": self.simulation,
         }
 
@@ -69,7 +71,8 @@ def load_v8_config(
             human_cfg = yaml.safe_load(f) or {}
 
     merged_human = {**human_cfg, **demo_cfg.get("human", {})}
-    merged_vp = {**vp_cfg, **demo_cfg.get("viewpoint", {})}
+    merged_vp = {**vp_cfg.get("sampling", {}), **vp_cfg.get("constraints", {}), **demo_cfg.get("viewpoint", {})}
+    merged_eval = {**vp_cfg.get("evaluation", {}), **demo_cfg.get("evaluation", {})}
 
     cam_raw = demo_cfg.get("camera", {})
     normalized_cam = {
@@ -87,6 +90,7 @@ def load_v8_config(
         robot=demo_cfg.get("robot", {}),
         camera=normalized_cam,
         viewpoint=merged_vp,
+        evaluation=merged_eval,
         simulation=demo_cfg.get("simulation", {}),
     )
 

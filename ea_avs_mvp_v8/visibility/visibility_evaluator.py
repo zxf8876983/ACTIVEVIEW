@@ -29,9 +29,9 @@ class VisibilityEvaluator:
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
-        self.optimal_distance = float(self.config.get("optimal_distance", 2.2))
+        self.optimal_distance = float(self.config.get("optimal_distance", 2.0))
         self.max_distance = float(self.config.get("max_distance", 4.5))
-        self.hfov_deg = float(self.config.get("hfov", 90.0))
+        self.hfov_deg = float(self.config.get("hfov_deg", self.config.get("hfov", 90.0)))
 
     def evaluate(
         self,
@@ -40,19 +40,9 @@ class VisibilityEvaluator:
         human_yaw_deg: float = 0.0,
         sensor_intrinsics: Optional[Dict[str, Any]] = None,
     ) -> ViewpointQuality:
-        """评估单个视点对人体骨架的几何观测质量。
-
-        参数：
-            viewpoint: 待评估的候选视点
-            human_joints_3d: 人体 16 个核心关节的三维世界坐标字典
-            human_yaw_deg: 人体朝向角 (度)
-            sensor_intrinsics: 相机内参字典 (可选)
-
-        返回：
-            ViewpointQuality: 包含距离、角度、可见关节数与得分的评价对象
-        """
+        """评估单个视点对人体骨架的几何观测质量。"""
         vp_pos = np.array(viewpoint.position, dtype=np.float32)
-        cam_height = viewpoint.camera_height
+        cam_height = float(viewpoint.camera_height)
         cam_pos = np.array([vp_pos[0], vp_pos[1] + cam_height, vp_pos[2]], dtype=np.float32)
 
         # 1. 计算与人体核心部位 (pelvis / 躯干) 的欧氏距离
@@ -61,26 +51,23 @@ class VisibilityEvaluator:
         dist = float(np.linalg.norm(cam_pos - pelvis_pos))
 
         # 2. 计算观测夹角 (机器人视线方向与人体正面朝向的夹角)
-        # 人体朝向向量 (水平投影)
         h_yaw_rad = math.radians(human_yaw_deg)
-        h_forward = np.array([math.sin(h_yaw_rad), 0.0, -math.cos(h_yaw_rad)], dtype=np.float32)
+        h_forward = np.array([math.sin(h_yaw_rad), 0.0, math.cos(h_yaw_rad)], dtype=np.float32)
 
-        # 机器人朝向人体的视线向量
         line_of_sight = (pelvis_pos - cam_pos)
-        line_of_sight[1] = 0.0  # 水平投影
+        line_of_sight[1] = 0.0
         norm_los = np.linalg.norm(line_of_sight)
         if norm_los > 1e-4:
             line_of_sight /= norm_los
         else:
             line_of_sight = np.array([0.0, 0.0, -1.0], dtype=np.float32)
 
-        # 两向量夹角: dot(line_of_sight, h_forward)
         dot_val = np.clip(np.dot(-line_of_sight, h_forward), -1.0, 1.0)
         viewing_angle_deg = float(math.degrees(math.acos(dot_val)))
 
         # 3. 计算视锥内可见关节点数量 (基于水平 FOV 夹角判定)
         half_fov_rad = math.radians(self.hfov_deg / 2.0)
-        vp_yaw_rad = math.radians(viewpoint.yaw_deg)
+        vp_yaw_rad = math.radians(float(viewpoint.yaw_deg))
         cam_forward = np.array([math.sin(vp_yaw_rad), 0.0, -math.cos(vp_yaw_rad)], dtype=np.float32)
 
         visible_joints = 0
@@ -102,10 +89,11 @@ class VisibilityEvaluator:
         pose_coverage = float(visible_joints / total_joints)
         occlusion_ratio = float(1.0 - pose_coverage)
 
-        # 4. 计算综合几何可见性得分 (基于距离惩罚与姿态覆盖率)
+        # 4. 计算综合几何可见性得分
         dist_diff = abs(dist - self.optimal_distance)
         dist_score = max(0.0, 1.0 - dist_diff / self.optimal_distance)
-        vis_score = float(0.6 * pose_coverage + 0.4 * dist_score)
+        front_factor = max(0.0, math.cos(math.radians(viewing_angle_deg)))
+        vis_score = float(0.5 * pose_coverage + 0.3 * front_factor + 0.2 * dist_score)
 
         quality = ViewpointQuality(
             viewpoint_id=viewpoint.viewpoint_id,

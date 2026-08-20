@@ -40,19 +40,24 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ## 4. v8.0 Research Objectives & Boundaries
 
-### 核心科研目标 (Core Objectives):
-将 ACTIVEVIEW 从 v7.0 的“固定人体位置 + 固定机器人视点观测”推进为“空间约束下的人体感知候选视点空间生成与质量评价”：
-1. **Human Placement**: 人体在室内场景中的合法地面位置采样与几何校验；
-2. **Candidate View Generation**: 围绕人体的多距离、多方位角机器人候选观察视角规则采样；
-3. **Constraint Checking**: 基于 Habitat Pathfinder 与 NavMesh 的候选视点物理可行性与可达性过滤；
-4. **Visibility & View Quality Evaluation**: 多维视点观测质量基础评价（距离、视角夹角、可见性判定、遮挡率）；
-5. **Viewpoint Dataset Generation**: 生成包含候选视点集合与多视角观测质量的结构化科研数据集。
+### 核心假设与科研边界 (Core Assumptions & Scope):
+v8.0 定位为 **Local Active View Planning**（局部主动视点规划与质量评价体系）：
+1. **Human 位置已知 (Known Human Location)**：假设目标老人/人体位置由固定监控、环境传感器或先验定位模块已知；
+2. **Robot 局部到位 (Robot in Human Vicinity)**：假设移动机器人已导航至人体所在局部空间周边区域；
+3. **局部视点优化 (Local Viewpoint Optimization)**：v8 聚焦在已知人体周围约束空间内，通过极坐标候选采样、约束过滤与质量打分寻找全局最优观察视点，**绝非全场盲目随机搜索 (Not Global Search/Exploration)**。
+
+### 核心科研流水线 (Core Pipeline):
+1. **Human Placement**: 人体在室内场景中的合法地面位置采样与几何校验 (`HumanPlacement`)；
+2. **Local Candidate View Generation**: 围绕人体的局部多距离 (1.5m-3.0m)、多方位角候选视角规则采样 (`ViewpointGenerator`)；
+3. **View Constraint Pipeline**: 串联 `NavigationConstraint` (NavMesh), `LineOfSightConstraint` (RayCast 通视性), `HumanVisibilityConstraint` (FOV 视锥) 进行空间硬约束过滤；
+4. **View Quality Evaluation & Ranking**: 依据科学评价公式 $w_1 \cdot \text{vis} + w_2 \cdot \text{cov} - w_3 \cdot \text{dist}$ 对有效视点打分并排序 (`ViewQualityEvaluator`)；
+5. **Best Viewpoint Rendering & Dataset**: 移动机器人至最优视角渲染高质量 `best_view_rgb.png`，并输出 `candidate_views.json` 与 `best_view.json`。
 
 ### 明确排除在 v8.0 之外的非目标 (Explicitly NOT in v8.0):
-- ❌ 不实现 Active View Selection (NBV / 动作感知主动视角选择算法)
-- ❌ 不实现 深度学习 / 强化学习 (RL / View utility learning)
-- ❌ 不实现 机器人闭环自主导航与避障路径规划 (Closed-loop Navigation)
-- ❌ 不实现 动作识别模型训练 (Action Recognition / HAR)
+- ❌ 不实现 人体全局搜索与环境探索 (No Human Search / No Global Exploration)
+- ❌ 不实现 Active View Selection 复杂决策 (NBV / 动作感知自适应网络)
+- ❌ 不实现 深度强化学习 (RL / View utility learning)
+- ❌ 不实现 全局路径规划与闭环避障控制 (Global Navigation)
 - ❌ 不修改 `ea_avs_mvp_v7/` 及历史版本代码
 
 ---

@@ -1,4 +1,4 @@
-# ACTIVEVIEW v8.0 统一演示与实验配置文件 (configs/v8_demo.yaml)
+# ACTIVEVIEW v8.0 Local Active View Planning 演示配置 (configs/v8_demo.yaml)
 
 scene:
   scene_id: "apartment_1"
@@ -30,17 +30,24 @@ camera:
   clip_far: 10.0
 
 viewpoint:
-  radii: [1.5, 2.2, 3.0]
+  radii: [1.5, 2.0, 2.5, 3.0]
   num_angles: 8
-  min_radius: 1.0
-  max_radius: 4.0
+  min_radius: 1.5
+  max_radius: 3.0
   camera_height: 1.2
   ground_height: -1.60
-  filter_unreachable: true
+  check_navmesh: true
+  check_path_reachability: true
+  check_line_of_sight: true
+  check_human_visibility: true
+
+evaluation:
+  optimal_distance: 2.0
+  max_distance: 4.5
+  w1_visibility: 0.5
+  w2_pose_coverage: 0.3
+  w3_distance: 0.2
 
 simulation:
-  fps: 10.0
-  playback_fps: 30.0
-  num_frames: 10
   output_dir: "visualizations/v8_demo"
   runs_dir: "runs/v8_demo"

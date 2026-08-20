@@ -1,46 +1,40 @@
 # ACTIVEVIEW Current Task
 
-Status: COMPLETED (v8.0 Phase 1: Foundation Architecture Initialized)
+Status: COMPLETED (v8.0 Local Active View Planning Framework)
 
 ## Current Phase
-v8.0 Phase 1 — Build Human-aware Active View Foundation Architecture (Completed)
+v8.0 Phase 1 — Local Active View Planning (Architecture, Constraint Pipeline & Quality Evaluation Completed)
 
 ## Current Objective
-构建 ACTIVEVIEW v8.0 基础模块架构与标准接口：
-1. **v8 模块架构建立**：
-   - 创建 `ea_avs_mvp_v8/` 目录结构（`configs/`, `core/`, `environment/`, `human/`, `robot/`, `viewpoint/`, `constraints/`, `visibility/`, `dataset/`, `evaluation/`, `scripts/`, `tests/`）；
-   - 严格通过接口复用 `ea_avs_mvp_v7` 仿真能力（Habitat, Humanoid, Motion, Robot, RGB-D）；
-2. **Human Placement 接口实现**：
-   - 新增 `human/human_placement.py`（类 `HumanPlacement`：`sample_position()`, `validate_position()`）；
-3. **Viewpoint 生成器接口实现**：
-   - 新增 `viewpoint/viewpoint_generator.py`（类 `ViewpointGenerator`：多半径、多水平角度采样候选视点）；
-4. **Constraint 约束检查器接口实现**：
-   - 新增 `constraints/constraint_checker.py`（类 `ConstraintChecker`：基于 NavMesh 校验可行性与可达性）；
-5. **Visibility 视点质量评价接口实现**：
-   - 新增 `visibility/visibility_evaluator.py`（类 `VisibilityEvaluator`：基础几何与可见性打分）；
-6. **v8 演示入口与测试**：
-   - 新增 `scripts/run_v8_demo.py`（输出 `candidate_views.json`, `visibility.json`, `metadata.json` 至 `visualizations/v8_demo/`）；
-   - 增加纯 Python 单元测试套件并全量通过。
+重新调整 ACTIVEVIEW v8.0 设计以符合科研目标 —— **Local Active View Planning**：
+1. **科研假设与边界明确**：
+   - 目标老人/人体位置已知 (Known Human Location)；
+   - 移动机器人已到达人体局部附近区域 (Robot in Human Vicinity)；
+   - v8 仅负责在人体周围局部约束空间内寻找高质量观察视角，杜绝全局盲目探索与搜索。
+2. **Local Candidate View Generation** (`viewpoint_generator.py`)：
+   - 以人体为中心进行极坐标规则采样 (1.5m - 3.0m，0-360度，朝向正对人体)。
+3. **View Constraint Pipeline** (`constraints/`)：
+   - `NavigationConstraint`: NavMesh 可行域与路径可达性检查；
+   - `LineOfSightConstraint`: 视线光线追踪通视性与硬阻挡检查；
+   - `HumanVisibilityConstraint`: 人体是否进入相机视锥 FOV 检查。
+4. **View Quality Evaluation & Ranking** (`evaluation/view_quality.py`)：
+   - 科学打分公式：$w_1 \cdot \text{human\_visibility} + w_2 \cdot \text{pose\_coverage} - w_3 \cdot \text{distance\_penalty}$；
+   - 全局视点降序排序与最优视角选择。
+5. **Rendering & Demo Output** (`scripts/run_v8_demo.py`)：
+   - 移动机器人至最优视角渲染高质量 `best_view_rgb.png`；
+   - 输出 `candidate_views.json` (含可行性状态) 与 `best_view.json` (最优位姿与各项得分)。
 
 ## Explicit Prohibitions & Non-Goals (严格遵守)
-- ❌ 不实现 NBV 视角选择算法 / 视点效用学习
-- ❌ 不实现 Action-aware utility
-- ❌ 不实现 强化学习 (RL)
-- ❌ 不实现 机器人闭环自主导航与避障路径规划
-- ❌ 不训练 动作识别模型 (HAR)
+- ❌ 不实现 人体全局搜索与环境探索 (No Human Search / No Exploration)
+- ❌ 不实现 NBV 复杂策略选择 / 动作感知网络
+- ❌ 不实现 深度强化学习 (RL)
+- ❌ 不实现 全局闭环自主导航规划
 - ❌ 不修改 `ea_avs_mvp_v7/` 及历史版本代码
 - ❌ 不将 AMASS / BABEL 原始大型数据提交至 Git
 
-## Current Version Status
-- **Active Development Version**: v8.0 (8.0.0 — Phase 1 Completed)
-- **Active Specification**: `EA_AVS_MVP80_Code_Generation_Document.md`
-- **Previous Stable Baseline**: v7.0 (7.0.0 — CLOSED / FINALIZED & FROZEN, Read-Only)
-
 ## Validation Plan Execution Results
-- [x] v8 Human Placement 单元测试: `python3 -m unittest ea_avs_mvp_v8/tests/unit/test_human_placement.py` (PASS)
-- [x] v8 Viewpoint Generator 单元测试: `python3 -m unittest ea_avs_mvp_v8/tests/unit/test_viewpoint_generation.py` (PASS)
+- [x] v8 View Quality 单元测试: `python3 -m unittest ea_avs_mvp_v8/tests/unit/test_view_quality.py` (PASS)
 - [x] v8 Constraint Checker 单元测试: `python3 -m unittest ea_avs_mvp_v8/tests/unit/test_constraint_checker.py` (PASS)
-- [x] v8 Visibility Evaluator 单元测试: `python3 -m unittest ea_avs_mvp_v8/tests/unit/test_visibility.py` (PASS)
-- [x] v8 纯 Python 单元/冒烟测试集: `python3 -m unittest discover -s ea_avs_mvp_v8/tests -p "test_*.py"` (PASS, 9/9)
-- [x] v8 端到端演示入口: `conda run -n habitat python -m ea_avs_mvp_v8.scripts.run_v8_demo` (PASS, 18/24 feasible views)
+- [x] v8 纯 Python 单元/冒烟测试集: `python3 -m unittest discover -s ea_avs_mvp_v8/tests -p "test_*.py"` (PASS, 12/12)
+- [x] v8 Local Active View Planning 演示入口: `conda run -n habitat python -m ea_avs_mvp_v8.scripts.run_v8_demo` (PASS, best score=0.796, best_view_rgb.png verified)
 - [x] v7 回归校验: `python3 -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 30/30)

@@ -1,18 +1,23 @@
 """
-v8.0 主动视角基础框架综合演示主脚本 —— run_v8_demo.py
-=====================================================
+v8.0 Local Active View Planning 综合演示主脚本 —— run_v8_demo.py
+===============================================================
 
 功能：
-    1. 完整串联 v8.0 核心研究流水线：
-       Scene 加载 -> Human Placement 采样 -> 候选视点生成 (Candidate Views)
-       -> 空间与导航约束检查 (Constraint Check) -> 几何可见性评价 (Visibility Evaluation)
-       -> 移动机器人至候选视点并同步相机位姿 -> 渲染多视点 RGB-D 样本 -> 持久化 v8 数据集；
+    1. 基于已知人体位置与局部观察空间假定，执行局部主动视点规划流水线：
+       Human Position (Known)
+       ↓
+       Local Candidate Views Generation (Polar Grid around Human)
+       ↓
+       View Constraint Pipeline (NavMesh + LineOfSight RayCast + HumanVisibility FOV)
+       ↓
+       View Quality Evaluation & Ranking (w1*vis + w2*cov - w3*dist)
+       ↓
+       Render Best Viewpoint (Capture & Save best_view_rgb.png)
     2. 输出成果至 data/ActiveView/visualizations/v8_demo/：
-       - candidate_views.json (包含 position, yaw, camera_pose)
-       - visibility.json
-       - metadata.json
-       - rgb/ (PNG 图像)
-       - depth/ (NPY 深度图)
+       - candidate_views.json (包含全部候选视点及可行性标记)
+       - best_view.json (包含最佳视点位置、朝向与质量评分)
+       - best_view_rgb.png (最佳视角高质量渲染图像，清晰可见人体)
+       - metadata.json (实验元数据汇总)
 
 运行方式：
     python -m ea_avs_mvp_v8.scripts.run_v8_demo
@@ -28,14 +33,14 @@ import numpy as np
 from PIL import Image
 
 from ea_avs_mvp_v8.core.config import load_v8_config
-from ea_avs_mvp_v8.core.paths import get_data_root
+from ea_avs_mvp_v8.core.paths import get_data_root, to_relative_data_path
 from ea_avs_mvp_v8.environment.env_adapter import V8EnvironmentAdapter
 from ea_avs_mvp_v8.human.human_placement import HumanPlacement
 from ea_avs_mvp_v8.robot.robot_adapter import V8RobotAdapter
 from ea_avs_mvp_v8.viewpoint.viewpoint_generator import ViewpointGenerator
 from ea_avs_mvp_v8.constraints.constraint_checker import ConstraintChecker
-from ea_avs_mvp_v8.visibility.visibility_evaluator import VisibilityEvaluator
-from ea_avs_mvp_v8.dataset.v8_dataset_generator import save_v8_viewpoint_dataset
+from ea_avs_mvp_v8.evaluation.view_quality import ViewQualityEvaluator
+from ea_avs_mvp_v8.evaluation.view_metrics import summarize_viewpoint_qualities
 
 # 复用 v7 Humanoid
 from ea_avs_mvp_v7.human.humanoid_agent import HumanoidAgent
@@ -45,7 +50,7 @@ logger = logging.getLogger("run_v8_demo")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ACTIVEVIEW v8.0 Active View Foundation Demonstration")
+    parser = argparse.ArgumentParser(description="ACTIVEVIEW v8.0 Local Active View Planning Demonstration")
     parser.add_argument("--config", type=str, default=None, help="Path to custom v8_demo.yaml")
     parser.add_argument("--output-dir", type=str, default=None, help="Custom output directory")
     args = parser.parse_args()
@@ -59,13 +64,9 @@ def main():
     else:
         vis_dir = get_data_root() / cfg.simulation.get("output_dir", "visualizations/v8_demo")
     vis_dir.mkdir(parents=True, exist_ok=True)
-    rgb_dir = vis_dir / "rgb"
-    depth_dir = vis_dir / "depth"
-    rgb_dir.mkdir(parents=True, exist_ok=True)
-    depth_dir.mkdir(parents=True, exist_ok=True)
 
-    # 2. 步骤一: Scene 启动与 Human Placement
-    logger.info("Step 1: Initializing Habitat Environment & Human Placement...")
+    # 2. 步骤一: 启动仿真环境并加载已知人体 (Known Human Location)
+    logger.info("Step 1: Loading Habitat Scene & Placing Humanoid at known location...")
     env_adapter = V8EnvironmentAdapter(cfg.scene, cfg.camera)
     sim = env_adapter.start()
 
@@ -79,98 +80,110 @@ def main():
 
     robot_start_pos = cfg.robot.get("initial_pose", {}).get("position", [1.5, -1.60, 6.8])
 
-    # 3. 步骤二: 生成候选观察视角 (Candidate View Generation)
-    logger.info("Step 2: Generating Candidate Viewpoints...")
+    # 3. 步骤二: 生成以人体为中心的局部候选视点 (Local Candidate Views)
+    logger.info("Step 2: Generating Local Candidate Viewpoints around Human...")
     vp_gen = ViewpointGenerator(cfg.viewpoint)
     raw_candidates = vp_gen.generate_candidates(
         human_position=human_pose.position,
         human_yaw_deg=human_pose.yaw_deg,
         ground_height=cfg.robot.get("ground_height", -1.60),
     )
+    generated_count = len(raw_candidates)
 
-    # 4. 步骤三: 空间与导航约束检查 (Constraint Checking)
-    logger.info("Step 3: Checking Constraints with Habitat Pathfinder...")
+    # 4. 步骤三: 视点空间约束管道过滤 (View Constraint Pipeline)
+    logger.info("Step 3: Running View Constraint Pipeline (NavMesh + LineOfSight + HumanVisibility)...")
     checker = ConstraintChecker(env_adapter=env_adapter, config=cfg.viewpoint)
     checked_candidates = checker.filter_feasible_viewpoints(
         raw_candidates,
+        human_position=human_pose.position,
         robot_start_pos=robot_start_pos,
     )
+    filtered_feasible_views = [vp for vp in checked_candidates if vp.feasible]
+    filtered_count = len(filtered_feasible_views)
 
-    # 5. 步骤四: 视点可见性与观测质量评价 (Visibility Evaluation)
-    logger.info("Step 4: Evaluating Viewpoint Observational Quality...")
+    # 5. 步骤四: 视点观测质量评价与全局排序 (View Quality Evaluation & Ranking)
+    logger.info("Step 4: Evaluating View Quality and Ranking Candidate Views...")
     gt_joints = humanoid.get_gt_joint_positions()
-    evaluator = VisibilityEvaluator(cfg.camera)
-    qualities = evaluator.evaluate_batch(
+    evaluator = ViewQualityEvaluator(cfg.evaluation)
+    ranked_pairs = evaluator.rank_viewpoints(
         viewpoints=checked_candidates,
         human_joints_3d=gt_joints,
         human_yaw_deg=human_pose.yaw_deg,
     )
 
-    # 6. 步骤五: 采样有效候选视点渲染真实观测图片与深度图
-    logger.info("Step 5: Capturing Observations for Candidate Viewpoints...")
+    all_qualities = [q for _, q in ranked_pairs]
+    best_vp, best_quality = ranked_pairs[0] if ranked_pairs else (checked_candidates[0], all_qualities[0])
+
+    # 6. 步骤五: 渲染最佳观察视点 (Render Best Viewpoint)
+    logger.info("Step 5: Moving Robot to Best Viewpoint and Rendering RGB...")
     robot_adapter = V8RobotAdapter(sim, cfg.camera)
-    feasible_views = [vp for vp in checked_candidates if vp.feasible]
+    cam_info = robot_adapter.set_viewpoint(best_vp, verbose=True)
 
-    # 渲染前 6 个有效候选视点
-    render_views = feasible_views[:6] if feasible_views else checked_candidates[:1]
-    for idx, vp in enumerate(render_views):
-        verbose_log = (idx == 0)  # 首个视点打印详细 [V8 Camera Debug]
-        cam_info = robot_adapter.set_viewpoint(vp, verbose=verbose_log)
-        # 更新精确的实际相机位姿
-        vp.camera_pose = {
-            "position": cam_info["camera_position"],
-            "rotation": cam_info["camera_rotation"],
-        }
-        obs = robot_adapter.capture_observation()
-
-        # 保存 RGB
-        if obs.get("rgb") is not None:
-            out_img = rgb_dir / f"{vp.viewpoint_id}.png"
-            Image.fromarray(obs["rgb"]).save(out_img)
-
-        # 保存 Depth
-        if obs.get("depth") is not None:
-            out_depth = depth_dir / f"{vp.viewpoint_id}.npy"
-            np.save(out_depth, obs["depth"].astype(np.float32))
-
+    obs = robot_adapter.capture_observation()
     env_adapter.close()
 
-    # 7. 步骤六: 持久化 v8 数据集与元数据文件
-    logger.info("Step 6: Saving v8 Datasets & Metadata...")
-    action_info = {
-        "avatar": cfg.human.get("avatar_name", "neutral_0"),
-        "action_class": cfg.human.get("action", "fall_related"),
-        "action_label": "fall to the ground",
-        "motion_id": cfg.human.get("motion_id", "fall_related_3522"),
+    # 保存最佳视角 RGB 图像 (best_view_rgb.png)
+    best_rgb_path = vis_dir / "best_view_rgb.png"
+    if obs.get("rgb") is not None:
+        Image.fromarray(obs["rgb"]).save(best_rgb_path)
+
+    # 7. 步骤六: 持久化 candidate_views.json 与 best_view.json
+    logger.info("Step 6: Saving candidate_views.json, best_view.json and metadata.json...")
+    
+    # 保存 candidate_views.json
+    views_json_path = vis_dir / "candidate_views.json"
+    with open(views_json_path, "w", encoding="utf-8") as f:
+        json.dump([v.to_dict() for v in checked_candidates], f, indent=2, ensure_ascii=False)
+
+    # 保存 best_view.json
+    best_json_path = vis_dir / "best_view.json"
+    best_data = {
+        "best_viewpoint_id": best_vp.viewpoint_id,
+        "score": best_quality.visibility_score,
+        "position": [float(x) for x in best_vp.position],
+        "yaw_deg": float(best_vp.yaw_deg),
+        "camera_pose": {
+            "position": cam_info["camera_position"],
+            "rotation": cam_info["camera_rotation"],
+        },
+        "metrics": {
+            "distance": best_quality.distance,
+            "viewing_angle_deg": best_quality.viewing_angle_deg,
+            "visible_joints_count": best_quality.visible_joints_count,
+            "pose_coverage": best_quality.pose_coverage,
+            "occlusion_ratio": best_quality.occlusion_ratio,
+        },
+        "rgb_image": to_relative_data_path(best_rgb_path),
     }
-    save_v8_viewpoint_dataset(
-        output_dir=vis_dir,
-        scene_id=scene_id,
-        episode_id="v8_demo_episode",
-        human_pose=human_pose,
-        action_info=action_info,
-        robot_start_pos=robot_start_pos,
-        candidate_views=checked_candidates,
-        view_qualities=qualities,
-    )
+    with open(best_json_path, "w", encoding="utf-8") as f:
+        json.dump(best_data, f, indent=2, ensure_ascii=False)
 
-    # 8. 打印标准化验证报告
-    feasible_count = sum(1 for v in checked_candidates if v.feasible)
-    best_view = max(qualities, key=lambda q: q.visibility_score) if qualities else None
+    # 保存 metadata.json
+    summary = summarize_viewpoint_qualities(all_qualities)
+    meta_json_path = vis_dir / "metadata.json"
+    metadata = {
+        "scene_id": scene_id,
+        "human_position": [float(x) for x in human_pose.position],
+        "generated_views": generated_count,
+        "filtered_views": filtered_count,
+        "best_viewpoint": best_data,
+        "visibility_summary": summary,
+    }
+    with open(meta_json_path, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, indent=2, ensure_ascii=False)
 
+    # 8. 打印验收标准格式报告
     print("\n" + "=" * 65)
-    print("[V8 Active View Foundation Demonstration Results]")
-    print(f"Scene ID:              {scene_id}")
-    print(f"Human Position:        {human_pose.position}")
-    print(f"Total Candidates:      {len(checked_candidates)}")
-    print(f"Feasible Candidates:   {feasible_count} ({feasible_count / len(checked_candidates) * 100:.1f}%)")
-    print(f"Evaluated Viewpoints:  {len(qualities)}")
-    if best_view:
-        print(f"Best Viewpoint ID:     {best_view.viewpoint_id}")
-        print(f"Best Visibility Score: {best_view.visibility_score:.3f} (Dist: {best_view.distance:.2f}m, Angle: {best_view.viewing_angle_deg:.1f} deg)")
-    print(f"Output Directory:      {vis_dir}")
+    print("[V8 Local Active View Planning Results]")
+    print(f"Generated views:       {generated_count}")
+    print(f"Filtered views:        {filtered_count}")
+    print(f"Best viewpoint score:  {best_quality.visibility_score:.3f}")
+    print(f"Best viewpoint ID:     {best_vp.viewpoint_id}")
+    print(f"Best viewpoint Pos:    {[round(x, 2) for x in best_vp.position]}")
+    print(f"Best viewpoint Yaw:    {best_vp.yaw_deg:.1f} deg")
+    print(f"Rendered Image:        {best_rgb_path}")
     print("=" * 65)
-    print("PASS:\nACTIVEVIEW v8.0 Phase 1 Foundation Verified\n")
+    print("PASS:\nACTIVEVIEW v8.0 Local Active View Planning Verified\n")
     sys.exit(0)
 
 
