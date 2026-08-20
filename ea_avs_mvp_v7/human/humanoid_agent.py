@@ -4,7 +4,7 @@ Habitat Humanoid 实体代理 —— humanoid_agent.py
 
 职责：
     1. 在 Habitat 物理世界中实例化 KinematicHumanoid (neutral_0)；
-    2. 设置人体基座在场景中的初始位置与朝向；
+    2. 设置人体基座在场景中的初始位置与朝向 (强制执行 Y >= 0.0 地面高度规则)；
     3. 接收 MotionPlayer 输出的关节姿态并驱动人形模型变形；
     4. 提供 set_visibility 控制人体模型的渲染可见性；
     5. 依托 keypoint_mapping 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState。
@@ -137,7 +137,7 @@ class HumanoidAgent:
         if self._agent.sim_obj is None:
             raise RuntimeError("Failed to spawn Humanoid articulated object in Habitat scene.")
 
-        # 默认置为 rest 姿态
+        # 默认置为 rest 姿态并位于原点
         self._agent.base_pos = mn.Vector3(0.0, 0.0, 0.0)
         self._agent.base_rot = 0.0
         self._agent.set_rest_position()
@@ -149,7 +149,6 @@ class HumanoidAgent:
         """设置 Humanoid 渲染可见性。"""
         self._is_visible = bool(visible)
         if self._agent is not None and self._agent.sim_obj is not None:
-            # 确保 BulletArticulatedObject 保持激活
             if hasattr(self._agent.sim_obj, "awake"):
                 self._agent.sim_obj.awake = True
 
@@ -158,8 +157,15 @@ class HumanoidAgent:
         position: Union[List[float], np.ndarray],
         yaw_rad: float = 0.0,
     ) -> None:
-        """设置 Humanoid 在场景中的根基座位置与航向角。"""
+        """设置 Humanoid 在场景中的根基座位置与航向角。
+
+        Habitat 坐标规范约束：
+            x: 左右, y: 高度 (禁止 y < -0.5 负高度), z: 前后
+        """
         pos = np.asarray(position, dtype=np.float32)
+        if pos[1] < -0.5:
+            logger.warning("Invalid humanoid height: Y is negative (%.3f m < -0.5m). Floor height should be >= 0.0m", pos[1])
+
         self._base_pos = pos
         self._base_yaw = float(yaw_rad)
 

@@ -4,7 +4,7 @@ Humanoid 可见性与相机视锥调试脚本 —— debug_humanoid_visibility.p
 
 功能：
     1. 独立验证 Habitat 场景加载、Humanoid 实体生成与机器人相机对准；
-    2. 不依赖复杂 AMASS 动作，直接测试 Humanoid 在场景中的几何与渲染状态；
+    2. 执行坐标系规范 (Human: [0, 0, 0], yaw=180; Robot: [0, 0, 2.5], yaw=0)；
     3. 输出标准化 [V7 Humanoid Visibility Debug] 调试报告并保存调试视图。
 
 运行方式：
@@ -13,6 +13,7 @@ Humanoid 可见性与相机视锥调试脚本 —— debug_humanoid_visibility.p
 
 import argparse
 import logging
+import math
 import sys
 from pathlib import Path
 
@@ -32,8 +33,9 @@ logger = logging.getLogger("debug_visibility")
 
 def main():
     parser = argparse.ArgumentParser(description="Debug Humanoid Visibility in Habitat Scene")
-    parser.add_argument("--human-pos", nargs=3, type=float, default=[1.5, -1.60, 4.0], help="Humanoid base position [x, y, z]")
-    parser.add_argument("--robot-pos", nargs=3, type=float, default=[1.5, -1.60, 6.5], help="Robot base position [x, y, z]")
+    parser.add_argument("--human-pos", nargs=3, type=float, default=[0.0, 0.0, 0.0], help="Humanoid base position [x, y, z]")
+    parser.add_argument("--robot-pos", nargs=3, type=float, default=[0.0, 0.0, 2.5], help="Robot base position [x, y, z]")
+    parser.add_argument("--human-yaw", type=float, default=180.0, help="Humanoid yaw in degrees")
     parser.add_argument("--robot-yaw", type=float, default=0.0, help="Robot yaw in degrees (0 deg faces -Z)")
     parser.add_argument("--output-image", type=str, default=None, help="Path to save rendered debug RGB image")
     args = parser.parse_args()
@@ -52,7 +54,7 @@ def main():
         raise RuntimeError("Humanoid failed to load into Habitat scene!")
 
     humanoid.set_visibility(True)
-    humanoid.set_base_pose(human_pos, yaw_rad=0.0)
+    humanoid.set_base_pose(human_pos, yaw_rad=math.radians(args.human_yaw))
 
     # 2. 实例化 Robot 与传感器
     robot = RobotAgent(sim)

@@ -3,15 +3,18 @@
 Status: COMPLETED
 
 ## Task
-ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Environment (v7.0 Humanoid visibility debugging completed)
+ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Environment (v7.0 humanoid coordinate alignment fixed)
 
 ## Objective
-定位并修复 v7.0 中 Humanoid 实体在 Habitat 场景中的可见性与相机对准问题，完成端到端清晰渲染验收：
-1. **Humanoid 渲染可见性与场景对准修复**：
-   - 场景地面与开阔空间坐标修正：`apartment_1.glb` 室内地面高度 $Y \approx -1.60\text{ m}$，将基座定位在开阔无遮挡区域 (`[1.5, -1.60, 4.0]`) 与相机视锥中心 (`[1.5, -1.60, 6.8]`, yaw=0.0 deg)；
-   - 强化 `HumanoidAgent.load()` 物理与渲染实体注册断言，增加 `set_visibility(True)` 控制；
-   - 在 `RGBDSensor` 中提供 `check_object_in_view` 视锥检测；
-   - 增加独立调试脚本 `scripts/debug_humanoid_visibility.py` 与极简渲染验证脚本 `scripts/render_humanoid_only_demo.py`。
+严格落实 Habitat 坐标系规范 (x: 左右, y: 高度 >= 0.0m, z: 前后)，完成空间坐标对齐、地面高度校验与正面对准：
+1. **空间坐标与对准修复**：
+   - 严禁负值 Y 人体高度设置，默认统一为地面高度基准 `Y = 0.0m`；
+   - 调试与演示默认对准：
+     - Humanoid: `[0.0, 0.0, 0.0]`, `yaw = 180.0 deg` (面向 +Z 轴)
+     - Robot: `[0.0, 0.0, 2.5]`, `yaw = 0.0 deg` (面向 -Z 轴，正对 Humanoid 前方)
+   - 增加 `[V7 Spatial Debug]` 标准空间日志输出；
+   - 新增 `scripts/debug_humanoid_pose.py` 生成 `visualizations/humanoid_debug/rgb.png`；
+   - 在 `HumanoidAgent` 中增加负高度预警 (`pos[1] < -0.5m`)。
 2. **完整闭环全量通过**：
    ```text
    AMASS Motion (Schema A/B)
@@ -41,8 +44,9 @@ ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Env
 - **Previous Stable Baseline**: v6.0 (6.0.0 — CLOSED / FINALIZED, Read-Only)
 
 ## Validation Plan Execution Results
+- [x] 独立空间姿态与坐标调试: `python -m ea_avs_mvp_v7.scripts.debug_humanoid_pose` (PASS)
 - [x] Humanoid 可见性独立调试: `python -m ea_avs_mvp_v7.scripts.debug_humanoid_visibility` (PASS)
-- [x] 极简 Humanoid 独立渲染 Demo: `python -m ea_avs_mvp_v7.scripts.render_humanoid_only_demo` (PASS, 84.8% non-black)
+- [x] 极简 Humanoid 独立渲染 Demo: `python -m ea_avs_mvp_v7.scripts.render_humanoid_only_demo` (PASS)
 - [x] 统一演示入口与视频生成: `python -m ea_avs_mvp_v7.scripts.run_v7_demo --action fall_related --num-frames 10` (PASS)
 - [x] 3 类动作全量闭环: `python -m ea_avs_mvp_v7.scripts.validate_three_actions` (PASS)
 - [x] Habitat 端到端最小闭环 Smoke Test: `python -m ea_avs_mvp_v7.scripts.run_smoke_test --action fall_related --num-frames 10` (PASS)

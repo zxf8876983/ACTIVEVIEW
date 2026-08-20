@@ -73,11 +73,11 @@ def validate_single_action(
         humanoid = HumanoidAgent(sim, cfg.humanoid)
         humanoid.load()
         humanoid.set_visibility(True)
-        humanoid.set_base_pose([1.5, -1.60, 4.0], 0.0)
+        humanoid.set_base_pose([0.0, 0.0, 0.0], 3.14159)
         humanoid_loaded = True
 
         robot = RobotAgent(sim)
-        robot.set_pose([1.5, -1.60, 6.8], 0.0)
+        robot.set_pose([0.0, 0.0, 2.5], 0.0)
         sensor = RGBDSensor(sim, cfg.sensor)
 
         player = MotionPlayer(pkl_path, playback_fps=float(cfg.motion.get("playback_fps", 30.0)))

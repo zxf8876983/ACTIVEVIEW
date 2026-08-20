@@ -6,7 +6,9 @@ v7.0 综合演示主入口脚本 —— run_v7_demo.py
     1. 一键运行 ACTIVEVIEW v7.0 完整端到端科研演示链路：
        AMASS Motion -> Habitat Motion PKL -> Humanoid 动作播放 -> 机器人 RGB-D 采集 -> 动力学评价与成果持久化；
     2. 加载 Habitat 室内场景 (apartment_1.glb) 与 neutral_0 Humanoid 实体；
-    3. 播放目标动作并采集多帧 RGB 图像与 Depth 深度图；
+    3. 规范空间坐标对齐：
+       - Humanoid: [0.0, 0.0, 0.0], yaw=180.0 deg (面向 +Z 轴)
+       - Robot:    [0.0, 0.0, 2.5], yaw=0.0 deg   (面向 -Z 轴，正对 Humanoid)
     4. 分离机器人底盘 robot_pose (position, rotation) 与相机 camera_pose (extrinsic, intrinsic)；
     5. 每帧保存完整的 16 关键点 3D 世界坐标真值 human_pose_gt；
     6. 计算多维动力学指标 ActionMotionMetrics (height_change, pelvis_velocity, joint_motion_energy, torso_angle_change, orientation_change, dynamic_motion)；
@@ -95,12 +97,12 @@ def main():
     humanoid = HumanoidAgent(sim, cfg.humanoid)
     humanoid.load()
     humanoid.set_visibility(True)
-    human_base_pos = [1.5, -1.60, 4.0]
-    human_base_yaw = 0.0
-    humanoid.set_base_pose(human_base_pos, yaw_rad=human_base_yaw)
+    human_base_pos = [0.0, 0.0, 0.0]
+    human_base_yaw = 180.0
+    humanoid.set_base_pose(human_base_pos, yaw_rad=math.radians(human_base_yaw))
 
     robot = RobotAgent(sim)
-    robot_chassis_pos = [1.5, -1.60, 6.8]
+    robot_chassis_pos = [0.0, 0.0, 2.5]
     robot_chassis_yaw_deg = 0.0
     robot.set_pose(robot_chassis_pos, robot_chassis_yaw_deg)
 
@@ -109,6 +111,17 @@ def main():
     robot_rotation_quat = [0.0, float(math.sin(yaw_rad / 2.0)), 0.0, float(math.cos(yaw_rad / 2.0))]
 
     sensor = RGBDSensor(sim, cfg.sensor)
+    cam_mat = sensor.get_camera_pose_matrix()
+    cam_pos = [float(cam_mat[0, 3]), float(cam_mat[1, 3]), float(cam_mat[2, 3])]
+
+    # 打印标准化空间调试日志
+    print("\n" + "=" * 65)
+    print("[V7 Spatial Debug]")
+    print(f"Human:  {human_base_pos}")
+    print(f"Robot:  {robot_chassis_pos}")
+    print(f"Camera: {[round(x, 3) for x in cam_pos]}")
+    print("=" * 65 + "\n")
+
     player = MotionPlayer(pkl_path, playback_fps=float(cfg.motion.get("playback_fps", 30.0)))
 
     step_interval = max(1, player.total_frames // args.num_frames)
