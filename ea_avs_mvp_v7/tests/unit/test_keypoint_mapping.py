@@ -7,8 +7,8 @@ import unittest
 import numpy as np
 
 from ea_avs_mvp_v7.human.keypoint_mapping import (
-    KEYPOINT_LINK_MAP,
     HUMAN_16_KEYPOINTS,
+    KEYPOINT_LINK_MAP,
     extract_human_keypoints_3d,
     validate_keypoints,
 )
@@ -52,17 +52,15 @@ class MockSimObj:
 
 
 class TestKeypointMapping(unittest.TestCase):
-    """关键点映射表与 3D 坐标提取逻辑测试。"""
+    """关键点映射与提取逻辑测试。"""
 
     def test_keypoint_list_integrity(self):
-        """测试 16 个核心关键点定义。"""
         self.assertEqual(len(HUMAN_16_KEYPOINTS), 16)
         self.assertIn("pelvis", HUMAN_16_KEYPOINTS)
         self.assertIn("head", HUMAN_16_KEYPOINTS)
         self.assertIn("spine3", HUMAN_16_KEYPOINTS)
 
-    def test_keypoint_extraction_from_sim_obj(self):
-        """测试从模拟 SimObj 中提取 16 关节坐标并几何推导 Pelvis。"""
+    def test_keypoint_extraction_and_pelvis_derivation(self):
         mock_obj = MockSimObj()
         positions = extract_human_keypoints_3d(mock_obj)
         self.assertEqual(len(positions), 16)
@@ -75,7 +73,6 @@ class TestKeypointMapping(unittest.TestCase):
         self.assertEqual(val_res["num_extracted"], 16)
 
     def test_insufficient_keypoints_raises_error(self):
-        """测试关键点数量不足时抛出 ValueError。"""
         incomplete = {"head": [0.0, 1.7, 0.0]}
         with self.assertRaises(ValueError):
             validate_keypoints(incomplete, min_joints=15)

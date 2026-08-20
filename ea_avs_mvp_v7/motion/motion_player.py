@@ -3,12 +3,13 @@
 =================================
 
 职责：
-    1. 加载 Habitat 转换后的 .pkl 动作文件；
-    2. 管理时序帧指针，控制动作单步执行 (step)、跳转 (seek) 与重置 (reset)；
-    3. 输出当前时刻的关节姿态与 4x4 根变换矩阵。
+    1. 加载并校验经过 MotionConverter 转换的 Habitat 标准 .pkl 动作字典；
+    2. 严格确认输入为 Habitat 规范四元数 (N, 216) 与 4x4 根变换矩阵 (N, 4, 4)；
+    3. 管理时序帧指针，控制动作单步执行 (step)、跳转 (seek) 与重置 (reset)；
+    4. 输出详细动作源与尺寸日志，输出当前帧姿态数据。
 
 边界约束：
-    - 纯时序数据提供器，不直接操作 Habitat 仿真世界。
+    - 纯时序数据提供器，不直接操作 Habitat 仿真世界；禁止直接使用未转换的 AMASS 原始数据驱动 Humanoid。
 """
 
 import logging
@@ -17,6 +18,8 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
 import numpy as np
+
+from .joint_mapping import HABITAT_HUMANOID_QUAT_DIM, validate_habitat_motion_dict
 
 logger = logging.getLogger(__name__)
 
@@ -36,19 +39,39 @@ class MotionPlayer:
         with open(self.pkl_path, "rb") as f:
             raw_data = pickle.load(f)
 
-        if "pose_motion" not in raw_data:
-            raise ValueError(f"Invalid motion file (missing 'pose_motion'): {self.pkl_path}")
+        if not isinstance(raw_data, dict) or "pose_motion" not in raw_data:
+            raise ValueError(
+                f"Invalid motion file format (expected Habitat pose_motion dict): {self.pkl_path}"
+            )
+
+        # 严格执行 Habitat motion 格式校验
+        stats = validate_habitat_motion_dict(raw_data)
 
         motion_info = raw_data["pose_motion"]
         self.metadata = raw_data.get("metadata", {})
 
         self.joints_array = np.asarray(motion_info["joints_array"], dtype=np.float32)
         self.transform_array = np.asarray(motion_info["transform_array"], dtype=np.float32)
-        self.fps = float(motion_info.get("fps", 30.0))
+        self.fps = float(stats["fps"])
         self.playback_fps = playback_fps
-        self.num_frames = self.joints_array.shape[0]
+        self.num_frames = stats["num_frames"]
 
         self.current_frame = 0
+
+        logger.info(
+            "MotionPlayer initialized:\n"
+            "  - motion source:          converted habitat motion\n"
+            "  - file:                   %s\n"
+            "  - frame count:            %d\n"
+            "  - fps:                    %.1f\n"
+            "  - joint quaternion shape: %s\n"
+            "  - transform shape:        %s",
+            self.pkl_path.name,
+            self.num_frames,
+            self.fps,
+            tuple(self.joints_array.shape),
+            tuple(self.transform_array.shape),
+        )
 
     @property
     def total_frames(self) -> int:

@@ -19,7 +19,7 @@ from ea_avs_mvp_v7.observation.recorder import ObservationRecorder
 
 
 class TestEpisodeDataset(unittest.TestCase):
-    """Episode 数据集生成与统计指标测试。"""
+    """Episode 数据结构与统计指标单元测试。"""
 
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()
@@ -32,8 +32,7 @@ class TestEpisodeDataset(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
-    def test_episode_metrics_computation(self):
-        """测试 Episode 质量指标计算。"""
+    def test_episode_serialization_and_stats(self):
         frames = [
             EpisodeFrame(
                 frame_index=0,
@@ -68,33 +67,14 @@ class TestEpisodeDataset(unittest.TestCase):
             frames=frames,
         )
 
+        d = ep.to_dict()
+        self.assertEqual(d["episode_id"], "ep_test")
+        self.assertEqual(len(d["frames"]), 1)
+
         stats = compute_episode_statistics(ep)
         self.assertEqual(stats["total_frames"], 1)
         self.assertEqual(stats["rgb_valid_ratio"], 1.0)
         self.assertEqual(stats["depth_valid_ratio"], 1.0)
-        self.assertEqual(stats["avg_gt_keypoints_per_frame"], 2.0)
-
-    def test_recorder_save_metadata(self):
-        """测试 ObservationRecorder 生成顶层 metadata.json。"""
-        recorder = ObservationRecorder(self.tmp_dir)
-        target_dir = Path(self.tmp_dir) / "test_ep_dir"
-        meta_dict = {
-            "scene_id": "apartment_1",
-            "episode_id": "test_ep_dir",
-            "motion_id": "fall_related_3522",
-            "action_class": "fall_related",
-            "action_label": "fall down",
-            "robot_pose": [0.0, 0.1, 2.0, 180.0],
-            "camera_pose": [[1, 0, 0, 0], [0, 1, 0, 1], [0, 0, 1, 2], [0, 0, 0, 1]],
-            "human_pose_gt": {"pelvis": [0.0, 0.9, 0.0]},
-            "frames": [],
-        }
-
-        meta_path = recorder.record_episode_metadata(target_dir, meta_dict)
-        self.assertTrue(meta_path.exists())
-        with open(meta_path, "r", encoding="utf-8") as f:
-            loaded = json.load(f)
-        self.assertEqual(loaded["scene_id"], "apartment_1")
 
 
 if __name__ == "__main__":

@@ -8,21 +8,27 @@
 """
 
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 from ea_avs_mvp_v7.core.paths import get_repo_root, get_data_root
 
 
-def resolve_scene_path(scene_config_path: Optional[str] = None) -> Tuple[Path, Optional[Path]]:
+def resolve_scene_path(scene_config_path: Optional[Union[str, Path, Dict[str, Any]]] = None) -> Tuple[Path, Optional[Path]]:
     """解析场景 glb 路径与 navmesh 路径。"""
     candidate_roots = [
         get_repo_root().parent / "robot" / "habitat-sim" / "data" / "versioned_data" / "habitat_test_scenes",
         get_data_root() / "assets" / "scenes",
     ]
 
+    target_str = None
+    if isinstance(scene_config_path, dict):
+        target_str = scene_config_path.get("scene_path") or scene_config_path.get("scene_id")
+    elif scene_config_path is not None:
+        target_str = str(scene_config_path)
+
     found_scene = None
-    if scene_config_path:
-        p = Path(scene_config_path)
+    if target_str:
+        p = Path(target_str)
         if p.is_absolute() and p.exists():
             found_scene = p
         elif (get_repo_root().parent / p).exists():

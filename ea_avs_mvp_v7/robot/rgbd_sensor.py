@@ -27,23 +27,31 @@ class RGBDSensor:
         self.hfov_deg = float(self.sensor_cfg.get("hfov_deg", 90.0))
         self.camera_height = float(self.sensor_cfg.get("camera_height", 1.2))
 
-    @property
-    def intrinsics(self) -> Dict[str, float]:
-        """计算针孔相机内参矩阵参数。"""
-        hfov_rad = math.radians(self.hfov_deg)
-        fx = self.width / (2.0 * math.tan(hfov_rad / 2.0))
+    @staticmethod
+    def compute_intrinsics_from_config(sensor_cfg: Dict[str, Any]) -> Dict[str, float]:
+        """从配置字典计算针孔相机内参。"""
+        w = float(sensor_cfg.get("width", 640))
+        h = float(sensor_cfg.get("height", 480))
+        hfov_deg = float(sensor_cfg.get("hfov_deg", 90.0))
+        hfov_rad = math.radians(hfov_deg)
+        fx = w / (2.0 * math.tan(hfov_rad / 2.0))
         fy = fx
-        cx = self.width / 2.0
-        cy = self.height / 2.0
+        cx = w / 2.0
+        cy = h / 2.0
         return {
             "fx": fx,
             "fy": fy,
             "cx": cx,
             "cy": cy,
-            "width": float(self.width),
-            "height": float(self.height),
-            "hfov_deg": self.hfov_deg,
+            "width": w,
+            "height": h,
+            "hfov_deg": hfov_deg,
         }
+
+    @property
+    def intrinsics(self) -> Dict[str, float]:
+        """计算针孔相机内参矩阵参数。"""
+        return self.compute_intrinsics_from_config(self.sensor_cfg)
 
     def get_camera_pose_matrix(self) -> np.ndarray:
         """获取相机在世界坐标系下的 4x4 变换矩阵。"""
