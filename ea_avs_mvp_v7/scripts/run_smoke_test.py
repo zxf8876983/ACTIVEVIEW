@@ -121,9 +121,9 @@ def main():
     episode = ep_gen.generate_single_episode(
         episode_id=episode_id,
         motion_player=motion_player,
-        camera_position=[0.0, 0.1, 2.0],
-        camera_yaw_deg=180.0,
-        human_position=[0.0, 0.1, 0.0],
+        camera_position=[1.5, -1.60, 6.8],
+        camera_yaw_deg=0.0,
+        human_position=[1.5, -1.60, 4.0],
         human_yaw_rad=0.0,
         output_dir=recorder.output_dir,
         max_frames=args.num_frames,

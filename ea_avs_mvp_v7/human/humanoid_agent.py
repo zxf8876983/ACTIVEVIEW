@@ -6,11 +6,8 @@ Habitat Humanoid 实体代理 —— humanoid_agent.py
     1. 在 Habitat 物理世界中实例化 KinematicHumanoid (neutral_0)；
     2. 设置人体基座在场景中的初始位置与朝向；
     3. 接收 MotionPlayer 输出的关节姿态并驱动人形模型变形；
-    4. 依托 keypoint_mapping 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState；
-    5. 输出关节数量、名称清单与三维坐标汇总。
-
-边界约束：
-    - 仅负责人体模型在仿真环境中的控制与状态提取，不干预机器人或视角决策。
+    4. 提供 set_visibility 控制人体模型的渲染可见性；
+    5. 依托 keypoint_mapping 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState。
 """
 
 import logging
@@ -97,6 +94,7 @@ class HumanoidAgent:
         self._agent: Optional[KinematicHumanoid] = None
         self._base_pos = np.zeros(3, dtype=np.float32)
         self._base_yaw = 0.0
+        self._is_visible = True
 
     @property
     def agent(self) -> KinematicHumanoid:
@@ -112,8 +110,16 @@ class HumanoidAgent:
     def base_yaw(self) -> float:
         return self._base_yaw
 
+    @property
+    def is_loaded(self) -> bool:
+        return self._agent is not None and self._agent.sim_obj is not None
+
+    @property
+    def is_visible(self) -> bool:
+        return self._is_visible
+
     def load(self) -> None:
-        """在仿真环境中实例化 KinematicHumanoid。"""
+        """在仿真环境中实例化并注册 KinematicHumanoid。"""
         if KinematicHumanoid is None:
             raise RuntimeError("KinematicHumanoid not available. Please run in habitat conda env.")
 
@@ -127,11 +133,25 @@ class HumanoidAgent:
         self._agent.reconfigure()
         self._agent.update()
 
-        # 默认放置在原点并置为 rest 姿态
+        # 严格断言物理与渲染对象存在
+        if self._agent.sim_obj is None:
+            raise RuntimeError("Failed to spawn Humanoid articulated object in Habitat scene.")
+
+        # 默认置为 rest 姿态
         self._agent.base_pos = mn.Vector3(0.0, 0.0, 0.0)
         self._agent.base_rot = 0.0
         self._agent.set_rest_position()
-        logger.info("HumanoidAgent loaded: %s", self.urdf_path.name)
+        self.set_visibility(True)
+
+        logger.info("HumanoidAgent loaded successfully: %s (sim_id=%s)", self.urdf_path.name, getattr(self._agent.sim_obj, "object_id", "N/A"))
+
+    def set_visibility(self, visible: bool = True) -> None:
+        """设置 Humanoid 渲染可见性。"""
+        self._is_visible = bool(visible)
+        if self._agent is not None and self._agent.sim_obj is not None:
+            # 确保 BulletArticulatedObject 保持激活
+            if hasattr(self._agent.sim_obj, "awake"):
+                self._agent.sim_obj.awake = True
 
     def set_base_pose(
         self,

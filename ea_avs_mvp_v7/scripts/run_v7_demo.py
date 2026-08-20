@@ -94,13 +94,14 @@ def main():
 
     humanoid = HumanoidAgent(sim, cfg.humanoid)
     humanoid.load()
-    human_base_pos = [0.0, 0.1, 0.0]
+    humanoid.set_visibility(True)
+    human_base_pos = [1.5, -1.60, 4.0]
     human_base_yaw = 0.0
     humanoid.set_base_pose(human_base_pos, yaw_rad=human_base_yaw)
 
     robot = RobotAgent(sim)
-    robot_chassis_pos = [0.0, 0.1, 2.0]
-    robot_chassis_yaw_deg = 180.0
+    robot_chassis_pos = [1.5, -1.60, 6.8]
+    robot_chassis_yaw_deg = 0.0
     robot.set_pose(robot_chassis_pos, robot_chassis_yaw_deg)
 
     # 计算机器人底盘四元数 [qx, qy, qz, qw]
