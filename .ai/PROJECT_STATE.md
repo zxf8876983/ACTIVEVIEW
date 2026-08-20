@@ -9,39 +9,39 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：v6.0 保持正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)；当前完成 v7.0 前置动作数据基础设施建设 (v7.0 Pre-Development Motion Asset Infrastructure)。
+- **项目阶段**：v6.0 保持正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)；当前进入 v7.0 开发准备阶段 (v7.0 Humanoid-driven Active Perception Simulation Environment)。
 - **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> 未来版本`），各版本保留独立目录与设计文档。核心功能全链路跑通前暂不重构为单一 `src/`。
 
 ---
 
 ## 2. Active Development Version
-- **Version**: v6.0 (6.0.0 — CLOSED / FINALIZED)
-- **Active Development Specification**: `EA_AVS_MVP60_Code_Generation_Document.md`
-- **Implementation Status**: CLOSED / FINALIZED & RIGOROUSLY VALIDATED
-- **Development Code Directory**: `ea_avs_mvp_v6/`
-- **Pre-Development Infrastructure**: `tools/motion_assets/` (BABEL / AMASS Elderly Motion Asset Pipeline)
+- **Version**: v7.0 (Development Preparation)
+- **Title**: Humanoid-driven Active Perception Simulation Environment
+- **Active Specification**: `EA_AVS_MVP70_Code_Generation_Document.md`
+- **Previous Stable Specification**: `EA_AVS_MVP60_Code_Generation_Document.md` (v6.0 CLOSED)
+- **Infrastructure & Tools**: `tools/motion_assets/` (BABEL / AMASS Elderly Motion Asset Pipeline)
 
 ---
 
 ## 3. Latest Stable Implementation
-- **Version**: v6.0 (6.0.0)
+- **Version**: v6.0 (6.0.0 — CLOSED / FINALIZED)
 - **Code Directory**: `ea_avs_mvp_v6/`
 - **Specification Document**: `EA_AVS_MVP60_Code_Generation_Document.md`
 - **Previous Stable Baseline**: v5.0 (`ea_avs_mvp_v5/`)
 
 ---
 
-## 4. Motion Asset Infrastructure (v7.0 Pre-Development)
+## 4. Motion Asset Infrastructure (v7.0 Input & Assets)
 - **数据根目录解析**：统一使用相对路径 `../../data/ActiveView`（支持 `ACTIVEVIEW_DATA_ROOT` 环境变量覆盖）。
-- **BABEL 标注同步与解析**：同步 `babel_v1.0_release`（train, val, extra_train, extra_val），建立 token-aware 动作筛选器，解析出 10,370 条候选动作片段。
-- **老人 5 类典型动作定义**：
-  1. `standing` (自然站立、静止站立)
-  2. `sitting` (坐下、坐姿端坐)
-  3. `bending` (弯腰、拾物)
-  4. `reaching` (触及、前伸伸手)
-  5. `fall_related` (高置信跌倒与人工确认倒地姿态)
-- **Feasibility Set**：精选 17 条高质量 frame-level 动作序列，覆盖 5 个核心 AMASS 子库（`BMLrub`, `CMU`, `EKUT`, `EyesJapanDataset`, `KIT`）。
-- **AMASS 工具链**：实现官方认证下载器（`download_amass_required.py`）、手动下载指引清单（`manual_download_required.md`）、本地文件索引与 Habitat Schema 兼容性检查器（`index_amass_files.py`）及 12 项测试套件。
+- **BABEL 标注同步与解析**：已同步 `babel_v1.0_release`，建立动作筛选器解析出 10,370 条候选动作片段。
+- **老人 5 类典型动作定义与 Feasibility Set**：
+  1. `standing` (自然站立、静止站立) — 3 条
+  2. `sitting` (坐下、坐姿端坐) — 3 条
+  3. `bending` (弯腰、拾物) — 3 条
+  4. `reaching` (触及、前伸伸手) — 3 条
+  5. `fall_related` (高置信摔倒与倒地姿态) — 5 条
+  - 精选 17 条高质量 frame-level 动作序列，覆盖 5 个核心 AMASS 子库（`BMLrub`, `CMU`, `EKUT`, `EyesJapanDataset`, `KIT`）。
+- **AMASS 数据集落地**：已从 Hugging Face 完整下载并解压 5 个子库全部 7,862 个 `.npz` 文件（13.75 GB），`index_amass_files.py` 严格校验 17/17 PASS 并生成 `motion_asset_manifest.json`。
 
 ---
 
@@ -63,57 +63,58 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ---
 
-## 6. Current v6 Implemented Capabilities & Verified Results
-- **Fail-Closed Static-Scene-Only 射线检测**：实现 `HabitatRunner.cast_ray_static_scene` 与 `resolve_stage_id`，仅以 `stage_id` 为遮挡物，自动穿透/忽略 Humanoid 动态碰撞体；当 static API 缺失时严格返回 `valid=False/unknown`，绝不回退至 `cast_ray`。
-- **Yaw 坐标与前向向量统一**：对齐 Habitat KinematicHumanoid URDF 原生坐标系与项目全局 $+Z$ 约定，8 方向校准实测中位数绝对误差降至 **0.97°**，平均绝对误差 **3.03°**，输出 PASS exit code 0。
-- **3D Bilateral 中点解剖推导**：移除 neck / pelvis 在 2D midpoint 像素上的深度采样，直接由 3D 左右肩与左右髋中点几何推导。
-- **尺度感知与 6 级基座位置估计**：尺度估计前置，基座位置优先级为双踝 -> 单踝 -> 骨盆 -> 髋中点 -> 躯干均值 -> 可见关节中位数，统一读取 `POSE_SKELETONS["standing"]`。
-- **解耦候选池与三协议评估**（20 episodes 实测）：
-  - 协议 A (Shared-Pool 离线分析): 决策一致率 45%，位置平均偏差 1.267m，$Q_{true}$ Gap 0.087。
-  - 协议 B (Candidate Shift 分析): 平均采样中心偏移 0.322m (XZ 偏移 0.289m)。
-  - 协议 C (端到端系统级主实验): `EstimatedState-Ours` ($Q_{true}=0.467$) 对比 `GTState-Ours` ($Q_{true}=0.553$)，端到端 Gap 0.086；同口径 Oracle Gap 分别为 0.052 (EstPool) 与 0.027 (GTPool)。
-  - Oracle 跨池冲突与上界破坏计数均为 0 (`oracle_pool_mismatch_count: 0`, `oracle_not_upper_bound_count: 0`)。
-- **四重零 GT 泄漏防御**：通过 Guard A1 (AST 语法树禁词扫描)、Guard A2 (AST 禁调 generic cast_ray)、Guard B (Runner Humanoid 访问阻断)、Guard C (未来候选观测运行时 Sentinel 拦截)。
+## 6. Current Research Roadmap & Future Directions
+
+### v7.0: Humanoid-driven Active Perception Simulation Environment
+- **定位**：基础设施与实验平台构建版本。将 ACTIVEVIEW 从抽象/静态人体感知环境转变为由真实人体运动数据驱动的室内老人监护仿真环境。
+- **核心目标与流水线**：
+  ```text
+  BABEL Action Annotation
+          ↓
+  AMASS Human Motion
+          ↓
+  Habitat Humanoid Agent
+          ↓
+  Indoor Robot Perception Simulation
+          ↓
+  RGB-D Observation Dataset
+  ```
+- **聚焦能力 (Focuses on)**：
+  1. 逼真的人体 Humanoid 表达；
+  2. 人体运动数据加载与回放 (Motion Loading & Playback)；
+  3. Habitat 室内场景集成；
+  4. 机器人搭载相机的 RGB-D 观测生成；
+  5. Ground-Truth 动作/状态标注生成。
+- **明确排除在 v7.0 之外的非目标 (Explicitly NOT in v7.0)**：
+  - ❌ 不实现 NBV 视角选择算法
+  - ❌ 不实现 Action-aware utility 优化
+  - ❌ 不实现 Evidence Recovery 机制
+  - ❌ 不实现 强化学习 (RL)
+  - ❌ 不实现 多步路径规划 (Multi-step Planning)
+  - ❌ 不训练 动作识别模型 (HAR)
+  - ❌ 不修改 v6.0 代码及历史实现
+
+### 未来研究方向（仅记录规划，当前版本不开发）：
+
+#### v8.0: Action-aware Active View Selection
+- Action hypothesis / 动作后验建模 $P(a \mid O_t)$
+- Action-conditioned 视角效用函数设计
+- 多策略与视角对比评估
+
+#### v9.0: Uncertainty-aware Multi-step Active Perception
+- 观测不确定性建模 (Observation Uncertainty)
+- 判别性证据恢复机制 (Evidence Recovery)
+- 序列化多步主动视角规划 (Sequential Viewpoint Planning)
 
 ---
 
-## 7. Important Scientific Constraints
-1. **One-shot Active Re-observation**：定位为单步主动观察位姿重选择，非多步强化学习。
-2. **严禁 GT 信息泄漏到在线决策**：`EstimatedState-Ours` 在线决策路径禁止传入或读取 `gt_human_pos`, `gt_human_yaw`, `gt_skeleton`, `humanoid_manager`, `semantic_mask`。
-3. **严禁未来观测泄漏**：策略决策只能使用预测评分（`Q_pred_est` / `Q_pred_gt`），选择前绝对禁止渲染候选点未来 RGB/Depth/Semantic。
-4. **状态无效安全兜底**：状态估计失败或 static raycast 能力缺失时，`EstimatedState-Ours` 必须安全停留在当前位姿（`stay`），严禁静默回退到 GT 状态或 full collision raycast。
-5. **三支路独立命名**：必须清晰区分 `EstimatedState-Ours`（主方法）、`GTState-Ours`（特权基线）、`Oracle-GTPool` / `Oracle-EstPool`（离线上界）。
-6. **主实验场景常量**：v6.0 评测主变量聚焦于状态估计引入的误差传播，动作场景统一设为 standing 常量。
+## 7. Engineering Constraints & Operational Boundary
+1. **数据边界保护**：严禁将 AMASS / BABEL 原始大型数据（npz, tar.bz2, images, pth）提交至 Git 仓库；
+2. **统一路径解析**：统一使用 `../../data/ActiveView` 或 `ACTIVEVIEW_DATA_ROOT`，严禁机器路径硬编码；
+3. **只读保护**：保持 `ea_avs_mvp_v6/` 及更早版本只读；
+4. **小步验证**：每个模块均需具备明确的输入、输出、依赖与测试验证命令。
 
 ---
 
-## 8. Current Stable Point
-- **Active Branch**: `main`
-- **Status**: EA-AVS-MVP v6.0 — CLOSED / FINALIZED
-
----
-
-## 9. Expected Next Phase (v7.0 Scope & Non-Goals)
-- **v7.0 明确研发范围 (In-Scope)**：
-  1. **Multi-Action Humanoid**：基于 BABEL/AMASS 动作资产与 Habitat MotionConverterSMPLX 驱动多姿态动作人体；
-  2. **Current RGB-D Estimated State**：保持 v6.0 的单帧视觉人体状态与朝向估计；
-  3. **Action Hypothesis / Action Posterior $P(a|O_t)$**：单帧动作假设概率建模；
-  4. **Action-Conditioned Estimated-State NBV**：基于动作先验的主动观察点选择策略；
-  5. **实验对照基线**：GTAction / EstimatedAction / Action-Agnostic 对照评估；
-  6. **保持 One-Shot NBV 范式**：维持单步重观察科学定义不变。
-
-- **明确排除在 v7.0 之外的非目标 (Explicitly NOT v7 / Out-of-Scope)**：
-  - ❌ **Missing Discriminative Evidence Recovery**（留至后续版本探索）；
-  - ❌ **Evidence Recovery Score**（不纳入 v7.0 评分公式）；
-  - ❌ **Temporal HAR / 时序动作识别网络**（如 LSTM / TCN / Video Transformer）；
-  - ❌ **Walking 移动动作主实验**（v7 聚焦室内老人 5 类静态/半静态关键姿态与跌倒）；
-  - ❌ **Multi-Step NBV / 强化学习 (RL)**；
-  - ❌ **Learned End-to-End NBV**；
-  - ❌ **Real Robot / ROS 硬件部署**。
-
-- **工程重构计划**：在全链路科学闭环验证完成后，再统一进行单主线 `src/` 代码重构。
-
----
-
-## 10. Historical Versions (Read-Only)
-- `ea_avs_mvp/` (v1.0), `ea_avs_mvp_v2/` (v2.0), `ea_avs_mvp_v3/` (v3.0), `ea_avs_mvp_v4/` (v4.0), `ea_avs_mvp_v5/` (v5.0) 为历史及稳定参考版本，保持只读，不参与当前开发修改。
+## 8. Historical Versions (Read-Only)
+- `ea_avs_mvp/` (v1.0), `ea_avs_mvp_v2/` (v2.0), `ea_avs_mvp_v3/` (v3.0), `ea_avs_mvp_v4/` (v4.0), `ea_avs_mvp_v5/` (v5.0), `ea_avs_mvp_v6/` (v6.0) 为历史及稳定参考版本，保持只读，不参与当前开发修改。
