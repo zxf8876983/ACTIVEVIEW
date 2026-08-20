@@ -93,8 +93,24 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ---
 
-## 9. Expected Next Phase
-- **v7.0 动作感知主动视角选择**：在 Estimated-State 基础上引入动作假设不确定性建模（Action Hypothesis & Uncertainty）、缺失证据恢复评分（Evidence Recovery Score）与基于真实 AMASS / BABEL 动作的 Habitat Humanoid 动作序列驱动。
+## 9. Expected Next Phase (v7.0 Scope & Non-Goals)
+- **v7.0 明确研发范围 (In-Scope)**：
+  1. **Multi-Action Humanoid**：基于 BABEL/AMASS 动作资产与 Habitat MotionConverterSMPLX 驱动多姿态动作人体；
+  2. **Current RGB-D Estimated State**：保持 v6.0 的单帧视觉人体状态与朝向估计；
+  3. **Action Hypothesis / Action Posterior $P(a|O_t)$**：单帧动作假设概率建模；
+  4. **Action-Conditioned Estimated-State NBV**：基于动作先验的主动观察点选择策略；
+  5. **实验对照基线**：GTAction / EstimatedAction / Action-Agnostic 对照评估；
+  6. **保持 One-Shot NBV 范式**：维持单步重观察科学定义不变。
+
+- **明确排除在 v7.0 之外的非目标 (Explicitly NOT v7 / Out-of-Scope)**：
+  - ❌ **Missing Discriminative Evidence Recovery**（留至后续版本探索）；
+  - ❌ **Evidence Recovery Score**（不纳入 v7.0 评分公式）；
+  - ❌ **Temporal HAR / 时序动作识别网络**（如 LSTM / TCN / Video Transformer）；
+  - ❌ **Walking 移动动作主实验**（v7 聚焦室内老人 5 类静态/半静态关键姿态与跌倒）；
+  - ❌ **Multi-Step NBV / 强化学习 (RL)**；
+  - ❌ **Learned End-to-End NBV**；
+  - ❌ **Real Robot / ROS 硬件部署**。
+
 - **工程重构计划**：在全链路科学闭环验证完成后，再统一进行单主线 `src/` 代码重构。
 
 ---

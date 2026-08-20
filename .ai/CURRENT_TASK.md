@@ -3,49 +3,49 @@
 Status: COMPLETED
 
 ## Task
-ACTIVEVIEW v7.0 Pre-Development — Elderly Motion Asset Preparation & Infrastructure
+ACTIVEVIEW v7.0 Pre-Development — AMASS Hugging Face Download & Motion Asset Infrastructure Validation
 
 ## Objective
-建立面向 v7.0 助老场景动作感知的 BABEL / AMASS 动作资产准备与前置基础设施：
-1. 建立统一外部数据根目录规范（基于相对路径 `../../data/ActiveView`，支持 `ACTIVEVIEW_DATA_ROOT` 覆盖）；
-2. 同步并解析 BABEL annotations（train, val, extra_train, extra_val）；
-3. 筛选面向室内老人监护的 5 类典型动作（standing, sitting, bending, reaching, fall_related）；
-4. 选定第一轮 17 条高质量 Motion Feasibility Set（涉及 5 个核心 AMASS 子库：BMLrub, CMU, EKUT, EyesJapanDataset, KIT）；
-5. 实现 AMASS 官方 Portal 自动化登录、资源映射与 Dry-Run 预检工具，并生成完整手动下载指引清单；
-6. 实现本地 AMASS 文件索引与 Habitat MotionConverterSMPLX 数据 Schema 兼容性检查工具；
-7. 建立 12 项纯 Python 单元测试套件 (`tools/motion_assets/tests/test_motion_assets.py`)；
-8. 严格保证 v6.0 代码与科学规范 100% 不受影响，第三方大数据不入库，无凭据泄露。
+在 ACTIVEVIEW 数据准备阶段完成 AMASS 真实数据从 Hugging Face 的下载、校验与前置基础设施修正：
+1. 数据来源切换为 Hugging Face 镜像源 (`tuguobin/AMASS`)，实现自动化选择性下载与安全解压；
+2. 真实下载 5 个子库 (`BMLrub`, `CMU`, `EKUT`, `EyesJapanDataset`, `KIT`) 归档并解压到 `../../data/ActiveView/datasets/amass/`；
+3. 统计 5 个子库各包含的 `.npz` 文件数与磁盘占用（共计 7,862 个 `.npz` 文件，13.75 GB）；
+4. 增强 Indexer 兼容标准 AMASS Schema A (`explicit_root_orient`) 与 Schema B (`standard_amass` 即 `poses[:, :3]`)，支持多帧率键；
+5. 执行 `python3 -m tools.motion_assets.index_amass_files`，实现 `file_found = 17/17`、`schema_compatible = 17/17` (PASS, exit code 0)；
+6. 严格复核 5 条 `fall_related` 动作均为真实 dynamic fall（无普通 lie/sleep）；
+7. 保证 `motion_asset_manifest.json` 中 `local_motion_path` 为相对 POSIX 路径，无机器硬编码；
+8. 运行 14 项 pure Python 单元测试 (`tools/motion_assets/tests/test_motion_assets.py`) 全部通过；
+9. 保证 v6.0 代码严格保持只读，Git 仓库零大文件污染。
 
 ## Current Version Status
 - **Active Code Version**: v6.0 (6.0.0 — CLOSED / FINALIZED, Read-Only)
-- **Pre-Development Stage**: v7.0 Elderly Motion Asset Infrastructure
+- **Pre-Development Stage**: v7.0 Elderly Motion Asset Infrastructure (AMASS Downloaded & Validated)
 - **Active Specification**: `EA_AVS_MVP60_Code_Generation_Document.md`
 
 ## Work Completed
-1. **Data Paths & Unified Root (`tools/motion_assets/data_paths.py`)**:
-   - 解析默认相对路径 `../../data/ActiveView`，支持 `ACTIVEVIEW_DATA_ROOT` 环境变量覆盖。
-   - 建立 `datasets/`, `assets/`, `cache/`, `runs/`, `logs/`, `tmp/` 等标准子目录。
-2. **BABEL Sync & Elderly Action Selector (`tools/motion_assets/select_babel_elderly_actions.py`)**:
-   - 解析 10,370 条候选动作片段，涵盖 5 类老人典型动作。
-   - 选定 17 条高质量 feasibility 动作片段（standing: 3, sitting: 3, bending: 3, reaching: 3, fall_related: 5）。
-   - 产出候选池 JSON/CSV、`feasibility_manifest.json/csv`、`summary.json`、`amass_subdatasets.txt`。
-3. **AMASS Portal Downloader & Verifier (`tools/motion_assets/download_amass_required.py`)**:
-   - 仅从环境变量 `AMASS_EMAIL` / `AMASS_PASSWORD` 读取凭据，杜绝文件硬编码与密码打印。
-   - 模拟官方登录认证，成功实现 `LOGIN_OK`，并从 Downloads 页面自动解析匹配 5 个子库的下载接口。
-   - 实现安全解压防 Path Traversal 逃逸与归档校验。
-   - 生成 `manual_download_required.md/json` 手动下载指引。
-4. **AMASS Indexer & Habitat Schema Compatibility (`tools/motion_assets/index_amass_files.py`)**:
-   - 建立 BABEL `feat_p` 到本地 NPZ 文件的鲁棒匹配。
-   - 检查 `trans`, `root_orient`, `poses`, `mocap_frame_rate` 等 Habitat 所需关键字段。
-   - 计算时间戳到 frame index 映射，导出 `motion_asset_manifest.json` 与 `habitat_motion_compatibility.csv`。
-5. **Unit Tests Suite (`tools/motion_assets/tests/test_motion_assets.py`)**:
-   - 包含 12 项严谨性单元测试，全部通过（12/12 PASS）。
-6. **Documentation (`tools/motion_assets/README.md`)**:
-   - 编写完整的工具使用指南与安全规范。
+1. **Hugging Face Downloader (`tools/motion_assets/download_amass_hf.py`)**:
+   - 切换下载源为 Hugging Face (`tuguobin/AMASS`)。
+   - 实现了多线程流式下载、断点续传、归档校验与防 Path Traversal 解压。
+2. **Real AMASS Download & Extraction**:
+   - `BioMotionLab_NTroje` (BMLrub): 443 `.npz` 文件 (663.0 MB)
+   - `CMU`: 2088 `.npz` 文件 (4474.7 MB)
+   - `EKUT`: 349 `.npz` 文件 (235.5 MB)
+   - `Eyes_Japan_Dataset`: 750 `.npz` 文件 (3643.4 MB)
+   - `KIT`: 4232 `.npz` 文件 (5065.7 MB)
+   - **Total**: 7,862 `.npz` files (13.75 GB on disk).
+3. **AMASS Indexer Dual-Schema Support (`tools/motion_assets/index_amass_files.py`)**:
+   - 同时支持 `standard_amass` (`poses[:, :3]`) 与 `explicit_root_orient`。
+   - 支持 `mocap_frame_rate`, `mocap_framerate`, `frame_rate`, `framerate`, `fps` 多种键名。
+   - 导出 POSIX 相对路径 manifest (`motion_asset_manifest.json`)。
+   - 增加严谨 exit code：17/17 PASS 返回 0，有缺失返回 1。
+4. **Unit Tests (`tools/motion_assets/tests/test_motion_assets.py`)**:
+   - 14 项单元测试全部通过 (Ran 14 tests, OK)。
+5. **v6.0 Regression Validation**:
+   - 21 项 v6.0 纯 Python 与 No-GT-Leakage 守卫测试全部通过。
 
 ## Validation Plan Execution Results
-- [x] Motion Assets 12 项单元测试: `python3 -m unittest tools.motion_assets.tests.test_motion_assets` (PASS, 12/12)
-- [x] BABEL 动作筛选器运行: `python3 -m tools.motion_assets.select_babel_elderly_actions` (PASS, 10370 segments, 17 feasibility items)
-- [x] AMASS Portal Downloader Dry-Run: `python3 -m tools.motion_assets.download_amass_required --dry-run` (PASS, LOGIN_OK, 5 resources mapped)
-- [x] AMASS Indexer & Schema Checker: `python3 -m tools.motion_assets.index_amass_files` (PASS, manifest exported)
+- [x] Motion Assets 14 项单元测试: `python3 -m unittest tools.motion_assets.tests.test_motion_assets` (PASS, 14/14)
+- [x] AMASS Hugging Face 下载与解压: 5 个子库 7,862 个 `.npz` 文件完成落地 (PASS)
+- [x] AMASS Indexer 校验: `python3 -m tools.motion_assets.index_amass_files` (PASS: file_found=17/17, schema_compatible=17/17, exit=0)
+- [x] 相对路径检查: `motion_asset_manifest.json` 中无绝对路径或机器路径硬编码 (PASS)
 - [x] v6.0 回归测试: `python3 ea_avs_mvp_v6/scripts/test_v60_pure_python.py` & `test_no_gt_leakage.py` (PASS, 21/21)

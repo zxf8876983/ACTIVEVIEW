@@ -41,19 +41,20 @@
 为保证 Git 代码仓库轻量化并规范大规模实验数据的存储，ACTIVEVIEW 采用源码与运行时数据物理隔离机制：
 
 - **Git 源码仓库根目录 (Source Repository Root)**：
-  `/home/zxf/WorkSpace/code/code/ActiveView/`
+  `<workspace>/code/ActiveView/` (例如本机开发路径 `/home/zxf/WorkSpace/code/code/ActiveView/`)
   用于保存 Python 源码、配置文件（YAML/JSON）、单元测试、脚本、Version Specifications、科研文档与必要的小型 metadata。
-- **运行时数据根目录 (Runtime Data Root)**：
-  `/home/zxf/WorkSpace/code/data/ActiveView/`
+- **默认运行时数据根目录 (Default Runtime Data Root)**：
+  `../../data/ActiveView/` (相对于源码仓库根目录解析，例如本机对应 `/home/zxf/WorkSpace/code/data/ActiveView/`)
   用于保存数据集（`datasets/`）、外部资产（`assets/`）、缓存（`cache/`）、实验运行输出（`runs/`）、模型权重（`checkpoints/`）、批量可视化（`visualizations/`）、日志（`logs/`）与临时文件（`tmp/`）。
-- **统一环境变量**：
-  `ACTIVEVIEW_DATA_ROOT=/home/zxf/WorkSpace/code/data/ActiveView`
+- **统一环境变量覆盖 (Optional Override)**：
+  可通过 `ACTIVEVIEW_DATA_ROOT` 显式指定绝对路径覆盖默认相对位置。
+  未来 v7+ 的代码与工具统一通过 `data_paths.py` 解析路径，严禁将 `/home/zxf/...` 等特定开发机路径硬编码进源码、配置或输出 manifest。
 
 ### 长期数据边界规则：
 1. **禁止大文件入库**：Coding Agent 严禁将大型 runtime artifacts（RGB/Depth/Semantic 大图、视频、npy/npz 中间数组、pt/pth/ckpt 权重等）写入 Git 仓库；
-2. **外部数据目录归属**：所有大规模实验产物必须写入 `$ACTIVEVIEW_DATA_ROOT`；
+2. **外部数据目录归属**：所有大规模实验产物必须写入数据根目录；
 3. **禁止软链接混淆**：不要在 Git 仓库内部创建指向外部数据目录的符号链接；
-4. **新版本优先使用环境变量**：未来新开发版本（v7+）涉及数据集、缓存、输出路径时，统一通过 `ACTIVEVIEW_DATA_ROOT` 环境变量解析；
+4. **统一相对/环境变量解析**：未来新开发版本（v7+）涉及数据集、缓存、输出路径时，统一通过 `data_paths.py` 与 `ACTIVEVIEW_DATA_ROOT` 环境变量解析，严禁依赖固定机器路径；
 5. **历史版本保护**：v1–v6 历史实现不因本次规范做回溯性大规模重构；该规则从未来新开发版本开始严格执行。
 
 ---

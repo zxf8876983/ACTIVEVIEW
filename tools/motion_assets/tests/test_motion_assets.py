@@ -3,7 +3,8 @@ Motion Assets & Data Infrastructure 单元测试套件 —— test_motion_assets
 ==========================================================================
 
 功能：
-    在纯 Python 环境下测试动作筛选、路径解析、凭据防护、安全解压与数据映射逻辑。
+    在纯 Python 环境下测试动作筛选、路径解析、凭据防护、安全解压、
+    标准 AMASS 双 Schema 校验、文件名模糊匹配及 Indexer 严格判定逻辑。
 """
 
 import io
@@ -44,7 +45,9 @@ from tools.motion_assets.index_amass_files import (
     inspect_npz_schema,
     compute_frame_range,
     normalize_path_key,
+    build_amass_disk_index,
     find_matching_file,
+    index_and_validate_feasibility_manifest,
 )
 
 
@@ -119,11 +122,9 @@ class TestMotionAssets(unittest.TestCase):
     # TEST 3: token-aware action matching (avoids substring bugs)
     # -------------------------------------------------------------
     def test_03_token_aware_action_matching(self):
-        # "install software" 包含 "stall" 但不应匹配 "stand" 或 "sit"
         self.assertFalse(contains_phrase_or_token("install software", "stand"))
         self.assertFalse(contains_phrase_or_token("installing unit", "sit"))
 
-        # 精确单词/短语匹配
         self.assertTrue(contains_phrase_or_token("person stands up slowly", "stand"))
         self.assertTrue(contains_phrase_or_token("pick up the dropped keys", "pick up"))
         self.assertTrue(contains_phrase_or_token("reach for something", "reach for"))
@@ -132,19 +133,16 @@ class TestMotionAssets(unittest.TestCase):
     # TEST 4: fall high-confidence vs lie manual-review
     # -------------------------------------------------------------
     def test_04_fall_high_confidence_vs_lie_review(self):
-        # 1. 明确的 fall -> needs_manual_review = False
         res_fall = match_action(["fall"], "fall down", "fall on floor", self.query_cfg)
         self.assertIsNotNone(res_fall)
         self.assertEqual(res_fall[0], "fall_related")
         self.assertFalse(res_fall[1])
 
-        # 2. 普通的 lie -> needs_manual_review = True
         res_lie = match_action(["lie"], "lie down", "lie on floor", self.query_cfg)
         self.assertIsNotNone(res_lie)
         self.assertEqual(res_lie[0], "fall_related")
         self.assertTrue(res_lie[1])
 
-        # 3. 日常睡眠 / 休息 -> 显式排除
         res_sleep = match_action(["sleep"], "sleep in bed", "sleeping", self.query_cfg)
         self.assertIsNone(res_sleep)
 
@@ -161,7 +159,6 @@ class TestMotionAssets(unittest.TestCase):
     # TEST 6: repo-relative data root resolution
     # -------------------------------------------------------------
     def test_06_repo_relative_data_root_resolution(self):
-        # 清除环境变量测试默认相对解析
         old_env = os.environ.pop("ACTIVEVIEW_DATA_ROOT", None)
         try:
             repo_root = get_repo_root()
@@ -201,7 +198,6 @@ class TestMotionAssets(unittest.TestCase):
             self.assertIsNone(email)
             self.assertIsNone(password)
 
-            # 测试生成 manual download manifest
             out_cache = Path(self.tmp_dir) / "cache"
             generate_manual_download_manifest(
                 required_subdatasets=["CMU", "KIT"],
@@ -246,46 +242,157 @@ class TestMotionAssets(unittest.TestCase):
     # TEST 11: BABEL segment time -> frame index computation
     # -------------------------------------------------------------
     def test_11_frame_index_computation(self):
-        # fps = 30.0, start_t = 1.0, end_t = 2.5, num_frames = 100
         s_f, e_f = compute_frame_range(1.0, 2.5, 30.0, 100)
         self.assertEqual(s_f, 30)
         self.assertEqual(e_f, 75)
 
-        # 超出范围 clamp
         s_f_clamped, e_f_clamped = compute_frame_range(0.0, 10.0, 30.0, 50)
         self.assertEqual(s_f_clamped, 0)
         self.assertEqual(e_f_clamped, 49)
 
     # -------------------------------------------------------------
-    # TEST 12: AMASS NPZ schema compatibility checker
+    # TEST 12: Dual Schema Compatibility (explicit_root_orient & standard_amass)
     # -------------------------------------------------------------
     def test_12_npz_schema_compatibility(self):
-        # 1. 构造兼容的 Mock NPZ
-        valid_npz_path = Path(self.tmp_dir) / "valid.npz"
+        # 1. Explicit root_orient Schema (PASS)
+        path_explicit = Path(self.tmp_dir) / "explicit.npz"
         np.savez(
-            valid_npz_path,
+            path_explicit,
             trans=np.zeros((10, 3)),
             root_orient=np.zeros((10, 3)),
             poses=np.zeros((10, 156)),
             mocap_frame_rate=np.array(30.0),
         )
+        res_exp = inspect_npz_schema(path_explicit)
+        self.assertTrue(res_exp["schema_compatible"])
+        self.assertEqual(res_exp["schema_type"], "explicit_root_orient")
+        self.assertEqual(res_exp["root_orient_source"], "root_orient")
 
-        res_valid = inspect_npz_schema(valid_npz_path)
-        self.assertTrue(res_valid["schema_compatible"])
-        self.assertEqual(res_valid["fps"], 30.0)
-        self.assertEqual(res_valid["num_frames"], 10)
-        self.assertEqual(len(res_valid["missing_fields"]), 0)
-
-        # 2. 构造缺失 trans 的 Incompatible NPZ
-        invalid_npz_path = Path(self.tmp_dir) / "invalid.npz"
+        # 2. Standard AMASS Schema (poses[:, :3] with mocap_framerate) (PASS)
+        path_std = Path(self.tmp_dir) / "std_amass.npz"
         np.savez(
-            invalid_npz_path,
-            poses=np.zeros((10, 156)),
+            path_std,
+            trans=np.zeros((15, 3)),
+            poses=np.zeros((15, 156)),
+            mocap_framerate=np.array(100.0),
         )
+        res_std = inspect_npz_schema(path_std)
+        self.assertTrue(res_std["schema_compatible"])
+        self.assertEqual(res_std["schema_type"], "standard_amass")
+        self.assertEqual(res_std["root_orient_source"], "poses[:, :3]")
+        self.assertEqual(res_std["fps"], 100.0)
 
-        res_invalid = inspect_npz_schema(invalid_npz_path)
-        self.assertFalse(res_invalid["schema_compatible"])
-        self.assertIn("trans", res_invalid["missing_fields"])
+        # 3. Missing trans (FAIL)
+        path_no_trans = Path(self.tmp_dir) / "no_trans.npz"
+        np.savez(path_no_trans, poses=np.zeros((10, 156)), fps=30.0)
+        res_no_trans = inspect_npz_schema(path_no_trans)
+        self.assertFalse(res_no_trans["schema_compatible"])
+        self.assertIn("trans", res_no_trans["missing_fields"])
+
+        # 4. Missing poses (FAIL)
+        path_no_poses = Path(self.tmp_dir) / "no_poses.npz"
+        np.savez(path_no_poses, trans=np.zeros((10, 3)), fps=30.0)
+        res_no_poses = inspect_npz_schema(path_no_poses)
+        self.assertFalse(res_no_poses["schema_compatible"])
+        self.assertIn("poses", res_no_poses["missing_fields"])
+
+        # 5. Missing fps (FAIL)
+        path_no_fps = Path(self.tmp_dir) / "no_fps.npz"
+        np.savez(path_no_fps, trans=np.zeros((10, 3)), poses=np.zeros((10, 156)))
+        res_no_fps = inspect_npz_schema(path_no_fps)
+        self.assertFalse(res_no_fps["schema_compatible"])
+        self.assertIn("frame_rate", res_no_fps["missing_fields"])
+
+    # -------------------------------------------------------------
+    # TEST 13: Path matching (_poses.npz vs _stageii.npz & nested folders)
+    # -------------------------------------------------------------
+    def test_13_amass_path_matching_and_stageii(self):
+        amass_root = Path(self.tmp_dir) / "amass_mock"
+        amass_root.mkdir(parents=True, exist_ok=True)
+
+        # 构造不同命名的 mock 文件
+        target_stageii = amass_root / "BioMotionLab_NTroje" / "rub054" / "0019_lifting_heavy1_stageii.npz"
+        target_stageii.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(target_stageii, trans=np.zeros((5, 3)), poses=np.zeros((5, 156)), fps=30.0)
+
+        target_cmu = amass_root / "15" / "15_04_poses.npz"
+        target_cmu.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(target_cmu, trans=np.zeros((5, 3)), poses=np.zeros((5, 156)), fps=30.0)
+
+        disk_idx = build_amass_disk_index(amass_root)
+
+        # 1. BABEL feat_p 为 _poses.npz，磁盘上为 _stageii.npz
+        p1 = find_matching_file("BMLrub/BioMotionLab_NTroje/rub054/0019_lifting_heavy1_poses.npz", disk_idx, amass_root)
+        self.assertIsNotNone(p1)
+        self.assertEqual(p1.resolve(), target_stageii.resolve())
+
+        # 2. BABEL feat_p 包含 CMU/CMU/15/15_04_poses.npz，磁盘为 15/15_04_poses.npz
+        p2 = find_matching_file("CMU/CMU/15/15_04_poses.npz", disk_idx, amass_root)
+        self.assertIsNotNone(p2)
+        self.assertEqual(p2.resolve(), target_cmu.resolve())
+
+    # -------------------------------------------------------------
+    # TEST 14: Indexer strict exit validation & relative manifest paths
+    # -------------------------------------------------------------
+    def test_14_indexer_strict_validation(self):
+        amass_root = Path(self.tmp_dir) / "amass_data"
+        amass_root.mkdir(parents=True, exist_ok=True)
+
+        # 创建一条 mock 动作数据
+        mock_file = amass_root / "CMU" / "15" / "15_04_poses.npz"
+        mock_file.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(mock_file, trans=np.zeros((10, 3)), poses=np.zeros((10, 156)), fps=30.0)
+
+        items_partial = [
+            {
+                "target_class": "standing",
+                "babel_sid": 10780,
+                "proc_label": "stand",
+                "raw_label": "standing",
+                "act_cat": ["stand"],
+                "start_t": 0.0,
+                "end_t": 1.0,
+                "feat_p": "CMU/15/15_04_poses.npz",
+                "amass_dataset": "CMU",
+                "needs_manual_review": False,
+            },
+            {
+                "target_class": "sitting",
+                "babel_sid": 4336,
+                "proc_label": "sit",
+                "raw_label": "sit",
+                "act_cat": ["sit"],
+                "start_t": 0.0,
+                "end_t": 1.0,
+                "feat_p": "BMLrub/rub101/0014_sitting1_poses.npz",
+                "amass_dataset": "BMLrub",
+                "needs_manual_review": False,
+            }
+        ]
+
+        manifest_out = Path(self.tmp_dir) / "manifest.json"
+        compat_csv = Path(self.tmp_dir) / "compat.csv"
+        index_json = Path(self.tmp_dir) / "idx.json"
+
+        # 1. 存在缺失文件时 -> is_all_passed 为 False
+        all_passed, stats = index_and_validate_feasibility_manifest(
+            feasibility_items=items_partial,
+            amass_dir=amass_root,
+            output_manifest_path=manifest_out,
+            output_compat_csv=compat_csv,
+            output_index_json=index_json,
+        )
+        self.assertFalse(all_passed)
+        self.assertEqual(stats["file_found_count"], 1)
+        self.assertEqual(stats["total_count"], 2)
+
+        # 2. 检查输出 manifest 中路径为相对路径，不包含绝对硬编码开发机根
+        with open(manifest_out, "r", encoding="utf-8") as f:
+            manifest_data = json.load(f)
+        for m in manifest_data:
+            if m["local_motion_path"]:
+                self.assertFalse(m["local_motion_path"].startswith("/home/"))
+                self.assertFalse(m["local_motion_path"].startswith("C:\\"))
 
 
 if __name__ == "__main__":
