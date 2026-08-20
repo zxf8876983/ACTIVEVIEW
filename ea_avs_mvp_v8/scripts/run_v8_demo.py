@@ -8,19 +8,22 @@ v8.0 Local Active View Planning 综合演示主脚本 —— run_v8_demo.py
        ↓
        Local Candidate Views Generation (Polar Grid around Human)
        ↓
-       View Constraint Pipeline (NavMesh + LineOfSight RayCast + HumanVisibility FOV)
+       View Constraint Pipeline (NavMesh + LineOfSight RayCast + HumanVisibility FOV & Area)
        ↓
-       View Quality Evaluation & Ranking (w1*vis + w2*cov - w3*dist)
+       View Quality Evaluation & Baseline Strategy Selection (Geometry Best / Random / Nearest)
        ↓
-       Render Best Viewpoint (Capture & Save best_view_rgb.png)
+       Render Selected Viewpoint (Capture & Save best_view_rgb.png)
     2. 输出成果至 data/ActiveView/visualizations/v8_demo/：
+       - candidate_statistics.json (约束逐级过滤统计与决策元数据)
        - candidate_views.json (包含全部候选视点及可行性标记)
-       - best_view.json (包含最佳视点位置、朝向与质量评分)
+       - best_view.json (包含最佳视点位置、朝向、Q(v) 与各项指标)
        - best_view_rgb.png (最佳视角高质量渲染图像，清晰可见人体)
        - metadata.json (实验元数据汇总)
 
 运行方式：
     python -m ea_avs_mvp_v8.scripts.run_v8_demo
+    python -m ea_avs_mvp_v8.scripts.run_v8_demo --strategy nearest
+    python -m ea_avs_mvp_v8.scripts.run_v8_demo --strategy random
 """
 
 import argparse
@@ -40,6 +43,7 @@ from ea_avs_mvp_v8.robot.robot_adapter import V8RobotAdapter
 from ea_avs_mvp_v8.viewpoint.viewpoint_generator import ViewpointGenerator
 from ea_avs_mvp_v8.constraints.constraint_checker import ConstraintChecker
 from ea_avs_mvp_v8.evaluation.view_quality import ViewQualityEvaluator
+from ea_avs_mvp_v8.evaluation.baseline_strategies import select_view
 from ea_avs_mvp_v8.evaluation.view_metrics import summarize_viewpoint_qualities
 
 # 复用 v7 Humanoid
@@ -52,11 +56,13 @@ logger = logging.getLogger("run_v8_demo")
 def main():
     parser = argparse.ArgumentParser(description="ACTIVEVIEW v8.0 Local Active View Planning Demonstration")
     parser.add_argument("--config", type=str, default=None, help="Path to custom v8_demo.yaml")
+    parser.add_argument("--strategy", type=str, default=None, choices=["geometry_best", "random", "nearest"], help="View selection baseline strategy")
     parser.add_argument("--output-dir", type=str, default=None, help="Custom output directory")
     args = parser.parse_args()
 
     cfg = load_v8_config(args.config)
     scene_id = cfg.scene.get("scene_id", "apartment_1")
+    strategy = args.strategy or cfg.evaluation.get("strategy", "geometry_best")
 
     # 1. 输出目录初始化
     if args.output_dir:
@@ -90,34 +96,41 @@ def main():
     )
     generated_count = len(raw_candidates)
 
-    # 4. 步骤三: 视点空间约束管道过滤 (View Constraint Pipeline)
+    # 4. 步骤三: 视点空间与几何观测约束过滤 (View Constraint Pipeline)
     logger.info("Step 3: Running View Constraint Pipeline (NavMesh + LineOfSight + HumanVisibility)...")
+    gt_joints = humanoid.get_gt_joint_positions()
     checker = ConstraintChecker(env_adapter=env_adapter, config=cfg.viewpoint)
     checked_candidates = checker.filter_feasible_viewpoints(
         raw_candidates,
         human_position=human_pose.position,
+        human_joints_3d=gt_joints,
         robot_start_pos=robot_start_pos,
     )
     filtered_feasible_views = [vp for vp in checked_candidates if vp.feasible]
     filtered_count = len(filtered_feasible_views)
 
-    # 5. 步骤四: 视点观测质量评价与全局排序 (View Quality Evaluation & Ranking)
-    logger.info("Step 4: Evaluating View Quality and Ranking Candidate Views...")
-    gt_joints = humanoid.get_gt_joint_positions()
+    # 5. 步骤四: 视点观测质量评价与 Baseline 策略选择 (View Quality & Selection)
+    logger.info("Step 4: Evaluating View Quality and Selecting Viewpoint via '%s' strategy...", strategy)
     evaluator = ViewQualityEvaluator(cfg.evaluation)
     ranked_pairs = evaluator.rank_viewpoints(
         viewpoints=checked_candidates,
         human_joints_3d=gt_joints,
         human_yaw_deg=human_pose.yaw_deg,
     )
-
     all_qualities = [q for _, q in ranked_pairs]
-    best_vp, best_quality = ranked_pairs[0] if ranked_pairs else (checked_candidates[0], all_qualities[0])
 
-    # 6. 步骤五: 渲染最佳观察视点 (Render Best Viewpoint)
-    logger.info("Step 5: Moving Robot to Best Viewpoint and Rendering RGB...")
+    selected_vp, selected_quality = select_view(
+        viewpoints=checked_candidates,
+        qualities=all_qualities,
+        strategy=strategy,
+        human_position=human_pose.position,
+        seed=42,
+    )
+
+    # 6. 步骤五: 渲染选定视点 RGB 图像 (Render Selected Viewpoint)
+    logger.info("Step 5: Moving Robot to Selected Viewpoint and Rendering RGB...")
     robot_adapter = V8RobotAdapter(sim, cfg.camera)
-    cam_info = robot_adapter.set_viewpoint(best_vp, verbose=True)
+    cam_info = robot_adapter.set_viewpoint(selected_vp, verbose=True)
 
     obs = robot_adapter.capture_observation()
     env_adapter.close()
@@ -127,9 +140,19 @@ def main():
     if obs.get("rgb") is not None:
         Image.fromarray(obs["rgb"]).save(best_rgb_path)
 
-    # 7. 步骤六: 持久化 candidate_views.json 与 best_view.json
-    logger.info("Step 6: Saving candidate_views.json, best_view.json and metadata.json...")
-    
+    # 7. 步骤六: 持久化 candidate_statistics.json, candidate_views.json 与 best_view.json
+    logger.info("Step 6: Saving experiment statistics and viewpoint datasets...")
+
+    # 保存 candidate_statistics.json
+    stats = checker.compute_statistics(
+        viewpoints=checked_candidates,
+        selected_view_id=selected_vp.viewpoint_id,
+        strategy=strategy,
+    )
+    stats_json_path = vis_dir / "candidate_statistics.json"
+    with open(stats_json_path, "w", encoding="utf-8") as f:
+        json.dump(stats, f, indent=2, ensure_ascii=False)
+
     # 保存 candidate_views.json
     views_json_path = vis_dir / "candidate_views.json"
     with open(views_json_path, "w", encoding="utf-8") as f:
@@ -138,20 +161,21 @@ def main():
     # 保存 best_view.json
     best_json_path = vis_dir / "best_view.json"
     best_data = {
-        "best_viewpoint_id": best_vp.viewpoint_id,
-        "score": best_quality.visibility_score,
-        "position": [float(x) for x in best_vp.position],
-        "yaw_deg": float(best_vp.yaw_deg),
+        "best_viewpoint_id": selected_vp.viewpoint_id,
+        "score": selected_quality.visibility_score,
+        "strategy": strategy,
+        "position": [float(x) for x in selected_vp.position],
+        "yaw_deg": float(selected_vp.yaw_deg),
         "camera_pose": {
             "position": cam_info["camera_position"],
             "rotation": cam_info["camera_rotation"],
         },
         "metrics": {
-            "distance": best_quality.distance,
-            "viewing_angle_deg": best_quality.viewing_angle_deg,
-            "visible_joints_count": best_quality.visible_joints_count,
-            "pose_coverage": best_quality.pose_coverage,
-            "occlusion_ratio": best_quality.occlusion_ratio,
+            "distance": selected_quality.distance,
+            "viewing_angle_deg": selected_quality.viewing_angle_deg,
+            "visible_joints_count": selected_quality.visible_joints_count,
+            "pose_coverage": selected_quality.pose_coverage,
+            "occlusion_ratio": selected_quality.occlusion_ratio,
         },
         "rgb_image": to_relative_data_path(best_rgb_path),
     }
@@ -166,6 +190,7 @@ def main():
         "human_position": [float(x) for x in human_pose.position],
         "generated_views": generated_count,
         "filtered_views": filtered_count,
+        "statistics": stats,
         "best_viewpoint": best_data,
         "visibility_summary": summary,
     }
@@ -177,11 +202,13 @@ def main():
     print("[V8 Local Active View Planning Results]")
     print(f"Generated views:       {generated_count}")
     print(f"Filtered views:        {filtered_count}")
-    print(f"Best viewpoint score:  {best_quality.visibility_score:.3f}")
-    print(f"Best viewpoint ID:     {best_vp.viewpoint_id}")
-    print(f"Best viewpoint Pos:    {[round(x, 2) for x in best_vp.position]}")
-    print(f"Best viewpoint Yaw:    {best_vp.yaw_deg:.1f} deg")
+    print(f"Best viewpoint score:  {selected_quality.visibility_score:.3f}")
+    print(f"Selection Strategy:    {strategy}")
+    print(f"Selected Viewpoint ID: {selected_vp.viewpoint_id}")
+    print(f"Selected Pos:          {[round(x, 2) for x in selected_vp.position]}")
+    print(f"Selected Yaw:          {selected_vp.yaw_deg:.1f} deg")
     print(f"Rendered Image:        {best_rgb_path}")
+    print(f"Candidate Statistics:  {stats_json_path}")
     print("=" * 65)
     print("PASS:\nACTIVEVIEW v8.0 Local Active View Planning Verified\n")
     sys.exit(0)

@@ -40,13 +40,16 @@ viewpoint:
   check_path_reachability: true
   check_line_of_sight: true
   check_human_visibility: true
+  min_projected_area_ratio: 0.015
 
 evaluation:
   optimal_distance: 2.0
   max_distance: 4.5
-  w1_visibility: 0.5
-  w2_pose_coverage: 0.3
-  w3_distance: 0.2
+  w1_visibility: 0.40
+  w2_pose_coverage: 0.30
+  w3_distance: 0.15
+  w4_occlusion: 0.15
+  strategy: "geometry_best"
 
 simulation:
   output_dir: "visualizations/v8_demo"

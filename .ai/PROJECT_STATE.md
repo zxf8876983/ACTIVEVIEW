@@ -49,9 +49,9 @@ v8.0 定位为 **Local Active View Planning**（局部主动视点规划与质�
 ### 核心科研流水线 (Core Pipeline):
 1. **Human Placement**: 人体在室内场景中的合法地面位置采样与几何校验 (`HumanPlacement`)；
 2. **Local Candidate View Generation**: 围绕人体的局部多距离 (1.5m-3.0m)、多方位角候选视角规则采样 (`ViewpointGenerator`)；
-3. **View Constraint Pipeline**: 串联 `NavigationConstraint` (NavMesh), `LineOfSightConstraint` (RayCast 通视性), `HumanVisibilityConstraint` (FOV 视锥) 进行空间硬约束过滤；
-4. **View Quality Evaluation & Ranking**: 依据科学评价公式 $w_1 \cdot \text{vis} + w_2 \cdot \text{cov} - w_3 \cdot \text{dist}$ 对有效视点打分并排序 (`ViewQualityEvaluator`)；
-5. **Best Viewpoint Rendering & Dataset**: 移动机器人至最优视角渲染高质量 `best_view_rgb.png`，并输出 `candidate_views.json` 与 `best_view.json`。
+3. **View Constraint Pipeline**: 串联 `NavigationConstraint` (NavMesh), `LineOfSightConstraint` (RayCast 通视性), `HumanVisibilityConstraint` (FOV 视锥、人体投影面积占比 $\ge 1.5\%$ 与关键区域可见性 `pose_visibility_score`) 进行空间硬约束过滤；
+4. **View Quality Evaluation & Occlusion Penalty**: 依据科学评价公式 $Q(v) = w_1 \cdot \text{vis} + w_2 \cdot \text{cov} - w_3 \cdot \text{dist} - w_4 \cdot \text{occlusion}$ 对有效视点打分并排序 (`ViewQualityEvaluator`)；
+5. **Baseline Strategies & Best Viewpoint Rendering**: 支持 `Random View`, `Nearest View`, `Geometry Best View` 三种选择策略 (`baseline_strategies.py`)，渲染生成高质量 `best_view_rgb.png`，并输出结构化统计 `candidate_statistics.json`, `candidate_views.json` 与 `best_view.json`。
 
 ### 明确排除在 v8.0 之外的非目标 (Explicitly NOT in v8.0):
 - ❌ 不实现 人体全局搜索与环境探索 (No Human Search / No Global Exploration)

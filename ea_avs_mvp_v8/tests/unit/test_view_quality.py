@@ -14,9 +14,10 @@ class TestViewQuality(unittest.TestCase):
             "optimal_distance": 2.0,
             "max_distance": 4.5,
             "hfov_deg": 90.0,
-            "w1_visibility": 0.5,
-            "w2_pose_coverage": 0.3,
-            "w3_distance": 0.2,
+            "w1_visibility": 0.40,
+            "w2_pose_coverage": 0.30,
+            "w3_distance": 0.15,
+            "w4_occlusion": 0.15,
         })
         self.joints = {
             "pelvis": [1.5, -0.80, 4.0],
@@ -30,13 +31,32 @@ class TestViewQuality(unittest.TestCase):
             human_visibility=1.0,
             pose_coverage=1.0,
             distance=2.0,
+            occlusion_penalty=0.0,
             optimal_distance=2.0,
             viewing_angle_deg=0.0,
-            w1=0.5,
-            w2=0.3,
-            w3=0.2,
+            w1=0.40,
+            w2=0.30,
+            w3=0.15,
+            w4=0.15,
         )
-        self.assertAlmostEqual(score, 0.80, delta=0.01)
+        self.assertAlmostEqual(score, 0.70, delta=0.01)
+
+    def test_occlusion_penalty_reduces_score(self):
+        score_clear = compute_view_quality_score(
+            human_visibility=1.0,
+            pose_coverage=1.0,
+            distance=2.0,
+            occlusion_penalty=0.0,
+            optimal_distance=2.0,
+        )
+        score_occluded = compute_view_quality_score(
+            human_visibility=1.0,
+            pose_coverage=0.5,
+            distance=2.0,
+            occlusion_penalty=0.5,
+            optimal_distance=2.0,
+        )
+        self.assertGreater(score_clear, score_occluded)
 
     def test_ranking_prefers_frontal_viewpoint(self):
         # Frontal viewpoint at Z=6.0 (looking at human at Z=4.0)
