@@ -1,0 +1,8 @@
+# Humanoid 拟人化实体配置
+avatar_name: "neutral_0"
+assets_root: "robot/habitat-lab/data/versioned_data/habitat_humanoids"
+urdf_filename: "neutral_0.urdf"
+base_offset: [0.0, 0.9, 0.0]
+base_height_offset: 0.0
+semantic_id: 100
+semantic_enabled: true

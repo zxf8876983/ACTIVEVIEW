@@ -9,14 +9,15 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：v6.0 保持正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)；当前进入 v7.0 开发准备阶段 (v7.0 Humanoid-driven Active Perception Simulation Environment)。
-- **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> 未来版本`），各版本保留独立目录与设计文档。核心功能全链路跑通前暂不重构为单一 `src/`。
+- **项目阶段**：v6.0 保持正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)；当前进入 v7.0 实施阶段 (v7.0 Humanoid-driven Active Perception Simulation Environment — IN PROGRESS)。
+- **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> v7 -> 未来版本`），各版本保留独立目录与设计文档。核心功能全链路跑通前暂不重构为单一 `src/`。
 
 ---
 
 ## 2. Active Development Version
-- **Version**: v7.0 (Development Preparation)
+- **Version**: v7.0 (7.0.0 — In Progress)
 - **Title**: Humanoid-driven Active Perception Simulation Environment
+- **Active Code Directory**: `ea_avs_mvp_v7/`
 - **Active Specification**: `EA_AVS_MVP70_Code_Generation_Document.md`
 - **Previous Stable Specification**: `EA_AVS_MVP60_Code_Generation_Document.md` (v6.0 CLOSED)
 - **Infrastructure & Tools**: `tools/motion_assets/` (BABEL / AMASS Elderly Motion Asset Pipeline)

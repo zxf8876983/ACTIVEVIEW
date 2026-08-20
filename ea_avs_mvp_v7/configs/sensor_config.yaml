@@ -1,0 +1,10 @@
+# 机器人相机传感器配置
+width: 640
+height: 480
+hfov_deg: 90.0
+camera_height: 1.2
+clip_near: 0.01
+clip_far: 10.0
+save_rgb: true
+save_depth: true
+save_semantic: false

@@ -1,15 +1,19 @@
 """
-Humanoid 代理类 —— humanoid_agent.py
-===================================
+Habitat Humanoid 实体代理 —— humanoid_agent.py
+=============================================
 
-功能：
-    1. 在 Habitat-Sim 中实例化 KinematicHumanoid；
-    2. 控制 Humanoid 的基座位置、朝向与关节姿态；
-    3. 支持与 MotionPlayer 联动执行动作回放；
-    4. 提取 Ground-Truth 3D 关节位置供数据集记录与评估。
+职责：
+    1. 在 Habitat 物理世界中实例化 KinematicHumanoid (neutral_0)；
+    2. 设置人体基座在场景中的初始位置与朝向；
+    3. 接收 MotionPlayer 输出的关节姿态并驱动人形模型变形；
+    4. 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState。
+
+边界约束：
+    - 仅负责人体模型在仿真环境中的控制与状态提取，不干预机器人或视角决策。
 """
 
 import logging
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -23,11 +27,12 @@ except ImportError:
     DictConfig = None
     KinematicHumanoid = None
 
-from .humanoid_loader import HumanoidAssetBundle, resolve_humanoid_assets
+from ea_avs_mvp_v7.core.paths import get_repo_root, get_data_root
+from .human_state import HumanState
 
 logger = logging.getLogger(__name__)
 
-# 标准 15 关节名称映射至 KinematicHumanoid link name
+# 标准 15 关节名称映射至 KinematicHumanoid URDF 关节 link name
 KEYPOINT_LINK_MAP = {
     "pelvis": "pelvis",
     "spine3": "spine3",
@@ -48,24 +53,63 @@ KEYPOINT_LINK_MAP = {
 }
 
 
+def resolve_humanoid_urdf_path(config: Optional[Dict[str, Any]] = None) -> Tuple[Path, Path]:
+    """解析 Humanoid URDF 与运动数据路径。"""
+    avatar_name = "neutral_0"
+    cfg_root = None
+    if config:
+        avatar_name = config.get("avatar_name", avatar_name)
+        cfg_root = config.get("assets_root")
+
+    candidate_roots = []
+    if cfg_root:
+        p = Path(cfg_root)
+        if not p.is_absolute():
+            candidate_roots.append(get_repo_root().parent / p)
+            candidate_roots.append(get_data_root() / p)
+        else:
+            candidate_roots.append(p)
+
+    candidate_roots.extend([
+        get_repo_root().parent / "robot" / "habitat-lab" / "data" / "versioned_data" / "habitat_humanoids",
+        get_data_root() / "assets" / "habitat_humanoids",
+    ])
+
+    found_root = None
+    for r in candidate_roots:
+        if r.exists() and (r / avatar_name).exists():
+            found_root = r
+            break
+
+    if not found_root:
+        raise FileNotFoundError(f"Humanoid assets not found for avatar '{avatar_name}' in: {candidate_roots}")
+
+    urdf_path = (found_root / avatar_name / f"{avatar_name}.urdf").resolve()
+    if not urdf_path.exists():
+        raise FileNotFoundError(f"Humanoid URDF file missing: {urdf_path}")
+
+    motion_path = (found_root / "walking_motion_processed_smplx.pkl").resolve()
+    if not motion_path.exists():
+        motion_path = (found_root / avatar_name / "motion_data.pkl").resolve()
+
+    return urdf_path, motion_path if motion_path.exists() else urdf_path.parent
+
+
 class HumanoidAgent:
-    """Habitat 室内场景中的拟人化 Agent 封装。"""
+    """Habitat 室内环境中的拟人化 Humanoid 实体代理。"""
 
     def __init__(
         self,
         sim,
-        config: Optional[Dict] = None,
-        assets: Optional[HumanoidAssetBundle] = None,
+        humanoid_cfg: Optional[Dict[str, Any]] = None,
     ):
         self.sim = sim
-        self.config = config or {}
-        self.humanoid_cfg = self.config.get("humanoid", {})
-        self.assets = assets or resolve_humanoid_assets(self.config)
+        self.config = humanoid_cfg or {}
+        self.urdf_path, self.default_motion_path = resolve_humanoid_urdf_path(self.config)
 
         self._agent: Optional[KinematicHumanoid] = None
         self._base_pos = np.zeros(3, dtype=np.float32)
         self._base_yaw = 0.0
-        self._semantic_id = int(self.humanoid_cfg.get("semantic_id", 100))
 
     @property
     def agent(self) -> KinematicHumanoid:
@@ -82,13 +126,13 @@ class HumanoidAgent:
         return self._base_yaw
 
     def load(self) -> None:
-        """在仿真环境中实例化 Humanoid。"""
+        """在仿真环境中实例化 KinematicHumanoid。"""
         if KinematicHumanoid is None:
             raise RuntimeError("KinematicHumanoid not available. Please run in habitat conda env.")
 
         agent_config = DictConfig({
-            "articulated_agent_urdf": self.assets.urdf_path,
-            "motion_data_path": self.assets.motion_data_path,
+            "articulated_agent_urdf": str(self.urdf_path),
+            "motion_data_path": str(self.default_motion_path),
             "auto_update_sensor_transform": True,
         })
 
@@ -96,11 +140,11 @@ class HumanoidAgent:
         self._agent.reconfigure()
         self._agent.update()
 
-        # 默认放置在原点并处于 rest 姿态
+        # 默认放置在原点并置为 rest 姿态
         self._agent.base_pos = mn.Vector3(0.0, 0.0, 0.0)
         self._agent.base_rot = 0.0
         self._agent.set_rest_position()
-        logger.info("HumanoidAgent '%s' loaded into scene.", self.assets.avatar_name)
+        logger.info("HumanoidAgent loaded: %s", self.urdf_path.name)
 
     def set_base_pose(
         self,
@@ -122,15 +166,12 @@ class HumanoidAgent:
         joints_pose: np.ndarray,
         root_transform_mat: Optional[np.ndarray] = None,
     ) -> None:
-        """将 MotionPlayer 提取的当前帧姿态应用到仿真模型。"""
+        """将当前帧姿态更新至人形模型关节与刚体。"""
         if self._agent is None:
             raise RuntimeError("HumanoidAgent is not loaded.")
 
         joint_list = list(joints_pose.astype(float))
-
-        offset_t = mn.Matrix4()
-        if root_transform_mat is not None:
-            offset_t = mn.Matrix4(root_transform_mat)
+        offset_t = mn.Matrix4(root_transform_mat) if root_transform_mat is not None else mn.Matrix4()
 
         self._agent.set_joint_transform(
             joint_list=joint_list,
@@ -139,7 +180,7 @@ class HumanoidAgent:
         )
         self._agent.update()
 
-    def get_gt_joint_positions(self) -> Dict[str, np.ndarray]:
+    def get_gt_joint_positions(self) -> Dict[str, List[float]]:
         """提取当前时刻各核心关节的 3D 世界坐标 Ground-Truth。"""
         if self._agent is None:
             return {}
@@ -159,13 +200,32 @@ class HumanoidAgent:
             except Exception:
                 pass
 
-        # pelvis 由左右髋中点几何推导（若有）或读取根节点变换
+        # pelvis 由左右髋中点几何推导
         if "left_hip" in positions and "right_hip" in positions:
-            positions["pelvis"] = (0.5 * (positions["left_hip"] + positions["right_hip"])).astype(np.float32)
+            positions["pelvis"] = 0.5 * (positions["left_hip"] + positions["right_hip"])
         else:
             try:
                 positions["pelvis"] = np.array(ao.transformation.translation, dtype=np.float32)
             except Exception:
                 positions["pelvis"] = self._base_pos.copy()
 
-        return positions
+        return {k: [float(x) for x in v] for k, v in positions.items()}
+
+    def get_human_state(
+        self,
+        frame_id: int = 0,
+        timestamp: float = 0.0,
+        action_class: str = "unknown",
+        action_label: str = "unknown",
+    ) -> HumanState:
+        """获取当前时刻完整的 HumanState。"""
+        gt_joints = self.get_gt_joint_positions()
+        return HumanState(
+            position=[float(x) for x in self._base_pos],
+            orientation_yaw_rad=float(self._base_yaw),
+            frame_id=frame_id,
+            timestamp=timestamp,
+            action_class=action_class,
+            action_label=action_label,
+            joint_positions_3d_world=gt_joints,
+        )
