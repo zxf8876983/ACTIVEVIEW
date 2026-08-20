@@ -69,11 +69,14 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ### v7.0: Humanoid-driven Active Perception Simulation Environment
 - **当前状态**：v7.0 Habitat Humanoid rendering verified (COMPLETED)：
   1. AMASS motion pipeline (标准化读取与四元数转换)
-  2. Habitat humanoid playback (KinematicHumanoid 54 关节姿态驱动与场景对准)
+  2. Habitat humanoid playback (KinematicHumanoid 54 关节姿态驱动、场景物理地面高程对齐与相对位移动态补偿)
   3. Robot RGB-D observation (解耦 robot_pose 与 camera_pose)
   4. Episode generation (多动作多视角标准化 Episode 存储)
   5. Motion validity evaluation (多维动力学 ActionMotionMetrics)
   6. Visualization & video generation (统一 Demo 入口与 MP4 视频生成)
+- **空间几何与动作位移核心规范 (Key Spatial Invariants)**：
+  - **场景物理地面高程**：`apartment_1.glb` 物理地面标高为 $Y = -1.60\text{m}$（天花板 $Y = +1.14\text{m}$），严禁盲目假设 $Y = 0.0\text{m}$；
+  - **相对位移与下沉补偿**：KinematicHumanoid 自带 $+0.90\text{m}$ 骨盆偏移，`apply_motion_frame` 统一采用相对位移公式 $\text{mat}[:3, 3] = [T_x(t)-T_x(0), T_y(t)-0.90, T_z(t)-T_z(0)]$，杜绝原点绝对叠加的同时完整保留坐下与摔倒触地真实下沉。
 - **定位**：基础设施与实验平台构建版本。将 ACTIVEVIEW 从抽象/静态人体感知环境转变为由真实人体运动数据驱动的室内老人监护仿真环境。
 - **核心目标与流水线**：
   ```text
