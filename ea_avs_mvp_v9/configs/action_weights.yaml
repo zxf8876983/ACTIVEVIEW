@@ -1,0 +1,62 @@
+# ACTIVEVIEW v9.0 动作感知视角打分偏好权重配置 (configs/action_weights.yaml)
+
+actions:
+  fall:
+    critical_regions: ["torso", "pelvis", "head", "lower_body"]
+    preferred_angle_range: [20.0, 75.0]  # 偏向侧前方观察人体倒地整体轮廓与地面关系
+    optimal_distance: 2.5               # 摔倒需更大视场以覆盖展开的人体
+    region_weights:
+      torso: 0.30
+      pelvis: 0.30
+      head: 0.20
+      lower_body: 0.20
+    aspect_weight: 0.25
+    distance_weight: 0.20
+
+  sitting:
+    critical_regions: ["lower_body", "pelvis", "torso"]
+    preferred_angle_range: [40.0, 90.0]  # 侧方观察膝关节弯曲与座椅交互
+    optimal_distance: 2.0
+    region_weights:
+      lower_body: 0.45
+      pelvis: 0.30
+      torso: 0.25
+      head: 0.00
+    aspect_weight: 0.25
+    distance_weight: 0.15
+
+  standing:
+    critical_regions: ["torso", "head", "upper_body", "lower_body"]
+    preferred_angle_range: [0.0, 30.0]   # 正面观察立姿与面部
+    optimal_distance: 2.0
+    region_weights:
+      torso: 0.30
+      head: 0.30
+      upper_body: 0.20
+      lower_body: 0.20
+    aspect_weight: 0.20
+    distance_weight: 0.15
+
+  bending:
+    critical_regions: ["torso", "pelvis", "head"]
+    preferred_angle_range: [45.0, 90.0]  # 侧向观察脊柱弯曲度与重心变化
+    optimal_distance: 2.2
+    region_weights:
+      torso: 0.45
+      pelvis: 0.35
+      head: 0.20
+      lower_body: 0.00
+    aspect_weight: 0.30
+    distance_weight: 0.15
+
+  reaching:
+    critical_regions: ["upper_body", "torso", "head"]
+    preferred_angle_range: [15.0, 60.0]  # 侧前方观察手臂前伸与抓取轨迹
+    optimal_distance: 1.8
+    region_weights:
+      upper_body: 0.50
+      torso: 0.30
+      head: 0.20
+      lower_body: 0.00
+    aspect_weight: 0.25
+    distance_weight: 0.15
