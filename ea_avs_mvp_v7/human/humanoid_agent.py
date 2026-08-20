@@ -179,12 +179,20 @@ class HumanoidAgent:
         joints_pose: np.ndarray,
         root_transform_mat: Optional[np.ndarray] = None,
     ) -> None:
-        """将当前帧姿态更新至人形模型关节与刚体。"""
+        """将当前帧姿态更新至人形模型关节与刚体。
+
+        注意：忽略 AMASS 全局平移 (translation) 偏移，保留关节旋转，避免与 base_pos 叠加漂移至天花板。
+        """
         if self._agent is None:
             raise RuntimeError("HumanoidAgent is not loaded.")
 
         joint_list = list(joints_pose.astype(float))
-        offset_t = mn.Matrix4(root_transform_mat) if root_transform_mat is not None else mn.Matrix4()
+        if root_transform_mat is not None and mn is not None:
+            mat = np.array(root_transform_mat, dtype=np.float32).copy()
+            mat[:3, 3] = 0.0  # 将 global translation 清零，保持 rotation
+            offset_t = mn.Matrix4(mat)
+        else:
+            offset_t = mn.Matrix4() if mn is not None else None
 
         self._agent.set_joint_transform(
             joint_list=joint_list,
