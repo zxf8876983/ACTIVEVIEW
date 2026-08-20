@@ -17,7 +17,9 @@ class TestViewQuality(unittest.TestCase):
             "w1_visibility": 0.40,
             "w2_pose_coverage": 0.30,
             "w3_distance": 0.15,
-            "w4_occlusion": 0.15,
+            "w4_visibility_loss": 0.15,
+            "evaluation_mode": "oracle",
+            "pose_source": "oracle",
         })
         self.joints = {
             "pelvis": [1.5, -0.80, 4.0],
@@ -31,7 +33,7 @@ class TestViewQuality(unittest.TestCase):
             human_visibility=1.0,
             pose_coverage=1.0,
             distance=2.0,
-            occlusion_penalty=0.0,
+            visibility_loss_penalty=0.0,
             optimal_distance=2.0,
             viewing_angle_deg=0.0,
             w1=0.40,
@@ -41,19 +43,19 @@ class TestViewQuality(unittest.TestCase):
         )
         self.assertAlmostEqual(score, 0.70, delta=0.01)
 
-    def test_occlusion_penalty_reduces_score(self):
+    def test_visibility_loss_penalty_reduces_score(self):
         score_clear = compute_view_quality_score(
             human_visibility=1.0,
             pose_coverage=1.0,
             distance=2.0,
-            occlusion_penalty=0.0,
+            visibility_loss_penalty=0.0,
             optimal_distance=2.0,
         )
         score_occluded = compute_view_quality_score(
             human_visibility=1.0,
             pose_coverage=0.5,
             distance=2.0,
-            occlusion_penalty=0.5,
+            visibility_loss_penalty=0.5,
             optimal_distance=2.0,
         )
         self.assertGreater(score_clear, score_occluded)
@@ -80,6 +82,9 @@ class TestViewQuality(unittest.TestCase):
         best_vp, best_q = ranked[0]
         self.assertEqual(best_vp.viewpoint_id, "front")
         self.assertGreaterEqual(best_q.visibility_score, ranked[1][1].visibility_score)
+        self.assertEqual(best_q.evaluation_mode, "oracle")
+        self.assertEqual(best_q.pose_source, "oracle")
+        self.assertIn("occlusion_metric_note", best_q.metadata)
 
 
 if __name__ == "__main__":

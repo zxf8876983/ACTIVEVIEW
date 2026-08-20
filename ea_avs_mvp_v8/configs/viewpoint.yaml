@@ -1,4 +1,4 @@
-# ACTIVEVIEW v8.1 局部主动视点规划与基线评价配置 (configs/viewpoint.yaml)
+# ACTIVEVIEW v8.2 局部主动视点规划与基线评价配置 (configs/viewpoint.yaml)
 
 sampling:
   mode: "local_polar_grid"     # 以人体为中心的局部极坐标网格采样
@@ -24,5 +24,5 @@ evaluation:
   w1_visibility: 0.40          # 人体整体可见性权重
   w2_pose_coverage: 0.30       # 16 关节骨骼姿态覆盖率权重
   w3_distance: 0.15            # 距离偏离惩罚权重
-  w4_occlusion: 0.15           # 遮挡惩罚权重
+  w4_visibility_loss: 0.15     # 姿态未观测/视线损失惩罚权重
   default_strategy: "geometry_best" # 默认视点选择策略 (random, nearest, geometry_best)

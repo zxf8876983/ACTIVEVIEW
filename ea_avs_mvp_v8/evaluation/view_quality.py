@@ -4,10 +4,14 @@
 
 职责：
     1. 计算候选视点的综合观测质量评分 (Q(v) / view_score)；
-    2. 基于科学评价公式：
-       Q(v) = w1 * human_visibility + w2 * pose_coverage - w3 * distance_penalty - w4 * occlusion_penalty
-    3. 支持 Oracle (真值) 与 Estimated (状态估计) 模式切换及来源标识 (pose_source)；
-    4. 对候选视点进行排序 (ranking) 并输出全局最优视点 (best_view)。
+    2. 基于科学透明评价公式：
+       Q(v) = w1 * human_visibility + w2 * pose_coverage - w3 * distance_penalty - w4 * visibility_loss_penalty
+    3. 输出严谨指标：
+       - pose_coverage: 视锥内 16 骨骼关键点覆盖率 [0.0, 1.0]
+       - visibility_loss_ratio: 姿态未观测/视线损失比例 [0.0, 1.0]
+       - occlusion_ratio: 兼容性字段 (附带显式 metadata 说明)
+    4. 支持 Oracle (真值) 与 Estimated (状态估计) 模式切换及来源标识 (pose_source)；
+    5. 对候选视点进行排序 (ranking) 并输出全局最优视点 (best_view)。
 """
 
 import logging
@@ -24,7 +28,8 @@ def compute_view_quality_score(
     human_visibility: float,
     pose_coverage: float,
     distance: float,
-    occlusion_penalty: float = 0.0,
+    visibility_loss_penalty: float = 0.0,
+    occlusion_penalty: Optional[float] = None,
     optimal_distance: float = 2.0,
     viewing_angle_deg: float = 0.0,
     w1: float = 0.40,
@@ -35,8 +40,9 @@ def compute_view_quality_score(
     """计算单个视点的综合质量得分 Q(v)。
 
     公式：
-        Q(v) = w1 * human_visibility + w2 * pose_coverage - w3 * distance_penalty - w4 * occlusion_penalty
+        Q(v) = w1 * human_visibility + w2 * pose_coverage - w3 * distance_penalty - w4 * visibility_loss_penalty
     """
+    loss_penalty = occlusion_penalty if occlusion_penalty is not None else visibility_loss_penalty
     dist_diff = abs(distance - optimal_distance)
     dist_penalty = min(1.0, dist_diff / max(1e-4, optimal_distance))
 
@@ -48,7 +54,7 @@ def compute_view_quality_score(
         w1 * human_visibility * (0.8 + 0.2 * front_factor)
         + w2 * pose_coverage
         - w3 * dist_penalty
-        - w4 * occlusion_penalty
+        - w4 * loss_penalty
     )
     norm_score = float(np.clip(raw_score, 0.0, 1.0))
     return round(norm_score, 3)
@@ -67,7 +73,7 @@ class ViewQualityEvaluator:
         self.w1 = float(self.config.get("w1_visibility", 0.40))
         self.w2 = float(self.config.get("w2_pose_coverage", 0.30))
         self.w3 = float(self.config.get("w3_distance", 0.15))
-        self.w4 = float(self.config.get("w4_occlusion", 0.15))
+        self.w4 = float(self.config.get("w4_visibility_loss", self.config.get("w4_occlusion", 0.15)))
 
     def evaluate_viewpoint(
         self,
@@ -127,10 +133,10 @@ class ViewQualityEvaluator:
 
         pose_coverage = float(visible_joints / total_joints)
         human_visibility = 1.0 if (visible_joints >= 4 and viewpoint.feasible) else float(pose_coverage)
-        occlusion_ratio = float(np.clip(1.0 - pose_coverage, 0.0, 1.0))
-        occlusion_penalty = occlusion_ratio
+        visibility_loss_ratio = float(np.clip(1.0 - pose_coverage, 0.0, 1.0))
+        visibility_loss_penalty = visibility_loss_ratio
 
-        # 4. 综合得分计算 Q(v) = w1*vis + w2*cov - w3*dist - w4*occlusion
+        # 4. 综合得分计算 Q(v) = w1*vis + w2*cov - w3*dist - w4*loss
         if not viewpoint.feasible:
             score = 0.0
             is_valid = False
@@ -139,7 +145,7 @@ class ViewQualityEvaluator:
                 human_visibility=human_visibility,
                 pose_coverage=pose_coverage,
                 distance=dist,
-                occlusion_penalty=occlusion_penalty,
+                visibility_loss_penalty=visibility_loss_penalty,
                 optimal_distance=self.optimal_distance,
                 viewing_angle_deg=viewing_angle_deg,
                 w1=self.w1,
@@ -155,7 +161,8 @@ class ViewQualityEvaluator:
             viewing_angle_deg=round(viewing_angle_deg, 1),
             visible_joints_count=visible_joints,
             visibility_score=score,
-            occlusion_ratio=round(occlusion_ratio, 3),
+            visibility_loss_ratio=round(visibility_loss_ratio, 3),
+            occlusion_ratio=round(visibility_loss_ratio, 3),
             pose_coverage=round(pose_coverage, 3),
             is_valid=is_valid,
             evaluation_mode=self.evaluation_mode,
@@ -164,11 +171,12 @@ class ViewQualityEvaluator:
                 "w1_visibility": self.w1,
                 "w2_pose_coverage": self.w2,
                 "w3_distance": self.w3,
-                "w4_occlusion": self.w4,
-                "occlusion_penalty": round(occlusion_penalty, 3),
+                "w4_visibility_loss": self.w4,
+                "visibility_loss_penalty": round(visibility_loss_penalty, 3),
                 "optimal_distance": self.optimal_distance,
                 "evaluation_mode": self.evaluation_mode,
                 "pose_source": src,
+                "occlusion_metric_note": "estimated from missing visible joints rather than explicit physical occlusion",
             },
         )
         return quality

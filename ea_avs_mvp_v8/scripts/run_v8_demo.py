@@ -1,5 +1,5 @@
 """
-v8.1 Local Active View Planning Baseline 综合演示主脚本 —— run_v8_demo.py
+v8.2 Local Active View Planning Final Baseline 演示脚本 —— run_v8_demo.py
 ========================================================================
 
 功能：
@@ -14,7 +14,7 @@ v8.1 Local Active View Planning Baseline 综合演示主脚本 —— run_v8_dem
        ↓
        Render Selected Viewpoint (Capture & Save best_view_rgb.png)
     2. 输出成果至 data/ActiveView/visualizations/v8_demo/：
-       - view_selection_report.json (科研统计核心报表: strategy, evaluation_mode, candidate counts, score, etc.)
+       - view_selection_report.json (科研统计核心报表: strategy, evaluation_mode, candidate counts, score, distance, pose_coverage, visibility_loss_ratio)
        - candidate_statistics.json (约束逐级过滤统计)
        - candidate_views.json (包含全部候选视点及可行性标记)
        - best_view.json (包含最佳视点位置、朝向、Q(v) 与各项指标)
@@ -56,8 +56,8 @@ logger = logging.getLogger("run_v8_demo")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ACTIVEVIEW v8.1 Local Active View Planning Baseline Demonstration")
-    parser.add_argument("--config", type=str, default=None, help="Path to custom v8_demo.yaml")
+    parser = argparse.ArgumentParser(description="ACTIVEVIEW v8.2 Local Active View Planning Baseline Demonstration")
+    parser.add_argument("--config", type=str, default=None, help="Path to custom v8_demo.yaml or v8_experiment.yaml")
     parser.add_argument("--strategy", type=str, default=None, choices=["geometry_best", "random", "nearest"], help="View selection baseline strategy")
     parser.add_argument("--evaluation-mode", type=str, default=None, choices=["oracle", "estimated"], help="Information boundary evaluation mode")
     parser.add_argument("--output-dir", type=str, default=None, help="Custom output directory")
@@ -167,7 +167,6 @@ def main():
     report = {
         "strategy": strategy,
         "evaluation_mode": eval_mode,
-        "pose_source": pose_source,
         "total_candidates": stats["total_candidates"],
         "navmesh_valid": stats["navmesh_valid"],
         "line_of_sight_valid": stats["line_of_sight_valid"],
@@ -176,9 +175,8 @@ def main():
         "selected_view_id": selected_vp.viewpoint_id,
         "best_score": selected_quality.visibility_score,
         "distance": selected_quality.distance,
-        "occlusion_ratio": selected_quality.occlusion_ratio,
         "pose_coverage": selected_quality.pose_coverage,
-        "viewing_angle_deg": selected_quality.viewing_angle_deg,
+        "visibility_loss_ratio": selected_quality.visibility_loss_ratio,
     }
     report_json_path = vis_dir / "view_selection_report.json"
     with open(report_json_path, "w", encoding="utf-8") as f:
@@ -208,6 +206,7 @@ def main():
             "viewing_angle_deg": selected_quality.viewing_angle_deg,
             "visible_joints_count": selected_quality.visible_joints_count,
             "pose_coverage": selected_quality.pose_coverage,
+            "visibility_loss_ratio": selected_quality.visibility_loss_ratio,
             "occlusion_ratio": selected_quality.occlusion_ratio,
         },
         "rgb_image": to_relative_data_path(best_rgb_path),
@@ -235,7 +234,7 @@ def main():
 
     # 8. 打印验收标准格式报告
     print("\n" + "=" * 65)
-    print("[V8.1 Local Active View Planning Results]")
+    print("[V8.2 Local Active View Planning Results]")
     print(f"Evaluation Mode:       {eval_mode} (pose_source: {pose_source})")
     print(f"Selection Strategy:    {strategy}")
     print(f"Generated views:       {generated_count}")
@@ -245,12 +244,13 @@ def main():
     print(f"Selected Pos:          {[round(x, 2) for x in selected_vp.position]}")
     print(f"Selected Yaw:          {selected_vp.yaw_deg:.1f} deg")
     print(f"Distance to Human:     {selected_quality.distance:.2f} m")
-    print(f"Occlusion Ratio:       {selected_quality.occlusion_ratio:.3f}")
+    print(f"Pose Coverage:         {selected_quality.pose_coverage:.3f}")
+    print(f"Visibility Loss Ratio: {selected_quality.visibility_loss_ratio:.3f}")
     print(f"Rendered Image:        {best_rgb_path}")
     print(f"Selection Report:      {report_json_path}")
     print(f"Candidate Statistics:  {stats_json_path}")
     print("=" * 65)
-    print("PASS:\nACTIVEVIEW v8.1 Local Active View Planning Baseline Verified\n")
+    print("PASS:\nACTIVEVIEW v8.2 Local Active View Planning Final Baseline Verified\n")
     sys.exit(0)
 
 

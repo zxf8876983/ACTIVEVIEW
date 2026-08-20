@@ -1,10 +1,10 @@
 """
-v8.1 核心数据类型定义 —— types.py
+v8.2 核心数据类型定义 —— types.py
 =================================
 
 包含：
     1. CandidateViewpoint: 机器人候选观察视点数据结构 (包含 position, yaw, camera_pose, evaluation_mode)；
-    2. ViewpointQuality: 候选视点观测质量评价数据结构 (包含 Q(v), occlusion_ratio, evaluation_mode, pose_source)；
+    2. ViewpointQuality: 候选视点观测质量评价数据结构 (包含 Q(v), visibility_loss_ratio, evaluation_mode, pose_source)；
     3. HumanPlacementPose: 人体放置位姿数据结构。
 """
 
@@ -89,7 +89,8 @@ class ViewpointQuality:
     viewing_angle_deg: float       # 观测视线与人体正面的夹角 (度)
     visible_joints_count: int      # 视锥内可见关节点数量 (16 关节点基准)
     visibility_score: float        # 综合可见性质量得分 Q(v) [0.0, 1.0]
-    occlusion_ratio: float = 0.0   # 遮挡比例 [0.0, 1.0]
+    visibility_loss_ratio: float = 0.0 # 姿态未观测/视线损失比例 [0.0, 1.0]
+    occlusion_ratio: float = 0.0   # 兼容性别名 (基于未观测关节点估计)
     pose_coverage: float = 1.0     # 骨骼姿态覆盖率 [0.0, 1.0]
     is_valid: bool = True          # 是否为有效观察视点
     evaluation_mode: str = "oracle" # 评价模式 (oracle: 基于真值 / estimated: 基于估计状态)
@@ -103,6 +104,7 @@ class ViewpointQuality:
             "viewing_angle_deg": float(self.viewing_angle_deg),
             "visible_joints_count": int(self.visible_joints_count),
             "visibility_score": float(self.visibility_score),
+            "visibility_loss_ratio": float(self.visibility_loss_ratio),
             "occlusion_ratio": float(self.occlusion_ratio),
             "pose_coverage": float(self.pose_coverage),
             "is_valid": bool(self.is_valid),
