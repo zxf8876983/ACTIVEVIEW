@@ -4,7 +4,8 @@
 
 功能：
     1. 封装时刻 t 人体的空间位置、朝向、帧号与动作标签；
-    2. 记录人体 16 个核心关节在世界坐标系下的 3D 真实坐标 (Ground-Truth)。
+    2. 记录人体 16 个核心关节在世界坐标系下的 3D 真实坐标 (Ground-Truth)；
+    3. 支持状态字典序列化与完整性校验。
 """
 
 from dataclasses import asdict, dataclass, field
@@ -21,6 +22,13 @@ class HumanState:
     action_class: str                              # 动作类别 (如 fall_related)
     action_label: str                              # 语义标签 (如 fall to the ground)
     joint_positions_3d_world: Dict[str, List[float]] = field(default_factory=dict)
+
+    def __post_init__(self):
+        assert len(self.position) == 3, f"Position must be 3D, got {self.position}"
+
+    @property
+    def num_gt_joints(self) -> int:
+        return len(self.joint_positions_3d_world)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

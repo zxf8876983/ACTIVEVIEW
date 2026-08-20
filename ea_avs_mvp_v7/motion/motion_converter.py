@@ -5,7 +5,8 @@ Habitat SMPL-X 动作格式转换器 —— motion_converter.py
 职责：
     1. 接收 NormalizedMotion 标准动作对象；
     2. 基于 Habitat 官方 MotionConverterSMPLX 执行 URDF 坐标系变换与 54 关节四元数求解；
-    3. 输出并持久化标准 Habitat .pkl 格式文件。
+    3. 校验输出四元数维度 (216 维) 与根变换矩阵 (4x4)；
+    4. 输出并持久化标准 Habitat .pkl 格式文件。
 
 边界约束：
     - 仅负责数学与几何转换，不控制 Habitat 仿真世界或机器人传感器。
@@ -26,6 +27,11 @@ except ImportError:
     MotionConverterSMPLX = None
 
 from .amass_loader import NormalizedMotion, load_amass_motion
+from .joint_mapping import (
+    HABITAT_HUMANOID_QUAT_DIM,
+    SMPLX_RODRIGUES_DIM,
+    validate_motion_quaternions,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +54,11 @@ class MotionConverter:
 
     def convert(self, motion: NormalizedMotion) -> Dict[str, Any]:
         """将 NormalizedMotion 转换为 Habitat 格式动作字典。"""
+        if motion.body_pose.shape[1] != SMPLX_RODRIGUES_DIM:
+            raise ValueError(
+                f"NormalizedMotion body_pose must have {SMPLX_RODRIGUES_DIM} dims, got {motion.body_pose.shape[1]}"
+            )
+
         transform_array = []
         joints_array = []
 
@@ -57,12 +68,31 @@ class MotionConverter:
                 motion.root_rotation[f_idx],
                 motion.body_pose[f_idx],
             )
-            transform_mat = np.array(mn.Matrix4.from_(root_r, root_t))
+            transform_mat = np.array(mn.Matrix4.from_(root_r, root_t), dtype=np.float32)
             transform_array.append(transform_mat[None, :])
             joints_array.append(np.array(pose_quat, dtype=np.float32)[None, :])
 
         transform_array = np.concatenate(transform_array, axis=0)
         joints_array = np.concatenate(joints_array, axis=0)
+
+        # 校验四元数与变换矩阵维度
+        if joints_array.shape[1] != HABITAT_HUMANOID_QUAT_DIM:
+            raise ValueError(
+                f"Converted joints array shape mismatch: expected (N, {HABITAT_HUMANOID_QUAT_DIM}), got {joints_array.shape}"
+            )
+        if transform_array.shape[1:] != (4, 4):
+            raise ValueError(
+                f"Converted transform array shape mismatch: expected (N, 4, 4), got {transform_array.shape}"
+            )
+
+        validate_motion_quaternions(joints_array)
+
+        meta = dict(motion.metadata)
+        meta.update({
+            "num_frames": motion.num_frames,
+            "fps": motion.fps,
+            "duration_seconds": motion.num_frames / motion.fps if motion.fps > 0 else 0.0,
+        })
 
         return {
             "pose_motion": {
@@ -71,7 +101,7 @@ class MotionConverter:
                 "displacement": None,
                 "fps": motion.fps,
             },
-            "metadata": dict(motion.metadata),
+            "metadata": meta,
         }
 
     def convert_and_save(

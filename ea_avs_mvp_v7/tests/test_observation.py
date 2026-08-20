@@ -26,7 +26,7 @@ class TestObservation(unittest.TestCase):
 
     def test_recorder_save_frame(self):
         recorder = ObservationRecorder(self.tmp_dir)
-        target_dir = Path(self.tmp_dir) / "test_seq"
+        target_dir = Path(self.tmp_dir) / "test_ep"
 
         rgb = np.zeros((480, 640, 3), dtype=np.uint8)
         depth = np.ones((480, 640), dtype=np.float32) * 2.5
@@ -49,28 +49,28 @@ class TestObservation(unittest.TestCase):
         res = recorder.record_frame(target_dir, 0, rgb, depth, meta)
         self.assertIsNotNone(res.rgb_relative_path)
         self.assertIsNotNone(res.depth_relative_path)
-        self.assertTrue((target_dir / "rgb" / "0000.png").exists())
-        self.assertTrue((target_dir / "depth" / "0000.npy").exists())
-        self.assertTrue((target_dir / "metadata" / "0000.json").exists())
+        self.assertTrue((target_dir / "rgb" / "frame_000000.png").exists())
+        self.assertTrue((target_dir / "depth" / "frame_000000.npy").exists())
 
-    def test_recorder_save_sequence_summary(self):
+    def test_recorder_save_episode_metadata(self):
         recorder = ObservationRecorder(self.tmp_dir)
-        target_dir = Path(self.tmp_dir) / "test_seq"
-        seq_meta = SequenceMetadata(
-            sequence_id="test_seq",
-            action_class="standing",
-            action_label="stand",
-            babel_sid=10780,
-            num_frames=1,
-            camera_position=[0.0, 1.2, 2.0],
-            camera_yaw_deg=180.0,
-        )
+        target_dir = Path(self.tmp_dir) / "test_ep"
+        metadata_dict = {
+            "episode_id": "test_ep",
+            "action_class": "standing",
+            "action_label": "stand",
+            "babel_sid": 10780,
+            "num_frames": 1,
+            "camera_position": [0.0, 1.2, 2.0],
+            "camera_yaw_deg": 180.0,
+            "frames": [],
+        }
 
-        summary_p = recorder.record_sequence_summary(target_dir, seq_meta)
-        self.assertTrue(summary_p.exists())
-        with open(summary_p, "r", encoding="utf-8") as f:
+        meta_path = recorder.record_episode_metadata(target_dir, metadata_dict)
+        self.assertTrue(meta_path.exists())
+        with open(meta_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        self.assertEqual(data["sequence_id"], "test_seq")
+        self.assertEqual(data["episode_id"], "test_ep")
         self.assertEqual(data["num_frames"], 1)
 
 

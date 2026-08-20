@@ -6,7 +6,8 @@ Habitat Humanoid 实体代理 —— humanoid_agent.py
     1. 在 Habitat 物理世界中实例化 KinematicHumanoid (neutral_0)；
     2. 设置人体基座在场景中的初始位置与朝向；
     3. 接收 MotionPlayer 输出的关节姿态并驱动人形模型变形；
-    4. 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState。
+    4. 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState；
+    5. 输出关节数量、名称清单与三维坐标汇总。
 
 边界约束：
     - 仅负责人体模型在仿真环境中的控制与状态提取，不干预机器人或视角决策。
@@ -32,7 +33,7 @@ from .human_state import HumanState
 
 logger = logging.getLogger(__name__)
 
-# 标准 15 关节名称映射至 KinematicHumanoid URDF 关节 link name
+# 标准 16 关节名称映射至 KinematicHumanoid URDF 关节 link name
 KEYPOINT_LINK_MAP = {
     "pelvis": "pelvis",
     "spine3": "spine3",
@@ -210,6 +211,15 @@ class HumanoidAgent:
                 positions["pelvis"] = self._base_pos.copy()
 
         return {k: [float(x) for x in v] for k, v in positions.items()}
+
+    def get_joint_summary(self) -> Dict[str, Any]:
+        """获取当前人形骨架的关节数量、名称清单与三维坐标字典。"""
+        joints = self.get_gt_joint_positions()
+        return {
+            "num_joints": len(joints),
+            "joint_names": list(joints.keys()),
+            "joint_positions": joints,
+        }
 
     def get_human_state(
         self,

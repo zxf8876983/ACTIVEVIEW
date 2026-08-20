@@ -67,6 +67,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ## 6. Current Research Roadmap & Future Directions
 
 ### v7.0: Humanoid-driven Active Perception Simulation Environment
+- **当前状态**：Humanoid + AMASS + Habitat RGB-D pipeline implemented (端到端仿真闭环跑通，19 项测试全量 PASS)。
 - **定位**：基础设施与实验平台构建版本。将 ACTIVEVIEW 从抽象/静态人体感知环境转变为由真实人体运动数据驱动的室内老人监护仿真环境。
 - **核心目标与流水线**：
   ```text
@@ -74,18 +75,22 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
           ↓
   AMASS Human Motion
           ↓
-  Habitat Humanoid Agent
+  Motion Normalization (NormalizedMotion)
           ↓
-  Indoor Robot Perception Simulation
+  Humanoid Motion Conversion (SMPL-X PKL)
           ↓
-  RGB-D Observation Dataset
+  Habitat Humanoid Playback (KinematicHumanoid)
+          ↓
+  Robot RGB-D Observation (RGB + Depth + 3D Pose GT)
+          ↓
+  Episode Dataset
   ```
 - **聚焦能力 (Focuses on)**：
-  1. 逼真的人体 Humanoid 表达；
-  2. 人体运动数据加载与回放 (Motion Loading & Playback)；
-  3. Habitat 室内场景集成；
-  4. 机器人搭载相机的 RGB-D 观测生成；
-  5. Ground-Truth 动作/状态标注生成。
+  1. 逼真的人体 Humanoid 表达与 16 关键点 3D 世界坐标真值提取；
+  2. AMASS 人体运动数据标准化加载与 SMPL-X 四元数转换回放；
+  3. Habitat 室内场景集成与模拟器生命周期管理；
+  4. 移动机器人搭载相机的 RGB-D 观测生成与内外参计算；
+  5. 可复现的 Episode 数据集与标注文件 (metadata.json) 生成。
 - **明确排除在 v7.0 之外的非目标 (Explicitly NOT in v7.0)**：
   - ❌ 不实现 NBV 视角选择算法
   - ❌ 不实现 Action-aware utility 优化

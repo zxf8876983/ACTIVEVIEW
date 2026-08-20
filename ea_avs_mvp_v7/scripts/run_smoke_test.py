@@ -5,13 +5,13 @@ v7.0 最小闭环端到端 Smoke Test 脚本 —— run_smoke_test.py
 输入：
     - Habitat 室内场景 (apartment_1.glb)
     - KinematicHumanoid URDF (neutral_0)
-    - AMASS 跌倒动作数据 (fall_related)
+    - AMASS 动作数据 (如 fall_related)
 
 输出：
     - RGB 图像 (.png)
     - Depth 深度图 (.npy)
-    - 相机位姿、人体 3D 骨架 GT 与动作标注 (.json)
-    - Episode 汇总清单
+    - metadata.json (包含相机位姿、人体 3D 骨架 GT 与动作标注)
+    - [v7.0 Acceptance Report] 验收报告
 
 运行方式：
     python -m ea_avs_mvp_v7.scripts.run_smoke_test [--action fall_related] [--num-frames 5]
@@ -52,19 +52,32 @@ def main():
     # 1. 加载配置
     cfg = load_v7_config()
 
-    # 2. 读取动作清单并选取动作
+    # 2. 读取动作清单并严格匹配动作 (严禁静默 fallback)
     manifest_p = get_data_root() / cfg.motion.get("manifest_path", "assets/motions/raw/motion_asset_manifest.json")
     if not manifest_p.exists():
-        logger.error("Motion manifest not found: %s", manifest_p)
-        sys.exit(1)
+        raise FileNotFoundError(f"Motion manifest not found at: {manifest_p}")
 
     with open(manifest_p, "r", encoding="utf-8") as f:
         manifest = json.load(f)
 
-    item = next((m for m in manifest if m.get("target_class") == args.action), manifest[0])
-    action_class = item.get("target_class", "action")
-    sid = item.get("babel_sid", "0")
-    logger.info("Selected Motion: [%s] sid=%s, file=%s", action_class, sid, item.get("local_motion_path"))
+    item = next((m for m in manifest if m.get("target_class") == args.action), None)
+    if item is None:
+        raise ValueError(
+            f"Action '{args.action}' not found in manifest! "
+            f"Available actions: {sorted(list(set(m.get('target_class') for m in manifest)))}"
+        )
+
+    action_class = item.get("target_class")
+    sid = item.get("babel_sid")
+    rel_motion_file = item.get("local_motion_path")
+    if not rel_motion_file:
+        raise ValueError(f"Manifest entry for sid {sid} is missing 'local_motion_path'!")
+
+    npz_p = from_relative_data_path(rel_motion_file)
+    if not npz_p.exists():
+        raise FileNotFoundError(f"AMASS npz file missing from disk: {npz_p}")
+
+    logger.info("Selected Motion: [%s] sid=%s, file=%s", action_class, sid, rel_motion_file)
 
     # 3. 准备/转换 Motion PKL
     converted_dir = get_data_root() / cfg.motion.get("converted_dir", "assets/motions/converted")
@@ -72,7 +85,6 @@ def main():
 
     if not pkl_path.exists():
         logger.info("Motion PKL missing, converting from AMASS npz...")
-        npz_p = from_relative_data_path(item["local_motion_path"])
         norm_motion = load_amass_motion(
             npz_path=npz_p,
             start_frame=item.get("start_frame"),
@@ -87,10 +99,15 @@ def main():
     # 4. 初始化环境与模拟器
     env = HabitatEnv(cfg.habitat, cfg.sensor)
     sim = env.start()
+    if sim is None:
+        raise RuntimeError("Failed to start Habitat simulator!")
 
     # 5. 加载 Humanoid 与 Robot
     humanoid = HumanoidAgent(sim, cfg.humanoid)
     humanoid.load()
+    joint_summary = humanoid.get_joint_summary()
+    if joint_summary["num_joints"] < 15:
+        raise RuntimeError(f"Humanoid loaded with insufficient joints: {joint_summary['num_joints']}")
 
     robot = RobotAgent(sim)
     sensor = RGBDSensor(sim, cfg.sensor)
@@ -112,28 +129,31 @@ def main():
         max_frames=args.num_frames,
     )
 
-    # 7. 统计与验证
+    # 7. 统计与全面质量校验
     stats = compute_episode_statistics(episode)
     env.close()
 
-    print("\n" + "=" * 65)
-    print("[v7.0 Smoke Test Acceptance Results]")
-    print(f"  - Episode ID:         {episode.episode_id}")
-    print(f"  - Scene ID:           {episode.scene_id}")
-    print(f"  - Action Class:       {episode.action_class}")
-    print(f"  - Action Label:       {episode.action_label}")
-    print(f"  - Captured Frames:    {stats['total_frames']}")
-    print(f"  - RGB Valid Ratio:    {stats['rgb_valid_ratio'] * 100:.1f}%")
-    print(f"  - Depth Valid Ratio:  {stats['depth_valid_ratio'] * 100:.1f}%")
-    print(f"  - Avg 3D GT Joints:   {stats['avg_gt_keypoints_per_frame']:.1f}")
-    print("=" * 65)
+    # 校验 8 项核心标准
+    assert stats["total_frames"] == args.num_frames, "Captured frames mismatch"
+    assert stats["rgb_valid_ratio"] == 1.0, "RGB image generation incomplete"
+    assert stats["depth_valid_ratio"] == 1.0, "Depth map generation incomplete"
+    assert stats["avg_gt_keypoints_per_frame"] >= 15.0, "Ground-truth 3D joints incomplete"
+    assert episode.action_class == args.action, "Action class mismatch"
 
-    if stats["is_complete"]:
-        print("[Status] PASS: v7.0 Simulation environment end-to-end verified!\n")
-        sys.exit(0)
-    else:
-        print("[Status] FAIL: Incomplete episode data!\n")
-        sys.exit(1)
+    print("\n" + "=" * 65)
+    print("[v7.0 Acceptance Report]")
+    print(f"  - Scene ID:               {episode.scene_id}")
+    print(f"  - Humanoid ID:            {cfg.humanoid.get('avatar_name', 'neutral_0')}")
+    print(f"  - Motion ID:              {episode.motion_id}")
+    print(f"  - Action Label:           {episode.action_label}")
+    print(f"  - Frame Number:           {stats['total_frames']}")
+    print(f"  - RGB Valid Ratio:        {stats['rgb_valid_ratio'] * 100:.1f}%")
+    print(f"  - Depth Valid Ratio:      {stats['depth_valid_ratio'] * 100:.1f}%")
+    print(f"  - GT Joint Number:        {int(stats['avg_gt_keypoints_per_frame'])}")
+    print(f"  - Motion Playback Status: SUCCESS")
+    print("=" * 65)
+    print("PASS: v7.0 Humanoid-driven Active Perception Environment Verified\n")
+    sys.exit(0)
 
 
 if __name__ == "__main__":

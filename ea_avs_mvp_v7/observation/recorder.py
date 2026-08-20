@@ -3,10 +3,9 @@
 ==================================
 
 职责：
-    1. 保存单帧 RGB 图像 (.png) 与 Depth 深度图 (.npy)；
-    2. 序列化保存 FrameMetadata (.json)；
-    3. 输出整段观测序列汇总 sequence_summary.json；
-    4. 统一使用相对数据路径管理。
+    1. 保存单帧 RGB 图像 (frame_000000.png) 与 Depth 深度图 (frame_000000.npy)；
+    2. 序列化保存单帧与 Episode 汇总 metadata.json；
+    3. 统一使用相对数据路径管理。
 """
 
 import json
@@ -27,7 +26,7 @@ class ObservationRecorder:
     """观测数据落盘记录器。"""
 
     def __init__(self, output_dir: Optional[Union[str, Path]] = None):
-        self.output_dir = Path(output_dir) if output_dir else get_data_root() / "runs" / "v70_observations"
+        self.output_dir = Path(output_dir) if output_dir else get_data_root() / "runs"
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def record_frame(
@@ -41,13 +40,11 @@ class ObservationRecorder:
         """保存单帧数据与元数据。"""
         rgb_dir = target_dir / "rgb"
         depth_dir = target_dir / "depth"
-        meta_dir = target_dir / "metadata"
 
         rgb_dir.mkdir(parents=True, exist_ok=True)
         depth_dir.mkdir(parents=True, exist_ok=True)
-        meta_dir.mkdir(parents=True, exist_ok=True)
 
-        fname = f"{frame_idx:04d}"
+        fname = f"frame_{frame_idx:06d}"
 
         # 1. 保存 RGB
         if rgb is not None:
@@ -62,21 +59,16 @@ class ObservationRecorder:
             np.save(depth_path, depth.astype(np.float32))
             metadata.depth_relative_path = to_relative_data_path(depth_path)
 
-        # 3. 保存 Frame JSON
-        meta_path = meta_dir / f"{fname}.json"
-        with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(metadata.to_dict(), f, indent=2, ensure_ascii=False)
-
         return metadata
 
-    def record_sequence_summary(
+    def record_episode_metadata(
         self,
         target_dir: Path,
-        sequence_meta: SequenceMetadata,
+        metadata_dict: Dict[str, Any],
     ) -> Path:
-        """保存序列汇总信息。"""
+        """保存 Episode 的顶层 metadata.json。"""
         target_dir.mkdir(parents=True, exist_ok=True)
-        summary_path = target_dir / "sequence_summary.json"
-        with open(summary_path, "w", encoding="utf-8") as f:
-            json.dump(sequence_meta.to_dict(), f, indent=2, ensure_ascii=False)
-        return summary_path
+        meta_path = target_dir / "metadata.json"
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(metadata_dict, f, indent=2, ensure_ascii=False)
+        return meta_path

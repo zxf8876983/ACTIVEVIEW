@@ -26,8 +26,8 @@ class TestEpisode(unittest.TestCase):
             action_class="fall_related",
             action_label="fall to the ground",
             babel_sid=3522,
-            rgb_relative_path="runs/ep_01/rgb/0000.png",
-            depth_relative_path="runs/ep_01/depth/0000.npy",
+            rgb_relative_path="runs/episode_01/rgb/frame_000000.png",
+            depth_relative_path="runs/episode_01/depth/frame_000000.npy",
         )
 
         d = f.to_dict()
@@ -37,10 +37,11 @@ class TestEpisode(unittest.TestCase):
         json_str = json.dumps(d)
         loaded = json.loads(json_str)
         self.assertEqual(loaded["babel_sid"], 3522)
+        self.assertEqual(loaded["rgb_relative_path"], "runs/episode_01/rgb/frame_000000.png")
 
     def test_episode_serialization(self):
         ep = Episode(
-            episode_id="ep_001",
+            episode_id="episode_001",
             scene_id="apartment_1",
             motion_id="fall_related_3522",
             action_class="fall_related",
@@ -55,7 +56,7 @@ class TestEpisode(unittest.TestCase):
         )
 
         d = ep.to_dict()
-        self.assertEqual(d["episode_id"], "ep_001")
+        self.assertEqual(d["episode_id"], "episode_001")
         self.assertEqual(d["scene_id"], "apartment_1")
         self.assertEqual(d["num_frames"], 1)
 

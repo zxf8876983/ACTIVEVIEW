@@ -85,17 +85,17 @@ python3 -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"
 
 ### 3.2 批量转换 AMASS 动作资产
 ```bash
-/home/zxf/anaconda3/envs/habitat/bin/python -m ea_avs_mvp_v7.scripts.convert_motions --action fall_related
+conda run -n habitat python -m ea_avs_mvp_v7.scripts.convert_motions --action fall_related
 ```
 
 ### 3.3 运行端到端最小闭环 Smoke Test
 ```bash
-/home/zxf/anaconda3/envs/habitat/bin/python -m ea_avs_mvp_v7.scripts.run_smoke_test --action fall_related --num-frames 5
+conda run -n habitat python -m ea_avs_mvp_v7.scripts.run_smoke_test --action fall_related --num-frames 5
 ```
 
 ### 3.4 批量生成多动作多视角 Episode 数据集
 ```bash
-/home/zxf/anaconda3/envs/habitat/bin/python -m ea_avs_mvp_v7.scripts.generate_dataset --actions standing sitting fall_related --num-views 4
+conda run -n habitat python -m ea_avs_mvp_v7.scripts.generate_dataset --actions standing sitting fall_related --num-views 4
 ```
 
 ---
