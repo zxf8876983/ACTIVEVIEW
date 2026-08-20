@@ -5,7 +5,7 @@ Motion Pipeline 独立验证脚本 —— verify_motion_pipeline.py
 功能：
     1. 读取 AMASS 动作数据 (.npz) 并规范化为 NormalizedMotion；
     2. 使用 MotionConverter 转换为 Habitat KinematicHumanoid .pkl 格式；
-    3. 校验 joints_array 形状 (N, 216)、transform_array 形状 (N, 4, 4)、四元数归一化与 FPS；
+    3. 严格校验 joints_array 形状 (N, 216)、transform_array 形状 (N, 4, 4)、四元数归一化与 FPS；
     4. 输出标准格式的 [v7 Motion Pipeline Verification] 报告。
 
 运行方式：
@@ -50,7 +50,8 @@ def main():
         target_class = args.action
         sid = "custom"
         raw_label = "custom motion"
-        item = {"local_motion_path": str(npz_p), "target_class": target_class, "proc_label": raw_label, "babel_sid": sid}
+        source_dataset = "custom"
+        item = {"local_motion_path": str(npz_p), "target_class": target_class, "proc_label": raw_label, "babel_sid": sid, "source_dataset": source_dataset}
     else:
         manifest_p = get_data_root() / cfg.motion.get("manifest_path", "assets/motions/raw/motion_asset_manifest.json")
         if not manifest_p.exists():
@@ -65,6 +66,7 @@ def main():
         target_class = item.get("target_class")
         sid = item.get("babel_sid")
         raw_label = item.get("proc_label", item.get("raw_label", "action"))
+        source_dataset = item.get("source_dataset", item.get("dataset_name", "AMASS"))
 
     motion_id = f"{target_class}_{sid}"
     logger.info("Verifying Motion Pipeline for [%s] -> %s", motion_id, npz_p)
@@ -83,20 +85,21 @@ def main():
 
     num_frames = stats["num_frames"]
     fps = stats["fps"]
-    joints_shape = f"({num_frames}, {stats['joints_dim']})"
+    body_pose_shape = f"({norm_motion.body_pose.shape[0]}, {norm_motion.body_pose.shape[1]})"
+    quaternion_shape = f"({num_frames}, {stats['joints_dim']})"
     transform_shape = f"{tuple(stats['transforms_shape'])}"
-    joint_count = stats["joints_dim"] // 4
 
     print("\n" + "=" * 65)
     print("[v7 Motion Pipeline Verification]")
-    print(f"  - Motion ID:          {motion_id}")
-    print(f"  - Action Label:       {raw_label}")
-    print(f"  - Frame Number:       {num_frames}")
-    print(f"  - FPS:                {fps:.1f}")
-    print(f"  - Quaternion Shape:   {joints_shape}")
-    print(f"  - Transform Shape:    {transform_shape}")
-    print(f"  - Joint Count:        {joint_count}")
-    print(f"  - Status:             PASS")
+    print(f"  - motion_id:         {motion_id}")
+    print(f"  - source_dataset:    {source_dataset}")
+    print(f"  - action_label:      {raw_label}")
+    print(f"  - frame_count:       {num_frames}")
+    print(f"  - fps:               {fps:.1f}")
+    print(f"  - body_pose_shape:   {body_pose_shape}")
+    print(f"  - quaternion_shape:  {quaternion_shape}")
+    print(f"  - transform_shape:   {transform_shape}")
+    print(f"  - conversion_status: PASS")
     print("=" * 65)
     print("PASS: v7 Motion Pipeline Verified\n")
     sys.exit(0)

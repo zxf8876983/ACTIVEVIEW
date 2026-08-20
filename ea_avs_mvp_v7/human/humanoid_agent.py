@@ -6,7 +6,7 @@ Habitat Humanoid 实体代理 —— humanoid_agent.py
     1. 在 Habitat 物理世界中实例化 KinematicHumanoid (neutral_0)；
     2. 设置人体基座在场景中的初始位置与朝向；
     3. 接收 MotionPlayer 输出的关节姿态并驱动人形模型变形；
-    4. 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState；
+    4. 依托 keypoint_mapping 提取 16 个核心关节的 3D 世界坐标并封装为 HumanState；
     5. 输出关节数量、名称清单与三维坐标汇总。
 
 边界约束：
@@ -30,28 +30,14 @@ except ImportError:
 
 from ea_avs_mvp_v7.core.paths import get_repo_root, get_data_root
 from .human_state import HumanState
+from .keypoint_mapping import (
+    KEYPOINT_LINK_MAP,
+    HUMAN_16_KEYPOINTS,
+    extract_human_keypoints_3d,
+    validate_keypoints,
+)
 
 logger = logging.getLogger(__name__)
-
-# 标准 16 关节名称映射至 KinematicHumanoid URDF 关节 link name
-KEYPOINT_LINK_MAP = {
-    "pelvis": "pelvis",
-    "spine3": "spine3",
-    "neck": "neck",
-    "head": "head",
-    "left_shoulder": "left_shoulder",
-    "left_elbow": "left_elbow",
-    "left_wrist": "left_wrist",
-    "right_shoulder": "right_shoulder",
-    "right_elbow": "right_elbow",
-    "right_wrist": "right_wrist",
-    "left_hip": "left_hip",
-    "left_knee": "left_knee",
-    "left_ankle": "left_ankle",
-    "right_hip": "right_hip",
-    "right_knee": "right_knee",
-    "right_ankle": "right_ankle",
-}
 
 
 def resolve_humanoid_urdf_path(config: Optional[Dict[str, Any]] = None) -> Tuple[Path, Path]:
@@ -186,39 +172,20 @@ class HumanoidAgent:
         if self._agent is None:
             return {}
 
-        ao = self._agent.sim_obj
-        positions: Dict[str, np.ndarray] = {}
-
-        for kpt_name, link_name in KEYPOINT_LINK_MAP.items():
-            if kpt_name == "pelvis":
-                continue
-            try:
-                link_id = ao.get_link_id_from_name(link_name)
-                if link_id is not None and int(link_id) >= 0:
-                    node = ao.get_link_scene_node(link_id)
-                    pos = np.array(node.transformation.translation, dtype=np.float32)
-                    positions[kpt_name] = pos
-            except Exception:
-                pass
-
-        # pelvis 由左右髋中点几何推导
-        if "left_hip" in positions and "right_hip" in positions:
-            positions["pelvis"] = 0.5 * (positions["left_hip"] + positions["right_hip"])
-        else:
-            try:
-                positions["pelvis"] = np.array(ao.transformation.translation, dtype=np.float32)
-            except Exception:
-                positions["pelvis"] = self._base_pos.copy()
-
-        return {k: [float(x) for x in v] for k, v in positions.items()}
+        return extract_human_keypoints_3d(
+            ao_sim_obj=self._agent.sim_obj,
+            fallback_base_pos=self._base_pos,
+        )
 
     def get_joint_summary(self) -> Dict[str, Any]:
         """获取当前人形骨架的关节数量、名称清单与三维坐标字典。"""
         joints = self.get_gt_joint_positions()
+        validation = validate_keypoints(joints, min_joints=15)
         return {
             "num_joints": len(joints),
             "joint_names": list(joints.keys()),
             "joint_positions": joints,
+            "validation": validation,
         }
 
     def get_human_state(
