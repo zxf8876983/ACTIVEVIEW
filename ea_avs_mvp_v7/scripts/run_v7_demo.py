@@ -116,17 +116,30 @@ def main():
     sim = env.start()
 
     scene_id = cfg.habitat.get("scene_id", "apartment_1")
-    default_human_pos = demo_cfg.get("human", {}).get("initial_position", [1.5, -1.60, 4.0])
+    human_cfg = demo_cfg.get("human", {})
+    if isinstance(human_cfg.get("initial_pose"), dict):
+        default_human_pos = human_cfg["initial_pose"].get("position", [1.5, -1.60, 4.0])
+        default_human_yaw = float(human_cfg["initial_pose"].get("yaw_deg", 0.0))
+    else:
+        default_human_pos = human_cfg.get("initial_position", [1.5, -1.60, 4.0])
+        default_human_yaw = float(human_cfg.get("initial_yaw_deg", 0.0))
+
     human_base_pos = sample_human_position(scene_id, default_position=default_human_pos)
-    human_base_yaw = math.radians(float(demo_cfg.get("human", {}).get("initial_yaw_deg", 0.0)))
+    human_base_yaw = math.radians(default_human_yaw)
 
     humanoid = HumanoidAgent(sim, cfg.humanoid)
     humanoid.load()
     humanoid.set_visibility(True)
     humanoid.set_base_pose(human_base_pos, yaw_rad=human_base_yaw)
 
-    robot_chassis_pos = demo_cfg.get("robot", {}).get("initial_position", [1.5, -1.60, 6.8])
-    robot_chassis_yaw_deg = float(demo_cfg.get("robot", {}).get("initial_yaw_deg", 0.0))
+    robot_cfg = demo_cfg.get("robot", {})
+    if isinstance(robot_cfg.get("initial_pose"), dict):
+        robot_chassis_pos = robot_cfg["initial_pose"].get("position", [1.5, -1.60, 6.8])
+        robot_chassis_yaw_deg = float(robot_cfg["initial_pose"].get("yaw_deg", 0.0))
+    else:
+        robot_chassis_pos = robot_cfg.get("initial_position", [1.5, -1.60, 6.8])
+        robot_chassis_yaw_deg = float(robot_cfg.get("initial_yaw_deg", 0.0))
+
     robot = RobotAgent(sim)
     robot.set_pose(robot_chassis_pos, robot_chassis_yaw_deg)
 

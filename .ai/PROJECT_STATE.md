@@ -71,7 +71,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
   1. **Humanoid rendering verified**: 场景地面几何校准 ($Y_{\text{floor}} = -1.60\text{m}$) 与相对位移动态下沉补偿，确保正常站立、坐下与摔倒触地；
   2. **Motion pipeline verified**: AMASS / BABEL 动作资产标准化读取、SMPL-X 四元数转换与回放；
   3. **RGB-D generation verified**: 移动机器人底盘位姿与相机传感器解耦，输出对齐的 RGB、Depth 与 16 关键点 3D 世界坐标真值；
-  4. **Episode generation verified**: 标准结构化 Episode 数据集落盘 (`runs/episode_xxx/` 包含 `rgb/`, `depth/`, `human_pose/`, `metadata.json`)；
+  4. **Dataset episode generation verified**: 标准结构化 Episode 数据集落盘 (`runs/episode_xxx/` 包含 `rgb/`, `depth/`, `human_pose/`, `metadata.json`)；
   5. **Demo pipeline finalized**: 统一主入口 `python -m ea_avs_mvp_v7.scripts.run_v7_demo` 自动生成演示数据与 MP4 视频至 `visualizations/v7_final_demo/`；
   6. **Configuration solidified**: 统一由 `configs/humanoid.yaml` 与 `configs/v7_demo.yaml` 管理，无代码硬编码。
 - **空间几何与动作位移核心规范 (Key Spatial Invariants)**：
@@ -109,9 +109,8 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
   - ❌ 不训练 动作识别模型 (HAR)
   - ❌ 不修改 v6.0 代码及历史实现
 
-### 未来研究方向（仅记录规划，当前版本不开发）：
-
-#### v8.0: Action-aware Active View Selection
+### 下一阶段研究规划 (Next Stage):
+#### v8.0: Active View Foundation (Action-aware Active View Selection)
 - Action hypothesis / 动作后验建模 $P(a \mid O_t)$
 - Action-conditioned 视角效用函数设计
 - 多策略与视角对比评估

@@ -1,32 +1,30 @@
 # ACTIVEVIEW Current Task
 
-Status: COMPLETED (v7.0 FINALIZED)
+Status: COMPLETED (v7.0 finalization completed)
 
 ## Task
-ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Environment (Finalized & Frozen)
+ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Environment (v7.0 Finalized & Frozen)
 
 ## Objective
-完成 ACTIVEVIEW v7.0 版本的最终收尾与冻结（Finalization & Freezing）：
-1. **Humanoid 配置固化**：
-   - 固化 `configs/humanoid.yaml`（`avatar_name: neutral_0`, `ground_offset: 0.0`, `scale: 1.0`, `default_yaw: 0.0`, `assets_root`, `floor_height: -1.60`）；
-   - 消除散落在代码中的硬编码数值。
-2. **Demo 配置固化**：
-   - 建立 `configs/v7_demo.yaml` 统一管理场景、机器人、Humanoid 放置与输出路径；
-   - `run_v7_demo.py` 统一读取配置并支持 CLI 参数一键重载。
-3. **统一 Demo 入口与视频自动生成**：
-   - 保留规范化主入口 `python -m ea_avs_mvp_v7.scripts.run_v7_demo`；
-   - 自动生成 RGB、Depth、Human Pose GT、`metadata.json` 与 `visualizations/v7_final_demo/v7_demo.mp4`。
-4. **Episode 数据格式规范化**：
+完成 ACTIVEVIEW v7.0 版本的最终收尾与工程冻结（v7.0 Finalization & Freezing）：
+1. **统一 v7 Demo 配置**：
+   - 固化 `configs/v7_demo.yaml`，统一管理 `scene`, `human`, `robot`, `camera`, `simulation` 全部参数；
+   - `run_v7_demo.py` 不再包含大量硬编码参数，所有实验参数通过 YAML 读取并支持 CLI 参数覆盖。
+2. **固化 Humanoid 参数配置**：
+   - 确认 `ground_offset`, `scale`, `rotation`, `avatar_name`, `floor_height`, `base_pelvis_offset` 统一在 `configs/humanoid.yaml` 中配置管理；
+   - 杜绝散落在代码中的魔法数值。
+3. **完善 v7 主入口与辅助工具**：
+   - `run_v7_demo.py` 作为主入口，一键完成场景加载、实体创建、动作播放、RGB-D 采集、Episode 落盘与视频生成；
+   - 保留规范辅助工具：`verify_v7_pipeline.py`, `validate_three_actions.py`, `create_video.py`, `convert_motions.py`, `generate_dataset.py`, `run_smoke_test.py`。
+4. **Human Placement 接口规范化**：
+   - `human/human_spawn.py` 提供 `sample_human_position()`，为未来 v8.0 预留接口，严禁包含任何主动选点、碰撞优化或自动导航算法。
+5. **完善 Episode 数据格式**：
    - 统一输出结构：`data/ActiveView/runs/episode_xxx/`（`rgb/`, `depth/`, `human_pose/`, `metadata.json`）；
-   - 逐帧持久化 16 关节 3D GT 姿态至 `human_pose/frame_000000.json`。
-5. **端到端流水线全量验证**：
-   - 新增 `scripts/verify_v7_pipeline.py`，一键校验 `AMASS -> MotionConverter -> Habitat Motion -> Humanoid -> RGB-D -> GT Pose -> Episode` 全链路。
-6. **Human Placement 接口解耦**：
-   - 新增 `human/human_spawn.py` 提供 `sample_human_position()` 物理地面放置接口（预留 v8 扩展，不包含任何主动选择算法）。
-7. **代码与脚本清理**：
-   - 清理所有单次调试脚本，规范保留核心工具。
-8. **测试套件整理**：
-   - 组织 `tests/unit/`, `tests/integration/`, `tests/smoke/` 30 项测试，全部 PASS。
+   - 逐帧持久化 16 关键点 3D 世界坐标真值，保证未来 v8 可直接读取复现。
+6. **完善测试套件**：
+   - 保留并组织 `tests/unit/`, `tests/integration/`, `tests/smoke/` 30 项测试，包含 `test_humanoid_loading.py`, `test_motion_pipeline.py`, `test_episode_generation.py` 等。
+7. **README 与上下文最终整理**：
+   - 全面更新 `ea_avs_mvp_v7/README.md`，明确声明完成内容与严格排除的非目标。
 
 ## Explicit Prohibitions & Non-Goals (严格遵守)
 - ❌ 不实现 NBV 视角选择算法
@@ -39,8 +37,9 @@ ACTIVEVIEW v7.0 Development — Humanoid-driven Active Perception Simulation Env
 - ❌ 不将 AMASS / BABEL 原始大型数据提交至 Git
 
 ## Current Version Status
-- **Active Development Version**: v7.0 (7.0.0 — FINALIZED & FROZEN)
+- **Active Development Version**: v7.0 (7.0.0 — COMPLETED / FINALIZED & FROZEN)
 - **Active Specification**: `EA_AVS_MVP70_Code_Generation_Document.md`
+- **Next Research Stage**: v8.0 Active View Foundation
 - **Previous Stable Baseline**: v6.0 (6.0.0 — CLOSED / FINALIZED, Read-Only)
 
 ## Validation Plan Execution Results
