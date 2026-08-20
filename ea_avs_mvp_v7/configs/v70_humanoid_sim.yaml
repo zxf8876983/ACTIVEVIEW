@@ -1,0 +1,44 @@
+# =============================================================================
+# EA-AVS-MVP v7.0 仿真环境配置文件 —— v70_humanoid_sim.yaml
+# =============================================================================
+
+project:
+  name: "EA-AVS-MVP7.0"
+  version: "7.0.0"
+  seed: 42
+
+habitat:
+  # 场景路径优先通过 data_paths 解析，亦支持显式指定
+  scene_path: "robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.glb"
+  navmesh_path: "robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.navmesh"
+  enable_physics: true
+
+camera:
+  width: 640
+  height: 480
+  hfov_deg: 90
+  camera_height: 1.2
+  clip_near: 0.01
+  clip_far: 10.0
+
+humanoid:
+  enabled: true
+  assets_root: "robot/habitat-lab/data/versioned_data/habitat_humanoids"
+  avatar_name: "neutral_0"
+  default_pose: "standing"
+  semantic_enabled: true
+  semantic_id: 100
+  base_height_offset: 0.0
+
+motion:
+  # 动作资产清单与转换输出目录 (相对于 data_root 解析)
+  manifest_path: "assets/motions/raw/motion_asset_manifest.json"
+  converted_dir: "assets/motions/converted"
+  target_action_class: "fall_related"
+  playback_fps: 30.0
+
+simulation:
+  output_dir: "runs/v70_observations"
+  save_rgb: true
+  save_depth: true
+  save_metadata: true
