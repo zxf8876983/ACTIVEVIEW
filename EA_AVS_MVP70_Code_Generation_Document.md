@@ -4,52 +4,72 @@
 
 Version: v7.0
 
-Goal: Complete the transition from simulated fixed-body experiments to a real humanoid-driven indoor active perception environment.
+Title:
 
-v7.0 is NOT the final active view optimization algorithm. The purpose of this version is to establish a reliable simulation pipeline:
+**Humanoid-driven Active Perception Simulation Environment**
+
+v7.0 is an infrastructure and experimental platform construction version.
+
+The goal is to transform ACTIVEVIEW from an abstract/static human perception environment into a realistic indoor elderly monitoring simulation environment driven by human motion data.
+
+The core pipeline is:
 
 ```
-AMASS Motion
-    ↓
-Humanoid Motion Representation
-    ↓
+BABEL Action Annotation
+        ↓
+AMASS Human Motion
+        ↓
 Habitat Humanoid Agent
-    ↓
-RGB-D Observation Generation
-    ↓
-Action-conditioned Active Perception Environment
+        ↓
+Indoor Robot Perception Simulation
+        ↓
+RGB-D Observation Dataset
 ```
 
-The output of v7.0 should provide the experimental foundation for later Active View Selection research.
+v7.0 does NOT propose the final active view selection algorithm. It provides the experimental foundation for future action-aware active perception research.
 
 ---
 
-# 2. Scientific Scope
+# 2. Research Boundary
 
 ## v7.0 focuses on:
 
-1. Realistic indoor human body representation.
-2. Human motion playback in Habitat.
-3. Robot camera observation generation.
-4. Dataset generation for active perception experiments.
+1. Realistic humanoid representation.
+2. Human motion loading and playback.
+3. Habitat indoor scene integration.
+4. Robot-mounted camera observation generation.
+5. Ground-truth action/state annotation generation.
 
-## Explicitly excluded:
+## Explicitly NOT included:
 
-- NBV optimization algorithm design.
+- Action-aware view utility optimization.
+- NBV algorithm design.
 - Reinforcement learning.
-- Multi-step navigation planning.
+- Multi-step active perception.
+- Evidence recovery mechanism.
 - Real robot deployment.
-- Human action recognition network training.
-- Complex multi-person interaction.
-- Evidence Recovery mechanism.
+- Human action recognition model training.
+- SLAM/navigation/path planning implementation.
 
-These belong to later versions.
+These are future research stages.
 
 ---
 
-# 3. Input Assets
+# 3. Scientific Role of v7.0
 
-## 3.1 AMASS Motion
+The research question of v7.0 is:
+
+> Can we build a controllable indoor simulation environment where a mobile robot observes realistic elderly human activities from different viewpoints?
+
+The output is not a final method, but a reliable benchmark environment for studying:
+
+"How should a robot choose informative viewpoints for elderly activity perception?"
+
+---
+
+# 4. Input Data
+
+## AMASS Motion
 
 Location:
 
@@ -57,7 +77,7 @@ Location:
 ../../data/ActiveView/datasets/amass/
 ```
 
-Current validated datasets:
+Validated motion sources:
 
 - BMLrub
 - CMU
@@ -65,13 +85,7 @@ Current validated datasets:
 - EyesJapanDataset
 - KIT
 
-Motion format:
-
-```
-.npz
-```
-
-Supported schema:
+Supported formats:
 
 Schema A:
 
@@ -82,7 +96,7 @@ poses
 fps
 ```
 
-Schema B:
+Schema B (standard AMASS):
 
 ```
 trans
@@ -98,27 +112,20 @@ root_orient = poses[:, :3]
 
 ---
 
-# 4. v7.0 Core Pipeline
+# 5. v7.0 Implementation Pipeline
 
-## Stage 1: Motion Loading
-
-Implement:
-
-```
-tools/motion/
-    amass_loader.py
-```
+## Stage 1: Motion Normalization
 
 Input:
 
 ```
-AMASS npz path
+AMASS npz
 ```
 
 Output:
 
 ```
-normalized motion dictionary
+normalized human motion representation
 ```
 
 Required fields:
@@ -131,35 +138,27 @@ fps
 num_frames
 ```
 
-No AMASS-specific format should leak into later modules.
-
 ---
 
-# Stage 2: Humanoid Motion Conversion
+## Stage 2: AMASS to Habitat Humanoid Motion
 
-Use Habitat official humanoid utilities.
+Use Habitat official humanoid conversion tools whenever possible.
 
-Goal:
+Pipeline:
 
 ```
-AMASS motion
+AMASS Motion
       ↓
-Habitat humanoid motion format
+Habitat-compatible motion
+      ↓
+Humanoid playback
 ```
 
-Output:
-
-```
-assets/motions/habitat/
-```
-
-Do not implement a new human body simulator.
-
-Reuse Habitat supported humanoid pipeline whenever possible.
+Do not build a new human simulator.
 
 ---
 
-# Stage 3: Humanoid Agent Loading
+## Stage 3: Humanoid Agent in Indoor Scene
 
 Create:
 
@@ -181,45 +180,14 @@ ea_avs_mvp_v7/
 
 Responsibilities:
 
-## humanoid/
-
-Load humanoid URDF and articulation.
-
-Input:
-
-```
-Habitat scene
-Humanoid asset
-```
-
-Output:
-
-```
-interactive humanoid agent
-```
+- Load humanoid asset.
+- Load converted motion.
+- Place humanoid in Habitat scene.
+- Execute motion playback.
 
 ---
 
-# Stage 4: Indoor Scene Integration
-
-Use Habitat existing scene system.
-
-Do not implement:
-
-- SLAM
-- mapping
-- navigation
-- collision avoidance
-
-These are assumed robot capabilities.
-
-The experiment focuses on perception viewpoint selection.
-
----
-
-# Stage 5: RGB-D Observation Generation
-
-Camera should simulate robot-mounted sensor.
+## Stage 4: Robot Observation Generation
 
 Generate:
 
@@ -232,83 +200,54 @@ Action label
 Timestamp
 ```
 
-Output:
-
-```
-data/ActiveView/runs/
-```
-
-Example:
-
-```
-frame_000001.png
-frame_000001_depth.png
-metadata.json
-```
+The generated data will support later active perception experiments.
 
 ---
 
-# 5. Initial Motion Set
+# 6. Initial Elderly Action Set
 
-Only validate three actions first:
+The objective is not comprehensive action recognition.
 
-## Required
+Only select representative elderly indoor activities:
+
+Required first-stage actions:
 
 1. Standing
 2. Sitting
-3. Fall-related posture
+3. Fall-related / fallen posture
 
-Optional later:
+Optional extension:
 
 4. Bending
 5. Reaching
 
-Reason:
-
-The research target is elderly monitoring, not action recognition coverage.
+The priority is realistic elderly monitoring scenarios, especially abnormal states such as falls.
 
 ---
 
-# 6. First Milestone (MVP7.0)
+# 7. MVP7.0 Minimum Success Criteria
 
-The minimum successful demonstration:
+The smallest successful experiment:
 
 ```
-One indoor Habitat scene
+One Habitat indoor scene
         ↓
-One humanoid model
+One humanoid
         ↓
-One AMASS motion
+One AMASS motion (prefer fall)
         ↓
 Motion playback
         ↓
-Robot camera captures RGB-D
+Robot camera observation
         ↓
-Saved observation sequence
+RGB-D + ground truth saved
 ```
 
-A single falling motion is preferred as the final smoke test.
-
 ---
 
-# 7. Evaluation Criteria
+# 8. Engineering Constraints
 
-v7.0 is successful if:
-
-- Humanoid loads correctly.
-- Motion conversion succeeds.
-- Motion playback is stable.
-- Camera observations are generated.
-- Human ground truth is available.
-- Dataset generation pipeline works repeatedly.
-
-No accuracy metric is required at this stage.
-
----
-
-# 8. Implementation Constraints
-
-1. Never hard-code absolute machine paths.
+1. Never hard-code machine-specific paths.
 
 Use:
 
@@ -326,49 +265,45 @@ ACTIVEVIEW_DATA_ROOT
 
 3. Keep v6 read-only.
 
-4. Add unit tests for every new module.
-
-5. Prefer small runnable scripts over large frameworks.
-
-6. Every script must clearly document:
+4. Every module must document:
 
 - input
 - output
 - dependencies
 - execution command
 
+5. Prefer small verifiable milestones.
+
 ---
 
-# 9. Future Versions
+# 9. Future Research Direction (Reference Only)
 
-After v7.0:
+Future versions may extend:
 
-v8.0:
+## v8.0
 
-```
-Action-aware Active View Selection
-```
-
-including:
+Action-aware Active View Selection:
 
 - action hypothesis
+- action-conditioned viewpoint utility
+- viewpoint comparison
+
+## v9.0
+
+Uncertainty-aware Multi-step Active Perception:
+
 - observation uncertainty
-- viewpoint utility
+- evidence recovery
+- sequential viewpoint planning
 
-v9.0:
-
-```
-multi-step active perception
-```
+These are NOT part of v7.0 implementation.
 
 ---
 
-# 10. Development Philosophy
+# 10. Development Principle
 
-v7.0 is an infrastructure milestone.
+v7.0 is the bridge between simulation infrastructure and scientific algorithm research.
 
-The goal is not to create a complete robot system.
+The priority is:
 
-The goal is to build a controllable simulation environment where the scientific question can be studied:
-
-"How should a mobile robot choose informative viewpoints for elderly activity perception?"
+**build a reliable humanoid-driven perception environment first, then study intelligent viewpoint selection.**
