@@ -4,9 +4,9 @@ Humanoid 姿态与空间坐标对齐调试脚本 —— debug_humanoid_pose.py
 
 功能：
     1. 独立验证 Habitat 场景与 Humanoid 正确地面站立与正面朝向；
-    2. 执行坐标系规范：
-       - Human:  [0.0, 0.0, 0.0], yaw=180.0 deg (面向 +Z 轴)
-       - Robot:  [0.0, 0.0, 2.5], yaw=0.0 deg   (面向 -Z 轴，相机正对 Humanoid)
+    2. 执行坐标系规范 (客厅地面 Floor Y = -1.60m)：
+       - Human:  [1.5, -1.60, 4.0], yaw=0.0 deg
+       - Robot:  [1.5, -1.60, 6.8], yaw=0.0 deg (面向 -Z 轴，相机正对 Humanoid)
     3. 输出 [V7 Spatial Debug] 标准空间对齐日志；
     4. 生成 visualizations/humanoid_debug/rgb.png。
 
@@ -36,9 +36,9 @@ logger = logging.getLogger("debug_pose")
 
 def main():
     parser = argparse.ArgumentParser(description="Debug Humanoid Pose and Spatial Alignment")
-    parser.add_argument("--human-pos", nargs=3, type=float, default=[0.0, 0.0, 0.0], help="Humanoid position [x, y, z]")
-    parser.add_argument("--robot-pos", nargs=3, type=float, default=[0.0, 0.0, 2.5], help="Robot position [x, y, z]")
-    parser.add_argument("--human-yaw", type=float, default=180.0, help="Humanoid yaw in degrees")
+    parser.add_argument("--human-pos", nargs=3, type=float, default=[1.5, -1.60, 4.0], help="Humanoid position [x, y, z]")
+    parser.add_argument("--robot-pos", nargs=3, type=float, default=[1.5, -1.60, 6.8], help="Robot position [x, y, z]")
+    parser.add_argument("--human-yaw", type=float, default=0.0, help="Humanoid yaw in degrees")
     parser.add_argument("--robot-yaw", type=float, default=0.0, help="Robot yaw in degrees")
     args = parser.parse_args()
 
@@ -101,7 +101,7 @@ def main():
     print(f"  - Depth Range:         [{depth.min():.2f} m, {depth.max():.2f} m]")
     print("=" * 65)
 
-    if view_check["visible"] and non_black_ratio > 0.3:
+    if view_check["visible"] and non_black_ratio > 0.4:
         print("PASS: Humanoid Pose & Coordinate Alignment Verified\n")
         sys.exit(0)
     else:

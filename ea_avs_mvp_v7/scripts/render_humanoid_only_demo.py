@@ -4,7 +4,7 @@
 
 功能：
     1. 独立运行 Habitat 场景与 Humanoid 站立渲染测试 (不依赖 AMASS 动作数据)；
-    2. 执行规范坐标系 (Human: [0, 0, 0], yaw=180 deg; Robot: [0, 0, 2.5], yaw=0 deg)；
+    2. 执行物理地面坐标系 (Human: [1.5, -1.60, 4.0], yaw=0 deg; Robot: [1.5, -1.60, 6.8], yaw=0 deg)；
     3. 采集并保存清晰 RGB 图像至 data/ActiveView/visualizations/humanoid_debug/rgb/frame_000001.png 与 rgb.png；
     4. 输出关节在图像中的投影坐标与视野有效性判定。
 
@@ -34,9 +34,9 @@ logger = logging.getLogger("render_humanoid_only")
 
 def main():
     parser = argparse.ArgumentParser(description="Render Humanoid Only Demonstration")
-    parser.add_argument("--human-pos", nargs=3, type=float, default=[0.0, 0.0, 0.0], help="Human position [x, y, z]")
-    parser.add_argument("--robot-pos", nargs=3, type=float, default=[0.0, 0.0, 2.5], help="Robot position [x, y, z]")
-    parser.add_argument("--human-yaw", type=float, default=180.0, help="Humanoid yaw in degrees")
+    parser.add_argument("--human-pos", nargs=3, type=float, default=[1.5, -1.60, 4.0], help="Human position [x, y, z]")
+    parser.add_argument("--robot-pos", nargs=3, type=float, default=[1.5, -1.60, 6.8], help="Robot position [x, y, z]")
+    parser.add_argument("--human-yaw", type=float, default=0.0, help="Humanoid yaw in degrees")
     parser.add_argument("--robot-yaw", type=float, default=0.0, help="Robot yaw in degrees")
     args = parser.parse_args()
 
@@ -99,7 +99,7 @@ def main():
     print(f"  - Depth Range:         [{depth.min():.2f} m, {depth.max():.2f} m]")
     print("=" * 65)
 
-    if view_check["visible"] and non_zero_ratio > 0.3:
+    if view_check["visible"] and non_zero_ratio > 0.4:
         print("PASS: Humanoid Successfully Rendered in Scene\n")
         sys.exit(0)
     else:

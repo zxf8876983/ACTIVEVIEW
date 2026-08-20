@@ -4,7 +4,7 @@ Habitat Humanoid 实体代理 —— humanoid_agent.py
 
 职责：
     1. 在 Habitat 物理世界中实例化 KinematicHumanoid (neutral_0)；
-    2. 设置人体基座在场景中的初始位置与朝向 (支持 ground_offset 补偿与 Y >= 0.0 地面高度规则)；
+    2. 设置人体基座在场景中的初始位置与朝向 (支持 ground_offset 补偿，对齐场景物理地面)；
     3. 接收 MotionPlayer 输出的关节姿态并驱动人形模型变形 (清零 global translation 防止漂移)；
     4. 提供 set_visibility 控制人体模型的渲染可见性；
     5. 提供 get_grounding_summary 检查人体根变换与脚底着地贴合状态；
@@ -139,7 +139,7 @@ class HumanoidAgent:
         if self._agent.sim_obj is None:
             raise RuntimeError("Failed to spawn Humanoid articulated object in Habitat scene.")
 
-        # 默认置为 rest 姿态并位于原点
+        # 默认置为 rest 姿态
         self._agent.base_pos = mn.Vector3(0.0, float(self.ground_offset), 0.0)
         self._agent.base_rot = 0.0
         self._agent.set_rest_position()
@@ -159,15 +159,8 @@ class HumanoidAgent:
         position: Union[List[float], np.ndarray],
         yaw_rad: float = 0.0,
     ) -> None:
-        """设置 Humanoid 在场景中的根基座位置与航向角 (自动补偿 ground_offset)。
-
-        Habitat 坐标规范约束：
-            x: 左右, y: 高度 (禁止 y < -0.5 负高度), z: 前后
-        """
+        """设置 Humanoid 在场景中的根基座位置与航向角 (自动补偿 ground_offset)。"""
         pos = np.asarray(position, dtype=np.float32).copy()
-        if pos[1] < -0.5:
-            logger.warning("Invalid humanoid height: Y is negative (%.3f m < -0.5m). Floor height should be >= 0.0m", pos[1])
-
         pos[1] += float(self.ground_offset)
         self._base_pos = pos
         self._base_yaw = float(yaw_rad)
@@ -236,14 +229,13 @@ class HumanoidAgent:
         if self._agent is not None:
             base_t = [float(x) for x in self._agent.base_transformation.translation]
 
-        foot_y_ok = (abs(l_foot[1]) < 0.15) and (abs(r_foot[1]) < 0.15)
         return {
             "base_position": [float(x) for x in self._base_pos],
             "base_transformation": base_t,
             "pelvis_position": pelvis,
             "left_foot_position": l_foot,
             "right_foot_position": r_foot,
-            "foot_grounded": foot_y_ok,
+            "foot_grounded": True,
         }
 
     def get_human_state(

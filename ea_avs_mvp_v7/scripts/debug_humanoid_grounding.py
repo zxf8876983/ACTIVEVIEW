@@ -34,9 +34,9 @@ logger = logging.getLogger("debug_grounding")
 
 def main():
     parser = argparse.ArgumentParser(description="Debug Humanoid Grounding Alignment")
-    parser.add_argument("--human-pos", nargs=3, type=float, default=[0.0, 0.0, 0.0], help="Human position [x, y, z]")
-    parser.add_argument("--robot-pos", nargs=3, type=float, default=[0.0, 0.0, 2.5], help="Robot position [x, y, z]")
-    parser.add_argument("--human-yaw", type=float, default=180.0, help="Humanoid yaw in degrees")
+    parser.add_argument("--human-pos", nargs=3, type=float, default=[1.5, -1.60, 4.0], help="Human position [x, y, z]")
+    parser.add_argument("--robot-pos", nargs=3, type=float, default=[1.5, -1.60, 6.8], help="Robot position [x, y, z]")
+    parser.add_argument("--human-yaw", type=float, default=0.0, help="Humanoid yaw in degrees")
     parser.add_argument("--robot-yaw", type=float, default=0.0, help="Robot yaw in degrees")
     args = parser.parse_args()
 
@@ -104,7 +104,7 @@ def main():
     print(f"  - Depth Range:         [{depth.min():.2f} m, {depth.max():.2f} m]")
     print("=" * 65)
 
-    if grounding["foot_grounded"] and non_black_ratio > 0.3:
+    if grounding["foot_grounded"] and non_black_ratio > 0.4:
         print("PASS: Humanoid Grounding Calibration Verified\n")
         sys.exit(0)
     else:
