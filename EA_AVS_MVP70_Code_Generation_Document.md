@@ -1,18 +1,20 @@
 # EA-AVS MVP7.0 Code Generation Document
 
-## 1. Version Positioning
+# Humanoid-driven Active Perception Simulation Environment
 
-Version: v7.0
+Version: MVP7.0
 
-Title:
+---
 
-**Humanoid-driven Active Perception Simulation Environment**
+# 1. Version Objective
 
-v7.0 is the bridge version between previous abstract active-view simulation and future intelligent active perception research.
+MVP7.0 is the bridge version between the previous ACTIVEVIEW active-view framework (v1-v6) and future intelligent active perception algorithms.
 
-The purpose of v7.0 is NOT to propose a new NBV algorithm. The purpose is to construct a reliable, extensible, and reproducible experimental environment where a mobile robot can observe realistic human activities in indoor scenes.
+The goal is NOT to design NBV or viewpoint optimization algorithms.
 
-Core pipeline:
+The goal is to build a reliable simulation platform where a mobile robot observes realistic elderly human activities driven by real human motion data.
+
+Main pipeline:
 
 ```
 BABEL Action Annotation
@@ -27,79 +29,85 @@ Habitat Indoor Environment
         ↓
 Robot RGB-D Observation
         ↓
-Active Perception Dataset
+Episode Dataset
 ```
 
 ---
 
-# 2. Relationship With Previous Versions
+# 2. Relationship with v1-v6
 
-v1-v6 mainly studied:
+v1-v6 solved:
+
+- active view simulation framework
+- robot viewpoint representation
+- observation evaluation
+- candidate viewpoint reasoning
+
+However, human representation was simplified.
+
+v7.0 upgrades:
 
 ```
-Robot viewpoint selection
+Static human state
         ↓
-Observation quality
-        ↓
-Active perception framework
+Motion-driven humanoid state
 ```
 
-However, previous versions simplified human representation.
-
-v7.0 introduces realistic dynamic humans:
-
-```
-Static human model
-        ↓
-Motion-driven humanoid
-```
-
-The purpose is to provide realistic human state changes for future action-aware active perception research.
+The purpose is to provide realistic human dynamics for future action-aware perception research.
 
 ---
 
-# 3. Research Boundary
+# 3. Scientific Boundary
 
-## v7.0 Includes
+## Included in v7.0
 
-1. AMASS/BABEL motion asset integration.
-2. Humanoid loading and motion playback.
-3. Habitat indoor scene integration.
-4. Robot-mounted sensor simulation.
-5. RGB-D observation generation.
-6. Human motion/action ground truth recording.
-7. Dataset generation pipeline.
+- AMASS/BABEL motion integration
+- Humanoid loading
+- Human motion playback
+- Habitat indoor scene simulation
+- Robot sensor simulation
+- RGB-D generation
+- Human pose/action ground truth recording
+- Episode dataset generation
 
-## v7.0 Does NOT Include
+## Forbidden in v7.0
 
-The following are future research topics:
+Do NOT implement:
 
-- Action-aware viewpoint utility.
-- NBV optimization algorithm.
-- Learned viewpoint policy.
-- Reinforcement learning.
-- Multi-step active perception.
-- Evidence recovery.
-- Human action recognition network.
-- SLAM.
-- Navigation planning.
-- Real robot deployment.
+- NBV optimization
+- Action-aware viewpoint utility
+- RL policy
+- Multi-step active perception
+- Evidence recovery
+- Action recognition network
+- SLAM
+- Navigation planner
+- Collision avoidance
+- Real robot deployment
 
-Do not implement these features in v7.0.
-
----
-
-# 4. Scientific Goal
-
-The scientific goal of v7.0 is:
-
-> Build a controllable indoor simulation environment where a mobile robot observes realistic elderly human activities from different viewpoints.
-
-The final output of v7.0 is an experimental platform, not a perception algorithm.
+These belong to future versions.
 
 ---
 
-# 5. Project Directory Structure
+# 4. Engineering Goal
+
+The final demonstration:
+
+```
+Habitat scene
+      ↓
+Humanoid loaded
+      ↓
+AMASS elderly motion played
+      ↓
+Robot camera observes human
+      ↓
+RGB-D + metadata saved
+```
+
+---
+
+# 5. Directory Specification
 
 Create:
 
@@ -115,7 +123,7 @@ ea_avs_mvp_v7/
 ├── core/
 │   ├── paths.py
 │   ├── episode.py
-│   └── registry.py
+│   └── config.py
 │
 ├── environment/
 │   ├── habitat_env.py
@@ -123,98 +131,53 @@ ea_avs_mvp_v7/
 │
 ├── robot/
 │   ├── robot_agent.py
-│   └── rgbd_camera.py
+│   └── rgbd_sensor.py
 │
 ├── human/
 │   ├── humanoid_agent.py
-│   ├── motion_loader.py
+│   ├── human_state.py
 │   └── action_state.py
 │
-├── observation/
-│   ├── observation_recorder.py
-│   └── dataset_writer.py
+├── motion/
+│   ├── amass_loader.py
+│   ├── motion_converter.py
+│   └── motion_player.py
 │
-├── datasets/
+├── observation/
+│   ├── recorder.py
+│   └── metadata.py
+│
+├── dataset/
 │   └── episode_generator.py
 │
 ├── evaluation/
-│   └── basic_metrics.py
 │
 ├── scripts/
-│   ├── run_smoke_test.py
-│   └── generate_dataset.py
 │
-├── tests/
-│
-└── README.md
+└── tests/
 ```
 
-Do not create a completely independent Habitat project.
-The code must remain part of ACTIVEVIEW version evolution.
+Do not create an independent Habitat project.
 
 ---
 
-# 6. Module Responsibilities
+# 6. Module Interface Requirements
 
-## 6.1 core/
-
-### paths.py
-
-Purpose:
-
-Unified data path management.
-
-Input:
-
-- repository location
-- ACTIVEVIEW_DATA_ROOT(optional)
-
-Output:
-
-- dataset paths
-- asset paths
-- output paths
-
-Never hard-code:
-
-```
-/home/zxf/...
-```
-
----
-
-### episode.py
-
-Purpose:
-
-Define one simulation episode.
-
-An episode contains:
-
-```
-scene
-robot initial state
-human state
-motion
-observation sequence
-metadata
-```
-
----
-
-# 7. Human Motion Pipeline
-
-## 7.1 motion_loader.py
+## motion/amass_loader.py
 
 Input:
 
 ```
-AMASS npz
+AMASS npz path
 ```
 
 Output:
 
-Normalized motion object:
+```
+NormalizedMotion
+```
+
+Fields:
 
 ```
 translation
@@ -246,192 +209,106 @@ fps
 For Schema B:
 
 ```
-root_rotation = poses[:,0:3]
+root_rotation = poses[:, :3]
 ```
+
+The rest of the system must not depend on AMASS raw format.
 
 ---
 
-## 7.2 humanoid_agent.py
+## human/humanoid_agent.py
 
-Responsibilities:
+Responsible for:
 
-- Load humanoid asset.
-- Initialize pose.
-- Attach motion.
-- Control playback.
+- loading humanoid asset
+- placing humanoid
+- applying motion
+- exposing human state
 
 Input:
 
 ```
 Habitat simulator
-Humanoid asset
 Motion object
 ```
 
 Output:
 
 ```
-Dynamic humanoid in scene
+HumanState
 ```
 
-Do not implement a new physics humanoid system.
-Reuse Habitat-supported mechanisms.
+Contains:
+
+```
+position
+orientation
+pose
+frame_id
+action_label
+```
+
+Do not implement a new humanoid engine.
 
 ---
 
-# 8. Environment Pipeline
+## environment/habitat_env.py
 
-## habitat_env.py
+Responsible for:
 
-Responsibilities:
+- simulator initialization
+- scene loading
+- simulation stepping
 
-- Initialize Habitat simulator.
-- Load indoor scene.
-- Manage simulation step.
-
-Do NOT implement:
+Forbidden:
 
 - SLAM
-- map building
-- navigation planner
-- obstacle avoidance
-
-These are assumed robot capabilities.
+- path planning
+- navigation algorithm
 
 ---
 
-# 9. Robot Observation Pipeline
-
-## rgbd_camera.py
+## robot/rgbd_sensor.py
 
 Input:
 
 ```
-Robot camera pose
-Habitat environment
+robot camera pose
+Habitat observation
 ```
 
 Output:
 
 ```
-RGB image
-Depth image
-Camera parameters
-```
-
----
-
-## observation_recorder.py
-
-Save:
-
-```
 RGB
 Depth
 Camera pose
-Human pose GT
-Action label
-Timestamp
-```
-
-Example:
-
-```
-runs/
- └── episode_0001/
-      ├── rgb/
-      ├── depth/
-      └── metadata.json
 ```
 
 ---
 
-# 10. Elderly Action Set
-
-The goal is elderly monitoring, not action recognition benchmark construction.
-
-First-stage actions:
-
-1. Standing
-2. Sitting
-3. Fall-related / fallen posture
-
-Second-stage optional:
-
-4. Bending
-5. Reaching
-
-Priority:
-
-Fall-related motion has highest importance.
-
-Do not add large-scale action categories.
-
----
-
-# 11. Development Milestones
-
-## MVP7.0-M1: Smoke Test
-
-Requirement:
-
-```
-One Habitat scene
-+
-One humanoid
-+
-One AMASS motion
-+
-Motion playback
-```
-
-Success:
-
-Humanoid can move correctly.
-
----
-
-## MVP7.0-M2: Observation Generation
-
-Requirement:
-
-```
-Humanoid motion
-        ↓
-Robot camera
-        ↓
-RGB-D output
-```
-
-Success:
-
-Dataset files generated successfully.
-
----
-
-## MVP7.0-M3: Dataset Pipeline
+## dataset/episode_generator.py
 
 Generate:
 
 ```
+episode_id
+scene_id
+robot_pose
+human_pose
+action_label
+motion_id
 RGB
 Depth
-Pose GT
-Action label
-Camera pose
+camera_pose
+timestamp
 ```
-
-Success:
-
-Repeatable episode generation.
 
 ---
 
-# 12. Engineering Constraints
+# 7. Data Rules
 
-1. Keep v6 read-only.
-
-2. Use:
+External data root:
 
 ```
 ../../data/ActiveView
@@ -443,54 +320,109 @@ or:
 ACTIVEVIEW_DATA_ROOT
 ```
 
-3. Never commit:
+Never hard-code machine paths.
 
-- AMASS npz
-- BABEL raw data
+Never commit:
+
+- AMASS data
+- BABEL raw annotations
 - generated datasets
 
-4. Every module must provide:
+---
 
-- input
-- output
-- dependencies
-- execution command
+# 8. Elderly Action Scope
 
-5. Prefer minimal runnable demonstrations before extension.
+First milestone only:
+
+1. Standing
+2. Sitting
+3. Fall-related posture
+
+Optional:
+
+4. Bending
+5. Reaching
+
+The purpose is elderly monitoring, not action recognition benchmark construction.
 
 ---
 
-# 13. Future Direction (Reference Only)
+# 9. Development Milestones
 
-## v8.0
+## MVP7.0-M1 Humanoid Smoke Test
 
-Action-aware Active View Selection:
+Must achieve:
 
-- action hypothesis
-- action-conditioned viewpoint utility
-- viewpoint comparison
+```
+scene loaded
++ humanoid loaded
++ one motion playback
+```
 
-## v9.0
 
-Uncertainty-aware Multi-step Active Perception:
+## MVP7.0-M2 Observation Pipeline
 
-- observation uncertainty
-- evidence recovery
-- sequential viewpoint planning
+Must generate:
 
-These are not v7.0 tasks.
+```
+RGB
+Depth
+Camera pose
+```
+
+
+## MVP7.0-M3 Episode Dataset
+
+Must generate:
+
+```
+RGB sequence
+Depth sequence
+Human GT
+Action label
+Metadata
+```
 
 ---
 
-# 14. Final Acceptance Criteria
+# 10. Testing Requirements
 
-v7.0 is completed when:
+Every module must provide tests.
 
-1. Habitat indoor scene loads.
-2. Humanoid loads successfully.
-3. AMASS motion plays correctly.
-4. Robot RGB-D observation is generated.
-5. Human state/action ground truth is recorded.
-6. Dataset generation can be repeated.
+Minimum tests:
 
-After completion, ACTIVEVIEW is ready for future action-aware active perception research.
+- AMASS loading test
+- motion conversion test
+- humanoid loading test
+- Habitat scene loading test
+- RGB-D generation test
+- episode saving test
+
+---
+
+# 11. Future Direction
+
+v8.0 (reference only):
+
+Action-aware Active View Selection.
+
+v9.0 (reference only):
+
+Uncertainty-aware Multi-step Active Perception.
+
+Neither is implemented in v7.0.
+
+---
+
+# 12. Final Acceptance Criteria
+
+v7.0 is completed only when:
+
+1. Habitat scene runs.
+2. Humanoid appears correctly.
+3. AMASS motion plays.
+4. Robot RGB-D observation works.
+5. Human state/action GT is saved.
+6. Dataset generation is reproducible.
+
+v7.0 success means a reliable experimental environment exists for future active perception algorithms.
