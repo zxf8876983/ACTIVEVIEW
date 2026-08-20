@@ -174,10 +174,13 @@ class HumanoidAgent:
         self,
         joints_pose: np.ndarray,
         root_transform_mat: Optional[np.ndarray] = None,
+        reference_root_translation: Optional[Union[List[float], np.ndarray]] = None,
     ) -> None:
         """将当前帧姿态更新至人形模型关节与刚体。
 
-        注意：忽略 AMASS 全局平移 (translation) 偏移，保留关节旋转，避免与 base_pos 叠加漂移至天花板。
+        采用相对高度与相对位移补偿机制：
+        - 消除 AMASS 的全局绝对坐标原点叠加；
+        - 精确保留动作内部的动态位移与真实下沉高度 (如坐下下落、跌倒着地)。
         """
         if self._agent is None:
             raise RuntimeError("HumanoidAgent is not loaded.")
@@ -185,7 +188,15 @@ class HumanoidAgent:
         joint_list = list(joints_pose.astype(float))
         if root_transform_mat is not None and mn is not None:
             mat = np.array(root_transform_mat, dtype=np.float32).copy()
-            mat[:3, 3] = 0.0  # 将 global translation 清零，保持 rotation
+            if reference_root_translation is not None:
+                ref_t = np.asarray(reference_root_translation, dtype=np.float32)
+                mat[0, 3] = mat[0, 3] - float(ref_t[0])
+                mat[1, 3] = mat[1, 3] - 0.90  # 补偿 neutral_0 内部 0.9m 基础变换
+                mat[2, 3] = mat[2, 3] - float(ref_t[2])
+            else:
+                mat[0, 3] = 0.0
+                mat[1, 3] = mat[1, 3] - 0.90
+                mat[2, 3] = 0.0
             offset_t = mn.Matrix4(mat)
         else:
             offset_t = mn.Matrix4() if mn is not None else None

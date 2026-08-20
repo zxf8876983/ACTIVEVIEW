@@ -93,10 +93,12 @@ class EpisodeGenerator:
             motion_player.seek(f_idx)
             pose_info = motion_player.get_current_pose()
 
-            # 驱动 Humanoid 模型
+            # 驱动 Humanoid 模型 (使用相对位移补偿)
+            t0 = motion_player.transform_array[0, :3, 3] if hasattr(motion_player, "transform_array") else None
             self.humanoid.apply_motion_frame(
                 joints_pose=pose_info["joints_pose"],
                 root_transform_mat=pose_info["root_transform"],
+                reference_root_translation=t0,
             )
 
             # 机器人相机渲染

@@ -88,7 +88,12 @@ def validate_single_action(
         for f_idx in frame_indices:
             player.seek(f_idx)
             pose = player.get_current_pose()
-            humanoid.apply_motion_frame(pose["joints_pose"], pose["root_transform"])
+            t0 = player.transform_array[0, :3, 3] if hasattr(player, "transform_array") else None
+            humanoid.apply_motion_frame(
+                pose["joints_pose"],
+                pose["root_transform"],
+                reference_root_translation=t0,
+            )
 
             obs = sensor.capture()
             rgb = obs.get("rgb")
