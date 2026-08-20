@@ -7,9 +7,9 @@ v7.0 综合演示主入口脚本 —— run_v7_demo.py
        AMASS Motion -> Habitat Motion PKL -> Humanoid 动作播放 -> 机器人 RGB-D 采集 -> 动力学评价与成果持久化；
     2. 加载 Habitat 室内场景 (apartment_1.glb) 与 neutral_0 Humanoid 实体；
     3. 播放目标动作并采集多帧 RGB 图像与 Depth 深度图；
-    4. 分离机器人底盘 robot_pose 与相机 camera_pose 外内参；
-    5. 计算多维动力学 ActionMotionMetrics (高度差、速度、躯干偏角、朝向角、活力得分)；
-    6. 自动调用视频编码生成 v7_demo.mp4；
+    4. 分离机器人底盘 robot_pose (position, rotation) 与相机 camera_pose (extrinsic, intrinsic)；
+    5. 每帧保存完整的 16 关键点 3D 世界坐标真值 human_pose_gt；
+    6. 计算多维动力学指标 ActionMotionMetrics (height_change, pelvis_velocity, joint_motion_energy, torso_angle_change, orientation_change, dynamic_motion)；
     7. 输出标准化 metadata.json 至 data/ActiveView/visualizations/v7_demo/。
 
 运行方式：
@@ -19,6 +19,7 @@ v7.0 综合演示主入口脚本 —— run_v7_demo.py
 import argparse
 import json
 import logging
+import math
 import sys
 from pathlib import Path
 
@@ -99,8 +100,12 @@ def main():
 
     robot = RobotAgent(sim)
     robot_chassis_pos = [0.0, 0.1, 2.0]
-    robot_chassis_yaw = 180.0
-    robot.set_pose(robot_chassis_pos, robot_chassis_yaw)
+    robot_chassis_yaw_deg = 180.0
+    robot.set_pose(robot_chassis_pos, robot_chassis_yaw_deg)
+
+    # 计算机器人底盘四元数 [qx, qy, qz, qw]
+    yaw_rad = math.radians(robot_chassis_yaw_deg)
+    robot_rotation_quat = [0.0, float(math.sin(yaw_rad / 2.0)), 0.0, float(math.cos(yaw_rad / 2.0))]
 
     sensor = RGBDSensor(sim, cfg.sensor)
     player = MotionPlayer(pkl_path, playback_fps=float(cfg.motion.get("playback_fps", 30.0)))
@@ -151,11 +156,14 @@ def main():
     # 5. 计算多维动力学运动指标
     metrics = compute_action_motion_metrics(gt_joints_sequence, timestamps)
 
-    # 6. 生成标准 metadata.json (解耦 robot_pose 与 camera_pose)
+    # 6. 生成标准 metadata.json
+    scene_name = cfg.habitat.get("scene_id", "apartment_1")
+    humanoid_name = cfg.humanoid.get("avatar_name", "neutral_0")
+
     metadata = {
-        "scene_id": cfg.habitat.get("scene_id", "apartment_1"),
+        "scene_id": scene_name,
         "episode_id": f"v7_demo_{motion_id}",
-        "humanoid_id": cfg.humanoid.get("avatar_name", "neutral_0"),
+        "humanoid_id": humanoid_name,
         "motion_id": motion_id,
         "source_dataset": source_dataset,
         "action_class": target_class,
@@ -164,11 +172,11 @@ def main():
         "fps": player.fps,
         "robot_pose": {
             "position": [float(x) for x in robot_chassis_pos],
-            "yaw_deg": float(robot_chassis_yaw),
+            "rotation": robot_rotation_quat,
         },
         "camera_pose": {
-            "extrinsic_matrix": cam_extrinsic,
-            "intrinsic_matrix": cam_intrinsic,
+            "extrinsic": cam_extrinsic,
+            "intrinsic": cam_intrinsic,
         },
         "frames": frames_meta,
         "motion_metrics": metrics.to_dict(),
@@ -188,6 +196,8 @@ def main():
 
     print("\n" + "=" * 65)
     print("[v7.0 Unified Demonstration Results]")
+    print(f"Scene:                {scene_name}")
+    print(f"Humanoid:             {humanoid_name}")
     print(f"Motion:               {motion_id}")
     print(f"Action:               {raw_label}")
     print(f"Frames:               {len(frame_indices)}")
@@ -195,11 +205,11 @@ def main():
     print(f"Depth:                100.0%")
     print(f"GT joints:            {len(gt_joints_sequence[0])}")
     print(f"Height Change:        {metrics.height_change:.3f} m")
-    print(f"Orientation Change:   {metrics.orientation_change:.1f} deg")
-    print(f"Joint Motion Score:   {metrics.joint_motion_score:.3f}")
+    print(f"Torso Angle:          {metrics.torso_angle_change:.1f} deg")
+    print(f"Motion Energy:        {metrics.joint_motion_energy:.3f}")
     print(f"Dynamic Motion:       {metrics.dynamic_motion}")
     print("=" * 65)
-    print("PASS: v7.0 Humanoid-driven RGBD Demonstration Verified\n")
+    print("PASS:\nACTIVEVIEW v7.0 Humanoid Demonstration Verified\n")
     sys.exit(0)
 
 

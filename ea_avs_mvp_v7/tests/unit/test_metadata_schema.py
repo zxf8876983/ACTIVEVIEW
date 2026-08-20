@@ -22,11 +22,11 @@ class TestMetadataSchema(unittest.TestCase):
             "fps": 120.0,
             "robot_pose": {
                 "position": [0.0, 0.1, 2.0],
-                "yaw_deg": 180.0,
+                "rotation": [0.0, 1.0, 0.0, 0.0],
             },
             "camera_pose": {
-                "extrinsic_matrix": [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
-                "intrinsic_matrix": {"fx": 320.0, "fy": 320.0, "cx": 320.0, "cy": 240.0},
+                "extrinsic": [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+                "intrinsic": {"fx": 320.0, "fy": 320.0, "cx": 320.0, "cy": 240.0},
             },
             "frames": [
                 {
@@ -39,6 +39,10 @@ class TestMetadataSchema(unittest.TestCase):
             ],
             "motion_metrics": {
                 "height_change": 0.523,
+                "pelvis_velocity": 0.31,
+                "joint_motion_energy": 0.87,
+                "torso_angle_change": 49.7,
+                "orientation_change": 145.8,
                 "dynamic_motion": True,
             },
         }
@@ -54,9 +58,9 @@ class TestMetadataSchema(unittest.TestCase):
 
         # 校验位姿解耦
         self.assertIn("position", sample_meta["robot_pose"])
-        self.assertIn("yaw_deg", sample_meta["robot_pose"])
-        self.assertIn("extrinsic_matrix", sample_meta["camera_pose"])
-        self.assertIn("intrinsic_matrix", sample_meta["camera_pose"])
+        self.assertIn("rotation", sample_meta["robot_pose"])
+        self.assertIn("extrinsic", sample_meta["camera_pose"])
+        self.assertIn("intrinsic", sample_meta["camera_pose"])
 
         # 校验每帧 GT 完整性
         self.assertIn("human_pose_gt", sample_meta["frames"][0])

@@ -28,6 +28,7 @@ class TestActionMetrics(unittest.TestCase):
         self.assertIsInstance(metrics, ActionMotionMetrics)
         self.assertAlmostEqual(metrics.height_change, 0.0, places=3)
         self.assertAlmostEqual(metrics.pelvis_velocity, 0.0, places=3)
+        self.assertAlmostEqual(metrics.joint_motion_energy, 0.0, places=3)
         self.assertAlmostEqual(metrics.torso_angle_change, 0.0, places=1)
         self.assertFalse(metrics.dynamic_motion)
 
@@ -53,6 +54,7 @@ class TestActionMetrics(unittest.TestCase):
         self.assertGreater(metrics.height_change, 0.5)
         self.assertGreater(metrics.torso_angle_change, 40.0)
         self.assertGreater(metrics.pelvis_velocity, 0.5)
+        self.assertGreater(metrics.joint_motion_energy, 0.5)
         self.assertTrue(metrics.dynamic_motion)
 
 

@@ -5,14 +5,13 @@
 职责：
     1. 接收时序 16 关键点 3D 世界坐标与对应时间戳；
     2. 计算多维动力学指标：
-       - root height change (Pelvis 垂直落差)
-       - pelvis velocity (Pelvis 空间线速度)
-       - body orientation change (水平朝向角变化)
-       - torso angle change (躯干倾角变化)
-       - joint displacement (全关节平均位移)
-       - joint motion score (综合动力学运动得分)
-       - dynamic motion (动态真实运动布尔判定)；
-    3. 区分静止状态 (如 standing) 与动态过程 (如 fall_related / bending)。
+       - height_change: Pelvis 垂直下落/变化极差 (米)
+       - pelvis_velocity: Pelvis 空间平均速度 (米/秒)
+       - joint_motion_energy: 综合运动动能/活力得分 [0.0, 1.0]
+       - torso_angle_change: 躯干相对于垂直轴的最大偏转角 (度)
+       - orientation_change: 骨盆水平朝向最大转角 (度)
+       - dynamic_motion: 是否为动态真实运动 (布尔值)；
+    3. 可可靠区分静态站立 (standing) 与跌倒过程 (fall_related)。
 """
 
 from dataclasses import asdict, dataclass
@@ -26,10 +25,9 @@ class ActionMotionMetrics:
     """人体动作时序动力学指标。"""
     height_change: float            # Pelvis 垂直高度变化极差 (米)
     pelvis_velocity: float          # Pelvis 平均线速度 (米/秒)
-    orientation_change: float       # 身体水平朝向最大转角 (度)
+    joint_motion_energy: float      # 综合关节动能/活力得分 [0.0, 1.0]
     torso_angle_change: float       # 躯干倾角最大偏角变化 (度)
-    joint_displacement: float       # 全关节平均累积空间位移 (米)
-    joint_motion_score: float       # 综合运动活力得分 [0.0, 1.0]
+    orientation_change: float       # 身体水平朝向最大转角 (度)
     dynamic_motion: bool            # 是否判定为有效动态运动
 
     def to_dict(self) -> Dict[str, Any]:
@@ -65,10 +63,9 @@ def compute_action_motion_metrics(
         return ActionMotionMetrics(
             height_change=0.0,
             pelvis_velocity=0.0,
-            orientation_change=0.0,
+            joint_motion_energy=0.0,
             torso_angle_change=0.0,
-            joint_displacement=0.0,
-            joint_motion_score=0.0,
+            orientation_change=0.0,
             dynamic_motion=False,
         )
 
@@ -89,7 +86,6 @@ def compute_action_motion_metrics(
             l_hip = np.array(gt["left_hip"], dtype=np.float32)
             r_hip = np.array(gt["right_hip"], dtype=np.float32)
             hip_vec = r_hip - l_hip
-            # X-Z 平面夹角 (航向角)
             yaw = math.atan2(float(hip_vec[2]), float(hip_vec[0]))
             hip_angles.append(math.degrees(yaw))
 
@@ -102,7 +98,6 @@ def compute_action_motion_metrics(
 
         if upper is not None:
             torso_vec = upper - p
-            # 与正垂直方向 [0, 1, 0] 的夹角
             vertical = np.array([0.0, 1.0, 0.0], dtype=np.float32)
             torso_ang = _compute_angle_between_vectors_deg(torso_vec, vertical)
             torso_angles.append(torso_ang)
@@ -124,7 +119,6 @@ def compute_action_motion_metrics(
 
     # 2.3 朝向角变化
     if hip_angles:
-        # 处理角度环绕
         unwrapped = np.unwrap(np.radians(hip_angles))
         deg_unwrapped = np.degrees(unwrapped)
         orientation_change = float(np.max(deg_unwrapped) - np.min(deg_unwrapped))
@@ -137,7 +131,7 @@ def compute_action_motion_metrics(
     else:
         torso_angle_change = 0.0
 
-    # 2.5 全关节位移
+    # 2.5 全关节累积位移动能
     common_keys = set(frames_gt_list[0].keys())
     for f_gt in frames_gt_list[1:]:
         common_keys = common_keys.intersection(f_gt.keys())
@@ -148,31 +142,30 @@ def compute_action_motion_metrics(
             p0 = np.array(frames_gt_list[0][k])
             p_final = np.array(frames_gt_list[-1][k])
             displacements.append(np.linalg.norm(p_final - p0))
-        joint_displacement = float(np.mean(displacements))
+        joint_disp_mean = float(np.mean(displacements))
     else:
-        joint_displacement = 0.0
+        joint_disp_mean = 0.0
 
-    # 2.6 综合运动活力得分
+    # 2.6 综合运动动能/活力得分 (0~1)
     score_h = np.clip(height_change / 0.45, 0.0, 1.0)
     score_a = np.clip(torso_angle_change / 40.0, 0.0, 1.0)
     score_v = np.clip(pelvis_velocity / 0.8, 0.0, 1.0)
-    score_d = np.clip(joint_displacement / 0.5, 0.0, 1.0)
-    joint_motion_score = float(0.3 * score_h + 0.3 * score_a + 0.2 * score_v + 0.2 * score_d)
+    score_d = np.clip(joint_disp_mean / 0.5, 0.0, 1.0)
+    joint_motion_energy = float(0.3 * score_h + 0.3 * score_a + 0.2 * score_v + 0.2 * score_d)
 
-    # 2.7 动态动作判定 (显著高度下落、明显倾斜偏转或高活力得分)
+    # 2.7 动态动作判定 (显著高度下落、明显倾角偏转、或高动能)
     dynamic_motion = bool(
         height_change > 0.15
         or torso_angle_change > 20.0
-        or joint_motion_score > 0.25
+        or joint_motion_energy > 0.25
         or pelvis_velocity > 0.4
     )
 
     return ActionMotionMetrics(
         height_change=round(height_change, 4),
         pelvis_velocity=round(pelvis_velocity, 4),
-        orientation_change=round(orientation_change, 2),
+        joint_motion_energy=round(joint_motion_energy, 4),
         torso_angle_change=round(torso_angle_change, 2),
-        joint_displacement=round(joint_displacement, 4),
-        joint_motion_score=round(joint_motion_score, 4),
+        orientation_change=round(orientation_change, 2),
         dynamic_motion=dynamic_motion,
     )
