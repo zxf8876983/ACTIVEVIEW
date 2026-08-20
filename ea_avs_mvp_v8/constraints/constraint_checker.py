@@ -9,7 +9,7 @@
        - HumanVisibilityConstraint (人体视锥 FOV、投影面积与距离范围检查)
     2. 对候选视点执行全量物理与几何过滤；
     3. 收集逐级过滤统计数据 (candidate_statistics)，用于科研消融与实验统计；
-    4. 输出带有明确有效性标记 (feasible) 与拒绝原因 (reason) 的 CandidateViewpoint 列表。
+    4. 输出带有明确有效性标记 (feasible)、拒绝原因 (reason) 与 evaluation_mode 的 CandidateViewpoint 列表。
 """
 
 import logging
@@ -35,6 +35,7 @@ class ConstraintChecker:
     ):
         self.env_adapter = env_adapter
         self.config = config or {}
+        self.evaluation_mode = str(self.config.get("evaluation_mode", "oracle"))
         self.nav_constraint = NavigationConstraint(env_adapter, self.config)
         self.los_constraint = LineOfSightConstraint(env_adapter, self.config)
         self.vis_constraint = HumanVisibilityConstraint(self.config)
@@ -47,6 +48,8 @@ class ConstraintChecker:
         robot_start_pos: Optional[Union[List[float], np.ndarray]] = None,
     ) -> CandidateViewpoint:
         """对单个候选视点依序执行三大约束检查。"""
+        viewpoint.evaluation_mode = self.evaluation_mode
+
         # 1. 导航与可达性约束
         is_nav, reason_nav = self.nav_constraint.evaluate(viewpoint, robot_start_pos=robot_start_pos)
         viewpoint.metadata["navmesh_valid"] = bool(is_nav)
@@ -118,6 +121,7 @@ class ConstraintChecker:
         viewpoints: List[CandidateViewpoint],
         selected_view_id: Optional[str] = None,
         strategy: str = "geometry_best",
+        evaluation_mode: str = "oracle",
     ) -> Dict[str, Any]:
         """计算标准化候选视点过滤统计指标。"""
         total = len(viewpoints)
@@ -136,4 +140,5 @@ class ConstraintChecker:
             "feasibility_rate": round(feasible_count / max(1, total), 3),
             "selected_view": selected_view_id,
             "strategy": strategy,
+            "evaluation_mode": evaluation_mode,
         }

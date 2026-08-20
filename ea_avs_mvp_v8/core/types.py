@@ -1,10 +1,10 @@
 """
-v8.0 核心数据类型定义 —— types.py
+v8.1 核心数据类型定义 —— types.py
 =================================
 
 包含：
-    1. CandidateViewpoint: 机器人候选观察视点数据结构 (包含 position, yaw, camera_pose)；
-    2. ViewpointQuality: 候选视点观测质量评价数据结构；
+    1. CandidateViewpoint: 机器人候选观察视点数据结构 (包含 position, yaw, camera_pose, evaluation_mode)；
+    2. ViewpointQuality: 候选视点观测质量评价数据结构 (包含 Q(v), occlusion_ratio, evaluation_mode, pose_source)；
     3. HumanPlacementPose: 人体放置位姿数据结构。
 """
 
@@ -46,7 +46,8 @@ class CandidateViewpoint:
     ground_height: float = -1.60   # 地面标高 (米)
     camera_pose: Optional[Dict[str, Any]] = None  # 相机空间位姿
     feasible: bool = True          # 是否在 NavMesh 可行域内且可达
-    reason: str = "valid"          # 状态说明 (valid, not_navigable, unreachable)
+    reason: str = "valid"          # 状态说明 (valid, not_navigable, unreachable, etc.)
+    evaluation_mode: str = "oracle" # 状态与真值评价模式 (oracle / estimated)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -75,6 +76,7 @@ class CandidateViewpoint:
             "camera_pose": c_pose,
             "feasible": bool(self.feasible),
             "reason": self.reason,
+            "evaluation_mode": self.evaluation_mode,
             "metadata": self.metadata,
         }
 
@@ -86,10 +88,12 @@ class ViewpointQuality:
     distance: float                # 视点到人体的欧氏距离 (米)
     viewing_angle_deg: float       # 观测视线与人体正面的夹角 (度)
     visible_joints_count: int      # 视锥内可见关节点数量 (16 关节点基准)
-    visibility_score: float        # 综合可见性得分 [0.0, 1.0]
+    visibility_score: float        # 综合可见性质量得分 Q(v) [0.0, 1.0]
     occlusion_ratio: float = 0.0   # 遮挡比例 [0.0, 1.0]
     pose_coverage: float = 1.0     # 骨骼姿态覆盖率 [0.0, 1.0]
     is_valid: bool = True          # 是否为有效观察视点
+    evaluation_mode: str = "oracle" # 评价模式 (oracle: 基于真值 / estimated: 基于估计状态)
+    pose_source: str = "oracle"    # 人体骨骼输入源 (oracle / estimated)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -102,5 +106,7 @@ class ViewpointQuality:
             "occlusion_ratio": float(self.occlusion_ratio),
             "pose_coverage": float(self.pose_coverage),
             "is_valid": bool(self.is_valid),
+            "evaluation_mode": self.evaluation_mode,
+            "pose_source": self.pose_source,
             "metadata": self.metadata,
         }

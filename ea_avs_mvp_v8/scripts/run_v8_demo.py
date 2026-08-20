@@ -1,6 +1,6 @@
 """
-v8.0 Local Active View Planning 综合演示主脚本 —— run_v8_demo.py
-===============================================================
+v8.1 Local Active View Planning Baseline 综合演示主脚本 —— run_v8_demo.py
+========================================================================
 
 功能：
     1. 基于已知人体位置与局部观察空间假定，执行局部主动视点规划流水线：
@@ -14,7 +14,8 @@ v8.0 Local Active View Planning 综合演示主脚本 —— run_v8_demo.py
        ↓
        Render Selected Viewpoint (Capture & Save best_view_rgb.png)
     2. 输出成果至 data/ActiveView/visualizations/v8_demo/：
-       - candidate_statistics.json (约束逐级过滤统计与决策元数据)
+       - view_selection_report.json (科研统计核心报表: strategy, evaluation_mode, candidate counts, score, etc.)
+       - candidate_statistics.json (约束逐级过滤统计)
        - candidate_views.json (包含全部候选视点及可行性标记)
        - best_view.json (包含最佳视点位置、朝向、Q(v) 与各项指标)
        - best_view_rgb.png (最佳视角高质量渲染图像，清晰可见人体)
@@ -22,6 +23,7 @@ v8.0 Local Active View Planning 综合演示主脚本 —— run_v8_demo.py
 
 运行方式：
     python -m ea_avs_mvp_v8.scripts.run_v8_demo
+    python -m ea_avs_mvp_v8.scripts.run_v8_demo --strategy geometry_best --evaluation-mode oracle
     python -m ea_avs_mvp_v8.scripts.run_v8_demo --strategy nearest
     python -m ea_avs_mvp_v8.scripts.run_v8_demo --strategy random
 """
@@ -54,15 +56,18 @@ logger = logging.getLogger("run_v8_demo")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ACTIVEVIEW v8.0 Local Active View Planning Demonstration")
+    parser = argparse.ArgumentParser(description="ACTIVEVIEW v8.1 Local Active View Planning Baseline Demonstration")
     parser.add_argument("--config", type=str, default=None, help="Path to custom v8_demo.yaml")
     parser.add_argument("--strategy", type=str, default=None, choices=["geometry_best", "random", "nearest"], help="View selection baseline strategy")
+    parser.add_argument("--evaluation-mode", type=str, default=None, choices=["oracle", "estimated"], help="Information boundary evaluation mode")
     parser.add_argument("--output-dir", type=str, default=None, help="Custom output directory")
     args = parser.parse_args()
 
     cfg = load_v8_config(args.config)
     scene_id = cfg.scene.get("scene_id", "apartment_1")
     strategy = args.strategy or cfg.evaluation.get("strategy", "geometry_best")
+    eval_mode = args.evaluation_mode or cfg.evaluation.get("evaluation_mode", "oracle")
+    pose_source = cfg.evaluation.get("pose_source", "oracle")
 
     # 1. 输出目录初始化
     if args.output_dir:
@@ -99,23 +104,27 @@ def main():
     # 4. 步骤三: 视点空间与几何观测约束过滤 (View Constraint Pipeline)
     logger.info("Step 3: Running View Constraint Pipeline (NavMesh + LineOfSight + HumanVisibility)...")
     gt_joints = humanoid.get_gt_joint_positions()
-    checker = ConstraintChecker(env_adapter=env_adapter, config=cfg.viewpoint)
+    checker = ConstraintChecker(env_adapter=env_adapter, config={**cfg.viewpoint, "evaluation_mode": eval_mode})
     checked_candidates = checker.filter_feasible_viewpoints(
         raw_candidates,
         human_position=human_pose.position,
         human_joints_3d=gt_joints,
         robot_start_pos=robot_start_pos,
     )
+    for vp in checked_candidates:
+        vp.evaluation_mode = eval_mode
+
     filtered_feasible_views = [vp for vp in checked_candidates if vp.feasible]
     filtered_count = len(filtered_feasible_views)
 
     # 5. 步骤四: 视点观测质量评价与 Baseline 策略选择 (View Quality & Selection)
-    logger.info("Step 4: Evaluating View Quality and Selecting Viewpoint via '%s' strategy...", strategy)
-    evaluator = ViewQualityEvaluator(cfg.evaluation)
+    logger.info("Step 4: Evaluating View Quality (mode=%s, pose_src=%s) and Selecting via '%s'...", eval_mode, pose_source, strategy)
+    evaluator = ViewQualityEvaluator({**cfg.evaluation, "evaluation_mode": eval_mode, "pose_source": pose_source})
     ranked_pairs = evaluator.rank_viewpoints(
         viewpoints=checked_candidates,
         human_joints_3d=gt_joints,
         human_yaw_deg=human_pose.yaw_deg,
+        pose_source=pose_source,
     )
     all_qualities = [q for _, q in ranked_pairs]
 
@@ -140,18 +149,40 @@ def main():
     if obs.get("rgb") is not None:
         Image.fromarray(obs["rgb"]).save(best_rgb_path)
 
-    # 7. 步骤六: 持久化 candidate_statistics.json, candidate_views.json 与 best_view.json
-    logger.info("Step 6: Saving experiment statistics and viewpoint datasets...")
+    # 7. 步骤六: 持久化实验统计数据与元数据文件
+    logger.info("Step 6: Saving candidate_statistics.json, view_selection_report.json and viewpoint datasets...")
 
     # 保存 candidate_statistics.json
     stats = checker.compute_statistics(
         viewpoints=checked_candidates,
         selected_view_id=selected_vp.viewpoint_id,
         strategy=strategy,
+        evaluation_mode=eval_mode,
     )
     stats_json_path = vis_dir / "candidate_statistics.json"
     with open(stats_json_path, "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2, ensure_ascii=False)
+
+    # 保存 view_selection_report.json (论文核心统计汇总)
+    report = {
+        "strategy": strategy,
+        "evaluation_mode": eval_mode,
+        "pose_source": pose_source,
+        "total_candidates": stats["total_candidates"],
+        "navmesh_valid": stats["navmesh_valid"],
+        "line_of_sight_valid": stats["line_of_sight_valid"],
+        "human_visible": stats["human_visible"],
+        "feasible_candidates": stats["feasible_candidates"],
+        "selected_view_id": selected_vp.viewpoint_id,
+        "best_score": selected_quality.visibility_score,
+        "distance": selected_quality.distance,
+        "occlusion_ratio": selected_quality.occlusion_ratio,
+        "pose_coverage": selected_quality.pose_coverage,
+        "viewing_angle_deg": selected_quality.viewing_angle_deg,
+    }
+    report_json_path = vis_dir / "view_selection_report.json"
+    with open(report_json_path, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2, ensure_ascii=False)
 
     # 保存 candidate_views.json
     views_json_path = vis_dir / "candidate_views.json"
@@ -164,6 +195,8 @@ def main():
         "best_viewpoint_id": selected_vp.viewpoint_id,
         "score": selected_quality.visibility_score,
         "strategy": strategy,
+        "evaluation_mode": eval_mode,
+        "pose_source": pose_source,
         "position": [float(x) for x in selected_vp.position],
         "yaw_deg": float(selected_vp.yaw_deg),
         "camera_pose": {
@@ -188,9 +221,12 @@ def main():
     metadata = {
         "scene_id": scene_id,
         "human_position": [float(x) for x in human_pose.position],
+        "evaluation_mode": eval_mode,
+        "pose_source": pose_source,
         "generated_views": generated_count,
         "filtered_views": filtered_count,
         "statistics": stats,
+        "selection_report": report,
         "best_viewpoint": best_data,
         "visibility_summary": summary,
     }
@@ -199,18 +235,22 @@ def main():
 
     # 8. 打印验收标准格式报告
     print("\n" + "=" * 65)
-    print("[V8 Local Active View Planning Results]")
+    print("[V8.1 Local Active View Planning Results]")
+    print(f"Evaluation Mode:       {eval_mode} (pose_source: {pose_source})")
+    print(f"Selection Strategy:    {strategy}")
     print(f"Generated views:       {generated_count}")
     print(f"Filtered views:        {filtered_count}")
-    print(f"Best viewpoint score:  {selected_quality.visibility_score:.3f}")
-    print(f"Selection Strategy:    {strategy}")
     print(f"Selected Viewpoint ID: {selected_vp.viewpoint_id}")
+    print(f"Best viewpoint score:  {selected_quality.visibility_score:.3f}")
     print(f"Selected Pos:          {[round(x, 2) for x in selected_vp.position]}")
     print(f"Selected Yaw:          {selected_vp.yaw_deg:.1f} deg")
+    print(f"Distance to Human:     {selected_quality.distance:.2f} m")
+    print(f"Occlusion Ratio:       {selected_quality.occlusion_ratio:.3f}")
     print(f"Rendered Image:        {best_rgb_path}")
+    print(f"Selection Report:      {report_json_path}")
     print(f"Candidate Statistics:  {stats_json_path}")
     print("=" * 65)
-    print("PASS:\nACTIVEVIEW v8.0 Local Active View Planning Verified\n")
+    print("PASS:\nACTIVEVIEW v8.1 Local Active View Planning Baseline Verified\n")
     sys.exit(0)
 
 

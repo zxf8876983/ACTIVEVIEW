@@ -2,61 +2,27 @@
 
 Status: CLEAN
 
-No unfinished cross-agent task is currently recorded.
+v8.1 (Local Active View Planning Baseline) has been fully completed, verified, and frozen. The repository is in a clean, stable state and ready for future v9 (Action-aware Active View Selection) research.
 
 ---
 
-## Standard Handoff Protocol & Template
-
-When pausing a task, switching coding models (e.g. Claude Code → DeepSeek / Codex / Gemini), or reaching session limits, the active agent MUST update this document using the template below.
-
-```markdown
-## Active Handoff
-
-Last Updated: [YYYY-MM-DD HH:MM]
-Status: [IN_PROGRESS / BLOCKED / READY_FOR_REVIEW]
-
-### Current Task
-[Brief description of what was being implemented or debugged]
-
-### Previous Executor
-[e.g., Claude Code / DeepSeek / Codex / Human Developer]
-
-### Git State
-- Branch: `main`
-- HEAD: `[git commit hash]`
-- Uncommitted Changes: [None / List of modified files]
-
-### Completed
-- [x] [Item 1]
-- [x] [Item 2]
-
-### Files Changed
-- `path/to/modified_file.py`: [Brief summary of modification]
-
-### Validation Performed
-- [x] [Test command executed and result, e.g., `python ea_avs_mvp_v5/scripts/test_v50_closure_policy.py` -> PASS]
-
-### Validation Not Performed (with reason)
-- [ ] [e.g., `run_mvp50_humanoid.py`: NOT RUN (Habitat GPU environment unavailable in current terminal)]
-
-### Important Findings & Gotchas
-- [Critical technical details discovered during implementation that the next agent must know]
-
-### Remaining Work
-1. [Next step 1]
-2. [Next step 2]
-
-### Risks / Invariants (Do Not Revert)
-- [Explicitly list invariants that must NOT be broken or reverted]
-
-### Recommended Next Action
-[Specific, actionable instruction for the incoming agent on what command or file to tackle first]
-```
+## Completed Phase: v8.1 Local Active View Planning Baseline
+- **Active Code Directory**: `ea_avs_mvp_v8/`
+- **Specification Document**: `EA_AVS_MVP80_Code_Generation_Document.md`
+- **Key Capabilities Implemented**:
+  1. Local polar grid candidate viewpoint generation around known human location ($1.5\text{m} \sim 3.0\text{m}$).
+  2. Three-stage spatial and observation constraint pipeline: `NavigationConstraint` (NavMesh), `LineOfSightConstraint` (RayCast), `HumanVisibilityConstraint` (FOV, $A_{proj} \ge 1.5\%$, `pose_visibility_score`).
+  3. Transparent View Quality scoring: $Q(v) = w_1 \cdot \text{vis} + w_2 \cdot \text{cov} - w_3 \cdot \text{dist} - w_4 \cdot \text{occlusion}$.
+  4. Explicit `evaluation_mode: "oracle"` and `pose_source: "oracle"` boundary marking.
+  5. Standardized baseline strategy interface: `select_view(strategy)` supporting `random`, `nearest`, `geometry_best`.
+  6. Structured experiment reports: `view_selection_report.json`, `candidate_statistics.json`, `candidate_views.json`, `best_view.json`, and `best_view_rgb.png`.
 
 ---
 
-## Handoff Rules for Incoming and Outgoing Agents
-1. **No Chat Dumps**: Keep handoff summaries structured, technical, and concise. Do not dump raw conversation logs.
-2. **Honest Validation**: Never claim tests passed if they were not actually executed. Explicitly state `NOT RUN: <reason>`.
-3. **Clean Up**: When a handed-off task is fully completed, verified, and committed by the subsequent agent, reset the top-level status back to `Status: CLEAN`.
+## Next Version Scope (v9.0 Roadmap)
+- **Title**: Action-aware Active View Selection
+- **Core Research Goal**: Moving beyond static geometric quality to action-aware utility prediction ($Q_{action}(v)$) under dynamic human actions (e.g. falling, sitting, standing) and estimated states.
+- **Rules to Preserve**:
+  - Keep `ea_avs_mvp_v7/` and `ea_avs_mvp_v8/` as read-only historical baselines.
+  - Implement v9 in dedicated directory `ea_avs_mvp_v9/`.
+  - Maintain the decision-time vs evaluation-time anti-leakage boundary.

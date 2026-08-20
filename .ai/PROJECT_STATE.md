@@ -9,17 +9,17 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：进入 **v8.0 Phase 1 — Human-aware Active View Foundation** 研发阶段。
+- **项目阶段**：进入 **v8.1 — Local Active View Planning Baseline** 阶段（收尾与冻结，准备进入 v9 Action-aware Active View Selection）。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；
   - `v7.0`: 拟人化主动感知仿真环境与动作数据集平台（COMPLETED / FINALIZED & FROZEN，保持只读）。
-- **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> v7 -> v8`），各版本保留独立目录与设计文档。v8 模块化复用 v7 仿真底座，严禁重写/复制整个 v7 工程。
+- **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> v7 -> v8`），各版本保留独立目录与设计文档。v8.1 作为冻结的主动视角几何规划 Baseline。
 
 ---
 
 ## 2. Active Development Version
-- **Version**: v8.0 (8.0.0 — Phase 1: Foundation Architecture)
-- **Title**: Human-aware Active View Foundation
+- **Version**: v8.1 (8.1.0 — Local Active View Planning Baseline)
+- **Title**: Local Active View Planning Baseline
 - **Active Code Directory**: `ea_avs_mvp_v8/`
 - **Active Specification**: `EA_AVS_MVP80_Code_Generation_Document.md`
 - **Previous Specification**: `EA_AVS_MVP70_Code_Generation_Document.md` (v7.0 COMPLETED)

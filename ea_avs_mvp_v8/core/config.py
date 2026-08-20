@@ -1,10 +1,11 @@
 """
-v8 统一配置加载器 —— config.py
-==============================
+v8.1 统一配置加载器 —— config.py
+================================
 
 功能：
     1. 加载 configs/ 下的 v8_demo.yaml, viewpoint.yaml, humanoid.yaml 等配置；
-    2. 支持动态路径覆盖与安全默认值。
+    2. 确保 evaluation_mode (oracle / estimated) 与 pose_source 安全默认；
+    3. 支持动态路径覆盖与安全类型归一化。
 """
 
 from dataclasses import dataclass, field
@@ -18,7 +19,7 @@ from .paths import get_repo_root
 
 @dataclass
 class V8Config:
-    """EA-AVS-MVP v8.0 统一配置容器。"""
+    """EA-AVS-MVP v8.1 统一配置容器。"""
     scene: Dict[str, Any] = field(default_factory=dict)
     human: Dict[str, Any] = field(default_factory=dict)
     robot: Dict[str, Any] = field(default_factory=dict)
@@ -72,7 +73,13 @@ def load_v8_config(
 
     merged_human = {**human_cfg, **demo_cfg.get("human", {})}
     merged_vp = {**vp_cfg.get("sampling", {}), **vp_cfg.get("constraints", {}), **demo_cfg.get("viewpoint", {})}
-    merged_eval = {**vp_cfg.get("evaluation", {}), **demo_cfg.get("evaluation", {})}
+    merged_eval = {
+        "evaluation_mode": "oracle",
+        "pose_source": "oracle",
+        "strategy": "geometry_best",
+        **vp_cfg.get("evaluation", {}),
+        **demo_cfg.get("evaluation", {}),
+    }
 
     cam_raw = demo_cfg.get("camera", {})
     normalized_cam = {

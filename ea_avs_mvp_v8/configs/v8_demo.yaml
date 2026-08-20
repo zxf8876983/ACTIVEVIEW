@@ -1,4 +1,4 @@
-# ACTIVEVIEW v8.0 Local Active View Planning 演示配置 (configs/v8_demo.yaml)
+# ACTIVEVIEW v8.1 Local Active View Planning Baseline 演示配置 (configs/v8_demo.yaml)
 
 scene:
   scene_id: "apartment_1"
@@ -43,6 +43,8 @@ viewpoint:
   min_projected_area_ratio: 0.015
 
 evaluation:
+  evaluation_mode: "oracle"    # "oracle" 或 "estimated"
+  pose_source: "oracle"        # "oracle" 或 "estimated"
   optimal_distance: 2.0
   max_distance: 4.5
   w1_visibility: 0.40

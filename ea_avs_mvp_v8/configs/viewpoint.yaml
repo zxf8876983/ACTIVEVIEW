@@ -1,4 +1,4 @@
-# ACTIVEVIEW v8.0 局部主动视点规划配置 (configs/viewpoint.yaml)
+# ACTIVEVIEW v8.1 局部主动视点规划与基线评价配置 (configs/viewpoint.yaml)
 
 sampling:
   mode: "local_polar_grid"     # 以人体为中心的局部极坐标网格采样
@@ -17,6 +17,8 @@ constraints:
   min_projected_area_ratio: 0.015 # 人体在画面中的最小投影面积占比 (1.5%)
 
 evaluation:
+  evaluation_mode: "oracle"    # 信息边界模式: "oracle" (GT 驱动) 或 "estimated" (状态估计驱动)
+  pose_source: "oracle"        # 骨骼关键点来源: "oracle" (真值骨骼) 或 "estimated" (估计骨骼)
   optimal_distance: 2.0        # 最优观测距离基准 (米)
   max_distance: 4.5            # 最大有效观测距离 (米)
   w1_visibility: 0.40          # 人体整体可见性权重

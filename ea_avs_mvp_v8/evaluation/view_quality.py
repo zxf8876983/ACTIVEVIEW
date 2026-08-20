@@ -6,7 +6,8 @@
     1. 计算候选视点的综合观测质量评分 (Q(v) / view_score)；
     2. 基于科学评价公式：
        Q(v) = w1 * human_visibility + w2 * pose_coverage - w3 * distance_penalty - w4 * occlusion_penalty
-    3. 对候选视点进行排序 (ranking) 并输出全局最优视点 (best_view)。
+    3. 支持 Oracle (真值) 与 Estimated (状态估计) 模式切换及来源标识 (pose_source)；
+    4. 对候选视点进行排序 (ranking) 并输出全局最优视点 (best_view)。
 """
 
 import logging
@@ -58,6 +59,8 @@ class ViewQualityEvaluator:
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
+        self.evaluation_mode = str(self.config.get("evaluation_mode", "oracle"))
+        self.pose_source = str(self.config.get("pose_source", "oracle"))
         self.optimal_distance = float(self.config.get("optimal_distance", 2.0))
         self.max_distance = float(self.config.get("max_distance", 4.5))
         self.hfov_deg = float(self.config.get("hfov_deg", self.config.get("hfov", 90.0)))
@@ -71,8 +74,10 @@ class ViewQualityEvaluator:
         viewpoint: CandidateViewpoint,
         human_joints_3d: Dict[str, List[float]],
         human_yaw_deg: float = 0.0,
+        pose_source: Optional[str] = None,
     ) -> ViewpointQuality:
         """评估单个候选视点的几何观测质量与综合得分。"""
+        src = pose_source or self.pose_source
         vp_pos = np.array(viewpoint.position, dtype=np.float32)
         cam_height = float(viewpoint.camera_height)
         cam_pos = np.array([vp_pos[0], vp_pos[1] + cam_height, vp_pos[2]], dtype=np.float32)
@@ -153,6 +158,8 @@ class ViewQualityEvaluator:
             occlusion_ratio=round(occlusion_ratio, 3),
             pose_coverage=round(pose_coverage, 3),
             is_valid=is_valid,
+            evaluation_mode=self.evaluation_mode,
+            pose_source=src,
             metadata={
                 "w1_visibility": self.w1,
                 "w2_pose_coverage": self.w2,
@@ -160,6 +167,8 @@ class ViewQualityEvaluator:
                 "w4_occlusion": self.w4,
                 "occlusion_penalty": round(occlusion_penalty, 3),
                 "optimal_distance": self.optimal_distance,
+                "evaluation_mode": self.evaluation_mode,
+                "pose_source": src,
             },
         )
         return quality
@@ -169,11 +178,13 @@ class ViewQualityEvaluator:
         viewpoints: List[CandidateViewpoint],
         human_joints_3d: Dict[str, List[float]],
         human_yaw_deg: float = 0.0,
+        pose_source: Optional[str] = None,
     ) -> List[Tuple[CandidateViewpoint, ViewpointQuality]]:
         """评估并按综合得分降序排列所有候选视点。"""
+        src = pose_source or self.pose_source
         ranked_list: List[Tuple[CandidateViewpoint, ViewpointQuality]] = []
         for vp in viewpoints:
-            q = self.evaluate_viewpoint(vp, human_joints_3d, human_yaw_deg=human_yaw_deg)
+            q = self.evaluate_viewpoint(vp, human_joints_3d, human_yaw_deg=human_yaw_deg, pose_source=src)
             ranked_list.append((vp, q))
 
         # 按 visibility_score 降序排序，若分数相同按正面角度排序
