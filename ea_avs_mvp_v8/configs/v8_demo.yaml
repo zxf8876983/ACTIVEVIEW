@@ -1,0 +1,42 @@
+# ACTIVEVIEW v8.0 统一演示与实验配置文件 (configs/v8_demo.yaml)
+
+scene:
+  scene_id: "apartment_1"
+  scene_path: "robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.glb"
+  floor_height: -1.60
+
+human:
+  avatar: "neutral_0"
+  avatar_name: "neutral_0"
+  action: "fall_related"
+  motion_id: "fall_related_3522"
+  initial_pose:
+    position: [1.5, -1.60, 4.0]
+    yaw_deg: 0.0
+    scale: 1.0
+
+robot:
+  initial_pose:
+    position: [1.5, -1.60, 6.8]
+    yaw_deg: 0.0
+
+camera:
+  height: 1.2
+  hfov: 90.0
+  width: 640
+  height_px: 480
+
+viewpoint:
+  radii: [1.5, 2.2, 3.0]
+  num_angles: 8
+  min_radius: 1.0
+  max_radius: 4.0
+  camera_height: 1.2
+  filter_unreachable: true
+
+simulation:
+  fps: 10.0
+  playback_fps: 30.0
+  num_frames: 10
+  output_dir: "visualizations/v8_demo"
+  runs_dir: "runs/v8_demo"

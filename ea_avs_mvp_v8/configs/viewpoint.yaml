@@ -1,0 +1,15 @@
+# ACTIVEVIEW v8.0 候选视点采样配置 (configs/viewpoint.yaml)
+
+sampling:
+  mode: "polar_grid"           # 极坐标规则网格采样
+  radii: [1.5, 2.2, 3.0]       # 采样距离半径列表 (米)
+  num_angles: 8                # 角度离散数量 (0, 45, 90, ..., 315 度)
+  camera_height: 1.2           # 视点相机高度 (米)
+  face_human: true             # 是否自动将视点朝向人体中心
+  min_radius: 1.0              # 最小允许安全半径
+  max_radius: 4.0              # 最大有效观察半径
+
+constraints:
+  check_navmesh: true          # 是否强制要求视点在 NavMesh 可行走区域内
+  max_snap_distance: 0.5       # NavMesh 投影最大允许容差 (米)
+  check_path_reachability: true # 是否检查从机器人起点到候选视点的路径连通性
