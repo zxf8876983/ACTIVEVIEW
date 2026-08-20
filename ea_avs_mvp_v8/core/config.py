@@ -71,11 +71,21 @@ def load_v8_config(
     merged_human = {**human_cfg, **demo_cfg.get("human", {})}
     merged_vp = {**vp_cfg, **demo_cfg.get("viewpoint", {})}
 
+    cam_raw = demo_cfg.get("camera", {})
+    normalized_cam = {
+        "width": int(cam_raw.get("width", 640)),
+        "height": int(cam_raw.get("height", cam_raw.get("height_px", 480))),
+        "hfov_deg": float(cam_raw.get("hfov_deg", cam_raw.get("hfov", 90.0))),
+        "camera_height": float(cam_raw.get("camera_height", 1.2)),
+        "clip_near": float(cam_raw.get("clip_near", 0.01)),
+        "clip_far": float(cam_raw.get("clip_far", 10.0)),
+    }
+
     cfg = V8Config(
         scene=demo_cfg.get("scene", {}),
         human=merged_human,
         robot=demo_cfg.get("robot", {}),
-        camera=demo_cfg.get("camera", {}),
+        camera=normalized_cam,
         viewpoint=merged_vp,
         simulation=demo_cfg.get("simulation", {}),
     )

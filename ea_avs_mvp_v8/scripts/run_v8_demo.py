@@ -6,12 +6,13 @@ v8.0 主动视角基础框架综合演示主脚本 —— run_v8_demo.py
     1. 完整串联 v8.0 核心研究流水线：
        Scene 加载 -> Human Placement 采样 -> 候选视点生成 (Candidate Views)
        -> 空间与导航约束检查 (Constraint Check) -> 几何可见性评价 (Visibility Evaluation)
-       -> 渲染多视点 RGB-D 样本 -> 持久化 v8 数据集；
+       -> 移动机器人至候选视点并同步相机位姿 -> 渲染多视点 RGB-D 样本 -> 持久化 v8 数据集；
     2. 输出成果至 data/ActiveView/visualizations/v8_demo/：
-       - candidate_views.json
+       - candidate_views.json (包含 position, yaw, camera_pose)
        - visibility.json
        - metadata.json
-       - rgb/ 与 depth/ 关键视点图像
+       - rgb/ (PNG 图像)
+       - depth/ (NPY 深度图)
 
 运行方式：
     python -m ea_avs_mvp_v8.scripts.run_v8_demo
@@ -23,6 +24,7 @@ import logging
 import sys
 from pathlib import Path
 
+import numpy as np
 from PIL import Image
 
 from ea_avs_mvp_v8.core.config import load_v8_config
@@ -58,7 +60,9 @@ def main():
         vis_dir = get_data_root() / cfg.simulation.get("output_dir", "visualizations/v8_demo")
     vis_dir.mkdir(parents=True, exist_ok=True)
     rgb_dir = vis_dir / "rgb"
+    depth_dir = vis_dir / "depth"
     rgb_dir.mkdir(parents=True, exist_ok=True)
+    depth_dir.mkdir(parents=True, exist_ok=True)
 
     # 2. 步骤一: Scene 启动与 Human Placement
     logger.info("Step 1: Initializing Habitat Environment & Human Placement...")
@@ -81,6 +85,7 @@ def main():
     raw_candidates = vp_gen.generate_candidates(
         human_position=human_pose.position,
         human_yaw_deg=human_pose.yaw_deg,
+        ground_height=cfg.robot.get("ground_height", -1.60),
     )
 
     # 4. 步骤三: 空间与导航约束检查 (Constraint Checking)
@@ -101,17 +106,32 @@ def main():
         human_yaw_deg=human_pose.yaw_deg,
     )
 
-    # 6. 步骤五: 采样前 4 个有效视点渲染真实观测图片
-    logger.info("Step 5: Capturing Sample Observations...")
+    # 6. 步骤五: 采样有效候选视点渲染真实观测图片与深度图
+    logger.info("Step 5: Capturing Observations for Candidate Viewpoints...")
     robot_adapter = V8RobotAdapter(sim, cfg.camera)
     feasible_views = [vp for vp in checked_candidates if vp.feasible]
 
-    for idx, vp in enumerate(feasible_views[:4]):
-        robot_adapter.set_viewpoint(vp)
+    # 渲染前 6 个有效候选视点
+    render_views = feasible_views[:6] if feasible_views else checked_candidates[:1]
+    for idx, vp in enumerate(render_views):
+        verbose_log = (idx == 0)  # 首个视点打印详细 [V8 Camera Debug]
+        cam_info = robot_adapter.set_viewpoint(vp, verbose=verbose_log)
+        # 更新精确的实际相机位姿
+        vp.camera_pose = {
+            "position": cam_info["camera_position"],
+            "rotation": cam_info["camera_rotation"],
+        }
         obs = robot_adapter.capture_observation()
+
+        # 保存 RGB
         if obs.get("rgb") is not None:
             out_img = rgb_dir / f"{vp.viewpoint_id}.png"
             Image.fromarray(obs["rgb"]).save(out_img)
+
+        # 保存 Depth
+        if obs.get("depth") is not None:
+            out_depth = depth_dir / f"{vp.viewpoint_id}.npy"
+            np.save(out_depth, obs["depth"].astype(np.float32))
 
     env_adapter.close()
 

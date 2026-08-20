@@ -19,12 +19,15 @@ robot:
   initial_pose:
     position: [1.5, -1.60, 6.8]
     yaw_deg: 0.0
+  ground_height: -1.60
 
 camera:
-  height: 1.2
-  hfov: 90.0
+  camera_height: 1.2
+  hfov_deg: 90.0
   width: 640
-  height_px: 480
+  height: 480
+  clip_near: 0.01
+  clip_far: 10.0
 
 viewpoint:
   radii: [1.5, 2.2, 3.0]
@@ -32,6 +35,7 @@ viewpoint:
   min_radius: 1.0
   max_radius: 4.0
   camera_height: 1.2
+  ground_height: -1.60
   filter_unreachable: true
 
 simulation:
