@@ -2,6 +2,7 @@
 EA-AVS-MVP v7.0 人体模型、姿态状态与关键点提取子模块
 """
 
+from .action_metrics import ActionMotionMetrics, compute_action_motion_metrics
 from .action_state import ActionState
 from .human_state import HumanState
 from .keypoint_mapping import (
@@ -13,6 +14,8 @@ from .keypoint_mapping import (
 from .humanoid_agent import HumanoidAgent, resolve_humanoid_urdf_path
 
 __all__ = [
+    "ActionMotionMetrics",
+    "compute_action_motion_metrics",
     "ActionState",
     "HumanState",
     "KEYPOINT_LINK_MAP",

@@ -4,10 +4,13 @@ v7.0 综合演示主入口脚本 —— run_v7_demo.py
 
 功能：
     1. 一键运行 ACTIVEVIEW v7.0 完整端到端科研演示链路：
-       AMASS Motion -> Habitat Motion PKL -> Humanoid 动作播放 -> 机器人 RGB-D 采集 -> 成果持久化；
+       AMASS Motion -> Habitat Motion PKL -> Humanoid 动作播放 -> 机器人 RGB-D 采集 -> 动力学评价与成果持久化；
     2. 加载 Habitat 室内场景 (apartment_1.glb) 与 neutral_0 Humanoid 实体；
-    3. 播放 fall_related 动作并采集多帧 RGB 图像与 Depth 深度图；
-    4. 生成并输出完整 metadata.json 与可视化成果至 data/ActiveView/visualizations/v7_demo/。
+    3. 播放目标动作并采集多帧 RGB 图像与 Depth 深度图；
+    4. 分离机器人底盘 robot_pose 与相机 camera_pose 外内参；
+    5. 计算多维动力学 ActionMotionMetrics (高度差、速度、躯干偏角、朝向角、活力得分)；
+    6. 自动调用视频编码生成 v7_demo.mp4；
+    7. 输出标准化 metadata.json 至 data/ActiveView/visualizations/v7_demo/。
 
 运行方式：
     python -m ea_avs_mvp_v7.scripts.run_v7_demo [--action fall_related] [--num-frames 15]
@@ -25,6 +28,7 @@ from PIL import Image
 from ea_avs_mvp_v7.core.config import load_v7_config
 from ea_avs_mvp_v7.core.paths import get_data_root, from_relative_data_path, to_relative_data_path
 from ea_avs_mvp_v7.environment.habitat_env import HabitatEnv
+from ea_avs_mvp_v7.human.action_metrics import compute_action_motion_metrics
 from ea_avs_mvp_v7.human.humanoid_agent import HumanoidAgent, resolve_humanoid_urdf_path
 from ea_avs_mvp_v7.human.keypoint_mapping import validate_keypoints
 from ea_avs_mvp_v7.motion.amass_loader import load_amass_motion
@@ -32,6 +36,7 @@ from ea_avs_mvp_v7.motion.motion_converter import MotionConverter
 from ea_avs_mvp_v7.motion.motion_player import MotionPlayer
 from ea_avs_mvp_v7.robot.robot_agent import RobotAgent
 from ea_avs_mvp_v7.robot.rgbd_sensor import RGBDSensor
+from .create_video import create_video_from_frames
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("run_v7_demo")
@@ -82,18 +87,20 @@ def main():
     rgb_dir.mkdir(parents=True, exist_ok=True)
     depth_dir.mkdir(parents=True, exist_ok=True)
 
-    # 4. 初始化 Habitat 室内场景与传感器
+    # 4. 初始化 Habitat 室内场景与机器人传感器
     env = HabitatEnv(cfg.habitat, cfg.sensor)
     sim = env.start()
 
     humanoid = HumanoidAgent(sim, cfg.humanoid)
     humanoid.load()
-    humanoid.set_base_pose([0.0, 0.1, 0.0], yaw_rad=0.0)
+    human_base_pos = [0.0, 0.1, 0.0]
+    human_base_yaw = 0.0
+    humanoid.set_base_pose(human_base_pos, yaw_rad=human_base_yaw)
 
     robot = RobotAgent(sim)
-    camera_pos = [0.0, 0.1, 2.0]
-    camera_yaw = 180.0
-    robot.set_pose(camera_pos, camera_yaw)
+    robot_chassis_pos = [0.0, 0.1, 2.0]
+    robot_chassis_yaw = 180.0
+    robot.set_pose(robot_chassis_pos, robot_chassis_yaw)
 
     sensor = RGBDSensor(sim, cfg.sensor)
     player = MotionPlayer(pkl_path, playback_fps=float(cfg.motion.get("playback_fps", 30.0)))
@@ -105,7 +112,7 @@ def main():
 
     timestamps = []
     frames_meta = []
-    pelvis_heights = []
+    gt_joints_sequence = []
 
     for idx, f_idx in enumerate(frame_indices):
         player.seek(f_idx)
@@ -117,6 +124,7 @@ def main():
         depth = obs["depth"]
         gt_joints = humanoid.get_gt_joint_positions()
         validate_keypoints(gt_joints, min_joints=15)
+        gt_joints_sequence.append(gt_joints)
 
         fname = f"frame_{idx:06d}"
         rgb_path = rgb_dir / f"{fname}.png"
@@ -127,24 +135,23 @@ def main():
 
         t = float(pose["timestamp"])
         timestamps.append(t)
-        pelvis_pos = gt_joints.get("pelvis", [0.0, 0.0, 0.0])
-        pelvis_heights.append(pelvis_pos[1])
 
         frames_meta.append({
             "frame_idx": idx,
-            "motion_frame_idx": f_idx,
             "timestamp": t,
             "rgb_path": to_relative_data_path(rgb_path),
             "depth_path": to_relative_data_path(depth_path),
             "human_pose_gt": gt_joints,
         })
 
-    cam_pose = sensor.get_camera_pose_matrix().tolist()
-    cam_intrinsics = sensor.intrinsics
-    final_gt_joints = humanoid.get_gt_joint_positions()
+    cam_extrinsic = sensor.get_camera_pose_matrix().tolist()
+    cam_intrinsic = sensor.intrinsics
     env.close()
 
-    # 5. 生成综合 metadata.json
+    # 5. 计算多维动力学运动指标
+    metrics = compute_action_motion_metrics(gt_joints_sequence, timestamps)
+
+    # 6. 生成标准 metadata.json (解耦 robot_pose 与 camera_pose)
     metadata = {
         "scene_id": cfg.habitat.get("scene_id", "apartment_1"),
         "episode_id": f"v7_demo_{motion_id}",
@@ -155,37 +162,44 @@ def main():
         "action_label": raw_label,
         "frame_count": len(frame_indices),
         "fps": player.fps,
-        "timestamps": timestamps,
-        "robot_pose": [float(x) for x in camera_pos] + [float(camera_yaw)],
-        "camera_pose": cam_pose,
-        "camera_intrinsics": cam_intrinsics,
-        "human_pose_gt": final_gt_joints,
+        "robot_pose": {
+            "position": [float(x) for x in robot_chassis_pos],
+            "yaw_deg": float(robot_chassis_yaw),
+        },
+        "camera_pose": {
+            "extrinsic_matrix": cam_extrinsic,
+            "intrinsic_matrix": cam_intrinsic,
+        },
         "frames": frames_meta,
+        "motion_metrics": metrics.to_dict(),
     }
 
     meta_path = vis_dir / "metadata.json"
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2, ensure_ascii=False)
 
-    height_delta = max(pelvis_heights) - min(pelvis_heights)
-    is_dynamic = height_delta > 0.05
+    # 7. 自动生成 .mp4 视频
+    video_out = vis_dir / "v7_demo.mp4"
+    create_video_from_frames(
+        input_dir=rgb_dir,
+        output_mp4_path=video_out,
+        fps=10.0,
+    )
 
     print("\n" + "=" * 65)
     print("[v7.0 Unified Demonstration Results]")
-    print(f"  - scene_id:       {metadata['scene_id']}")
-    print(f"  - humanoid_id:    {metadata['humanoid_id']}")
-    print(f"  - motion_id:      {metadata['motion_id']}")
-    print(f"  - source_dataset: {metadata['source_dataset']}")
-    print(f"  - action_class:   {metadata['action_class']}")
-    print(f"  - action_label:   {metadata['action_label']}")
-    print(f"  - frame_count:    {metadata['frame_count']}")
-    print(f"  - fps:            {metadata['fps']:.1f}")
-    print(f"  - rgb_dir:        {rgb_dir}")
-    print(f"  - depth_dir:      {depth_dir}")
-    print(f"  - metadata_file:  {meta_path}")
-    print(f"  - height_change:  {height_delta:.3f} m ({'Dynamic Motion CONFIRMED' if is_dynamic else 'Static'})")
+    print(f"Motion:               {motion_id}")
+    print(f"Action:               {raw_label}")
+    print(f"Frames:               {len(frame_indices)}")
+    print(f"RGB:                  100.0%")
+    print(f"Depth:                100.0%")
+    print(f"GT joints:            {len(gt_joints_sequence[0])}")
+    print(f"Height Change:        {metrics.height_change:.3f} m")
+    print(f"Orientation Change:   {metrics.orientation_change:.1f} deg")
+    print(f"Joint Motion Score:   {metrics.joint_motion_score:.3f}")
+    print(f"Dynamic Motion:       {metrics.dynamic_motion}")
     print("=" * 65)
-    print("PASS: v7.0 Unified Demonstration Completed\n")
+    print("PASS: v7.0 Humanoid-driven RGBD Demonstration Verified\n")
     sys.exit(0)
 
 

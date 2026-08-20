@@ -67,7 +67,13 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ## 6. Current Research Roadmap & Future Directions
 
 ### v7.0: Humanoid-driven Active Perception Simulation Environment
-- **当前状态**：v7.0: AMASS-Humanoid-Habitat-RGBD pipeline verified (已完成 3 类典型动作全量验证、统一 Demo 渲染与结构化测试分层，全链路闭环通过)。
+- **当前状态**：v7.0 已完成 (COMPLETED)：
+  1. AMASS motion pipeline (标准化读取与四元数转换)
+  2. Habitat humanoid playback (KinematicHumanoid 54 关节姿态驱动)
+  3. Robot RGB-D observation (解耦 robot_pose 与 camera_pose)
+  4. Episode generation (多动作多视角标准化 Episode 存储)
+  5. Motion validity evaluation (多维动力学 ActionMotionMetrics)
+  6. Visualization & video generation (统一 Demo 入口与 MP4 视频生成)
 - **定位**：基础设施与实验平台构建版本。将 ACTIVEVIEW 从抽象/静态人体感知环境转变为由真实人体运动数据驱动的室内老人监护仿真环境。
 - **核心目标与流水线**：
   ```text
