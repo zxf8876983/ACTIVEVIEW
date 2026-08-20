@@ -5,14 +5,14 @@ SMPL-X 到 Habitat KinematicHumanoid 关节映射与层级定义 —— joint_ma
 职责：
     1. 显式定义 SMPL-X 标准 54 关节层级与名称列表；
     2. 规范 162 维关节角 (54 * 3 Rodrigues) 到 216 维四元数 (54 * 4 Quaternions) 的维度关系；
-    3. 提供关节数据切片与四元数归一化校验函数；
+    3. 提供关节数据切片、四元数归一化与输入/输出结构校验函数；
     4. 明确 SMPL-X 与 Habitat Humanoid 关节骨架对应关系。
 """
 
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 import numpy as np
 
-# SMPL-X 标准 54 关节名称列表 (按 index 排序)
+# SMPL-X 标准 54 关节名称列表 (按 index 排序，0 为 Pelvis 根节点，1-54 为子关节)
 SMPLX_JOINT_NAMES: List[str] = [
     "pelvis",            # 0 (Root)
     "left_hip",          # 1
@@ -71,8 +71,8 @@ SMPLX_JOINT_NAMES: List[str] = [
     "right_thumb3",      # 54
 ]
 
-NUM_SMPLX_JOINTS = len(SMPLX_JOINT_NAMES)  # 55 包括 root，或 54 body/hand joints
-SMPLX_RODRIGUES_DIM = 54 * 3               # 162 维 (非 root 的 54 关节)
+NUM_SMPLX_JOINTS = len(SMPLX_JOINT_NAMES)  # 55 包含 root
+SMPLX_RODRIGUES_DIM = 54 * 3               # 162 维 (非 root 的 54 个子关节)
 HABITAT_HUMANOID_QUAT_DIM = 54 * 4         # 216 维 (54 关节 * 4 四元数)
 
 
@@ -106,4 +106,42 @@ def validate_motion_quaternions(joints_array: np.ndarray, tolerance: float = 1e-
     is_zero = norms < 1e-6
     is_unit = np.abs(norms - 1.0) < tolerance
     valid = np.all(is_zero | is_unit)
-    return bool(valid)
+    if not valid:
+        invalid_mask = ~(is_zero | is_unit)
+        raise ValueError(
+            f"Found non-unit quaternions in joints_array at frames/joints: {np.where(invalid_mask)}"
+        )
+    return True
+
+
+def validate_habitat_motion_dict(motion_dict: Dict[str, Any]) -> Dict[str, Any]:
+    """校验 Habitat 动作字典格式完整性。"""
+    if "pose_motion" not in motion_dict:
+        raise ValueError("Missing 'pose_motion' key in motion dictionary")
+
+    pm = motion_dict["pose_motion"]
+    for required in ("joints_array", "transform_array", "fps"):
+        if required not in pm:
+            raise ValueError(f"Missing '{required}' in pose_motion dictionary")
+
+    joints = np.asarray(pm["joints_array"])
+    transforms = np.asarray(pm["transform_array"])
+    fps = float(pm["fps"])
+
+    if joints.ndim != 2 or joints.shape[1] != HABITAT_HUMANOID_QUAT_DIM:
+        raise ValueError(f"Invalid joints_array shape: {joints.shape}, expected (N, {HABITAT_HUMANOID_QUAT_DIM})")
+    if transforms.ndim != 3 or transforms.shape[1:] != (4, 4):
+        raise ValueError(f"Invalid transform_array shape: {transforms.shape}, expected (N, 4, 4)")
+    if joints.shape[0] != transforms.shape[0]:
+        raise ValueError(f"Frame count mismatch: joints has {joints.shape[0]} but transforms has {transforms.shape[0]}")
+    if fps <= 0:
+        raise ValueError(f"Invalid FPS: {fps}")
+
+    validate_motion_quaternions(joints)
+    return {
+        "num_frames": int(joints.shape[0]),
+        "fps": fps,
+        "duration_seconds": float(joints.shape[0] / fps),
+        "joints_dim": int(joints.shape[1]),
+        "transforms_shape": list(transforms.shape),
+    }

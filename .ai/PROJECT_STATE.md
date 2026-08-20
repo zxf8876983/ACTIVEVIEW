@@ -9,13 +9,13 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：v6.0 保持正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)；当前进入 v7.0 实施阶段 (v7.0 Humanoid-driven Active Perception Simulation Environment — IN PROGRESS)。
+- **项目阶段**：v7.0 拟人化仿真环境已完成全链路闭环验证 (v7.0 Humanoid-driven Active Perception Simulation Environment — COMPLETED)。v6.0 保持正式封版定稿 (EA-AVS-MVP v6.0 — CLOSED / FINALIZED)。
 - **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> v7 -> 未来版本`），各版本保留独立目录与设计文档。核心功能全链路跑通前暂不重构为单一 `src/`。
 
 ---
 
 ## 2. Active Development Version
-- **Version**: v7.0 (7.0.0 — In Progress)
+- **Version**: v7.0 (7.0.0 — Completed)
 - **Title**: Humanoid-driven Active Perception Simulation Environment
 - **Active Code Directory**: `ea_avs_mvp_v7/`
 - **Active Specification**: `EA_AVS_MVP70_Code_Generation_Document.md`
@@ -67,7 +67,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ## 6. Current Research Roadmap & Future Directions
 
 ### v7.0: Humanoid-driven Active Perception Simulation Environment
-- **当前状态**：Humanoid + AMASS + Habitat RGB-D pipeline implemented (端到端仿真闭环跑通，19 项测试全量 PASS)。
+- **当前状态**：Humanoid-driven active perception simulation environment completed (AMASS-Humanoid-Habitat-RGBD pipeline verified, 25 项测试全量 PASS)。
 - **定位**：基础设施与实验平台构建版本。将 ACTIVEVIEW 从抽象/静态人体感知环境转变为由真实人体运动数据驱动的室内老人监护仿真环境。
 - **核心目标与流水线**：
   ```text

@@ -10,6 +10,7 @@ from .joint_mapping import (
     get_joint_index,
     get_joint_slice,
     validate_motion_quaternions,
+    validate_habitat_motion_dict,
 )
 from .motion_converter import MotionConverter, convert_normalized_motion_to_pkl
 from .motion_player import MotionPlayer
@@ -24,6 +25,7 @@ __all__ = [
     "get_joint_index",
     "get_joint_slice",
     "validate_motion_quaternions",
+    "validate_habitat_motion_dict",
     "MotionConverter",
     "convert_normalized_motion_to_pkl",
     "MotionPlayer",
