@@ -56,19 +56,23 @@ class ActionViewpointScore:
 
 @dataclass
 class ObservationState:
-    """当前视角下对人体的视觉估计感知状态 (Observation State)。"""
-    estimated_joints_3d: Dict[str, List[float]]  # 16 骨骼关节点 3D 估计坐标 (包含噪声或缺失)
+    """当前视角下由感知模块估计的人体不完整观测状态 (Estimated Observation State)。"""
+    estimated_joints_3d: Dict[str, List[float]]  # 16 骨骼关节点 3D 估计坐标 (p_est = p_gt + epsilon)
     joint_confidences: Dict[str, float]          # 16 关节点估计置信度 [0.0, 1.0]
     body_part_confidences: Dict[str, float]      # 7 大解剖部位可见性置信度 (head, torso, pelvis, hands, legs)
+    missing_joint_names: List[str] = field(default_factory=list)  # 缺失关节点列表
     viewpoint_id: str = "current_robot_view"    # 当前观测视点 ID
     mean_confidence: float = 0.0                # 平均关节置信度
     missing_joint_count: int = 0                # 缺失/不可见关节点数量
+    completeness_score: float = 1.0             # 观测完整度得分 [0.0, 1.0]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "viewpoint_id": self.viewpoint_id,
             "mean_confidence": round(self.mean_confidence, 3),
             "missing_joint_count": self.missing_joint_count,
+            "completeness_score": round(self.completeness_score, 3),
+            "missing_joint_names": self.missing_joint_names,
             "joint_confidences": {k: round(v, 3) for k, v in self.joint_confidences.items()},
             "body_part_confidences": {k: round(v, 3) for k, v in self.body_part_confidences.items()},
         }
@@ -76,7 +80,7 @@ class ObservationState:
 
 @dataclass
 class ViewFeature:
-    """候选视点多维特征描述子。"""
+    """候选视点多维几何特征描述子 (严禁包含未来真实观测状态)。"""
     viewpoint_id: str
     distance: float
     viewing_angle_deg: float
@@ -125,3 +129,14 @@ class InformationGainScore:
             "quality_after": round(self.quality_after, 3),
             "feasible": self.feasible,
         }
+
+
+@dataclass
+class OracleViewpointResult:
+    """Oracle 理论上限视点结果 (仅用于性能上限评估，严禁输入模型)。"""
+    best_viewpoint_id: str
+    oracle_visibility_score: float
+    oracle_quality_score: float
+    oracle_information_gain: float
+    oracle_joints_visible_count: int
+    oracle_body_parts_visibility: Dict[str, float] = field(default_factory=dict)

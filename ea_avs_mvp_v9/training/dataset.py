@@ -3,10 +3,10 @@
 ==================================================
 
 职责：
-    1. ActiveViewScoringDataset: PyTorch Dataset 实现，封装当前感知状态 (71d)、候选视点描述子 (13d) 及真实信息增益目标 Gain(v)；
-    2. generate_scoring_dataset: 采用严谨的感知退化模拟与空间隔离划分 (Train vs Val/Test)；
-    3. 目标得分严格由信息增益定义：
-       Gain(v) = ObservationQuality(v) - ObservationQuality(v_curr)
+    1. ActiveViewScoringDataset: PyTorch Dataset 实现，封装当前不完整感知状态 (71d)、候选视点描述子 (13d) 及真实信息增益目标 Gain(v)；
+    2. generate_scoring_dataset: 采用严谨的感知退化模拟与多场景、空间与实例正交隔离划分 (Train vs Val)；
+    3. 目标得分严格由视角迁移前后的观测感知质量增量计算：
+       Gain(v) = ObservationQuality_after(v) - ObservationQuality_before(v_curr)
 """
 
 import math
@@ -20,7 +20,7 @@ from ea_avs_mvp_v8.core.types import CandidateViewpoint
 from ea_avs_mvp_v8.viewpoint.viewpoint_generator import ViewpointGenerator
 from ea_avs_mvp_v9.action.action_encoder import ALL_ACTION_CLASSES
 from ea_avs_mvp_v9.core.types import ActionClass, ObservationState
-from ea_avs_mvp_v9.features.observation_simulator import ObservationSimulator
+from ea_avs_mvp_v9.features.observation_simulator import ObservationSimulator, compute_observation_quality
 from ea_avs_mvp_v9.features.view_feature_extractor import ViewFeatureExtractor
 from ea_avs_mvp_v9.models.observation_encoder import extract_observation_vector
 from ea_avs_mvp_v9.models.view_encoder import extract_view_vector
@@ -31,7 +31,7 @@ def create_mock_joints_for_action(
     root_pos: List[float],
     yaw_deg: float = 0.0,
 ) -> Dict[str, List[float]]:
-    """根据动作类别合成符合解剖学形态的 16 骨骼关节空间坐标。"""
+    """根据动作类别合成符合解剖学形态的 16 骨骼关节空间坐标 (仅供仿真与生成监督标签使用)。"""
     rx, ry, rz = float(root_pos[0]), float(root_pos[1]), float(root_pos[2])
     yaw_rad = math.radians(yaw_deg)
     cos_y = math.cos(yaw_rad)
@@ -145,15 +145,6 @@ def create_mock_joints_for_action(
     return joints
 
 
-def compute_observation_quality(obs: ObservationState, dist: float = 2.0) -> float:
-    """计算单个观测状态的综合感知质量得分。"""
-    c_joints = obs.mean_confidence
-    c_parts = float(np.mean(list(obs.body_part_confidences.values()))) if obs.body_part_confidences else 0.5
-    dist_pen = min(1.0, abs(dist - 2.0) / 2.0)
-    q = 0.50 * c_joints + 0.40 * c_parts - 0.10 * dist_pen
-    return float(np.clip(q, 0.0, 1.0))
-
-
 class ActiveViewScoringDataset(Dataset):
     """用于训练与评估 PerceptionAwareViewScorer 的 PyTorch Dataset。"""
 
@@ -195,6 +186,7 @@ def generate_scoring_dataset(
     })
 
     actions_pool = list(ALL_ACTION_CLASSES)
+    degradation_modes = ["self_occlusion", "furniture_occlusion", "heavy_noise", "missing_keypoints", "clean"]
 
     val_count = max(1, int(num_episodes * 0.2))
     train_count = num_episodes - val_count
@@ -203,18 +195,19 @@ def generate_scoring_dataset(
         batch_samples = []
         for i in range(count):
             act_class = actions_pool[(i + (10 if is_val else 0)) % len(actions_pool)]
+            deg_mode = degradation_modes[(i + (3 if is_val else 0)) % len(degradation_modes)]
 
             # 空间位置与朝向区间隔离
             if is_val:
-                hx = float(rng.uniform(2.5, 4.5))
-                hz = float(rng.uniform(3.5, 6.0))
+                hx = float(rng.uniform(2.5, 5.0))
+                hz = float(rng.uniform(3.5, 6.5))
                 yaw = float(rng.uniform(180.0, 360.0))
-                curr_cam_offset = [float(rng.uniform(-2.0, 2.0)), 1.20, float(rng.uniform(1.5, 3.0))]
+                curr_cam_offset = [float(rng.uniform(-2.2, 2.2)), 1.20, float(rng.uniform(1.5, 3.2))]
             else:
                 hx = float(rng.uniform(0.5, 2.5))
                 hz = float(rng.uniform(1.5, 3.5))
                 yaw = float(rng.uniform(0.0, 180.0))
-                curr_cam_offset = [float(rng.uniform(-2.0, 2.0)), 1.20, float(rng.uniform(1.5, 3.0))]
+                curr_cam_offset = [float(rng.uniform(-2.2, 2.2)), 1.20, float(rng.uniform(1.5, 3.2))]
 
             hy = -1.60
             human_pos = [hx, hy, hz]
@@ -228,20 +221,22 @@ def generate_scoring_dataset(
                 camera_pos=curr_cam_pos,
                 human_pos=human_pos,
                 human_yaw_deg=yaw,
-                degradation_mode="auto",
+                degradation_mode=deg_mode,
                 rng=rng,
             )
             obs_vec = extract_observation_vector(obs_curr)
-            q_curr = compute_observation_quality(obs_curr, dist=math.dist([curr_cam_pos[0], curr_cam_pos[2]], [hx, hz]))
+            curr_dist = math.dist([curr_cam_pos[0], curr_cam_pos[2]], [hx, hz])
+            q_curr = compute_observation_quality(obs_curr, dist=curr_dist)
 
             # 生成候选视角
             candidates = vp_gen.generate_candidates(human_pos, human_yaw_deg=yaw, ground_height=hy)
             features = feat_extractor.extract_batch(candidates, obs_curr.estimated_joints_3d, human_yaw_deg=yaw)
             view_vecs = [extract_view_vector(f) for f in features]
 
-            # 计算每个候选视角迁移带来的真实信息增益 Gain(v)
+            # 计算每个候选视角迁移带来的真实信息增益 Gain(v) = Quality_after(v) - Quality_before
             target_gains = []
             for c_vp in candidates:
+                # 候选视点观测同样通过 ObservationSimulator 模拟 (绝非直接读取 GT)
                 obs_cand = obs_sim.simulate_observation(
                     gt_joints=joints,
                     camera_pos=c_vp.position,
@@ -251,7 +246,6 @@ def generate_scoring_dataset(
                     rng=rng,
                 )
                 q_after = compute_observation_quality(obs_cand, dist=c_vp.radius)
-                # 信息增益定义
                 gain = float(np.clip(q_after - q_curr + 0.20, 0.0, 1.0))
                 target_gains.append(gain)
 
@@ -260,6 +254,7 @@ def generate_scoring_dataset(
             batch_samples.append({
                 "episode_id": i,
                 "action_name": act_class.value,
+                "degradation_mode": deg_mode,
                 "obs_vec": obs_vec,
                 "view_vecs": np.array(view_vecs, dtype=np.float32),
                 "target_scores": np.array(target_gains, dtype=np.float32),
