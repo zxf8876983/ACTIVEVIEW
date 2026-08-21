@@ -1,0 +1,97 @@
+{
+  "fall": {
+    "human_state": "fall",
+    "best_view": "vp_000_r1.5_a000",
+    "view_score": 0.915,
+    "utility_score": 0.775,
+    "distance": 1.831,
+    "viewing_angle_deg": 0.0,
+    "pose_coverage": 1.0,
+    "body_part_visibility": 1.0,
+    "body_parts_breakdown": {
+      "head": 1.0,
+      "torso": 1.0,
+      "pelvis": 1.0,
+      "left_hand": 1.0,
+      "right_hand": 1.0,
+      "left_leg": 1.0,
+      "right_leg": 1.0
+    }
+  },
+  "sitting": {
+    "human_state": "sitting",
+    "best_view": "vp_008_r2.0_a000",
+    "view_score": 0.913,
+    "utility_score": 0.789,
+    "distance": 2.103,
+    "viewing_angle_deg": 0.0,
+    "pose_coverage": 1.0,
+    "body_part_visibility": 1.0,
+    "body_parts_breakdown": {
+      "head": 1.0,
+      "torso": 1.0,
+      "pelvis": 1.0,
+      "left_hand": 1.0,
+      "right_hand": 1.0,
+      "left_leg": 1.0,
+      "right_leg": 1.0
+    }
+  },
+  "standing": {
+    "human_state": "standing",
+    "best_view": "vp_008_r2.0_a000",
+    "view_score": 0.916,
+    "utility_score": 0.793,
+    "distance": 2.025,
+    "viewing_angle_deg": 0.0,
+    "pose_coverage": 1.0,
+    "body_part_visibility": 1.0,
+    "body_parts_breakdown": {
+      "head": 1.0,
+      "torso": 1.0,
+      "pelvis": 1.0,
+      "left_hand": 1.0,
+      "right_hand": 1.0,
+      "left_leg": 1.0,
+      "right_leg": 1.0
+    }
+  },
+  "bending": {
+    "human_state": "bending",
+    "best_view": "vp_008_r2.0_a000",
+    "view_score": 0.916,
+    "utility_score": 0.792,
+    "distance": 2.03,
+    "viewing_angle_deg": 0.0,
+    "pose_coverage": 1.0,
+    "body_part_visibility": 1.0,
+    "body_parts_breakdown": {
+      "head": 1.0,
+      "torso": 1.0,
+      "pelvis": 1.0,
+      "left_hand": 1.0,
+      "right_hand": 1.0,
+      "left_leg": 1.0,
+      "right_leg": 1.0
+    }
+  },
+  "reaching": {
+    "human_state": "reaching",
+    "best_view": "vp_008_r2.0_a000",
+    "view_score": 0.916,
+    "utility_score": 0.793,
+    "distance": 2.025,
+    "viewing_angle_deg": 0.0,
+    "pose_coverage": 1.0,
+    "body_part_visibility": 1.0,
+    "body_parts_breakdown": {
+      "head": 1.0,
+      "torso": 1.0,
+      "pelvis": 1.0,
+      "left_hand": 1.0,
+      "right_hand": 1.0,
+      "left_leg": 1.0,
+      "right_leg": 1.0
+    }
+  }
+}

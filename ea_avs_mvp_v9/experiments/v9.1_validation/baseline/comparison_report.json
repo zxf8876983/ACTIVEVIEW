@@ -1,0 +1,113 @@
+{
+  "experiment": "5_baseline_active_viewpoint_comparison",
+  "scene_id": "apartment_1",
+  "oracle_best_view": "vp_008_r2.0_a000",
+  "oracle_max_utility": 0.792,
+  "baselines": [
+    {
+      "method": "Random View",
+      "selected_view": "vp_005_r1.5_a225",
+      "utility_score": 0.732,
+      "predicted_score": 0.768,
+      "distance": 1.537,
+      "viewing_angle_deg": 135.8,
+      "pose_coverage": 1.0,
+      "global_visibility": 0.585,
+      "body_part_visibility": 1.0,
+      "matches_oracle_top1": false,
+      "body_parts_breakdown": {
+        "head": 1.0,
+        "torso": 1.0,
+        "pelvis": 1.0,
+        "left_hand": 1.0,
+        "right_hand": 1.0,
+        "left_leg": 1.0,
+        "right_leg": 1.0
+      }
+    },
+    {
+      "method": "Nearest View",
+      "selected_view": "vp_001_r1.5_a045",
+      "utility_score": 0.753,
+      "predicted_score": 0.884,
+      "distance": 1.568,
+      "viewing_angle_deg": 45.7,
+      "pose_coverage": 1.0,
+      "global_visibility": 0.643,
+      "body_part_visibility": 1.0,
+      "matches_oracle_top1": false,
+      "body_parts_breakdown": {
+        "head": 1.0,
+        "torso": 1.0,
+        "pelvis": 1.0,
+        "left_hand": 1.0,
+        "right_hand": 1.0,
+        "left_leg": 1.0,
+        "right_leg": 1.0
+      }
+    },
+    {
+      "method": "Geometry-based (v8)",
+      "selected_view": "vp_008_r2.0_a000",
+      "utility_score": 0.792,
+      "predicted_score": 0.916,
+      "distance": 2.038,
+      "viewing_angle_deg": 0.7,
+      "pose_coverage": 1.0,
+      "global_visibility": 0.697,
+      "body_part_visibility": 1.0,
+      "matches_oracle_top1": true,
+      "body_parts_breakdown": {
+        "head": 1.0,
+        "torso": 1.0,
+        "pelvis": 1.0,
+        "left_hand": 1.0,
+        "right_hand": 1.0,
+        "left_leg": 1.0,
+        "right_leg": 1.0
+      }
+    },
+    {
+      "method": "Rule-based (v9.0)",
+      "selected_view": "vp_015_r2.0_a315",
+      "utility_score": 0.785,
+      "predicted_score": 0.909,
+      "distance": 2.021,
+      "viewing_angle_deg": 44.5,
+      "pose_coverage": 1.0,
+      "global_visibility": 0.675,
+      "body_part_visibility": 1.0,
+      "matches_oracle_top1": false,
+      "body_parts_breakdown": {
+        "head": 1.0,
+        "torso": 1.0,
+        "pelvis": 1.0,
+        "left_hand": 1.0,
+        "right_hand": 1.0,
+        "left_leg": 1.0,
+        "right_leg": 1.0
+      }
+    },
+    {
+      "method": "Human-state-aware Learnable (v9.1 Ours)",
+      "selected_view": "vp_008_r2.0_a000",
+      "utility_score": 0.792,
+      "predicted_score": 0.916,
+      "distance": 2.038,
+      "viewing_angle_deg": 0.7,
+      "pose_coverage": 1.0,
+      "global_visibility": 0.697,
+      "body_part_visibility": 1.0,
+      "matches_oracle_top1": true,
+      "body_parts_breakdown": {
+        "head": 1.0,
+        "torso": 1.0,
+        "pelvis": 1.0,
+        "left_hand": 1.0,
+        "right_hand": 1.0,
+        "left_leg": 1.0,
+        "right_leg": 1.0
+      }
+    }
+  ]
+}

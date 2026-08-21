@@ -1,0 +1,28 @@
+{
+  "ablation_experiments": [
+    {
+      "condition": "Full Model (v9.1 Ours)",
+      "top1_accuracy": 0.9,
+      "mean_utility_ratio": 1.0,
+      "description": "Ablation mode: Full Model (v9.1 Ours)"
+    },
+    {
+      "condition": "Remove Human Pose State",
+      "top1_accuracy": 0.9,
+      "mean_utility_ratio": 1.0,
+      "description": "Ablation mode: Remove Human Pose State"
+    },
+    {
+      "condition": "Remove Body Part Visibility",
+      "top1_accuracy": 0.2,
+      "mean_utility_ratio": 0.97,
+      "description": "Ablation mode: Remove Body Part Visibility"
+    },
+    {
+      "condition": "Remove Distance Descriptor",
+      "top1_accuracy": 0.0,
+      "mean_utility_ratio": 0.904,
+      "description": "Ablation mode: Remove Distance Descriptor"
+    }
+  ]
+}
