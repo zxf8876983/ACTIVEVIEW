@@ -1,22 +1,22 @@
 """
-v9.1 学习型视角打分综合演示脚本 —— run_v91_demo.py
-==================================================
+v9.1 人体物理状态感知学习型视点选择综合演示脚本 —— run_v91_demo.py
+==================================================================
 
 功能：
-    1. 在 Habitat 室内仿真场景中加载已知人体与指定动作；
-    2. 生成候选视点并执行三阶空间与可见性约束过滤；
-    3. 调用训练好的 LearnableViewScorer 进行神经网络前向打分与视点排序；
+    1. 在 Habitat 室内仿真场景中加载已知人体物理状态；
+    2. 生成候选视点并执行三阶空间与可行性约束过滤；
+    3. 调用训练好的 LearnableViewScorer 进行神经网络前向打分与视点排序 Q(v | H)；
     4. 执行 5 大基线综合横向对比：
        - Baseline 1: Random View
        - Baseline 2: Nearest View
-       - Baseline 3: Geometry Best (v8)
-       - Baseline 4: Rule Action (v9.0)
-       - Method:     Learnable Action-conditioned (v9.1 Ours)
+       - Baseline 3: Geometry-based View Selection (v8)
+       - Baseline 4: Rule-based Task-aware View Selection (v9.0)
+       - Method:     Human-state-aware Learnable View Selection (v9.1 Ours)
     5. 移动机器人至神经网络选定最优视点，捕获并保存 best_view_rgb.png；
     6. 保存结构化结果至 data/ActiveView/visualizations/v91_demo/：
-       - v91_best_view.json
+       - best_view.json / v91_best_view.json
        - comparison_report.json
-       - comparison_with_v90.json
+       - body_part_visibility_report.json
        - best_view_rgb.png
 
 运行方式：
@@ -153,15 +153,15 @@ def main():
     vp_geom, _ = ViewpointSelector.select(checked_candidates, rule_scores, geometry_qualities=geom_qualities, strategy="geometry_best")
     vp_rule, s_rule = ViewpointSelector.select(checked_candidates, rule_scores, strategy="action_conditioned")
 
-    # 6. 步骤五: 运行 v9.1 学习型打分模型前向推理
-    logger.info("Step 4: Running v9.1 Neural View Scorer Inference...")
+    # 6. 步骤五: 运行 v9.1 学习型打分模型前向推理 Q(v | H)
+    logger.info("Step 4: Running v9.1 Neural View Scorer Inference (Q(v | H))...")
     predictor = ViewPredictor(checkpoint_path=ckpt_path)
     pred_res = predictor.predict_viewpoints(
         viewpoints=checked_candidates,
         features=features,
         human_joints_3d=gt_joints,
         human_yaw_deg=human_pose.yaw_deg,
-        action_label=action_label,
+        action_metadata=action_label,
     )
 
     best_v91_id = pred_res["best_viewpoint_id"]
@@ -298,7 +298,7 @@ def main():
     print(f"Comparison Report: {comp_json_path}")
     print(f"Best View JSON:    {best_json_path}")
     print("=" * 92)
-    print("PASS:\nACTIVEVIEW v9.1 Learnable Action-conditioned View Scoring Verified\n")
+    print("PASS:\nACTIVEVIEW v9.1 Human-state-aware Learnable Active View Selection Verified\n")
     sys.exit(0)
 
 

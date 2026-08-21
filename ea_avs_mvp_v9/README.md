@@ -1,27 +1,30 @@
 # ACTIVEVIEW v9.1: Human-State-Aware Learnable Active View Selection
 
 > **ACTIVEVIEW v9.1 Scientific Specification & Experimental Closure Guide**  
-> *Learning active observation utility directly from human physical state $H$ (SMPL-X 3D joints and body orientation) and candidate viewpoint geometry $v$: $\hat{Q}(v \mid H)$.*
+> *Under the assumptions that the human position is known, the robot is in the vicinity, and the human remains observable, the robot learns to select the most informative observation viewpoint directly from the human's physical state: $\hat{Q}(v \mid H)$.*
 
 ---
 
-## 1. 版本定位与核心演进 (Version Overview & Evolution)
+## 1. 科研定位与核心假设 (Scientific Scope & Assumptions)
 
-- **v9.0 (Heuristic Rule Baseline)**：基于人工规则先验知识库 (`action_prior.yaml`) 的动作条件化打分基准；
-- **v9.1 (Human-state-aware Learnable Active View Selection)**：将视角打分数学目标重构为：
-  $$Q(v \mid H)$$
-  其中 $H$ 为人体空间物理姿态状态（16 骨骼关键点 3D 相对坐标 + 偏航朝向角），$v$ 为候选视角。
-  **严禁将 Action Label 作为神经网络模型输入**。Action Label 仅用于数据集分类、离线统计与跨动作泛化评测。
+ACTIVEVIEW v9.1 正式确立了**人体物理状态驱动的学习型主动视角选择基准（Human-state-aware Learnable Active View Selection Baseline）**。
 
-### 核心科研目标 (Core Research Objective):
-在已知人体位置和候选视角集合情况下，机器人根据**人体当前解剖姿态与关键部位可见性**，学习选择最有信息价值的观察视角。
+### 核心科研假设 (Core Assumptions):
+1. **Human location is known**: 人体粗略位置由外部系统/定位已知；
+2. **Robot is in vicinity**: 移动机器人已经到达目标人体所在局部区域；
+3. **Human remains observable**: 机器人可自适应调整相机朝向使人体位于观察视锥内，核心研究目标为**选择最具解剖信息观测价值的拍摄视角**，而非视野寻人。
 
-### 明确排除的非目标 (Explicit Non-Goals):
-- ❌ **No Action Input to Model**: 动作标签不输入模型；
-- ❌ **No Action Recognition / Classification**: 不训练动作分类网络；
-- ❌ **No Pose Estimator**: 在仿真环境中使用真实 Ground-Truth 人体状态；
-- ❌ **No SLAM / Global Navigation**: 聚焦于已知人体周边局部候选视角的高效选择；
-- ❌ **No RL / Heavy Foundation Models**: 采用轻量 MLP 架构，验证学习型打分的有效性。
+### 数学目标 (Mathematical Objective):
+$$Q(v \mid H)$$
+其中：
+- $H$: 人体物理姿态状态（16 骨骼关键点 3D 相对坐标 + 偏航朝向角，49 维向量）；
+- $v$: 候选视点描述子（包含距离、相对朝向角、全局覆盖率与 **7 大身体解剖部位可见性**，13 维向量）。
+
+### 严格研究边界 (Strict Research Boundaries):
+- ❌ **No Action Input to Model**: 动作标签严禁输入模型，仅用于实验分组与数据统计；
+- ❌ **No Action Recognition / Classification**: 不训练动作识别网络；
+- ❌ **No Human Search / Detection / Navigation / SLAM / RL**: 聚焦已知人体周边的局部高质量视角选择；
+- ❌ **No Pose Estimator**: 仿真中使用 Habitat + SMPL-X 物理 GT 状态。
 
 ---
 
@@ -33,22 +36,19 @@ Human Pose State (16 Joints 3D + Yaw, 49d) ───► [HumanPoseEncoder]   (32
 Candidate View Features (13d, incl. 7 parts)───► [ViewFeatureEncoder] (32d) ┘   (64d -> 64d -> 32d -> 1d)
 ```
 
-- **HumanPoseEncoder** (`models/pose_encoder.py`)：$49\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d}$；
-- **ViewFeatureEncoder** (`models/view_encoder.py`)：$13\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d}$；
-  - 13 维特征包含：`distance`, `sin(angle)`, `cos(angle)`, `pose_coverage`, `visibility_loss`, `projected_area`, 及 **7 大身体关键解剖部位可见性** (`head`, `torso`, `pelvis`, `left_hand`, `right_hand`, `left_leg`, `right_leg`)；
-- **Fusion MLP** (`models/view_scorer.py`)：$(32 + 32 = 64)\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d} \rightarrow 1\text{d}$ (Sigmoid 激活)。
+- **HumanPoseEncoder** (`models/pose_encoder.py`): $49\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d}$；
+- **ViewFeatureEncoder** (`models/view_encoder.py`): $13\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d}$；
+  - 包含几何信息（距离、相对偏角 $\sin/\cos$）与观测信息（全局覆盖率、覆盖损失、投影面积及 **7 大关键身体部位可见性**：`head`, `torso`, `pelvis`, `left_hand`, `right_hand`, `left_leg`, `right_leg`）；
+- **Fusion MLP** (`models/view_scorer.py`): $(32 + 32 = 64)\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d} \rightarrow 1\text{d}$ (Sigmoid 激活)。
 
 ---
 
-## 3. 训练目标与损失函数 (Training Objective & Loss)
+## 3. 训练目标与科学真实效用 (Ground-Truth Utility)
 
-### 科学目标效用函数 (Ground-Truth Utility):
+训练标签严格基于物理几何与解剖可见性计算，**绝非模仿规则打分**：
 $$Q^*(v) = w_1 \cdot \text{global\_visibility} + w_2 \cdot \text{pose\_coverage} + w_3 \cdot \text{body\_part\_visibility} - w_4 \cdot \text{distance\_penalty}$$
-其中 $w_1 = 0.35, w_2 = 0.35, w_3 = 0.20, w_4 = 0.10$。
-
-### 排序损失 (Pairwise Ranking Loss):
-$$\mathcal{L}_{\text{rank}} = \frac{1}{|\mathcal{P}|} \sum_{(i,j) \in \mathcal{P}} \max\left(0, -\text{sign}(y_i - y_j)(\hat{s}_i - \hat{s}_j) + m\right)$$
-辅以平滑 L1 回归损失，以确保候选视角的精准排序与数值校准。
+- 采用 **Pairwise Ranking Loss** 结合辅助 Smooth L1 损失，专注于候选视角的正确相对排序；
+- 严格执行 **Spatial-Level / Instance-Level 数据集隔离划分**，严禁训练集与测试集共享相同位姿。
 
 ---
 
@@ -56,20 +56,20 @@ $$\mathcal{L}_{\text{rank}} = \frac{1}{|\mathcal{P}|} \sum_{(i,j) \in \mathcal{P
 
 1. **Random View**: 随机选择可行视点；
 2. **Nearest View**: 选择离人体最近的可行视点；
-3. **Geometry Best (v8 Baseline)**: 基于纯几何可见性与距离选择最优视点；
-4. **Rule-based (v9.0 Baseline)**: 基于可解释先验规则打分 $Q(v \mid a)$；
-5. **Learnable (v9.1 Ours)**: 基于人体状态感知的神经网络预测得分 $\hat{Q}(v \mid H)$。
+3. **Geometry-based View Selection (v8)**: 纯几何可见性与距离驱动选择；
+4. **Rule-based Task-aware View Selection (v9.0)**: 基于先验规则知识库的打分基线；
+5. **Human-state-aware Learnable View Selection (v9.1 Ours)**: 基于纯人体姿态驱动的神经网络打分选择。
 
 ---
 
-## 5. 快速运行指令 (Execution Guide)
+## 5. 实验复现与运行指令 (Execution Guide)
 
 ### 1. 运行纯 Python 单元测试:
 ```bash
 python3 -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"
 ```
 
-### 2. 训练 v9.1 人体状态感知打分模型:
+### 2. 训练 v9.1 人体物理状态感知打分模型:
 ```bash
 python -m ea_avs_mvp_v9.scripts.train_v91 --epochs 40 --lr 0.001
 ```

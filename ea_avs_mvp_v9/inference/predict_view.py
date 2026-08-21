@@ -1,11 +1,12 @@
 """
-学习型视角推理预测器 —— predict_view.py
-======================================
+人体状态感知视角推理预测器 —— predict_view.py
+============================================
 
 职责：
     1. 加载已训练好的 LearnableViewScorer 权重；
-    2. 对输入的任意人体位姿、动作类别与候选视点池进行批量前向推理打分；
-    3. 输出排序结果并选定最优主动观察视角。
+    2. 基于输入的人体 3D 关节姿态 H 与候选视点池 v 进行神经网络前向推理打分；
+    3. 输出候选视角质量排序与最优观察视点决策；
+    4. 严禁使用 Action Label 作为模型输入。
 """
 
 import logging
@@ -16,8 +17,7 @@ import numpy as np
 import torch
 
 from ea_avs_mvp_v8.core.types import CandidateViewpoint
-from ea_avs_mvp_v9.action.action_encoder import ActionEncoder
-from ea_avs_mvp_v9.core.types import ActionClass, ViewFeature
+from ea_avs_mvp_v9.core.types import ViewFeature
 from ea_avs_mvp_v9.models.pose_encoder import extract_pose_vector
 from ea_avs_mvp_v9.models.view_encoder import extract_view_vector
 from ea_avs_mvp_v9.models.view_scorer import LearnableViewScorer
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class ViewPredictor:
-    """视角打分模型推理引擎。"""
+    """人体状态感知视角打分模型推理引擎。"""
 
     def __init__(
         self,
@@ -44,7 +44,6 @@ class ViewPredictor:
                 self.load_checkpoint(checkpoint_path)
 
         self.model.eval()
-        self.action_encoder = ActionEncoder()
 
     def load_checkpoint(self, checkpoint_path: Union[str, Path]):
         """加载权重检查点。"""
@@ -61,21 +60,19 @@ class ViewPredictor:
         features: List[ViewFeature],
         human_joints_3d: Dict[str, List[float]],
         human_yaw_deg: float = 0.0,
-        action_label: Union[str, ActionClass] = "standing",
-        ablate_action: bool = False,
+        action_metadata: Optional[str] = None,  # 仅作为元数据记录，严禁输入模型
         ablate_pose: bool = False,
     ) -> Dict[str, Any]:
         """
-        对所有候选视点进行推理预测。
+        对所有候选视点进行纯人体状态驱动的推理预测 Q(v | H)。
         """
         if not viewpoints:
             raise ValueError("Candidate viewpoints list is empty")
 
-        # 1. 提取人体状态姿态向量 (无 Action 编码输入)
+        # 1. 提取人体姿态特征向量 (49d)
         pose_vec = extract_pose_vector(human_joints_3d, human_yaw_deg=human_yaw_deg)
-        act_embed = self.action_encoder.encode(action_label) if action_label else None
 
-        # 2. 提取 13 维视角特征向量
+        # 2. 提取 13 维候选视角描述子向量
         view_vecs = [extract_view_vector(f) for f in features]
 
         # 3. 构造 Tensor
@@ -97,7 +94,7 @@ class ViewPredictor:
         for i, (vp, feat) in enumerate(zip(viewpoints, features)):
             s = float(scores[i])
             if not vp.feasible:
-                s = 0.0  # 不可行视点置零
+                s = 0.0
 
             scored_views.append({
                 "viewpoint_id": vp.viewpoint_id,
@@ -106,6 +103,8 @@ class ViewPredictor:
                 "yaw_deg": round(float(vp.yaw_deg), 1),
                 "distance": feat.distance,
                 "viewing_angle_deg": feat.viewing_angle_deg,
+                "pose_coverage": feat.pose_coverage,
+                "body_part_visibilities": feat.body_part_visibilities,
                 "feasible": vp.feasible,
             })
 
@@ -114,7 +113,7 @@ class ViewPredictor:
         best_view = ranked_views[0]
 
         return {
-            "action_name": act_embed.action_name,
+            "action_metadata": action_metadata,
             "best_viewpoint_id": best_view["viewpoint_id"],
             "best_predicted_score": best_view["predicted_score"],
             "best_view": best_view,

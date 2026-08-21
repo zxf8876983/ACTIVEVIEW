@@ -107,7 +107,7 @@ def run_occlusion_experiments(
             features=features,
             human_joints_3d=gt_joints,
             human_yaw_deg=human_pose.yaw_deg,
-            action_label="sitting",
+            action_metadata="sitting",
         )
 
         best_id = pred_res["best_viewpoint_id"]

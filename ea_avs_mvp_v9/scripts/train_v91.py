@@ -1,10 +1,10 @@
 """
-v9.1 学习型视角打分模型训练脚本 —— train_v91.py
-=============================================
+v9.1 人体物理状态感知学习型视点打分模型训练脚本 —— train_v91.py
+==============================================================
 
 功能：
-    1. 自动生成多动作、多位姿主动视点训练集与验证集；
-    2. 基于 Pairwise Ranking Loss 训练 LearnableViewScorer；
+    1. 自动生成多姿态、严格空间隔离的主动视点训练集与验证集；
+    2. 基于 Pairwise Ranking Loss 训练纯人体状态驱动的 LearnableViewScorer (Q(v | H))；
     3. 保存模型检查点至 data/ActiveView/checkpoints/model_checkpoint.pth；
     4. 生成训练收敛曲线至 data/ActiveView/results/training_curve.png。
 
@@ -114,7 +114,7 @@ def main():
     print(f"Saved Checkpoint:      {ckpt_path}")
     print(f"Training Curve:        {curve_path}")
     print("=" * 65)
-    print("PASS:\nACTIVEVIEW v9.1 Model Training Complete\n")
+    print("PASS:\nACTIVEVIEW v9.1 Human-state-aware Model Training Complete\n")
     sys.exit(0)
 
 

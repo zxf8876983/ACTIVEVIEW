@@ -3,10 +3,10 @@
 =================================================
 
 职责：
-    1. 融合人体姿态特征 (Human Pose Embedding, 32d) 与候选视角几何特征 (View Embedding, 32d)；
+    1. 融合人体物理状态特征 (Human Pose Embedding, 32d) 与候选视点描述子 (View Embedding, 32d)；
     2. 通过全连接 Fusion MLP 输出视角连续效用评分 Q_hat(v | H) ∈ [0.0, 1.0]；
-    3. 严格禁止 Action Label 作为模型输入；
-    4. 支持消融实验接口 (ablate_pose)。
+    3. 严禁任何 Action Label 参与模型结构与前向推理；
+    4. 支持姿态消融开关 (ablate_pose)。
 """
 
 from typing import Dict, List, Optional, Tuple, Union
@@ -61,14 +61,12 @@ class LearnableViewScorer(nn.Module):
         self,
         pose_input: torch.Tensor,
         view_input: torch.Tensor,
-        action_input: Optional[torch.Tensor] = None,  # 仅保留为可选向后兼容签名，严禁参与前向计算
         ablate_pose: bool = False,
     ) -> torch.Tensor:
         """
         Args:
-            pose_input: (B, 49) 人体 16 关节相对坐标及朝向
+            pose_input: (B, 49) 人体 16 骨骼关键点相对坐标及朝向
             view_input: (B, N, 13) 或 (B, 13) 候选视角多维几何与 7 大部位观测特征
-            action_input: None (严禁输入)
             ablate_pose: 是否消融人体姿态特征 (置零)
         Returns:
             scores: (B, N) 或 (B, 1) 候选视角预测效用得分 Q_hat(v | H)

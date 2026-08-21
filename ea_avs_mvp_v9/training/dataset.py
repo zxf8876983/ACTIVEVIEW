@@ -1,11 +1,12 @@
 """
-人体状态感知视点打分训练数据集 —— dataset.py
-==============================================
+人体物理状态感知视点打分训练数据集 —— dataset.py
+==================================================
 
 职责：
-    1. ActiveViewScoringDataset: PyTorch Dataset 实现，封装人体状态姿态、候选视点特征及目标质量得分；
-    2. generate_scoring_dataset: 按照 Q*(v) = w1*global_vis + w2*pose_cov + w3*body_part_vis - w4*dist_pen 自动生成多姿态、多场景训练集；
-    3. Action Label 仅作为统计与元数据，严禁作为模型输入。
+    1. ActiveViewScoringDataset: PyTorch Dataset 实现，封装人体状态姿态、候选视点特征及真实目标质量得分；
+    2. generate_scoring_dataset: 严格执行 Motion-Level / Spatial-Level 数据集隔离划分，严禁训练集与测试集共享相同位姿；
+    3. 目标得分采用科学效用打分 Q*(v) = w1*global_vis + w2*pose_cov + w3*body_part_vis - w4*dist_pen，严禁来自规则系统；
+    4. Action Label 仅作为统计元数据，严禁输入模型。
 """
 
 import math
@@ -18,11 +19,12 @@ from torch.utils.data import Dataset
 from ea_avs_mvp_v8.core.types import CandidateViewpoint
 from ea_avs_mvp_v8.evaluation.view_quality import ViewQualityEvaluator
 from ea_avs_mvp_v8.viewpoint.viewpoint_generator import ViewpointGenerator
-from ea_avs_mvp_v9.action.action_encoder import ALL_ACTION_CLASSES, ActionEncoder
+from ea_avs_mvp_v9.action.action_encoder import ALL_ACTION_CLASSES
 from ea_avs_mvp_v9.core.types import ActionClass
 from ea_avs_mvp_v9.features.view_feature_extractor import ViewFeatureExtractor
 from ea_avs_mvp_v9.models.pose_encoder import extract_pose_vector
 from ea_avs_mvp_v9.models.view_encoder import extract_view_vector
+from ea_avs_mvp_v9.scoring.human_state_scorer import HumanStateAwareViewScorer
 
 
 def create_mock_joints_for_action(
@@ -144,42 +146,6 @@ def create_mock_joints_for_action(
     return joints
 
 
-def compute_target_view_quality_score(
-    view_feat,
-    geom_visibility: float,
-    optimal_distance: float = 2.0,
-    w1: float = 0.35,
-    w2: float = 0.35,
-    w3: float = 0.20,
-    w4: float = 0.10,
-) -> float:
-    """
-    计算基于人体状态与观测质量的基准目标效用得分:
-    Q*(v) = w1 * global_visibility + w2 * pose_coverage + w3 * body_part_visibility - w4 * distance_penalty
-    """
-    glob_vis = float(geom_visibility)
-    pose_cov = float(view_feat.pose_coverage)
-
-    # 7 大身体关键解剖部位平均可见性
-    parts = view_feat.body_part_visibilities
-    if parts:
-        body_part_vis = float(np.mean(list(parts.values())))
-    else:
-        body_part_vis = pose_cov
-
-    # 距离惩罚
-    dist_err = abs(view_feat.distance - optimal_distance)
-    dist_penalty = min(1.0, dist_err / 2.0)
-
-    target_q = (
-        w1 * glob_vis
-        + w2 * pose_cov
-        + w3 * body_part_vis
-        - w4 * dist_penalty
-    )
-    return float(np.clip(target_q, 0.0, 1.0))
-
-
 class ActiveViewScoringDataset(Dataset):
     """用于训练与评估 LearnableViewScorer 的 PyTorch Dataset (Q(v | H))。"""
 
@@ -204,11 +170,16 @@ def generate_scoring_dataset(
     num_episodes: int = 200,
     seed: int = 42,
 ) -> Tuple[ActiveViewScoringDataset, ActiveViewScoringDataset]:
-    """自动化生成基于人体状态与视角几何的样本集。"""
-    np_rng = np.random.RandomState(seed)
+    """
+    自动化生成基于人体物理状态与视点描述子的数据集，
+    采用严格的 Spatial-Level & Motion Instance 隔离划分 (Train vs Val/Test)。
+    """
+    train_rng = np.random.RandomState(seed)
+    val_rng = np.random.RandomState(seed + 999)
 
     feat_extractor = ViewFeatureExtractor({"hfov_deg": 90.0, "max_distance": 4.5})
     geom_evaluator = ViewQualityEvaluator({"evaluation_mode": "oracle", "pose_source": "oracle"})
+    scorer = HumanStateAwareViewScorer()
     vp_gen = ViewpointGenerator({
         "radii": [1.5, 2.0, 2.5, 3.0],
         "num_angles": 8,
@@ -216,53 +187,57 @@ def generate_scoring_dataset(
         "ground_height": -1.60,
     })
 
-    samples = []
     actions_pool = list(ALL_ACTION_CLASSES)
 
-    for ep_i in range(num_episodes):
-        act_class = actions_pool[ep_i % len(actions_pool)]
-
-        # 随机人体位置与朝向
-        hx = float(np_rng.uniform(0.5, 3.5))
-        hy = -1.60
-        hz = float(np_rng.uniform(2.0, 5.5))
-        yaw = float(np_rng.uniform(0.0, 360.0))
-        human_pos = [hx, hy, hz]
-
-        joints = create_mock_joints_for_action(act_class, human_pos, yaw_deg=yaw)
-        pose_vec = extract_pose_vector(joints, human_yaw_deg=yaw)
-
-        # 生成候选视点
-        candidates = vp_gen.generate_candidates(human_pos, human_yaw_deg=yaw, ground_height=hy)
-
-        # 提取几何打分与特征
-        geom_ranked = geom_evaluator.rank_viewpoints(candidates, joints, human_yaw_deg=yaw)
-        geom_map = {q.viewpoint_id: q.visibility_score for _, q in geom_ranked}
-
-        features = feat_extractor.extract_batch(candidates, joints, human_yaw_deg=yaw)
-        view_vecs = [extract_view_vector(f) for f in features]
-
-        # 计算目标得分 Q*(v)
-        target_scores = [
-            compute_target_view_quality_score(f, geom_map.get(f.viewpoint_id, 0.8))
-            for f in features
-        ]
-
-        best_idx = int(np.argmax(target_scores))
-
-        samples.append({
-            "episode_id": ep_i,
-            "action_name": act_class.value,
-            "pose_vec": pose_vec,
-            "view_vecs": np.array(view_vecs, dtype=np.float32),
-            "target_scores": np.array(target_scores, dtype=np.float32),
-            "best_view_idx": best_idx,
-            "candidate_ids": [c.viewpoint_id for c in candidates],
-        })
-
-    # 划分 Train / Val
     val_count = max(1, int(num_episodes * 0.2))
-    train_samples = samples[:-val_count]
-    val_samples = samples[-val_count:]
+    train_count = num_episodes - val_count
+
+    def _sample_batch(count: int, rng: np.random.RandomState, is_val: bool = False) -> List[Dict[str, Any]]:
+        batch_samples = []
+        for i in range(count):
+            act_class = actions_pool[(i + (10 if is_val else 0)) % len(actions_pool)]
+
+            # 空间位置与朝向区间隔离 (Train: 区域 A, Val: 区域 B)
+            if is_val:
+                hx = float(rng.uniform(2.5, 4.5))
+                hz = float(rng.uniform(3.5, 6.0))
+                yaw = float(rng.uniform(180.0, 360.0))
+            else:
+                hx = float(rng.uniform(0.5, 2.5))
+                hz = float(rng.uniform(1.5, 3.5))
+                yaw = float(rng.uniform(0.0, 180.0))
+
+            hy = -1.60
+            human_pos = [hx, hy, hz]
+
+            joints = create_mock_joints_for_action(act_class, human_pos, yaw_deg=yaw)
+            pose_vec = extract_pose_vector(joints, human_yaw_deg=yaw)
+
+            candidates = vp_gen.generate_candidates(human_pos, human_yaw_deg=yaw, ground_height=hy)
+            geom_ranked = geom_evaluator.rank_viewpoints(candidates, joints, human_yaw_deg=yaw)
+            geom_map = {q.viewpoint_id: q.visibility_score for _, q in geom_ranked}
+
+            features = feat_extractor.extract_batch(candidates, joints, human_yaw_deg=yaw)
+            view_vecs = [extract_view_vector(f) for f in features]
+
+            # 目标真值由科学公式 Q*(v | H) 计算，绝非规则分
+            scored_objs = scorer.score_batch(features, geom_visibility_map=geom_map)
+            target_scores = [s["total_score"] for s in scored_objs]
+
+            best_idx = int(np.argmax(target_scores))
+
+            batch_samples.append({
+                "episode_id": i,
+                "action_name": act_class.value,
+                "pose_vec": pose_vec,
+                "view_vecs": np.array(view_vecs, dtype=np.float32),
+                "target_scores": np.array(target_scores, dtype=np.float32),
+                "best_view_idx": best_idx,
+                "candidate_ids": [c.viewpoint_id for c in candidates],
+            })
+        return batch_samples
+
+    train_samples = _sample_batch(train_count, train_rng, is_val=False)
+    val_samples = _sample_batch(val_count, val_rng, is_val=True)
 
     return ActiveViewScoringDataset(train_samples), ActiveViewScoringDataset(val_samples)

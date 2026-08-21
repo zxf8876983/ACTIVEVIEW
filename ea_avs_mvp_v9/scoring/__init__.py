@@ -1,9 +1,11 @@
 """
-v9 动作条件视角打分模块
+v9.1 视角质量评价模块
 """
 
 from .action_scorer import ActionConditionedScorer
+from .human_state_scorer import HumanStateAwareViewScorer
 
 __all__ = [
-    "ActionConditionedScorer",
+    "HumanStateAwareViewScorer",
+    "ActionConditionedScorer",  # 保留供 v9.0 规则基线对比调用
 ]
