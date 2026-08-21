@@ -62,7 +62,8 @@ class ViewFeature:
     pose_coverage: float                 # 全身 16 关键点覆盖率 [0.0, 1.0]
     visibility_loss_ratio: float         # 姿态未观测损失比例 [0.0, 1.0]
     projected_area_ratio: float          # 人体投影面积占比 [0.0, 1.0]
-    region_coverages: Dict[str, float] = field(default_factory=dict)  # 各身体分区覆盖率
+    body_part_visibilities: Dict[str, float] = field(default_factory=dict)  # 7 大身体关键解剖部位可见性
+    region_coverages: Dict[str, float] = field(default_factory=dict)        # 兼容旧字段
     feasible: bool = True
     metadata: Dict[str, Any] = field(default_factory=dict)
 
@@ -74,6 +75,7 @@ class ViewFeature:
             "pose_coverage": float(self.pose_coverage),
             "visibility_loss_ratio": float(self.visibility_loss_ratio),
             "projected_area_ratio": float(self.projected_area_ratio),
+            "body_part_visibilities": {k: float(v) for k, v in self.body_part_visibilities.items()},
             "region_coverages": {k: float(v) for k, v in self.region_coverages.items()},
             "feasible": bool(self.feasible),
             "metadata": self.metadata,

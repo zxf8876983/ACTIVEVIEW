@@ -71,26 +71,23 @@ class ViewPredictor:
         if not viewpoints:
             raise ValueError("Candidate viewpoints list is empty")
 
-        # 1. 提取姿态与动作向量
+        # 1. 提取人体状态姿态向量 (无 Action 编码输入)
         pose_vec = extract_pose_vector(human_joints_3d, human_yaw_deg=human_yaw_deg)
-        act_embed = self.action_encoder.encode(action_label)
-        act_vec = np.array(act_embed.vector, dtype=np.float32)
+        act_embed = self.action_encoder.encode(action_label) if action_label else None
 
-        # 2. 提取视角特征向量
+        # 2. 提取 13 维视角特征向量
         view_vecs = [extract_view_vector(f) for f in features]
 
         # 3. 构造 Tensor
         pose_t = torch.tensor(pose_vec, dtype=torch.float32, device=self.device).unsqueeze(0)  # (1, 49)
-        act_t = torch.tensor(act_vec, dtype=torch.float32, device=self.device).unsqueeze(0)    # (1, 5)
         views_arr = np.array(view_vecs, dtype=np.float32)
-        views_t = torch.tensor(views_arr, dtype=torch.float32, device=self.device).unsqueeze(0)# (1, N, 11)
+        views_t = torch.tensor(views_arr, dtype=torch.float32, device=self.device).unsqueeze(0)# (1, N, 13)
 
-        # 4. 模型前向推理
+        # 4. 模型前向推理 Q(v | H)
         self.model.eval()
         with torch.no_grad():
             scores_t = self.model(
-                pose_t, act_t, views_t,
-                ablate_action=ablate_action,
+                pose_t, views_t,
                 ablate_pose=ablate_pose,
             )  # (1, N)
             scores = scores_t.squeeze(0).cpu().numpy()  # (N,)

@@ -232,23 +232,50 @@ def main():
     with open(vis_dir / "comparison_with_v90.json", "w", encoding="utf-8") as f:
         json.dump(v90_comp, f, indent=2, ensure_ascii=False)
 
-    # 保存 v91_best_view.json
+    # 保存 v91_best_view.json 与 best_view.json
     best_v91_data = {
         "version": "9.1.0",
-        "method": "Learnable Action-conditioned View Scoring",
+        "method": "Human-state-aware Learnable Active View Selection",
         "selected_viewpoint_id": vp_learnable.viewpoint_id,
         "action": action_label,
         "predicted_score": s_learnable_pred,
-        "ground_truth_rule_score": rule_score_map[vp_learnable.viewpoint_id].total_score,
+        "ground_truth_score": rule_score_map[vp_learnable.viewpoint_id].total_score,
         "position": [float(x) for x in vp_learnable.position],
         "yaw_deg": float(vp_learnable.yaw_deg),
         "camera_pose": cam_info,
+        "body_part_visibilities": feat_map[vp_learnable.viewpoint_id].body_part_visibilities,
         "metrics": feat_map[vp_learnable.viewpoint_id].to_dict(),
         "rgb_image": to_relative_data_path(best_rgb_path),
     }
     best_json_path = vis_dir / "v91_best_view.json"
     with open(best_json_path, "w", encoding="utf-8") as f:
         json.dump(best_v91_data, f, indent=2, ensure_ascii=False)
+    with open(vis_dir / "best_view.json", "w", encoding="utf-8") as f:
+        json.dump(best_v91_data, f, indent=2, ensure_ascii=False)
+
+    # 保存 7 大身体关键解剖部位可见性报表 body_part_visibility_report.json
+    body_part_report = {
+        "action": action_label,
+        "supported_parts": ["head", "torso", "pelvis", "left_hand", "right_hand", "left_leg", "right_leg"],
+        "baselines_visibility": {
+            b_name: {
+                "selected_view_id": b_entry["selected_view_id"],
+                "distance": b_entry["distance"],
+                "viewing_angle_deg": b_entry["viewing_angle_deg"],
+                "pose_coverage": b_entry["pose_coverage"],
+                "body_parts": feat_map[b_entry["selected_view_id"]].body_part_visibilities,
+            }
+            for b_name, b_entry in baselines_report["baselines"].items()
+        }
+    }
+    body_part_path = vis_dir / "body_part_visibility_report.json"
+    with open(body_part_path, "w", encoding="utf-8") as f:
+        json.dump(body_part_report, f, indent=2, ensure_ascii=False)
+    # 同时也复制一份到 results/
+    res_dir = get_data_root() / "results"
+    res_dir.mkdir(parents=True, exist_ok=True)
+    with open(res_dir / "body_part_visibility_report.json", "w", encoding="utf-8") as f:
+        json.dump(body_part_report, f, indent=2, ensure_ascii=False)
 
     # 9. 打印 5 大基线对比汇总
     print("\n" + "=" * 92)

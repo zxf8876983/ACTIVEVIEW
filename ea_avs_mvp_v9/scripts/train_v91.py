@@ -74,13 +74,11 @@ def main():
     train_dataset, val_dataset = generate_scoring_dataset(num_episodes=num_episodes, seed=seed)
     logger.info("Dataset split: Train=%d samples, Val=%d samples", len(train_dataset), len(val_dataset))
 
-    # 3. 初始化模型与训练器
+    # 3. 初始化模型与训练器 (Q(v | H))
     model = LearnableViewScorer(
         pose_input_dim=int(model_cfg.get("pose_input_dim", 49)),
         pose_embed_dim=int(model_cfg.get("pose_embed_dim", 32)),
-        action_input_dim=int(model_cfg.get("action_input_dim", 5)),
-        action_embed_dim=int(model_cfg.get("action_embed_dim", 16)),
-        view_input_dim=int(model_cfg.get("view_input_dim", 11)),
+        view_input_dim=int(model_cfg.get("view_input_dim", 13)),
         view_embed_dim=int(model_cfg.get("view_embed_dim", 32)),
         dropout=float(model_cfg.get("dropout", 0.1)),
     )

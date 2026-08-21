@@ -23,11 +23,20 @@ from ea_avs_mvp_v9.core.types import ViewFeature
 
 logger = logging.getLogger(__name__)
 
-# 16 核心关节到解剖身体分区的标准语义映射
-REGION_JOINT_MAPPINGS: Dict[str, List[str]] = {
+# 16 核心关节到 7 大解剖身体关键部位的标准语义映射
+BODY_PART_JOINT_MAPPINGS: Dict[str, List[str]] = {
     "head": ["head", "neck", "nose", "eyes"],
     "torso": ["spine", "spine1", "spine2", "spine3", "chest", "thorax"],
     "pelvis": ["pelvis", "hip", "hips", "root"],
+    "left_hand": ["left_wrist", "left_elbow", "left_hand", "left_shoulder"],
+    "right_hand": ["right_wrist", "right_elbow", "right_hand", "right_shoulder"],
+    "left_leg": ["left_hip", "left_knee", "left_ankle", "left_foot"],
+    "right_leg": ["right_hip", "right_knee", "right_ankle", "right_foot"],
+}
+
+# 兼容旧版本区域映射
+REGION_JOINT_MAPPINGS: Dict[str, List[str]] = {
+    **BODY_PART_JOINT_MAPPINGS,
     "upper_body": [
         "left_shoulder", "right_shoulder", "left_elbow", "right_elbow",
         "left_wrist", "right_wrist", "head", "neck", "chest"
@@ -102,13 +111,22 @@ class ViewFeatureExtractor:
         pose_coverage = float(len(visible_joints_set) / total_joints)
         vis_loss = float(np.clip(1.0 - pose_coverage, 0.0, 1.0))
 
-        # 4. 分身体区域覆盖率计算
-        region_coverages: Dict[str, float] = {}
-        for reg_name, joint_names in REGION_JOINT_MAPPINGS.items():
-            # 查找在当前 human_joints_3d 中匹配该区域的关节点
+        # 4. 7 大身体关键解剖部位可见性 (Body Part Visibility)
+        body_part_visibilities: Dict[str, float] = {}
+        for part_name, joint_names in BODY_PART_JOINT_MAPPINGS.items():
             matched_keys = [k for k in human_joints_3d if any(alias in k.lower() for alias in joint_names)]
             if not matched_keys:
-                # 若无直接匹配，使用整体覆盖率近似
+                body_part_visibilities[part_name] = round(pose_coverage, 3)
+            else:
+                vis_in_part = sum(1 for k in matched_keys if k in visible_joints_set)
+                body_part_visibilities[part_name] = round(float(vis_in_part / len(matched_keys)), 3)
+
+        # 区域覆盖率 (兼容)
+        region_coverages: Dict[str, float] = dict(body_part_visibilities)
+        for reg_name in ["upper_body", "lower_body"]:
+            joint_names = REGION_JOINT_MAPPINGS[reg_name]
+            matched_keys = [k for k in human_joints_3d if any(alias in k.lower() for alias in joint_names)]
+            if not matched_keys:
                 region_coverages[reg_name] = round(pose_coverage, 3)
             else:
                 vis_in_reg = sum(1 for k in matched_keys if k in visible_joints_set)
@@ -129,6 +147,7 @@ class ViewFeatureExtractor:
             pose_coverage=round(pose_coverage, 3),
             visibility_loss_ratio=round(vis_loss, 3),
             projected_area_ratio=proj_ratio,
+            body_part_visibilities=body_part_visibilities,
             region_coverages=region_coverages,
             feasible=viewpoint.feasible,
             metadata=viewpoint.metadata,

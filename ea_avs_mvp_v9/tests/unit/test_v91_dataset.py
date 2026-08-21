@@ -1,8 +1,3 @@
-"""
-Dataset 单元测试 —— test_v91_dataset.py
-======================================
-"""
-
 import unittest
 from ea_avs_mvp_v9.core.types import ActionClass
 from ea_avs_mvp_v9.training.dataset import create_mock_joints_for_action, generate_scoring_dataset
@@ -24,8 +19,7 @@ class TestV91Dataset(unittest.TestCase):
 
         sample = train_ds[0]
         self.assertEqual(sample["pose_vec"].shape, (49,))
-        self.assertEqual(sample["action_vec"].shape, (5,))
-        self.assertEqual(sample["view_vecs"].shape[1], 11)
+        self.assertEqual(sample["view_vecs"].shape[1], 13)
         self.assertEqual(sample["target_scores"].shape[0], sample["view_vecs"].shape[0])
 
 

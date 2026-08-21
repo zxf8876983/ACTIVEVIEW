@@ -1,10 +1,11 @@
 """
-动作感知视点打分训练数据集 —— dataset.py
-======================================
+人体状态感知视点打分训练数据集 —— dataset.py
+==============================================
 
 职责：
-    1. ActiveViewScoringDataset: PyTorch Dataset 实现，封装姿态、动作、视点特征及目标得分；
-    2. generate_scoring_dataset: 自动合成与生成覆盖 5 大典型动作的多场景、多位姿、多朝向主动视点训练集。
+    1. ActiveViewScoringDataset: PyTorch Dataset 实现，封装人体状态姿态、候选视点特征及目标质量得分；
+    2. generate_scoring_dataset: 按照 Q*(v) = w1*global_vis + w2*pose_cov + w3*body_part_vis - w4*dist_pen 自动生成多姿态、多场景训练集；
+    3. Action Label 仅作为统计与元数据，严禁作为模型输入。
 """
 
 import math
@@ -22,7 +23,6 @@ from ea_avs_mvp_v9.core.types import ActionClass
 from ea_avs_mvp_v9.features.view_feature_extractor import ViewFeatureExtractor
 from ea_avs_mvp_v9.models.pose_encoder import extract_pose_vector
 from ea_avs_mvp_v9.models.view_encoder import extract_view_vector
-from ea_avs_mvp_v9.scoring.action_scorer import ActionConditionedScorer
 
 
 def create_mock_joints_for_action(
@@ -37,13 +37,11 @@ def create_mock_joints_for_action(
     sin_y = math.sin(yaw_rad)
 
     def rot(dx: float, dz: float) -> Tuple[float, float]:
-        """将局部坐标偏移旋转到世界坐标系。"""
         wx = dx * cos_y + dz * sin_y
         wz = -dx * sin_y + dz * cos_y
         return wx, wz
 
     if action_class == ActionClass.FALL:
-        # 跌倒状态：身体平躺/横卧在地面附近 (Y 在 -1.55 ~ -1.40 之间，沿地面展开)
         joints = {
             "pelvis": [rx, ry + 0.15, rz],
             "head": [rx + rot(0.0, 0.9)[0], ry + 0.20, rz + rot(0.0, 0.9)[1]],
@@ -64,7 +62,6 @@ def create_mock_joints_for_action(
             "right_ankle": [rx + rot(0.15, -0.85)[0], ry + 0.08, rz + rot(0.15, -0.85)[1]],
         }
     elif action_class == ActionClass.SITTING:
-        # 静坐状态：骨盆略低于站立 (Y ~ 0.55m)，大腿水平前伸，小腿垂直向下
         joints = {
             "pelvis": [rx, ry + 0.55, rz],
             "head": [rx, ry + 1.35, rz],
@@ -85,7 +82,6 @@ def create_mock_joints_for_action(
             "right_ankle": [rx + rot(0.16, 0.40)[0], ry + 0.08, rz + rot(0.16, 0.40)[1]],
         }
     elif action_class == ActionClass.BENDING:
-        # 弯腰状态：骨盆正常高度，躯干前倾约 60 度，头部向前下方低垂
         joints = {
             "pelvis": [rx, ry + 0.85, rz],
             "head": [rx + rot(0.0, 0.65)[0], ry + 0.70, rz + rot(0.0, 0.65)[1]],
@@ -106,7 +102,6 @@ def create_mock_joints_for_action(
             "right_ankle": [rx + rot(0.16, 0.0)[0], ry + 0.08, rz + rot(0.16, 0.0)[1]],
         }
     elif action_class == ActionClass.REACHING:
-        # 伸手状态：直立姿势，右手和右臂向前上方平伸
         joints = {
             "pelvis": [rx, ry + 0.88, rz],
             "head": [rx, ry + 1.65, rz],
@@ -127,7 +122,6 @@ def create_mock_joints_for_action(
             "right_ankle": [rx + rot(0.16, 0.0)[0], ry + 0.08, rz + rot(0.16, 0.0)[1]],
         }
     else:  # STANDING
-        # 直立状态：标准站立姿势
         joints = {
             "pelvis": [rx, ry + 0.88, rz],
             "head": [rx, ry + 1.65, rz],
@@ -150,8 +144,44 @@ def create_mock_joints_for_action(
     return joints
 
 
+def compute_target_view_quality_score(
+    view_feat,
+    geom_visibility: float,
+    optimal_distance: float = 2.0,
+    w1: float = 0.35,
+    w2: float = 0.35,
+    w3: float = 0.20,
+    w4: float = 0.10,
+) -> float:
+    """
+    计算基于人体状态与观测质量的基准目标效用得分:
+    Q*(v) = w1 * global_visibility + w2 * pose_coverage + w3 * body_part_visibility - w4 * distance_penalty
+    """
+    glob_vis = float(geom_visibility)
+    pose_cov = float(view_feat.pose_coverage)
+
+    # 7 大身体关键解剖部位平均可见性
+    parts = view_feat.body_part_visibilities
+    if parts:
+        body_part_vis = float(np.mean(list(parts.values())))
+    else:
+        body_part_vis = pose_cov
+
+    # 距离惩罚
+    dist_err = abs(view_feat.distance - optimal_distance)
+    dist_penalty = min(1.0, dist_err / 2.0)
+
+    target_q = (
+        w1 * glob_vis
+        + w2 * pose_cov
+        + w3 * body_part_vis
+        - w4 * dist_penalty
+    )
+    return float(np.clip(target_q, 0.0, 1.0))
+
+
 class ActiveViewScoringDataset(Dataset):
-    """用于训练与评估 LearnableViewScorer 的 PyTorch Dataset。"""
+    """用于训练与评估 LearnableViewScorer 的 PyTorch Dataset (Q(v | H))。"""
 
     def __init__(self, samples: List[Dict[str, Any]]):
         self.samples = samples
@@ -163,7 +193,6 @@ class ActiveViewScoringDataset(Dataset):
         item = self.samples[idx]
         return {
             "pose_vec": torch.tensor(item["pose_vec"], dtype=torch.float32),
-            "action_vec": torch.tensor(item["action_vec"], dtype=torch.float32),
             "view_vecs": torch.tensor(item["view_vecs"], dtype=torch.float32),
             "target_scores": torch.tensor(item["target_scores"], dtype=torch.float32),
             "action_name": item["action_name"],
@@ -174,16 +203,12 @@ class ActiveViewScoringDataset(Dataset):
 def generate_scoring_dataset(
     num_episodes: int = 200,
     seed: int = 42,
-    action_priors_config: Optional[Dict[str, Any]] = None,
 ) -> Tuple[ActiveViewScoringDataset, ActiveViewScoringDataset]:
-    """自动化生成高质量训练与验证样本集。"""
-    rng = random.Random(seed)
+    """自动化生成基于人体状态与视角几何的样本集。"""
     np_rng = np.random.RandomState(seed)
 
-    encoder = ActionEncoder(action_priors_config)
     feat_extractor = ViewFeatureExtractor({"hfov_deg": 90.0, "max_distance": 4.5})
     geom_evaluator = ViewQualityEvaluator({"evaluation_mode": "oracle", "pose_source": "oracle"})
-    scorer = ActionConditionedScorer({"w_geometry": 0.60, "w_action": 0.40})
     vp_gen = ViewpointGenerator({
         "radii": [1.5, 2.0, 2.5, 3.0],
         "num_angles": 8,
@@ -196,7 +221,6 @@ def generate_scoring_dataset(
 
     for ep_i in range(num_episodes):
         act_class = actions_pool[ep_i % len(actions_pool)]
-        act_embed = encoder.encode(act_class)
 
         # 随机人体位置与朝向
         hx = float(np_rng.uniform(0.5, 3.5))
@@ -218,9 +242,11 @@ def generate_scoring_dataset(
         features = feat_extractor.extract_batch(candidates, joints, human_yaw_deg=yaw)
         view_vecs = [extract_view_vector(f) for f in features]
 
-        # 目标真值打分 (由科学打分函数提供 ground truth utility)
-        scores = scorer.score_batch(features, act_embed, geom_map)
-        target_scores = [s.total_score for s in scores]
+        # 计算目标得分 Q*(v)
+        target_scores = [
+            compute_target_view_quality_score(f, geom_map.get(f.viewpoint_id, 0.8))
+            for f in features
+        ]
 
         best_idx = int(np.argmax(target_scores))
 
@@ -228,7 +254,6 @@ def generate_scoring_dataset(
             "episode_id": ep_i,
             "action_name": act_class.value,
             "pose_vec": pose_vec,
-            "action_vec": np.array(act_embed.vector, dtype=np.float32),
             "view_vecs": np.array(view_vecs, dtype=np.float32),
             "target_scores": np.array(target_scores, dtype=np.float32),
             "best_view_idx": best_idx,

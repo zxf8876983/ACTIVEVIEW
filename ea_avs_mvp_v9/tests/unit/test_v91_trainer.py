@@ -1,8 +1,3 @@
-"""
-Trainer 单元测试 —— test_v91_trainer.py
-======================================
-"""
-
 import unittest
 from ea_avs_mvp_v9.models.view_scorer import LearnableViewScorer
 from ea_avs_mvp_v9.training.dataset import generate_scoring_dataset
@@ -13,7 +8,12 @@ import torch
 
 class TestV91Trainer(unittest.TestCase):
     def setUp(self):
-        self.model = LearnableViewScorer()
+        self.model = LearnableViewScorer(
+            pose_input_dim=49,
+            pose_embed_dim=32,
+            view_input_dim=13,
+            view_embed_dim=32,
+        )
         self.train_ds, self.val_ds = generate_scoring_dataset(num_episodes=10, seed=42)
         self.trainer = ViewScorerTrainer(self.model, config={"learning_rate": 0.01})
 

@@ -1,4 +1,4 @@
-# ACTIVEVIEW v9.1 学习型视角打分模型训练配置 (configs/v91_training.yaml)
+# ACTIVEVIEW v9.1 人体状态感知学习型视角打分模型训练配置 (configs/v91_training.yaml)
 
 training:
   seed: 42
@@ -18,10 +18,7 @@ model:
   pose_hidden_dim: 64
   pose_embed_dim: 32
 
-  action_input_dim: 5          # 5 类动作 One-hot
-  action_embed_dim: 16
-
-  view_input_dim: 11           # 距离, 角度sin/cos, 覆盖率, 损失, 投影面积, 5 区域覆盖率
+  view_input_dim: 13           # 距离, 角度sin/cos, 覆盖率, 损失, 投影面积, 7 大部位可见性
   view_hidden_dim: 64
   view_embed_dim: 32
 
