@@ -1,33 +1,41 @@
 # ACTIVEVIEW Current Task
 
-Status: COMPLETED (v9.0 Action-conditioned Active View Scoring Final Baseline & Experimental Closure)
+Status: COMPLETED (v9.1 Learnable Action-conditioned View Scoring Baseline Completed & Verified)
 
 ## Current Phase
-v9.0 — Action-conditioned Active View Scoring (Scientific baseline completed, experimentally verified, and ready for future learning-based extensions in v9.1+)
+v9.1 — Learnable Action-conditioned View Scoring (Neural scoring architecture, ranking loss trainer, inference engine, 5-baseline comparative evaluation, and feature ablations completed).
 
-## Accomplished in v9.0 Finalization
-1. **动作先验完全配置化解耦 (`configs/action_prior.yaml`, `action/action_encoder.py`)**：
-   - 将 `region_weights`, `preferred_angle_range`, `optimal_distance`, `aspect_weight`, `distance_weight` 从 Python 迁移至 `configs/action_prior.yaml`；
-   - `ActionEncoder` 彻底移除硬编码规则，纯配置驱动生成 `ActionEmbedding`。
-2. **核心科学命题实验闭环 (`scripts/run_action_comparison.py`)**：
-   - 证明 $Q(v \mid A) \neq Q(v)$：在同一场景和相同人体位置下，`sitting` 和 `bending` 动作最佳视角成功由纯正面（$1^\circ$）迁移至侧前方（$44^\circ$），视角增益提升；
-   - 生成定量成果 `data/ActiveView/results/v9_action_comparison.json` 与 `action_comparison.png`。
-3. **四大基线对比体系 (`evaluation/baseline_comparison.py`)**：
-   - 对比 `Random View`, `Nearest View`, `Geometry Best (v8)`, `Action-conditioned (v9)`；
-   - 统计 `pose_coverage`, `critical_region_coverage`, `visibility_loss`, `distance_error`, `total_score`。
-4. **权重敏感性与消融实验 (`scripts/run_weight_ablation.py`)**：
-   - 遍历测试 $w_{\text{geom}} / w_{\text{act}}$ 在 $0.8/0.2, 0.6/0.4, 0.4/0.6, 0.2/0.8$ 的表现；
-   - 生成消融分析报表 `data/ActiveView/results/weight_ablation_report.json`。
-5. **多维可视化与报表模块 (`visualization/action_comparison_plotter.py`)**：
-   - 绘制视角迁移图、得分分解图与基线对比图。
-6. **文档与代码规范完善 (`ea_avs_mvp_v9/README.md`)**：
-   - 补充 v9.0 研究目标、方法流程、实验方法与复现指令。
+## Next Phase Target
+v9.2 — Temporal Action-aware Active View Selection (Sequence/Trajectory-aware Viewpoint Planning).
+
+## Accomplished in v9.1
+1. **轻量神经网络打分架构 (`models/`)**：
+   - `HumanPoseEncoder` (49d -> 32d): 16 骨骼关键点 3D 相对坐标 + 偏航角 MLP 编码；
+   - `ViewFeatureEncoder` (11d -> 32d): 视点几何距离、角度、覆盖率、身体分区特征编码；
+   - `LearnableViewScorer`: 姿态、动作 One-hot (16d) 与视角特征三向融合 MLP，输出标量连续打分 $\hat{Q}(v \mid H, A) \in [0.0, 1.0]$，支持特征消融开关。
+2. **两两排序与回归损失训练管道 (`training/`, `scripts/train_v91.py`)**：
+   - 实现了 `PairwiseRankingLoss` 与 `CombinedRankingRegressionLoss`；
+   - 自动化生成多场景、多位姿、5 类动作训练集与验证集；
+   - 40 轮训练后验证集 Top-1 选点准确率达 **97.5%**，目标效用比例达 **100.0%**；
+   - 保存权重 `checkpoints/model_checkpoint.pth` 与收敛曲线 `results/training_curve.png`。
+3. **前向推理与预测器 (`inference/predict_view.py`)**：
+   - `ViewPredictor` 支持从检查点载入权重，对候选视点池进行批量前向预测与降序排序。
+4. **5 大基线综合横向评测体系 (`scripts/run_v91_demo.py`)**：
+   - 比较 `Random`, `Nearest`, `Geometry Best (v8)`, `Rule Action (v9.0)`, `Learnable Action (v9.1)`；
+   - 移动机器人至神经网络选定视点并渲染 `best_view_rgb.png`；
+   - 输出 `v91_best_view.json`, `comparison_report.json`, `comparison_with_v90.json`。
+5. **三大特征消融实验 (`scripts/run_v91_ablation.py`)**：
+   - 评测 Full Model, w/o Action, w/o Pose, 以及 Rule vs Learning；
+   - 证实动作特征是驱动视角自适应偏转的关键因素；
+   - 输出 `results/v91_ablation_report.json`。
+6. **单元测试与代码质量**：
+   - 编写 5 组针对 v9.1 的单元测试（23/23 PASS），v8（17/17 PASS），v7（30/30 PASS）。
 
 ## Validation Plan Execution Results
 - [x] Python Compile Check: `python -m compileall ea_avs_mvp_v9` (PASS)
-- [x] v9.0 Unit Tests: `python3 -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"` (PASS, 11/11)
+- [x] v9.1 Unit Tests: `python3 -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"` (PASS, 23/23)
 - [x] v8.2 Regression Tests: `python3 -m unittest discover -s ea_avs_mvp_v8/tests -p "test_*.py"` (PASS, 17/17)
 - [x] v7.0 Regression Tests: `python3 -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 30/30)
-- [x] v9.0 Multi-Action Comparison: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_action_comparison` (PASS, results & plots generated)
-- [x] v9.0 Weight Ablation: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_weight_ablation` (PASS, ablation report generated)
-- [x] v9.0 Single Demo: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v9_demo --action fall` (PASS, RGB image & JSONs verified)
+- [x] v9.1 Model Training: `python -m ea_avs_mvp_v9.scripts.train_v91 --epochs 40` (PASS, 97.5% Acc)
+- [x] v9.1 5-Baseline Demo: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_demo --action sitting` (PASS, RGB & JSONs verified)
+- [x] v9.1 Feature Ablation: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_ablation` (PASS, ablation report generated)

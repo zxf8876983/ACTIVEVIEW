@@ -9,18 +9,19 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：**v9.0 — Action-conditioned Active View Scoring**（已完成全面收尾与科研实验闭环，建立动作感知可解释性基线）。
+- **项目阶段**：**v9.1 — Learnable Action-conditioned View Scoring**（研发完成并完成闭环验证，建立学习型主动视角打分网络）。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；
   - `v7.0`: 拟人化主动感知仿真环境与动作数据集平台（COMPLETED / FINALIZED & FROZEN，保持只读）；
-  - `v8.0` ~ `v8.2`: 局部主动视角规划与几何质量基准（COMPLETED / FINALIZED & FROZEN，保持只读）。
+  - `v8.0` ~ `v8.2`: 局部主动视角规划与几何质量基准（COMPLETED / FINALIZED & FROZEN，保持只读）；
+  - `v9.0`: 动作感知主动视角规则打分基准（COMPLETED & RETAINED AS BASELINE）。
 - **架构组织**：处于版本化递进过渡期（`v1 -> v2 -> v3 -> v4 -> v5 -> v6 -> v7 -> v8 -> v9`），各版本保留独立目录与设计文档。
 
 ---
 
 ## 2. Active Development Version
-- **Version**: v9.0 (9.0.0 — Action-conditioned Active View Scoring)
-- **Title**: Action-conditioned Active View Scoring Baseline
+- **Version**: v9.1 (9.1.0 — Learnable Action-conditioned View Scoring)
+- **Title**: Learnable Action-conditioned View Scoring
 - **Active Code Directory**: `ea_avs_mvp_v9/`
 - **Active Specification**: `EA_AVS_MVP90_Code_Generation_Document.md`
 - **Previous Specification**: `EA_AVS_MVP80_Code_Generation_Document.md` (v8.2 COMPLETED & FROZEN)
@@ -34,24 +35,24 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 3. Latest Stable Implementations
-- **v9.0 (`ea_avs_mvp_v9/`, ACTIVE / COMPLETED & VALIDATED BASELINE)**: 动作感知主动视角打分、解耦动作先验配置、身体分区特征提取、四大基线横向评测、多动作视角迁移实验与权重敏感性消融验证。
+- **v9.1 (`ea_avs_mvp_v9/`, ACTIVE / COMPLETED & VALIDATED)**: 学习型动作感知视角打分模型 (`LearnableViewScorer`)、Pairwise Ranking 训练管道、5 大基线横向评测体系及特征消融实验。
+- **v9.0 (`ea_avs_mvp_v9/`, CLOSED BASELINE)**: 动作感知主动视角启发式规则打分基线。
 - **v8.2 (`ea_avs_mvp_v8/`, CLOSED / FINALIZED & FROZEN)**: 局部主动视点规划、三阶空间约束管道与透明科学质量评价基准平台。
 - **v7.0 (`ea_avs_mvp_v7/`, CLOSED / FINALIZED)**: 拟人化室内主动感知仿真与动作数据集生成平台。
 - **v6.0 (`ea_avs_mvp_v6/`, CLOSED / FINALIZED)**: 严格防泄漏 Estimated-State 物理光线追踪主动视角闭环。
 
 ---
 
-## 4. v9.0 Research Objectives & Experimental Proof
+## 4. v9.1 Research Objectives & Scientific Results
 
-### 核心科研结论与实验闭环 (Core Scientific Proof):
-*实验严格证实科学假设：$Q(v \mid A) \neq Q(v)$，即动作状态驱动观察视角的自适应迁移。*
-1. **Action Prior Decoupling**：动作先验（关键部位、偏好偏角、最优距离）完全解耦至 `configs/action_prior.yaml`，禁止在 Python 代码中硬编码动作规则；
-2. **Multi-Action Comparison Experiment** (`scripts/run_action_comparison.py`)：在同一场景和人体位置下，`SITTING` 与 `BENDING` 动作的最优视点由纯正面（$1^\circ$）迁移至侧前方（$44^\circ$），实现视角得分提升；
-3. **Weight Sensitivity Ablation** (`scripts/run_weight_ablation.py`)：评测 $(0.8/0.2, 0.6/0.4, 0.4/0.6, 0.2/0.8)$ 权重区间，证实随着 $w_{\text{act}}$ 提升，动作感知能够自适应扩展观测距离与调整观察方位。
+### 核心科研结论 (Core Scientific Results):
+1. **神经网络视点打分能力**：`LearnableViewScorer` 经过 40 轮 Pairwise Ranking Loss 训练，验证集 Top-1 选点匹配度达 **97.5%**，目标效用保持率达 **100.0%**；
+2. **5 大基线综合横向对比**：`Learnable Action (v9.1)` 能够精准复现规则基线的最优视角偏转特性（如在 `SITTING` 与 `BENDING` 动作下自主选择侧前方 $44^\circ$ 视角以观测下肢弯曲与脊柱剖面）；
+3. **消融实验证实动作特征关键性**：消融动作特征后（`w/o Action`），模型退化为无法区分动作差异的均一视点，证实了动作嵌入对主动视角决策的驱动作用。
 
-### 明确排除在 v9.0 之外的非目标 (Explicitly NOT in v9.0):
+### 明确排除在 v9.1 之外的非目标 (Explicitly NOT in v9.1):
 - ❌ 不训练 动作识别/分类神经网络 (No Action Recognition Training)
 - ❌ 不实现 人体全局搜索与环境探索 (No Human Search / No Global Exploration)
-- ❌ 不实现 深度强化学习与端到端策略网络 (No RL / End-to-end policy network)
+- ❌ 不实现 深度强化学习与端到端机器人策略网络 (No RL / End-to-end policy network)
 - ❌ 不实现 全局路径规划与闭环避障控制 (Global Navigation)
 - ❌ 不修改 `ea_avs_mvp_v7/`、`ea_avs_mvp_v8/` 及历史版本代码
