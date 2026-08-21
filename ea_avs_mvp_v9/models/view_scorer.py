@@ -1,39 +1,38 @@
 """
-人体状态感知学习型视点打分模型 —— view_scorer.py
-=================================================
+感知感知型主动视角打分模型 —— view_scorer.py
+============================================
 
 职责：
-    1. 融合人体物理状态特征 (Human Pose Embedding, 32d) 与候选视点描述子 (View Embedding, 32d)；
-    2. 通过全连接 Fusion MLP 输出视角连续效用评分 Q_hat(v | H) ∈ [0.0, 1.0]；
-    3. 严禁任何 Action Label 参与模型结构与前向推理；
-    4. 支持姿态消融开关 (ablate_pose)。
+    1. 融合当前不完整感知状态 (Observation Embedding, 32d) 与候选视点描述子 (View Embedding, 32d)；
+    2. 通过全连接 Fusion MLP 预测视角迁移带来的信息增益 (Information Gain) G_hat(v | O_curr) ∈ [0.0, 1.0]；
+    3. 严禁任何 Action Label 参与模型输入与前向推理。
 """
 
 from typing import Dict, List, Optional, Tuple, Union
 import torch
 import torch.nn as nn
 
-from .pose_encoder import HumanPoseEncoder
+from .observation_encoder import ObservationEncoder
 from .view_encoder import ViewFeatureEncoder
 
 
-class LearnableViewScorer(nn.Module):
-    """v9.1 人体状态感知学习型视点质量打分网络 (Q(v | H))。"""
+class PerceptionAwareViewScorer(nn.Module):
+    """v9.1 基于感知质量的人体主动视角打分网络 (G(v | O_curr))。"""
 
     def __init__(
         self,
-        pose_input_dim: int = 49,
-        pose_embed_dim: int = 32,
+        obs_input_dim: int = 71,
+        obs_embed_dim: int = 32,
         view_input_dim: int = 13,
         view_embed_dim: int = 32,
         fusion_hidden_dims: Tuple[int, int] = (64, 32),
         dropout: float = 0.1,
     ):
         super().__init__()
-        self.pose_encoder = HumanPoseEncoder(
-            input_dim=pose_input_dim,
+        self.obs_encoder = ObservationEncoder(
+            input_dim=obs_input_dim,
             hidden_dim=64,
-            embed_dim=pose_embed_dim,
+            embed_dim=obs_embed_dim,
             dropout=dropout,
         )
 
@@ -44,7 +43,7 @@ class LearnableViewScorer(nn.Module):
             dropout=dropout,
         )
 
-        fusion_in_dim = pose_embed_dim + view_embed_dim
+        fusion_in_dim = obs_embed_dim + view_embed_dim
         h1, h2 = fusion_hidden_dims
 
         self.fusion_net = nn.Sequential(
@@ -54,46 +53,50 @@ class LearnableViewScorer(nn.Module):
             nn.Linear(h1, h2),
             nn.ReLU(inplace=True),
             nn.Linear(h2, 1),
-            nn.Sigmoid(),  # 输出连续效用得分 [0.0, 1.0]
+            nn.Sigmoid(),  # 输出预测的信息增益 [0.0, 1.0]
         )
 
     def forward(
         self,
-        pose_input: torch.Tensor,
+        obs_input: torch.Tensor,
         view_input: torch.Tensor,
-        ablate_pose: bool = False,
+        ablate_obs: bool = False,
     ) -> torch.Tensor:
         """
         Args:
-            pose_input: (B, 49) 人体 16 骨骼关键点相对坐标及朝向
-            view_input: (B, N, 13) 或 (B, 13) 候选视角多维几何与 7 大部位观测特征
-            ablate_pose: 是否消融人体姿态特征 (置零)
+            obs_input: (B, 71) 当前人体观测感知质量特征
+            view_input: (B, N, 13) 或 (B, 13) 候选视角多维几何描述子
+            ablate_obs: 是否消融当前感知特征
         Returns:
-            scores: (B, N) 或 (B, 1) 候选视角预测效用得分 Q_hat(v | H)
+            gains: (B, N) 或 (B, 1) 预测信息增益 G_hat(v | O_curr)
         """
         is_multi_view = (view_input.dim() == 3)
         b_size = view_input.size(0)
 
-        # 1. 编码姿态特征 (Human State Embedding)
-        if ablate_pose:
-            pose_feat = torch.zeros(b_size, self.pose_encoder.net[-3].out_features, device=pose_input.device)
+        # 1. 编码当前感知特征
+        if ablate_obs:
+            obs_feat = torch.zeros(b_size, self.obs_encoder.net[-2].out_features, device=obs_input.device)
         else:
-            pose_feat = self.pose_encoder(pose_input)  # (B, 32)
+            obs_feat = self.obs_encoder(obs_input)  # (B, 32)
 
-        # 2. 编码视角特征 (View Embedding)
+        # 2. 编码视角特征并执行融合
         if is_multi_view:
             n_views = view_input.size(1)
             flat_views = view_input.view(-1, view_input.size(-1))
             view_feat = self.view_encoder(flat_views)  # (B*N, 32)
 
-            exp_pose = pose_feat.unsqueeze(1).expand(-1, n_views, -1).contiguous().view(-1, pose_feat.size(-1))
+            exp_obs = obs_feat.unsqueeze(1).expand(-1, n_views, -1).contiguous().view(-1, obs_feat.size(-1))
 
-            fused_input = torch.cat([exp_pose, view_feat], dim=-1)  # (B*N, 64)
+            fused_input = torch.cat([exp_obs, view_feat], dim=-1)  # (B*N, 64)
             out = self.fusion_net(fused_input)  # (B*N, 1)
             scores = out.view(b_size, n_views)  # (B, N)
         else:
             view_feat = self.view_encoder(view_input)  # (B, 32)
-            fused_input = torch.cat([pose_feat, view_feat], dim=-1)  # (B, 64)
+            fused_input = torch.cat([obs_feat, view_feat], dim=-1)  # (B, 64)
             scores = self.fusion_net(fused_input)  # (B, 1)
 
         return scores
+
+
+# 别名兼容
+LearnableViewScorer = PerceptionAwareViewScorer

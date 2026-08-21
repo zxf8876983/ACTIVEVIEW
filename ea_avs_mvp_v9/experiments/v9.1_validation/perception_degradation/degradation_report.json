@@ -1,0 +1,60 @@
+{
+  "perception_degradation_benchmark": [
+    {
+      "case_name": "No Occlusion (Clean View)",
+      "degradation_mode": "none",
+      "initial_mean_confidence": 0.85,
+      "initial_missing_joints": 0,
+      "selected_viewpoint": "vp_007_r1.5_a315",
+      "selected_distance": 1.5,
+      "selected_angle_deg": 44.1,
+      "predicted_gain": 0.545,
+      "confidence_after": 0.901,
+      "confidence_gain": 0.051,
+      "missing_recovered": 0,
+      "quality_gain": 0.046
+    },
+    {
+      "case_name": "Self-Occlusion (Back View)",
+      "degradation_mode": "self_occlusion",
+      "initial_mean_confidence": 0.692,
+      "initial_missing_joints": 0,
+      "selected_viewpoint": "vp_007_r1.5_a315",
+      "selected_distance": 1.5,
+      "selected_angle_deg": 44.1,
+      "predicted_gain": 0.55,
+      "confidence_after": 0.901,
+      "confidence_gain": 0.21,
+      "missing_recovered": 0,
+      "quality_gain": 0.189
+    },
+    {
+      "case_name": "Furniture Occlusion (Lower Body Blocked)",
+      "degradation_mode": "furniture_occlusion",
+      "initial_mean_confidence": 0.525,
+      "initial_missing_joints": 4,
+      "selected_viewpoint": "vp_007_r1.5_a315",
+      "selected_distance": 1.5,
+      "selected_angle_deg": 44.1,
+      "predicted_gain": 0.548,
+      "confidence_after": 0.901,
+      "confidence_gain": 0.376,
+      "missing_recovered": 4,
+      "quality_gain": 0.343
+    },
+    {
+      "case_name": "Low Confidence Pose (Poor Lighting / Distance)",
+      "degradation_mode": "low_confidence",
+      "initial_mean_confidence": 0.346,
+      "initial_missing_joints": 0,
+      "selected_viewpoint": "vp_007_r1.5_a315",
+      "selected_distance": 1.5,
+      "selected_angle_deg": 44.1,
+      "predicted_gain": 0.558,
+      "confidence_after": 0.901,
+      "confidence_gain": 0.555,
+      "missing_recovered": 0,
+      "quality_gain": 0.498
+    }
+  ]
+}

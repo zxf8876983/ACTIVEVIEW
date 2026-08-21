@@ -1,93 +1,81 @@
-# ACTIVEVIEW v9.1: Human-State-Aware Learnable Active View Selection
+# ACTIVEVIEW v9.1: Perception-Aware Active View Selection
 
 > **ACTIVEVIEW v9.1 Scientific Specification & Experimental Closure Guide**  
-> *Under the assumptions that the human position is known, the robot is in the vicinity, and the human remains observable, the robot learns to select the most informative observation viewpoint directly from the human's physical state: $\hat{Q}(v \mid H)$.*
+> *"Given incomplete human observations, the robot actively selects informative viewpoints to improve future human state estimation."*  
+> *(在人体观测不完整条件下，机器人主动选择能够提升人体状态估计质量的观察视角。)*
 
 ---
 
-## 1. 科研定位与核心假设 (Scientific Scope & Assumptions)
+## 1. 科研定位与核心假设 (Scientific Scope & Problem Formulation)
 
-ACTIVEVIEW v9.1 正式确立了**人体物理状态驱动的学习型主动视角选择基准（Human-state-aware Learnable Active View Selection Baseline）**。
+在真实室内主动感知环境中，由于**环境遮挡、人体自遮挡与视角局限**，机器人当前捕获的人体观测始终是不完整的，无法直接获得 Ground-Truth 人体状态或动作标签。
 
-### 核心科研假设 (Core Assumptions):
-1. **Human location is known**: 人体粗略位置由外部系统/定位已知；
-2. **Robot is in vicinity**: 移动机器人已经到达目标人体所在局部区域；
-3. **Human remains observable**: 机器人可自适应调整相机朝向使人体位于观察视锥内，核心研究目标为**选择最具解剖信息观测价值的拍摄视角**，而非视野寻人。
-
-### 数学目标 (Mathematical Objective):
-$$Q(v \mid H)$$
-其中：
-- $H$: 人体物理姿态状态（16 骨骼关键点 3D 相对坐标 + 偏航朝向角，49 维向量）；
-- $v$: 候选视点描述子（包含距离、相对朝向角、全局覆盖率与 **7 大身体解剖部位可见性**，13 维向量）。
+### 核心科学问题 (Core Research Problem):
+机器人如何根据**当前不完整的观测感知质量 $O_{\text{curr}}$**（估计关节坐标、关节置信度与身体部位可见性），主动规划下一个观察视角 $v$，以**最大化未来的信息增益（Information Gain）与状态感知提升**：
+$$v^* = \arg\max_{v \in \mathcal{V}_{\text{feasible}}} \hat{G}(v \mid O_{\text{curr}})$$
 
 ### 严格研究边界 (Strict Research Boundaries):
-- ❌ **No Action Input to Model**: 动作标签严禁输入模型，仅用于实验分组与数据统计；
-- ❌ **No Action Recognition / Classification**: 不训练动作识别网络；
-- ❌ **No Human Search / Detection / Navigation / SLAM / RL**: 聚焦已知人体周边的局部高质量视角选择；
-- ❌ **No Pose Estimator**: 仿真中使用 Habitat + SMPL-X 物理 GT 状态。
+- ❌ **No GT Human State / No SMPL-X GT in Forward Pass**: 模型输入严格来自视觉估计感知状态；
+- ❌ **No Action Label in Model Forward**: 动作标签严禁输入模型，仅用于离线实验分组与数据统计；
+- ❌ **No Temporal Multi-step / RL / End-to-end Policy**: 严格聚焦于单步主动视角信息增益规划。
 
 ---
 
-## 2. 神经网络架构 (Model Architecture)
+## 2. 感知状态与网络架构 (Perception State & Model Architecture)
 
+### 当前观测状态特征向量 (Observation State $O_{\text{curr}}$, 71d):
+1. **16 关节点估计 3D 坐标** (相对估计骨盆归一化坐标)：$16 \times 3 = 48\text{d}$；
+2. **16 关节点估计置信度** ($c_i \in [0.0, 1.0]$)：$16\text{d}$；
+3. **7 大身体关键解剖部位可见性置信度** (`head`, `torso`, `pelvis`, `left_hand`, `right_hand`, `left_leg`, `right_leg`)：$7\text{d}$。
+
+### 候选视角描述子向量 (View Descriptor $v$, 13d):
+包含视点空间距离、相对偏角 $\sin/\cos$、视锥几何关系等，**严禁输入未来真实观测状态（No Future Leakage）**。
+
+### 神经网络架构:
 ```text
-Human Pose State (16 Joints 3D + Yaw, 49d) ───► [HumanPoseEncoder]   (32d) ┐
-                                                                              ├─► [Fusion MLP] ──► Scalar Score Q_hat(v|H) ∈ [0, 1]
-Candidate View Features (13d, incl. 7 parts)───► [ViewFeatureEncoder] (32d) ┘   (64d -> 64d -> 32d -> 1d)
+Observation State O_curr (71d) ──► [ObservationEncoder]   (32d) ┐
+                                                                   ├─► [Fusion MLP] ──► Predicted Info Gain G_hat(v|O_curr) ∈ [0, 1]
+Candidate View Descriptor v (13d) ──► [ViewFeatureEncoder] (32d) ┘   (64d -> 64d -> 32d -> 1d)
 ```
 
-- **HumanPoseEncoder** (`models/pose_encoder.py`): $49\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d}$；
-- **ViewFeatureEncoder** (`models/view_encoder.py`): $13\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d}$；
-  - 包含几何信息（距离、相对偏角 $\sin/\cos$）与观测信息（全局覆盖率、覆盖损失、投影面积及 **7 大关键身体部位可见性**：`head`, `torso`, `pelvis`, `left_hand`, `right_hand`, `left_leg`, `right_leg`）；
-- **Fusion MLP** (`models/view_scorer.py`): $(32 + 32 = 64)\text{d} \rightarrow 64\text{d} \rightarrow 32\text{d} \rightarrow 1\text{d}$ (Sigmoid 激活)。
+---
+
+## 3. 训练目标与信息增益标签 (Information Gain Target)
+
+真实目标由视角移动后的观测质量提升量决定：
+$$\text{Gain}(v) = \max\left(0.0, \text{ObservationQuality}_{\text{after}}(v) - \text{ObservationQuality}_{\text{before}}(v_{\text{curr}})\right)$$
+其中：
+$$\text{ObservationQuality} = 0.50 \cdot \bar{c}_{\text{joints}} + 0.40 \cdot \bar{c}_{\text{parts}} - 0.10 \cdot \text{dist\_penalty}$$
+采用 **Pairwise Ranking Loss** 进行排序训练，专注于发现信息增益最大的最佳视角。
 
 ---
 
-## 3. 训练目标与科学真实效用 (Ground-Truth Utility)
+## 4. 实验验证套件 (Validation Suite & Benchmarks)
 
-训练标签严格基于物理几何与解剖可见性计算，**绝非模仿规则打分**：
-$$Q^*(v) = w_1 \cdot \text{global\_visibility} + w_2 \cdot \text{pose\_coverage} + w_3 \cdot \text{body\_part\_visibility} - w_4 \cdot \text{distance\_penalty}$$
-- 采用 **Pairwise Ranking Loss** 结合辅助 Smooth L1 损失，专注于候选视角的正确相对排序；
-- 严格执行 **Spatial-Level / Instance-Level 数据集隔离划分**，严禁训练集与测试集共享相同位姿。
-
----
-
-## 4. 五大基线对比体系 (Five Baselines)
-
-1. **Random View**: 随机选择可行视点；
-2. **Nearest View**: 选择离人体最近的可行视点；
-3. **Geometry-based View Selection (v8)**: 纯几何可见性与距离驱动选择；
-4. **Rule-based Task-aware View Selection (v9.0)**: 基于先验规则知识库的打分基线；
-5. **Human-state-aware Learnable View Selection (v9.1 Ours)**: 基于纯人体姿态驱动的神经网络打分选择。
+所有实验结果均结构化保存在 `ea_avs_mvp_v9/experiments/v9.1_validation/`：
+- **`training/`**: 40 轮损失下降与 Top-1 准确率日志；
+- **`baseline/`**: 5 大基线（Random, Nearest, Geometry v8, Rule v9.0, Perception-aware v9.1）横向对比；
+- **`perception_degradation/`**: 4 种感知退化基准实验（无遮挡、自遮挡、家具遮挡、低置信度）；
+- **`information_gain/`**: 关节置信度提升量与缺失关节点恢复率分析；
+- **`ablation/`**: 4 项特征消融实验；
+- **`visualization/`**: 包含收敛曲线、信息增益排序极坐标图、置信度改善柱状图等 4 张科研高清图表；
+- **`V91_EXPERIMENT_REPORT.md`**: 包含 10 项核心维度的完整科研报告。
 
 ---
 
-## 5. 实验复现与运行指令 (Execution Guide)
+## 5. 快速复现指令 (Execution Guide)
 
 ### 1. 运行纯 Python 单元测试:
 ```bash
 python3 -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"
 ```
 
-### 2. 训练 v9.1 人体物理状态感知打分模型:
+### 2. 运行完整实验验证闭环流水线:
 ```bash
-python -m ea_avs_mvp_v9.scripts.train_v91 --epochs 40 --lr 0.001
+conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_validation_suite
 ```
-- 输出检查点：`data/ActiveView/checkpoints/model_checkpoint.pth`
-- 输出收敛曲线：`data/ActiveView/results/training_curve.png`
 
-### 3. 运行端到端 5 基线对比演示:
+### 3. 运行端到端感知驱动演示:
 ```bash
-conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_demo --action sitting
+conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_demo
 ```
-- 输出产物：
-  - `data/ActiveView/visualizations/v91_demo/best_view_rgb.png`
-  - `data/ActiveView/visualizations/v91_demo/best_view.json`
-  - `data/ActiveView/visualizations/v91_demo/comparison_report.json`
-  - `data/ActiveView/results/body_part_visibility_report.json`
-
-### 4. 运行空间布局与遮挡鲁棒性实验:
-```bash
-conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_occlusion_experiment
-```
-- 输出报表：`data/ActiveView/results/v91_occlusion_experiment_report.json`

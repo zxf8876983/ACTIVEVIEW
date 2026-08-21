@@ -1,27 +1,27 @@
 {
   "ablation_experiments": [
     {
-      "condition": "Full Model (v9.1 Ours)",
-      "top1_accuracy": 0.9,
-      "mean_utility_ratio": 1.0,
-      "description": "Ablation mode: Full Model (v9.1 Ours)"
+      "condition": "Full Model (v9.1 Perception-Aware)",
+      "top1_accuracy": 0.3,
+      "mean_gain_ratio": 0.984,
+      "description": "Ablation mode: Full Model (v9.1 Perception-Aware)"
     },
     {
-      "condition": "Remove Human Pose State",
-      "top1_accuracy": 0.9,
-      "mean_utility_ratio": 1.0,
-      "description": "Ablation mode: Remove Human Pose State"
+      "condition": "Remove Observation Input",
+      "top1_accuracy": 0.3,
+      "mean_gain_ratio": 0.983,
+      "description": "Ablation mode: Remove Observation Input"
     },
     {
-      "condition": "Remove Body Part Visibility",
-      "top1_accuracy": 0.2,
-      "mean_utility_ratio": 0.97,
-      "description": "Ablation mode: Remove Body Part Visibility"
+      "condition": "Remove Body Part Confidences",
+      "top1_accuracy": 0.25,
+      "mean_gain_ratio": 0.983,
+      "description": "Ablation mode: Remove Body Part Confidences"
     },
     {
       "condition": "Remove Distance Descriptor",
-      "top1_accuracy": 0.0,
-      "mean_utility_ratio": 0.904,
+      "top1_accuracy": 0.15,
+      "mean_gain_ratio": 0.976,
       "description": "Ablation mode: Remove Distance Descriptor"
     }
   ]

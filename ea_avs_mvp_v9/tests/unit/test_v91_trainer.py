@@ -1,5 +1,5 @@
 import unittest
-from ea_avs_mvp_v9.models.view_scorer import LearnableViewScorer
+from ea_avs_mvp_v9.models.view_scorer import PerceptionAwareViewScorer
 from ea_avs_mvp_v9.training.dataset import generate_scoring_dataset
 from ea_avs_mvp_v9.training.losses import CombinedRankingRegressionLoss, PairwiseRankingLoss
 from ea_avs_mvp_v9.training.trainer import ViewScorerTrainer
@@ -8,9 +8,9 @@ import torch
 
 class TestV91Trainer(unittest.TestCase):
     def setUp(self):
-        self.model = LearnableViewScorer(
-            pose_input_dim=49,
-            pose_embed_dim=32,
+        self.model = PerceptionAwareViewScorer(
+            obs_input_dim=71,
+            obs_embed_dim=32,
             view_input_dim=13,
             view_embed_dim=32,
         )

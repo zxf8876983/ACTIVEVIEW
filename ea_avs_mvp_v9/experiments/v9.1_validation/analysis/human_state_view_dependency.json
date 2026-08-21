@@ -1,97 +1,97 @@
 {
   "fall": {
     "human_state": "fall",
-    "best_view": "vp_000_r1.5_a000",
-    "view_score": 0.915,
-    "utility_score": 0.775,
-    "distance": 1.831,
-    "viewing_angle_deg": 0.0,
-    "pose_coverage": 1.0,
-    "body_part_visibility": 1.0,
-    "body_parts_breakdown": {
-      "head": 1.0,
-      "torso": 1.0,
-      "pelvis": 1.0,
-      "left_hand": 1.0,
-      "right_hand": 1.0,
-      "left_leg": 1.0,
-      "right_leg": 1.0
+    "best_view": "vp_007_r1.5_a315",
+    "predicted_gain": 0.505,
+    "distance": 1.821,
+    "viewing_angle_deg": 44.8,
+    "confidence_before": 0.692,
+    "confidence_after": 0.901,
+    "missing_recovered": 0,
+    "body_parts_confidence_after": {
+      "head": 0.9055051227498427,
+      "torso": 0.920831310563337,
+      "pelvis": 0.9191058779897121,
+      "left_hand": 0.9008515015556325,
+      "right_hand": 0.8962827333072928,
+      "left_leg": 0.8972904754966132,
+      "right_leg": 0.862484191577404
     }
   },
   "sitting": {
     "human_state": "sitting",
-    "best_view": "vp_008_r2.0_a000",
-    "view_score": 0.913,
-    "utility_score": 0.789,
-    "distance": 2.103,
-    "viewing_angle_deg": 0.0,
-    "pose_coverage": 1.0,
-    "body_part_visibility": 1.0,
-    "body_parts_breakdown": {
-      "head": 1.0,
-      "torso": 1.0,
-      "pelvis": 1.0,
-      "left_hand": 1.0,
-      "right_hand": 1.0,
-      "left_leg": 1.0,
-      "right_leg": 1.0
+    "best_view": "vp_007_r1.5_a315",
+    "predicted_gain": 0.545,
+    "distance": 1.625,
+    "viewing_angle_deg": 44.8,
+    "confidence_before": 0.692,
+    "confidence_after": 0.901,
+    "missing_recovered": 0,
+    "body_parts_confidence_after": {
+      "head": 0.9055051227498427,
+      "torso": 0.920831310563337,
+      "pelvis": 0.9191058779897121,
+      "left_hand": 0.9008515015556325,
+      "right_hand": 0.8962827333072928,
+      "left_leg": 0.8972904754966132,
+      "right_leg": 0.862484191577404
     }
   },
   "standing": {
     "human_state": "standing",
-    "best_view": "vp_008_r2.0_a000",
-    "view_score": 0.916,
-    "utility_score": 0.793,
-    "distance": 2.025,
-    "viewing_angle_deg": 0.0,
-    "pose_coverage": 1.0,
-    "body_part_visibility": 1.0,
-    "body_parts_breakdown": {
-      "head": 1.0,
-      "torso": 1.0,
-      "pelvis": 1.0,
-      "left_hand": 1.0,
-      "right_hand": 1.0,
-      "left_leg": 1.0,
-      "right_leg": 1.0
+    "best_view": "vp_007_r1.5_a315",
+    "predicted_gain": 0.551,
+    "distance": 1.523,
+    "viewing_angle_deg": 44.8,
+    "confidence_before": 0.692,
+    "confidence_after": 0.901,
+    "missing_recovered": 0,
+    "body_parts_confidence_after": {
+      "head": 0.9055051227498427,
+      "torso": 0.920831310563337,
+      "pelvis": 0.9191058779897121,
+      "left_hand": 0.9008515015556325,
+      "right_hand": 0.8962827333072928,
+      "left_leg": 0.8972904754966132,
+      "right_leg": 0.862484191577404
     }
   },
   "bending": {
     "human_state": "bending",
-    "best_view": "vp_008_r2.0_a000",
-    "view_score": 0.916,
-    "utility_score": 0.792,
-    "distance": 2.03,
-    "viewing_angle_deg": 0.0,
-    "pose_coverage": 1.0,
-    "body_part_visibility": 1.0,
-    "body_parts_breakdown": {
-      "head": 1.0,
-      "torso": 1.0,
-      "pelvis": 1.0,
-      "left_hand": 1.0,
-      "right_hand": 1.0,
-      "left_leg": 1.0,
-      "right_leg": 1.0
+    "best_view": "vp_007_r1.5_a315",
+    "predicted_gain": 0.545,
+    "distance": 1.53,
+    "viewing_angle_deg": 44.8,
+    "confidence_before": 0.692,
+    "confidence_after": 0.901,
+    "missing_recovered": 0,
+    "body_parts_confidence_after": {
+      "head": 0.9055051227498427,
+      "torso": 0.920831310563337,
+      "pelvis": 0.9191058779897121,
+      "left_hand": 0.9008515015556325,
+      "right_hand": 0.8962827333072928,
+      "left_leg": 0.8972904754966132,
+      "right_leg": 0.862484191577404
     }
   },
   "reaching": {
     "human_state": "reaching",
-    "best_view": "vp_008_r2.0_a000",
-    "view_score": 0.916,
-    "utility_score": 0.793,
-    "distance": 2.025,
-    "viewing_angle_deg": 0.0,
-    "pose_coverage": 1.0,
-    "body_part_visibility": 1.0,
-    "body_parts_breakdown": {
-      "head": 1.0,
-      "torso": 1.0,
-      "pelvis": 1.0,
-      "left_hand": 1.0,
-      "right_hand": 1.0,
-      "left_leg": 1.0,
-      "right_leg": 1.0
+    "best_view": "vp_007_r1.5_a315",
+    "predicted_gain": 0.556,
+    "distance": 1.523,
+    "viewing_angle_deg": 44.8,
+    "confidence_before": 0.692,
+    "confidence_after": 0.901,
+    "missing_recovered": 0,
+    "body_parts_confidence_after": {
+      "head": 0.9055051227498427,
+      "torso": 0.920831310563337,
+      "pelvis": 0.9191058779897121,
+      "left_hand": 0.9008515015556325,
+      "right_hand": 0.8962827333072928,
+      "left_leg": 0.8972904754966132,
+      "right_leg": 0.862484191577404
     }
   }
 }

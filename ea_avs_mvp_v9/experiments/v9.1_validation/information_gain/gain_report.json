@@ -1,0 +1,53 @@
+{
+  "analysis_name": "information_gain_and_missing_joint_recovery",
+  "initial_state": {
+    "mean_joint_confidence": 0.692,
+    "missing_joint_count": 0,
+    "body_part_confidences": {
+      "head": 0.6980076841247641,
+      "torso": 0.7209969658450055,
+      "pelvis": 0.7184088169845682,
+      "left_hand": 0.6910272523334489,
+      "right_hand": 0.6841740999609393,
+      "left_leg": 0.68568571324492,
+      "right_leg": 0.6334762873661061
+    }
+  },
+  "baselines_gain_comparison": [
+    {
+      "method": "Random View",
+      "selected_view": "vp_005_r1.5_a225",
+      "information_gain": 0.097,
+      "confidence_improvement": 0.079,
+      "missing_joints_recovered": 0
+    },
+    {
+      "method": "Nearest View",
+      "selected_view": "vp_001_r1.5_a045",
+      "information_gain": 0.204,
+      "confidence_improvement": 0.209,
+      "missing_joints_recovered": 0
+    },
+    {
+      "method": "Geometry-based (v8)",
+      "selected_view": "vp_008_r2.0_a000",
+      "information_gain": 0.165,
+      "confidence_improvement": 0.138,
+      "missing_joints_recovered": 0
+    },
+    {
+      "method": "Rule-based (v9.0)",
+      "selected_view": "vp_015_r2.0_a315",
+      "information_gain": 0.165,
+      "confidence_improvement": 0.138,
+      "missing_joints_recovered": 0
+    },
+    {
+      "method": "Perception-aware (v9.1 Ours)",
+      "selected_view": "vp_007_r1.5_a315",
+      "information_gain": 0.204,
+      "confidence_improvement": 0.209,
+      "missing_joints_recovered": 0
+    }
+  ]
+}

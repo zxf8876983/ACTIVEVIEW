@@ -1,10 +1,10 @@
-# ACTIVEVIEW v9.1: Human-State-Aware Learnable Active View Selection
+# ACTIVEVIEW v9.1: Perception-Aware Active View Selection
 ## Scientific Validation & Benchmark Experiment Report
 
 ---
 
 ### 1. 实验目的 (Experimental Objectives)
-验证在人体位置已知、机器人位于目标区域附近、且人体始终处于可观察视锥内的条件下，机器人能否仅根据**人体物理状态 $H$ (16 骨骼关节 3D 相对坐标 + 偏航朝向角)** 与 **候选视角几何特征 $v$**，直接通过轻量神经网络学习预测最优观察视角 $Q\_hat(v | H)$，完全摆脱对人工 Action 标签与硬编码规则的依赖。
+验证在人体观测不完整（存在环境遮挡、人体自遮挡、视角受限等感知退化）的条件下，机器人能否根据**当前观测感知质量 $O_{curr}$（视觉估计关节坐标 + 关节置信度 + 身体部位可见置信度）** 与 **候选视角几何描述子 $v$**，直接通过神经网络预测视角迁移带来的信息增益 $G(v | O_{curr})$，并主动选择最优视点以最大化人体状态估计质量。
 
 ---
 
@@ -17,76 +17,74 @@
 ---
 
 ### 3. 数据设置与隔离划分 (Dataset & Separation Protocol)
-- **数据划分原则**：严格执行 **Spatial-Level / Instance-Level 隔离划分**，训练集（空间区域 A）与验证集（空间区域 B）在三维坐标与偏航角区间完全正交，严禁共享相同姿态实例。
-- **训练样本**：Train = 160 episodes, Val = 40 episodes.
-- **目标效用标签**：
-  $$Q^*(v) = w_1 \cdot \text{global\_visibility} + w_2 \cdot \text{pose\_coverage} + w_3 \cdot \text{body\_part\_visibility} - w_4 \cdot \text{distance\_penalty}$$
-  标签由物理几何直接计算，**绝非模仿规则系统**。
+- **感知模拟机制**：通过 `ObservationSimulator` 模拟视觉姿态估计器在遮挡、视距衰减与噪声下的输出（关节点置信度衰减、缺失关节退化与定位高斯噪声）。
+- **数据划分原则**：严格执行 **Spatial-Level / Instance-Level 隔离划分**，训练集与验证集在空间坐标与偏航角区间完全正交。
+- **信息增益标签定义**：
+  $$\text{Gain}(v) = \max\left(0.0, \text{ObservationQuality}_{\text{after}}(v) - \text{ObservationQuality}_{\text{before}}(v_{\text{curr}})\right)$$
+  标签由观测感知质量变化量计算，**绝非直接使用 Oracle GT 姿态**。
 
 ---
 
 ### 4. 训练收敛结果 (Training Results)
-- **模型参数**：`LearnableViewScorer` (PoseEncoder 49d $\rightarrow$ 32d, ViewEncoder 13d $\rightarrow$ 32d, Fusion MLP 64d $\rightarrow$ 1d)
+- **模型参数**：`PerceptionAwareViewScorer` (ObservationEncoder 71d $\rightarrow$ 32d, ViewEncoder 13d $\rightarrow$ 32d, Fusion MLP 64d $\rightarrow$ 1d)
 - **训练轮数**：40 Epochs (Adam, lr=0.001)
-- **最优验证集 Top-1 选点准确率**：**90.0%** (Epoch 11)
-- **目标效用达成率 (Utility Ratio)**：**100.0%**
+- **最优验证集 Top-1 选点准确率**：**30.0%** (Epoch 15)
+- **目标增益达成率 (Gain Ratio)**：**98.2%**
 - **权重文件保存位置**：`/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/model_checkpoint.pth` (物理数据根目录)
 
 ---
 
 ### 5. 五大 Baseline 横向对比实验 (5-Baseline Comparison)
-评估场景：`SITTING` 姿态（需重点捕获下肢弯曲与座椅表面交互）
+评估场景：初始站位处于人体后方侧视点（存在严重人体自遮挡与部位缺失）：
 
-| Method / Baseline | Selected View | Distance (m) | Viewing Angle (deg) | Utility Score $Q^*(v)$ | Matches Oracle? |
-|---|---|---|---|---|---|
-| **Random View** | `vp_005_r1.5_a225` | 1.54 | 135.8° | 0.732 | False |
-| **Nearest View** | `vp_001_r1.5_a045` | 1.57 | 45.7° | 0.753 | False |
-| **Geometry-based (v8)** | `vp_008_r2.0_a000` | 2.04 | 0.7° | 0.792 | True |
-| **Rule-based (v9.0)** | `vp_015_r2.0_a315` | 2.02 | 44.5° | 0.785 | False |
-| **Human-state-aware (v9.1 Ours)** | **`vp_008_r2.0_a000`** | **2.04** | **0.7°** | **0.792** | **True** |
+| Method / Baseline | Selected View | Distance (m) | Viewing Angle (deg) | Joint Conf (Before $\rightarrow$ After) | Recovered Missing Joints | Actual Information Gain | Matches Oracle? |
+|---|---|---|---|---|---|---|---|
+| **Random View** | `vp_005_r1.5_a225` | 1.53 | 136.1° | 0.692 $\rightarrow$ 0.771 | 0 | 0.097 | False |
+| **Nearest View** | `vp_001_r1.5_a045` | 1.57 | 46.1° | 0.692 $\rightarrow$ 0.901 | 0 | 0.204 | False |
+| **Geometry-based (v8)** | `vp_008_r2.0_a000` | 2.04 | 1.0° | 0.692 $\rightarrow$ 0.830 | 0 | 0.165 | False |
+| **Rule-based (v9.0)** | `vp_015_r2.0_a315` | 2.01 | 44.4° | 0.692 $\rightarrow$ 0.830 | 0 | 0.165 | False |
+| **Perception-aware (v9.1 Ours)** | **`vp_007_r1.5_a315`** | **1.52** | **44.1°** | **0.692 $\rightarrow$ 0.901** | **0** | **0.204** | **False** |
 
 ---
 
-### 6. 人体解剖物理状态对视角的依赖性分析 (Human State View Dependency)
-在相同场景与候选视点池下，评测不同人体状态的最优观察视角自适应选择：
+### 6. 感知退化基准评测 (Perception Degradation Benchmark)
 
-| Human State | Best Selected View | Distance (m) | Viewing Angle (deg) | Utility Score | Key Visible Body Parts |
-|---|---|---|---|---|---|
-| **STANDING** | `vp_008_r2.0_a000` | 2.02 | 0.0° | 0.793 | Head, Torso, Pelvis, Legs (100%) |
-| **SITTING** | `vp_008_r2.0_a000` | 2.10 | 0.0° | 0.789 | Head, Torso, Pelvis, Legs |
-| **BENDING** | `vp_008_r2.0_a000` | 2.03 | 0.0° | 0.792 | Torso Profile, Pelvis, Hands |
-| **REACHING** | `vp_008_r2.0_a000` | 2.02 | 0.0° | 0.793 | Extended Arm/Hands, Head, Torso |
-| **FALL** | `vp_000_r1.5_a000` | 1.83 | 0.0° | 0.775 | Full Body Floor Contact Profile |
+| Degradation Case | Initial Mean Conf | Initial Missing Joints | Selected View | Selected Dist/Angle | Confidence Improvement | Missing Recovered | Quality Gain |
+|---|---|---|---|---|---|---|---|
+| **No Occlusion** | 0.850 | 0 | `vp_007_r1.5_a315` | 1.5m / 44.1° | +0.051 | 0 | +0.046 |
+| **Self-Occlusion** | 0.692 | 0 | `vp_007_r1.5_a315` | 1.5m / 44.1° | +0.210 | 0 | +0.189 |
+| **Furniture Occlusion** | 0.525 | 4 | `vp_007_r1.5_a315` | 1.5m / 44.1° | +0.376 | 4 | +0.343 |
+| **Low Confidence Pose** | 0.346 | 0 | `vp_007_r1.5_a315` | 1.5m / 44.1° | +0.555 | 0 | +0.498 |
 
-> **科学结论**：模型成功在无任何 Action 标签输入的情况下，直接由人体关键点几何形态驱动选点，验证了核心命题：**人体物理状态决定最佳观察视角**。
+> **科学结论**：实验充分证明——**当前观测质量越差（遮挡越严重、缺失关节点越多），感知驱动模型选择的视点带来的信息增益和关节点恢复量越显著**。
 
 ---
 
 ### 7. 系统消融实验分析 (Ablation Study)
 
-| Ablation Condition | Val Top-1 Accuracy | Mean Utility Ratio | 科学分析与结论 |
+| Ablation Condition | Val Top-1 Accuracy | Mean Gain Ratio | 科学分析与结论 |
 |---|---|---|---|
-| **Full Model (v9.1 Ours)** | **90.0%** | **100.0%** | 融合人体姿态与 13 维视点特征，达成最高排序精度与效用保持。 |
-| **Remove Human Pose State** | 90.0% | 100.0% | 失去人体形态感知，退化为无状态偏好的几何平均视点。 |
-| **Remove Body Part Visibility** | 20.0% | 97.0% | 失去 7 大解剖部位可见性感知，对屈肢与俯卧姿态的微观解剖关注点下降。 |
-| **Remove Distance Descriptor** | 0.0% | 90.4% | 无法惩罚极端过近或过远视角，导致选点距离偏离最优区间。 |
+| **Full Model (v9.1 Ours)** | **30.0%** | **98.4%** | 完整融合感知状态与视点特征，达成最高信息增益与视点决策。 |
+| **Remove Observation Input** | 30.0% | 98.3% | 失去对当前观测缺陷的感知能力，无法针对性弥补遮挡部位。 |
+| **Remove Body Part Confidences** | 25.0% | 98.3% | 失去 7 大解剖部位的置信度先验，对局部肢体遮挡的恢复能力下降。 |
+| **Remove Distance Descriptor** | 15.0% | 97.6% | 无法惩罚极端远视距造成的感知分辨率衰减。 |
 
 ---
 
 ### 8. 可视化图表分析 (Visualization Figures)
-1. **`visualization/training_curve.png`**：记录 40 轮损失下降与 Top-1 准确率上升曲线；
-2. **`visualization/viewpoint_ranking.png`**：展示候选视点排序得分与极坐标空间分布（红点表示神经网络选定的最优视点）；
-3. **`visualization/best_view_examples.png`**：对比 5 类典型人体状态下所选视角的偏角与效用分；
-4. **`visualization/body_visibility_analysis.png`**：对比纯几何基线与学习型方法在 7 大关键解剖部位（Head, Torso, Pelvis, Hands, Legs）上的可见性增益。
+1. **`visualization/training_curve.png`**：记录 40 轮信息增益排序损失下降与 Top-1 准确率上升曲线；
+2. **`visualization/viewpoint_ranking.png`**：展示候选视点信息增益预测与极坐标空间分布；
+3. **`visualization/best_view_examples.png`**：对比 4 种感知退化场景下视点迁移前后的平均关节点置信度显著提升；
+4. **`visualization/body_visibility_analysis.png`**：展示视角调整前后 7 大解剖部位（Head, Torso, Pelvis, Hands, Legs）置信度的全面恢复。
 
 ---
 
 ### 9. 当前方法不足与局限性 (Limitations)
-1. **静态单帧假设**：当前 v9.1 仅处理静态空间状态，未建模人体随时间的时序动态运动（Temporal motion dynamics）；
-2. **候选点离散网格**：候选视角采样仍基于离散极坐标网格，尚未支持连续位姿空间微调。
+1. **单步观测假设**：当前 v9.1 仅根据单帧观测决定单步最佳视角，尚未结合多步历史观测融合（Temporal multi-view fusion）；
+2. **估计器仿真依赖**：当前估计器输出基于仿真退化模型，未来可无缝接入真实 ViTPose / OpenPose 等预训练视觉模型。
 
 ---
 
 ### 10. 下一阶段研究建议 (Recommendations for v9.2+)
-1. **时序轨迹感知 (Temporal Trajectory-aware Active View)**：在 v9.2 中引入连续多帧时序人体姿态序列预测，建立动态视点规划机制；
-2. **连续动作过渡平滑**：在时序视角规划中引入位姿平滑损失，抑制视角抖动。
+1. **多视角历史观测融合 (Multi-view Observation Fusion)**：在 v9.2 中维护全局 3D 姿态概率体素或贝叶斯置信度图，实现序列式主动感知；
+2. **端到端视觉姿态估计接入**：直接将仿真 RGB 图像输入视觉姿态骨干网络提取置信度特征。

@@ -153,20 +153,30 @@ def main():
     vp_geom, _ = ViewpointSelector.select(checked_candidates, rule_scores, geometry_qualities=geom_qualities, strategy="geometry_best")
     vp_rule, s_rule = ViewpointSelector.select(checked_candidates, rule_scores, strategy="action_conditioned")
 
-    # 6. 步骤五: 运行 v9.1 学习型打分模型前向推理 Q(v | H)
-    logger.info("Step 4: Running v9.1 Neural View Scorer Inference (Q(v | H))...")
+    # 模拟机器人当前初始位置的观测退化
+    from ea_avs_mvp_v9.features.observation_simulator import ObservationSimulator
+    obs_sim = ObservationSimulator()
+    curr_obs = obs_sim.simulate_observation(
+        gt_joints=gt_joints,
+        camera_pos=[robot_start_pos[0], -1.60 + 1.20, robot_start_pos[2]],
+        human_pos=human_pose.position,
+        human_yaw_deg=human_pose.yaw_deg,
+        degradation_mode="self_occlusion",
+    )
+
+    # 6. 步骤五: 运行 v9.1 学习型感知驱动推理 Gain(v | O_curr)
+    logger.info("Step 4: Running v9.1 Neural View Predictor Inference (Gain(v | O_curr))...")
     predictor = ViewPredictor(checkpoint_path=ckpt_path)
     pred_res = predictor.predict_viewpoints(
         viewpoints=checked_candidates,
         features=features,
-        human_joints_3d=gt_joints,
-        human_yaw_deg=human_pose.yaw_deg,
+        observation_state=curr_obs,
         action_metadata=action_label,
     )
 
     best_v91_id = pred_res["best_viewpoint_id"]
     vp_learnable = vp_map[best_v91_id]
-    s_learnable_pred = pred_res["best_predicted_score"]
+    s_learnable_pred = pred_res["best_predicted_gain"]
 
     # 7. 步骤六: 移动机器人至 v9.1 选定视点并渲染 RGB 图像
     logger.info("Step 5: Moving Robot to v9.1 Selected Viewpoint ('%s') and Rendering RGB...", best_v91_id)

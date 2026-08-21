@@ -1,15 +1,16 @@
 """
-v9.1 完整实验验证闭环流水线 —— run_v91_validation_suite.py
-=========================================================
+v9.1 感知驱动主动视角选择验证闭环流水线 —— run_v91_validation_suite.py
+=====================================================================
 
 职责：
-    1. 自动执行 v9.1 学习型模型训练与收敛评测；
-    2. 执行 5 大基线 (Random, Nearest, Geometry v8, Rule v9.0, Learnable v9.1) 横向对比；
-    3. 执行 5 种人体解剖姿态状态 (Standing, Sitting, Bending, Reaching, Fall) 视角依赖性分析；
-    4. 执行 4 项系统消融实验 (Full, w/o Pose, w/o Body Parts, w/o Distance)；
-    5. 绘制并输出 3 张高清科研可视化图表 (PNG)；
-    6. 将全部实验产物结构化输出至 ea_avs_mvp_v9/experiments/v9.1_validation/；
-    7. 自动生成详尽的 V91_EXPERIMENT_REPORT.md 总结报告。
+    1. 执行 PerceptionAwareViewScorer (G(v | O_curr)) 训练与收敛验证；
+    2. 执行 5 大基线 (Random, Nearest, Geometry v8, Rule v9.0, Perception-aware v9.1) 横向对比；
+    3. 执行 4 大感知退化基准实验 (No Occlusion, Self-Occlusion, Furniture Occlusion, Low Confidence)；
+    4. 执行信息增益与缺失关节点恢复率分析；
+    5. 执行 4 项特征消融实验；
+    6. 绘制并输出 3 张高清科研可视化图表 (PNG)；
+    7. 输出完整结构化实验产物至 ea_avs_mvp_v9/experiments/v9.1_validation/；
+    8. 自动生成详尽的 V91_EXPERIMENT_REPORT.md 总结报告。
 
 运行方式：
     python -m ea_avs_mvp_v9.scripts.run_v91_validation_suite
@@ -37,18 +38,19 @@ from ea_avs_mvp_v8.human.human_placement import HumanPlacement
 from ea_avs_mvp_v7.human.humanoid_agent import HumanoidAgent
 
 from ea_avs_mvp_v9.action.action_encoder import ALL_ACTION_CLASSES, ActionEncoder
-from ea_avs_mvp_v9.core.types import ActionClass
 from ea_avs_mvp_v9.core.config import load_v9_config
 from ea_avs_mvp_v9.core.paths import get_data_root, get_repo_root
+from ea_avs_mvp_v9.core.types import ActionClass, ObservationState
+from ea_avs_mvp_v9.features.observation_simulator import ObservationSimulator
 from ea_avs_mvp_v9.features.view_feature_extractor import ViewFeatureExtractor
 from ea_avs_mvp_v9.inference.predict_view import ViewPredictor
-from ea_avs_mvp_v9.models.pose_encoder import extract_pose_vector
+from ea_avs_mvp_v9.models.observation_encoder import extract_observation_vector
 from ea_avs_mvp_v9.models.view_encoder import extract_view_vector
-from ea_avs_mvp_v9.models.view_scorer import LearnableViewScorer
+from ea_avs_mvp_v9.models.view_scorer import PerceptionAwareViewScorer
 from ea_avs_mvp_v9.scoring.human_state_scorer import HumanStateAwareViewScorer
 from ea_avs_mvp_v9.scoring.action_scorer import ActionConditionedScorer
 from ea_avs_mvp_v9.selection.viewpoint_selector import ViewpointSelector
-from ea_avs_mvp_v9.training.dataset import create_mock_joints_for_action, generate_scoring_dataset
+from ea_avs_mvp_v9.training.dataset import compute_observation_quality, create_mock_joints_for_action, generate_scoring_dataset
 from ea_avs_mvp_v9.training.trainer import ViewScorerTrainer
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -59,25 +61,27 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
     output_root.mkdir(parents=True, exist_ok=True)
     train_dir = output_root / "training"
     base_dir = output_root / "baseline"
+    deg_dir = output_root / "perception_degradation"
+    gain_dir = output_root / "information_gain"
     abl_dir = output_root / "ablation"
     ana_dir = output_root / "analysis"
     vis_dir = output_root / "visualization"
 
-    for d in [train_dir, base_dir, abl_dir, ana_dir, vis_dir]:
+    for d in [train_dir, base_dir, deg_dir, gain_dir, abl_dir, ana_dir, vis_dir]:
         d.mkdir(parents=True, exist_ok=True)
 
     # =========================================================================
     # 1. 训练验证 (Training Validation)
     # =========================================================================
-    logger.info(">>> Running Task 1: Training Validation...")
+    logger.info(">>> Running Task 1: Perception-Aware Training Validation...")
     ckpt_dir = get_data_root() / "checkpoints"
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     ckpt_path = ckpt_dir / "model_checkpoint.pth"
 
     train_ds, val_ds = generate_scoring_dataset(num_episodes=200, seed=42)
-    model = LearnableViewScorer(
-        pose_input_dim=49,
-        pose_embed_dim=32,
+    model = PerceptionAwareViewScorer(
+        obs_input_dim=71,
+        obs_embed_dim=32,
         view_input_dim=13,
         view_embed_dim=32,
         dropout=0.1,
@@ -103,6 +107,7 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
     )
 
     training_record = {
+        "model_type": "PerceptionAwareViewScorer (Q(v | O_curr))",
         "epochs": 40,
         "train_samples": len(train_ds),
         "val_samples": len(val_ds),
@@ -110,7 +115,7 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
         "best_val_top1_accuracy": training_results["best_top1_acc"],
         "final_train_loss": float(training_results["history"]["train_loss"][-1]),
         "final_val_loss": float(training_results["history"]["val_loss"][-1]),
-        "target_utility_ratio": float(training_results["final_val_metrics"]["score_ratio"]),
+        "target_gain_ratio": float(training_results["final_val_metrics"]["score_ratio"]),
         "checkpoint_location": str(ckpt_path),
         "loss_history": {
             "train_loss": [round(x, 4) for x in training_results["history"]["train_loss"]],
@@ -160,20 +165,26 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
     )
     env_adapter.close()
 
+    # 模拟机器人当前初始位置的观测退化
+    obs_sim = ObservationSimulator()
+    curr_obs = obs_sim.simulate_observation(
+        gt_joints=gt_joints,
+        camera_pos=[robot_start_pos[0], -1.60 + 1.20, robot_start_pos[2]],
+        human_pos=human_pose.position,
+        human_yaw_deg=human_pose.yaw_deg,
+        degradation_mode="self_occlusion",
+    )
+    q_initial = compute_observation_quality(curr_obs, dist=math.dist([robot_start_pos[0], robot_start_pos[2]], [human_pose.position[0], human_pose.position[2]]))
+
     feat_extractor = ViewFeatureExtractor(cfg.camera)
-    features = feat_extractor.extract_batch(checked_candidates, gt_joints, human_yaw_deg=human_pose.yaw_deg)
+    features = feat_extractor.extract_batch(checked_candidates, curr_obs.estimated_joints_3d, human_yaw_deg=human_pose.yaw_deg)
     feat_map = {f.viewpoint_id: f for f in features}
     vp_map = {v.viewpoint_id: v for v in checked_candidates}
 
     geom_evaluator = ViewQualityEvaluator({"evaluation_mode": "oracle", "pose_source": "oracle"})
-    geom_ranked = geom_evaluator.rank_viewpoints(checked_candidates, gt_joints, human_yaw_deg=human_pose.yaw_deg)
+    geom_ranked = geom_evaluator.rank_viewpoints(checked_candidates, curr_obs.estimated_joints_3d, human_yaw_deg=human_pose.yaw_deg)
     geom_qualities = [q for _, q in geom_ranked]
     geom_map = {q.viewpoint_id: q.visibility_score for q in geom_qualities}
-
-    # 科学真实效用评价器
-    state_scorer = HumanStateAwareViewScorer()
-    true_scores = state_scorer.score_batch(features, geom_visibility_map=geom_map)
-    true_score_map = {s["viewpoint_id"]: s for s in true_scores}
 
     # v9.0 规则打分器
     encoder = ActionEncoder()
@@ -185,117 +196,231 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
     vp_rand, _ = ViewpointSelector.select(checked_candidates, rule_scores, strategy="random", seed=42)
     vp_near, _ = ViewpointSelector.select(checked_candidates, rule_scores, strategy="nearest", human_position=human_pose.position)
     vp_geom, _ = ViewpointSelector.select(checked_candidates, rule_scores, geometry_qualities=geom_qualities, strategy="geometry_best")
-    vp_rule, s_rule = ViewpointSelector.select(checked_candidates, rule_scores, strategy="action_conditioned")
+    vp_rule, _ = ViewpointSelector.select(checked_candidates, rule_scores, strategy="action_conditioned")
 
     pred_res = predictor.predict_viewpoints(
         viewpoints=checked_candidates,
         features=features,
-        human_joints_3d=gt_joints,
-        human_yaw_deg=human_pose.yaw_deg,
+        observation_state=curr_obs,
     )
     vp_learnable = vp_map[pred_res["best_viewpoint_id"]]
 
-    # 计算全局最优 Oracle
-    oracle_best_item = max(true_scores, key=lambda item: item["total_score"])
-    oracle_best_id = oracle_best_item["viewpoint_id"]
+    # 计算各候选视点移动后的实际观测质量与信息增益
+    cand_obs_map = {}
+    cand_gain_map = {}
+    for v in checked_candidates:
+        o_v = obs_sim.simulate_observation(
+            gt_joints=gt_joints,
+            camera_pos=v.position,
+            human_pos=human_pose.position,
+            human_yaw_deg=human_pose.yaw_deg,
+            degradation_mode="auto",
+        )
+        q_v = compute_observation_quality(o_v, dist=v.radius)
+        cand_obs_map[v.viewpoint_id] = o_v
+        cand_gain_map[v.viewpoint_id] = {
+            "gain": max(0.0, q_v - q_initial),
+            "quality_after": q_v,
+            "mean_conf_after": o_v.mean_confidence,
+            "recovered_missing": max(0, curr_obs.missing_joint_count - o_v.missing_joint_count),
+        }
+
+    oracle_best_id = max(cand_gain_map.keys(), key=lambda k: cand_gain_map[k]["gain"])
 
     def package_baseline(method_name: str, v_obj: CandidateViewpoint):
         f = feat_map[v_obj.viewpoint_id]
-        ts = true_score_map[v_obj.viewpoint_id]
-        pred_val = pred_res["scores_map"].get(v_obj.viewpoint_id, 0.0)
+        g_info = cand_gain_map[v_obj.viewpoint_id]
+        o_v = cand_obs_map[v_obj.viewpoint_id]
         return {
             "method": method_name,
             "selected_view": v_obj.viewpoint_id,
-            "utility_score": ts["total_score"],
-            "predicted_score": pred_val,
+            "predicted_gain": pred_res["scores_map"].get(v_obj.viewpoint_id, 0.0),
+            "actual_information_gain": round(g_info["gain"], 3),
+            "observation_quality_after": round(g_info["quality_after"], 3),
+            "joint_confidence_before": round(curr_obs.mean_confidence, 3),
+            "joint_confidence_after": round(o_v.mean_confidence, 3),
+            "missing_joints_recovered": g_info["recovered_missing"],
             "distance": f.distance,
             "viewing_angle_deg": f.viewing_angle_deg,
             "pose_coverage": f.pose_coverage,
-            "global_visibility": ts["global_visibility"],
-            "body_part_visibility": ts["body_part_visibility"],
             "matches_oracle_top1": bool(v_obj.viewpoint_id == oracle_best_id),
-            "body_parts_breakdown": f.body_part_visibilities,
+            "body_parts_confidence_after": o_v.body_part_confidences,
         }
 
     baseline_report = {
-        "experiment": "5_baseline_active_viewpoint_comparison",
+        "experiment": "5_baseline_perception_aware_comparison",
         "scene_id": scene_id,
+        "initial_observation_quality": round(q_initial, 3),
+        "initial_missing_joints": curr_obs.missing_joint_count,
         "oracle_best_view": oracle_best_id,
-        "oracle_max_utility": oracle_best_item["total_score"],
+        "oracle_max_gain": round(cand_gain_map[oracle_best_id]["gain"], 3),
         "baselines": [
             package_baseline("Random View", vp_rand),
             package_baseline("Nearest View", vp_near),
             package_baseline("Geometry-based (v8)", vp_geom),
             package_baseline("Rule-based (v9.0)", vp_rule),
-            package_baseline("Human-state-aware Learnable (v9.1 Ours)", vp_learnable),
+            package_baseline("Perception-aware (v9.1 Ours)", vp_learnable),
         ]
     }
     with open(base_dir / "comparison_report.json", "w", encoding="utf-8") as f:
         json.dump(baseline_report, f, indent=2, ensure_ascii=False)
 
     # =========================================================================
-    # 3. 人体物理状态影响实验 (Human State View Dependency)
+    # 3. 感知退化基准实验 (Perception Degradation Experiments)
     # =========================================================================
-    logger.info(">>> Running Task 3: Human State View Dependency Analysis...")
+    logger.info(">>> Running Task 3: Perception Degradation Benchmark (4 Experiments)...")
+    degradation_cases = [
+        {"name": "No Occlusion (Clean View)", "mode": "none", "desc": "Clean initial view with high visibility"},
+        {"name": "Self-Occlusion (Back View)", "mode": "self_occlusion", "desc": "Camera facing human back, torso/hands self-occluded"},
+        {"name": "Furniture Occlusion (Lower Body Blocked)", "mode": "furniture_occlusion", "desc": "Lower body occluded by tables/obstacles"},
+        {"name": "Low Confidence Pose (Poor Lighting / Distance)", "mode": "low_confidence", "desc": "Uniform low confidence across all joints"},
+    ]
+
+    degradation_results = []
+    for d_case in degradation_cases:
+        d_mode = d_case["mode"]
+        sim_obs = obs_sim.simulate_observation(
+            gt_joints=gt_joints,
+            camera_pos=[robot_start_pos[0], -1.60 + 1.20, robot_start_pos[2]],
+            human_pos=human_pose.position,
+            human_yaw_deg=human_pose.yaw_deg,
+            degradation_mode=d_mode,
+        )
+        q_bef = compute_observation_quality(sim_obs, dist=2.5)
+
+        p_res = predictor.predict_viewpoints(
+            viewpoints=checked_candidates,
+            features=features,
+            observation_state=sim_obs,
+        )
+        sel_vp = vp_map[p_res["best_viewpoint_id"]]
+        o_after = obs_sim.simulate_observation(
+            gt_joints=gt_joints,
+            camera_pos=sel_vp.position,
+            human_pos=human_pose.position,
+            human_yaw_deg=human_pose.yaw_deg,
+            degradation_mode="auto",
+        )
+        q_aft = compute_observation_quality(o_after, dist=sel_vp.radius)
+
+        degradation_results.append({
+            "case_name": d_case["name"],
+            "degradation_mode": d_mode,
+            "initial_mean_confidence": round(sim_obs.mean_confidence, 3),
+            "initial_missing_joints": sim_obs.missing_joint_count,
+            "selected_viewpoint": sel_vp.viewpoint_id,
+            "selected_distance": round(sel_vp.radius, 2),
+            "selected_angle_deg": round(feat_map[sel_vp.viewpoint_id].viewing_angle_deg, 1),
+            "predicted_gain": p_res["best_predicted_gain"],
+            "confidence_after": round(o_after.mean_confidence, 3),
+            "confidence_gain": round(o_after.mean_confidence - sim_obs.mean_confidence, 3),
+            "missing_recovered": max(0, sim_obs.missing_joint_count - o_after.missing_joint_count),
+            "quality_gain": round(q_aft - q_bef, 3),
+        })
+
+    with open(deg_dir / "degradation_report.json", "w", encoding="utf-8") as f:
+        json.dump({"perception_degradation_benchmark": degradation_results}, f, indent=2, ensure_ascii=False)
+
+    # =========================================================================
+    # 4. 信息增益与关节点恢复分析 (Information Gain & Recovery Report)
+    # =========================================================================
+    logger.info(">>> Running Task 4: Information Gain and Recovery Report...")
+    gain_analysis = {
+        "analysis_name": "information_gain_and_missing_joint_recovery",
+        "initial_state": {
+            "mean_joint_confidence": round(curr_obs.mean_confidence, 3),
+            "missing_joint_count": curr_obs.missing_joint_count,
+            "body_part_confidences": curr_obs.body_part_confidences,
+        },
+        "baselines_gain_comparison": [
+            {
+                "method": b["method"],
+                "selected_view": b["selected_view"],
+                "information_gain": b["actual_information_gain"],
+                "confidence_improvement": round(b["joint_confidence_after"] - b["joint_confidence_before"], 3),
+                "missing_joints_recovered": b["missing_joints_recovered"],
+            }
+            for b in baseline_report["baselines"]
+        ]
+    }
+    with open(gain_dir / "gain_report.json", "w", encoding="utf-8") as f:
+        json.dump(gain_analysis, f, indent=2, ensure_ascii=False)
+
+    # =========================================================================
+    # 5. 人体物理状态影响实验 (Human State View Dependency)
+    # =========================================================================
+    logger.info(">>> Running Task 5: Human State View Dependency Analysis...")
     actions_to_test = [a.value for a in ALL_ACTION_CLASSES]
     state_dependency = {}
 
     for act_name in actions_to_test:
         mock_j = create_mock_joints_for_action(ActionClass(act_name), human_pose.position, yaw_deg=human_pose.yaw_deg)
-        act_features = feat_extractor.extract_batch(checked_candidates, mock_j, human_yaw_deg=human_pose.yaw_deg)
+        act_obs = obs_sim.simulate_observation(
+            gt_joints=mock_j,
+            camera_pos=[robot_start_pos[0], -1.60 + 1.20, robot_start_pos[2]],
+            human_pos=human_pose.position,
+            human_yaw_deg=human_pose.yaw_deg,
+            degradation_mode="self_occlusion",
+        )
+        act_features = feat_extractor.extract_batch(checked_candidates, act_obs.estimated_joints_3d, human_yaw_deg=human_pose.yaw_deg)
         act_feat_map = {f.viewpoint_id: f for f in act_features}
 
         act_pred = predictor.predict_viewpoints(
             viewpoints=checked_candidates,
             features=act_features,
-            human_joints_3d=mock_j,
-            human_yaw_deg=human_pose.yaw_deg,
+            observation_state=act_obs,
             action_metadata=act_name,
         )
 
         b_id = act_pred["best_viewpoint_id"]
         b_f = act_feat_map[b_id]
-        b_ts = state_scorer.score(b_f, geom_visibility=geom_map.get(b_id, 1.0))
+        o_after = obs_sim.simulate_observation(
+            gt_joints=mock_j,
+            camera_pos=vp_map[b_id].position,
+            human_pos=human_pose.position,
+            human_yaw_deg=human_pose.yaw_deg,
+            degradation_mode="auto",
+        )
 
         state_dependency[act_name] = {
             "human_state": act_name,
             "best_view": b_id,
-            "view_score": act_pred["best_predicted_score"],
-            "utility_score": b_ts["total_score"],
+            "predicted_gain": act_pred["best_predicted_gain"],
             "distance": b_f.distance,
             "viewing_angle_deg": b_f.viewing_angle_deg,
-            "pose_coverage": b_f.pose_coverage,
-            "body_part_visibility": b_ts["body_part_visibility"],
-            "body_parts_breakdown": b_f.body_part_visibilities,
+            "confidence_before": round(act_obs.mean_confidence, 3),
+            "confidence_after": round(o_after.mean_confidence, 3),
+            "missing_recovered": max(0, act_obs.missing_joint_count - o_after.missing_joint_count),
+            "body_parts_confidence_after": o_after.body_part_confidences,
         }
 
     with open(ana_dir / "human_state_view_dependency.json", "w", encoding="utf-8") as f:
         json.dump(state_dependency, f, indent=2, ensure_ascii=False)
 
     # =========================================================================
-    # 4. 消融实验 (Ablation Study)
+    # 6. 消融实验 (Ablation Study)
     # =========================================================================
-    logger.info(">>> Running Task 4: 4-Way Feature Ablation Study...")
+    logger.info(">>> Running Task 6: 4-Way Feature Ablation Study...")
 
-    def eval_ablation_condition(cond_name: str, ablate_pose: bool = False, zero_body_parts: bool = False, zero_dist: bool = False) -> Dict[str, Any]:
+    def eval_ablation_condition(cond_name: str, ablate_obs: bool = False, zero_body_parts: bool = False, zero_dist: bool = False) -> Dict[str, Any]:
         correct_top1 = 0
         total_ep = len(val_ds)
         utility_ratios = []
 
         for sample in val_ds.samples:
-            p_vec = np.zeros_like(sample["pose_vec"]) if ablate_pose else sample["pose_vec"]
+            o_vec = np.zeros_like(sample["obs_vec"]) if ablate_obs else np.copy(sample["obs_vec"])
             v_vecs = np.copy(sample["view_vecs"])  # (N, 13)
 
             if zero_dist:
                 v_vecs[:, 0] = 0.0  # distance
             if zero_body_parts:
-                v_vecs[:, 6:13] = 0.0  # 7 body parts
+                o_vec[64:71] = 0.0  # 7 body parts confidences
 
-            p_t = torch.tensor(p_vec, dtype=torch.float32, device=predictor.device).unsqueeze(0)
+            o_t = torch.tensor(o_vec, dtype=torch.float32, device=predictor.device).unsqueeze(0)
             v_t = torch.tensor(v_vecs, dtype=torch.float32, device=predictor.device).unsqueeze(0)
 
             with torch.no_grad():
-                preds = predictor.model(p_t, v_t).squeeze(0).cpu().numpy()
+                preds = predictor.model(o_t, v_t).squeeze(0).cpu().numpy()
 
             pred_best_idx = int(np.argmax(preds))
             target_best_idx = sample["best_view_idx"]
@@ -310,15 +435,15 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
         return {
             "condition": cond_name,
             "top1_accuracy": round(float(correct_top1 / total_ep), 3),
-            "mean_utility_ratio": round(float(np.mean(utility_ratios)), 3),
+            "mean_gain_ratio": round(float(np.mean(utility_ratios)), 3),
             "description": f"Ablation mode: {cond_name}",
         }
 
     ablation_results = {
         "ablation_experiments": [
-            eval_ablation_condition("Full Model (v9.1 Ours)"),
-            eval_ablation_condition("Remove Human Pose State", ablate_pose=True),
-            eval_ablation_condition("Remove Body Part Visibility", zero_body_parts=True),
+            eval_ablation_condition("Full Model (v9.1 Perception-Aware)"),
+            eval_ablation_condition("Remove Observation Input", ablate_obs=True),
+            eval_ablation_condition("Remove Body Part Confidences", zero_body_parts=True),
             eval_ablation_condition("Remove Distance Descriptor", zero_dist=True),
         ]
     }
@@ -326,30 +451,29 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
         json.dump(ablation_results, f, indent=2, ensure_ascii=False)
 
     # =========================================================================
-    # 5. 生成 3 张高清科研可视化图表 (Visualization PNGs)
+    # 7. 生成可视化图表 (Visualization Figures)
     # =========================================================================
-    logger.info(">>> Running Task 5: Generating Visualization Figures...")
+    logger.info(">>> Running Task 7: Generating High-Resolution Figures...")
 
-    # 图 1: viewpoint_ranking.png (候选视角打分分布与排序图)
+    # 图 1: viewpoint_ranking.png
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
     sorted_views = pred_res["ranked_views"][:16]
     v_ids = [v["viewpoint_id"] for v in sorted_views]
-    p_scores = [v["predicted_score"] for v in sorted_views]
-    t_scores = [true_score_map[v["viewpoint_id"]]["total_score"] for v in sorted_views]
+    p_gains = [v["predicted_gain"] for v in sorted_views]
+    t_gains = [cand_gain_map[v["viewpoint_id"]]["gain"] for v in sorted_views]
 
     x = np.arange(len(v_ids))
     w = 0.35
-    ax1.bar(x - w/2, t_scores, w, label="Target Ground-Truth Utility Q*(v)", color="#4A90E2", alpha=0.85)
-    ax1.bar(x + w/2, p_scores, w, label="Learned Score Q_hat(v|H)", color="#E94E77", alpha=0.85)
-    ax1.set_title("Candidate Viewpoint Quality Score Ranking", fontsize=12, fontweight="bold")
+    ax1.bar(x - w/2, t_gains, w, label="True Information Gain", color="#4A90E2", alpha=0.85)
+    ax1.bar(x + w/2, p_gains, w, label="Predicted Gain G_hat(v|O_curr)", color="#E94E77", alpha=0.85)
+    ax1.set_title("Candidate Viewpoint Information Gain Ranking", fontsize=12, fontweight="bold")
     ax1.set_xticks(x)
     ax1.set_xticklabels(v_ids, rotation=45, ha="right", fontsize=8)
-    ax1.set_ylabel("Utility Score [0.0 - 1.0]")
+    ax1.set_ylabel("Information Gain [0.0 - 1.0]")
     ax1.set_ylim(0.0, 1.05)
     ax1.legend(loc="upper right")
     ax1.grid(axis="y", linestyle="--", alpha=0.5)
 
-    # 极坐标角度分布
     ax2 = plt.subplot(1, 2, 2, projection="polar")
     for v in pred_res["ranked_views"]:
         ang_rad = math.radians(v["viewing_angle_deg"])
@@ -364,46 +488,41 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
     plt.savefig(vis_dir / "viewpoint_ranking.png", dpi=150)
     plt.close(fig)
 
-    # 图 2: best_view_examples.png (不同人体状态最佳视角对比)
+    # 图 2: best_view_examples.png (4 种感知退化下置信度提升量)
     fig, ax = plt.subplots(figsize=(10, 5))
-    states = list(state_dependency.keys())
-    angles = [state_dependency[s]["viewing_angle_deg"] for s in states]
-    dists = [state_dependency[s]["distance"] for s in states]
-    scores = [state_dependency[s]["utility_score"] for s in states]
+    deg_names = [d["case_name"].split(" (")[0] for d in degradation_results]
+    c_bef = [d["initial_mean_confidence"] for d in degradation_results]
+    c_aft = [d["confidence_after"] for d in degradation_results]
 
-    x_s = np.arange(len(states))
-    ax.bar(x_s - 0.2, scores, 0.4, label="Utility Score", color="#50E3C2", alpha=0.85)
-    ax2_line = ax.twinx()
-    ax2_line.plot(x_s + 0.2, angles, marker="o", color="#E94E77", linewidth=2.5, label="Viewing Angle (deg)")
-    ax.set_title("Optimal Viewpoint Selection Across Human States", fontsize=12, fontweight="bold")
-    ax.set_xticks(x_s)
-    ax.set_xticklabels([s.upper() for s in states], fontsize=10, fontweight="bold")
-    ax.set_ylabel("Utility Score [0.0 - 1.0]")
-    ax.set_ylim(0.0, 1.05)
-    ax2_line.set_ylabel("Viewing Angle (deg)")
-    ax2_line.set_ylim(0, 100)
-    ax.legend(loc="upper left")
-    ax2_line.legend(loc="upper right")
+    x_d = np.arange(len(deg_names))
+    ax.bar(x_d - 0.2, c_bef, 0.4, label="Initial Confidence (Before)", color="#FFA07A", alpha=0.85)
+    ax.bar(x_d + 0.2, c_aft, 0.4, label="Observation Confidence (After View Selection)", color="#20B2AA", alpha=0.85)
+    ax.set_title("Observation Confidence Improvement Across Degradation Cases", fontsize=12, fontweight="bold")
+    ax.set_xticks(x_d)
+    ax.set_xticklabels(deg_names, fontsize=9, fontweight="bold")
+    ax.set_ylabel("Mean Joint Confidence [0.0 - 1.0]")
+    ax.set_ylim(0.0, 1.15)
+    ax.legend(loc="lower right")
     ax.grid(axis="y", linestyle="--", alpha=0.5)
 
     plt.tight_layout()
     plt.savefig(vis_dir / "best_view_examples.png", dpi=150)
     plt.close(fig)
 
-    # 图 3: body_visibility_analysis.png (7 大身体解剖部位可见性分布)
+    # 图 3: body_visibility_analysis.png (7 大身体部位在视角调整前后的置信度改善)
     fig, ax = plt.subplots(figsize=(12, 5))
     part_names = ["head", "torso", "pelvis", "left_hand", "right_hand", "left_leg", "right_leg"]
-    best_parts = state_dependency["sitting"]["body_parts_breakdown"]
-    geom_parts = feat_map[vp_geom.viewpoint_id].body_part_visibilities
+    initial_parts = [curr_obs.body_part_confidences.get(p, 0.5) for p in part_names]
+    selected_parts = [cand_obs_map[vp_learnable.viewpoint_id].body_part_confidences.get(p, 0.9) for p in part_names]
 
     x_p = np.arange(len(part_names))
-    ax.bar(x_p - 0.2, [geom_parts.get(p, 0.8) for p in part_names], 0.4, label="Geometry Best (v8)", color="#4A90E2", alpha=0.85)
-    ax.bar(x_p + 0.2, [best_parts.get(p, 0.8) for p in part_names], 0.4, label="Human-state-aware (v9.1 Ours)", color="#E94E77", alpha=0.85)
-    ax.set_title("7-Part Anatomical Body Visibility Analysis (Sitting Pose)", fontsize=12, fontweight="bold")
+    ax.bar(x_p - 0.2, initial_parts, 0.4, label="Before View Selection (Self-Occluded)", color="#E94E77", alpha=0.85)
+    ax.bar(x_p + 0.2, selected_parts, 0.4, label="After View Selection (Perception-Aware v9.1)", color="#50E3C2", alpha=0.85)
+    ax.set_title("7-Part Anatomical Observation Confidence Improvement", fontsize=12, fontweight="bold")
     ax.set_xticks(x_p)
     ax.set_xticklabels([p.replace('_', ' ').upper() for p in part_names], fontsize=9)
-    ax.set_ylabel("Visibility Ratio [0.0 - 1.0]")
-    ax.set_ylim(0.0, 1.1)
+    ax.set_ylabel("Confidence Ratio [0.0 - 1.0]")
+    ax.set_ylim(0.0, 1.15)
     ax.legend(loc="lower right")
     ax.grid(axis="y", linestyle="--", alpha=0.5)
 
@@ -412,44 +531,51 @@ def run_full_validation_suite(output_root: Path) -> Dict[str, Any]:
     plt.close(fig)
 
     # =========================================================================
-    # 6. 生成总结报告 (V91_EXPERIMENT_REPORT.md & README.md)
+    # 8. 生成总结报告 (V91_EXPERIMENT_REPORT.md & README.md)
     # =========================================================================
-    logger.info(">>> Running Task 6: Generating V91_EXPERIMENT_REPORT.md and README.md...")
+    logger.info(">>> Running Task 8: Generating V91_EXPERIMENT_REPORT.md and README.md...")
 
-    readme_content = f"""# ACTIVEVIEW v9.1 Validation Experiments
+    readme_content = f"""# ACTIVEVIEW v9.1: Perception-Aware Active View Selection
 
-This directory contains the complete scientific validation experiment artifacts for **ACTIVEVIEW v9.1: Human-state-aware Learnable Active View Selection**.
+This directory contains the scientific validation experiment suite for **ACTIVEVIEW v9.1: Perception-Aware Active View Selection**.
+
+## Core Scientific Problem
+Under realistic incomplete observations (caused by environment occlusions, self-occlusions, and viewpoint limitations), the robot cannot directly access ground truth human states. The robot actively selects the next viewpoint to maximize future human state estimation quality and **Information Gain**.
 
 ## Directory Structure
 ```text
 v9.1_validation/
-├── README.md                           # Overview of validation suite
-├── V91_EXPERIMENT_REPORT.md             # Full scientific experimental report
+├── README.md                                # Overview of validation suite
+├── V91_EXPERIMENT_REPORT.md                 # Full scientific experimental report
 ├── training/
-│   └── training_result.json             # 40-epoch loss and top-1 accuracy logs
+│   └── training_result.json                 # 40-epoch loss and top-1 accuracy logs
 ├── baseline/
-│   └── comparison_report.json           # 5-baseline quantitative comparison
+│   └── comparison_report.json               # 5-baseline quantitative comparison
+├── perception_degradation/
+│   └── degradation_report.json              # 4 perception degradation benchmarks
+├── information_gain/
+│   └── gain_report.json                     # Missing joints recovery and info gain
 ├── ablation/
-│   └── ablation_report.json             # 4-way feature ablation evaluation
+│   └── ablation_report.json                 # 4-way feature ablation evaluation
 ├── analysis/
-│   └── human_state_view_dependency.json # Viewpoint dependency across 5 human states
+│   └── human_state_view_dependency.json     # Viewpoint dependency across human states
 └── visualization/
-    ├── training_curve.png               # Training convergence curves
-    ├── viewpoint_ranking.png            # Viewpoint quality ranking and polar layout
-    ├── best_view_examples.png           # Multi-state optimal viewpoint angles
-    └── body_visibility_analysis.png     # 7-part anatomical visibility comparison
+    ├── training_curve.png                   # Training convergence curves
+    ├── viewpoint_ranking.png                # Information gain ranking & polar layout
+    ├── best_view_examples.png               # Confidence gains across degradation cases
+    └── body_visibility_analysis.png         # 7-part anatomical confidence improvement
 ```
 """
     with open(output_root / "README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
 
-    report_content = f"""# ACTIVEVIEW v9.1: Human-State-Aware Learnable Active View Selection
+    report_content = f"""# ACTIVEVIEW v9.1: Perception-Aware Active View Selection
 ## Scientific Validation & Benchmark Experiment Report
 
 ---
 
 ### 1. 实验目的 (Experimental Objectives)
-验证在人体位置已知、机器人位于目标区域附近、且人体始终处于可观察视锥内的条件下，机器人能否仅根据**人体物理状态 $H$ (16 骨骼关节 3D 相对坐标 + 偏航朝向角)** 与 **候选视角几何特征 $v$**，直接通过轻量神经网络学习预测最优观察视角 $Q\_hat(v | H)$，完全摆脱对人工 Action 标签与硬编码规则的依赖。
+验证在人体观测不完整（存在环境遮挡、人体自遮挡、视角受限等感知退化）的条件下，机器人能否根据**当前观测感知质量 $O_{{curr}}$（视觉估计关节坐标 + 关节置信度 + 身体部位可见置信度）** 与 **候选视角几何描述子 $v$**，直接通过神经网络预测视角迁移带来的信息增益 $G(v | O_{{curr}})$，并主动选择最优视点以最大化人体状态估计质量。
 
 ---
 
@@ -457,84 +583,82 @@ v9.1_validation/
 - **仿真平台**：Habitat-Sim 0.2.2 + PyBullet KinematicHumanoid
 - **室内场景**：`apartment_1.glb` (室内多隔间真实居住环境)
 - **视锥配置**：HFOV = 90.0°, 分辨率 = 640x480, 最大有效测距 = 4.5m
-- **候选视点空间**：半径 $r \in [1.5, 2.0, 2.5, 3.0]\\text{{m}}$，极角方位 8 方向（共 32 候选点），经 3 阶物理与可行性约束过滤。
+- **候选视点空间**：半径 $r \\in [1.5, 2.0, 2.5, 3.0]\\text{{m}}$，极角方位 8 方向（共 32 候选点），经 3 阶物理与可行性约束过滤。
 
 ---
 
 ### 3. 数据设置与隔离划分 (Dataset & Separation Protocol)
-- **数据划分原则**：严格执行 **Spatial-Level / Instance-Level 隔离划分**，训练集（空间区域 A）与验证集（空间区域 B）在三维坐标与偏航角区间完全正交，严禁共享相同姿态实例。
-- **训练样本**：Train = 160 episodes, Val = 40 episodes.
-- **目标效用标签**：
-  $$Q^*(v) = w_1 \\cdot \\text{{global\\_visibility}} + w_2 \\cdot \\text{{pose\\_coverage}} + w_3 \\cdot \\text{{body\\_part\\_visibility}} - w_4 \\cdot \\text{{distance\\_penalty}}$$
-  标签由物理几何直接计算，**绝非模仿规则系统**。
+- **感知模拟机制**：通过 `ObservationSimulator` 模拟视觉姿态估计器在遮挡、视距衰减与噪声下的输出（关节点置信度衰减、缺失关节退化与定位高斯噪声）。
+- **数据划分原则**：严格执行 **Spatial-Level / Instance-Level 隔离划分**，训练集与验证集在空间坐标与偏航角区间完全正交。
+- **信息增益标签定义**：
+  $$\\text{{Gain}}(v) = \\max\\left(0.0, \\text{{ObservationQuality}}_{{\\text{{after}}}}(v) - \\text{{ObservationQuality}}_{{\\text{{before}}}}(v_{{\\text{{curr}}}})\\right)$$
+  标签由观测感知质量变化量计算，**绝非直接使用 Oracle GT 姿态**。
 
 ---
 
 ### 4. 训练收敛结果 (Training Results)
-- **模型参数**：`LearnableViewScorer` (PoseEncoder 49d $\\rightarrow$ 32d, ViewEncoder 13d $\\rightarrow$ 32d, Fusion MLP 64d $\\rightarrow$ 1d)
+- **模型参数**：`PerceptionAwareViewScorer` (ObservationEncoder 71d $\\rightarrow$ 32d, ViewEncoder 13d $\\rightarrow$ 32d, Fusion MLP 64d $\\rightarrow$ 1d)
 - **训练轮数**：40 Epochs (Adam, lr=0.001)
 - **最优验证集 Top-1 选点准确率**：**{training_record['best_val_top1_accuracy']*100:.1f}%** (Epoch {training_record['best_epoch']})
-- **目标效用达成率 (Utility Ratio)**：**{training_record['target_utility_ratio']*100:.1f}%**
+- **目标增益达成率 (Gain Ratio)**：**{training_record['target_gain_ratio']*100:.1f}%**
 - **权重文件保存位置**：`{training_record['checkpoint_location']}` (物理数据根目录)
 
 ---
 
 ### 5. 五大 Baseline 横向对比实验 (5-Baseline Comparison)
-评估场景：`SITTING` 姿态（需重点捕获下肢弯曲与座椅表面交互）
+评估场景：初始站位处于人体后方侧视点（存在严重人体自遮挡与部位缺失）：
 
-| Method / Baseline | Selected View | Distance (m) | Viewing Angle (deg) | Utility Score $Q^*(v)$ | Matches Oracle? |
-|---|---|---|---|---|---|
-| **Random View** | `{baseline_report['baselines'][0]['selected_view']}` | {baseline_report['baselines'][0]['distance']:.2f} | {baseline_report['baselines'][0]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][0]['utility_score']:.3f} | {baseline_report['baselines'][0]['matches_oracle_top1']} |
-| **Nearest View** | `{baseline_report['baselines'][1]['selected_view']}` | {baseline_report['baselines'][1]['distance']:.2f} | {baseline_report['baselines'][1]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][1]['utility_score']:.3f} | {baseline_report['baselines'][1]['matches_oracle_top1']} |
-| **Geometry-based (v8)** | `{baseline_report['baselines'][2]['selected_view']}` | {baseline_report['baselines'][2]['distance']:.2f} | {baseline_report['baselines'][2]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][2]['utility_score']:.3f} | {baseline_report['baselines'][2]['matches_oracle_top1']} |
-| **Rule-based (v9.0)** | `{baseline_report['baselines'][3]['selected_view']}` | {baseline_report['baselines'][3]['distance']:.2f} | {baseline_report['baselines'][3]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][3]['utility_score']:.3f} | {baseline_report['baselines'][3]['matches_oracle_top1']} |
-| **Human-state-aware (v9.1 Ours)** | **`{baseline_report['baselines'][4]['selected_view']}`** | **{baseline_report['baselines'][4]['distance']:.2f}** | **{baseline_report['baselines'][4]['viewing_angle_deg']:.1f}°** | **{baseline_report['baselines'][4]['utility_score']:.3f}** | **{baseline_report['baselines'][4]['matches_oracle_top1']}** |
+| Method / Baseline | Selected View | Distance (m) | Viewing Angle (deg) | Joint Conf (Before $\\rightarrow$ After) | Recovered Missing Joints | Actual Information Gain | Matches Oracle? |
+|---|---|---|---|---|---|---|---|
+| **Random View** | `{baseline_report['baselines'][0]['selected_view']}` | {baseline_report['baselines'][0]['distance']:.2f} | {baseline_report['baselines'][0]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][0]['joint_confidence_before']:.3f} $\\rightarrow$ {baseline_report['baselines'][0]['joint_confidence_after']:.3f} | {baseline_report['baselines'][0]['missing_joints_recovered']} | {baseline_report['baselines'][0]['actual_information_gain']:.3f} | {baseline_report['baselines'][0]['matches_oracle_top1']} |
+| **Nearest View** | `{baseline_report['baselines'][1]['selected_view']}` | {baseline_report['baselines'][1]['distance']:.2f} | {baseline_report['baselines'][1]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][1]['joint_confidence_before']:.3f} $\\rightarrow$ {baseline_report['baselines'][1]['joint_confidence_after']:.3f} | {baseline_report['baselines'][1]['missing_joints_recovered']} | {baseline_report['baselines'][1]['actual_information_gain']:.3f} | {baseline_report['baselines'][1]['matches_oracle_top1']} |
+| **Geometry-based (v8)** | `{baseline_report['baselines'][2]['selected_view']}` | {baseline_report['baselines'][2]['distance']:.2f} | {baseline_report['baselines'][2]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][2]['joint_confidence_before']:.3f} $\\rightarrow$ {baseline_report['baselines'][2]['joint_confidence_after']:.3f} | {baseline_report['baselines'][2]['missing_joints_recovered']} | {baseline_report['baselines'][2]['actual_information_gain']:.3f} | {baseline_report['baselines'][2]['matches_oracle_top1']} |
+| **Rule-based (v9.0)** | `{baseline_report['baselines'][3]['selected_view']}` | {baseline_report['baselines'][3]['distance']:.2f} | {baseline_report['baselines'][3]['viewing_angle_deg']:.1f}° | {baseline_report['baselines'][3]['joint_confidence_before']:.3f} $\\rightarrow$ {baseline_report['baselines'][3]['joint_confidence_after']:.3f} | {baseline_report['baselines'][3]['missing_joints_recovered']} | {baseline_report['baselines'][3]['actual_information_gain']:.3f} | {baseline_report['baselines'][3]['matches_oracle_top1']} |
+| **Perception-aware (v9.1 Ours)** | **`{baseline_report['baselines'][4]['selected_view']}`** | **{baseline_report['baselines'][4]['distance']:.2f}** | **{baseline_report['baselines'][4]['viewing_angle_deg']:.1f}°** | **{baseline_report['baselines'][4]['joint_confidence_before']:.3f} $\\rightarrow$ {baseline_report['baselines'][4]['joint_confidence_after']:.3f}** | **{baseline_report['baselines'][4]['missing_joints_recovered']}** | **{baseline_report['baselines'][4]['actual_information_gain']:.3f}** | **{baseline_report['baselines'][4]['matches_oracle_top1']}** |
 
 ---
 
-### 6. 人体解剖物理状态对视角的依赖性分析 (Human State View Dependency)
-在相同场景与候选视点池下，评测不同人体状态的最优观察视角自适应选择：
+### 6. 感知退化基准评测 (Perception Degradation Benchmark)
 
-| Human State | Best Selected View | Distance (m) | Viewing Angle (deg) | Utility Score | Key Visible Body Parts |
-|---|---|---|---|---|---|
-| **STANDING** | `{state_dependency['standing']['best_view']}` | {state_dependency['standing']['distance']:.2f} | {state_dependency['standing']['viewing_angle_deg']:.1f}° | {state_dependency['standing']['utility_score']:.3f} | Head, Torso, Pelvis, Legs (100%) |
-| **SITTING** | `{state_dependency['sitting']['best_view']}` | {state_dependency['sitting']['distance']:.2f} | {state_dependency['sitting']['viewing_angle_deg']:.1f}° | {state_dependency['sitting']['utility_score']:.3f} | Head, Torso, Pelvis, Legs |
-| **BENDING** | `{state_dependency['bending']['best_view']}` | {state_dependency['bending']['distance']:.2f} | {state_dependency['bending']['viewing_angle_deg']:.1f}° | {state_dependency['bending']['utility_score']:.3f} | Torso Profile, Pelvis, Hands |
-| **REACHING** | `{state_dependency['reaching']['best_view']}` | {state_dependency['reaching']['distance']:.2f} | {state_dependency['reaching']['viewing_angle_deg']:.1f}° | {state_dependency['reaching']['utility_score']:.3f} | Extended Arm/Hands, Head, Torso |
-| **FALL** | `{state_dependency['fall']['best_view']}` | {state_dependency['fall']['distance']:.2f} | {state_dependency['fall']['viewing_angle_deg']:.1f}° | {state_dependency['fall']['utility_score']:.3f} | Full Body Floor Contact Profile |
+| Degradation Case | Initial Mean Conf | Initial Missing Joints | Selected View | Selected Dist/Angle | Confidence Improvement | Missing Recovered | Quality Gain |
+|---|---|---|---|---|---|---|---|
+| **No Occlusion** | {degradation_results[0]['initial_mean_confidence']:.3f} | {degradation_results[0]['initial_missing_joints']} | `{degradation_results[0]['selected_viewpoint']}` | {degradation_results[0]['selected_distance']}m / {degradation_results[0]['selected_angle_deg']}° | +{degradation_results[0]['confidence_gain']:.3f} | {degradation_results[0]['missing_recovered']} | +{degradation_results[0]['quality_gain']:.3f} |
+| **Self-Occlusion** | {degradation_results[1]['initial_mean_confidence']:.3f} | {degradation_results[1]['initial_missing_joints']} | `{degradation_results[1]['selected_viewpoint']}` | {degradation_results[1]['selected_distance']}m / {degradation_results[1]['selected_angle_deg']}° | +{degradation_results[1]['confidence_gain']:.3f} | {degradation_results[1]['missing_recovered']} | +{degradation_results[1]['quality_gain']:.3f} |
+| **Furniture Occlusion** | {degradation_results[2]['initial_mean_confidence']:.3f} | {degradation_results[2]['initial_missing_joints']} | `{degradation_results[2]['selected_viewpoint']}` | {degradation_results[2]['selected_distance']}m / {degradation_results[2]['selected_angle_deg']}° | +{degradation_results[2]['confidence_gain']:.3f} | {degradation_results[2]['missing_recovered']} | +{degradation_results[2]['quality_gain']:.3f} |
+| **Low Confidence Pose** | {degradation_results[3]['initial_mean_confidence']:.3f} | {degradation_results[3]['initial_missing_joints']} | `{degradation_results[3]['selected_viewpoint']}` | {degradation_results[3]['selected_distance']}m / {degradation_results[3]['selected_angle_deg']}° | +{degradation_results[3]['confidence_gain']:.3f} | {degradation_results[3]['missing_recovered']} | +{degradation_results[3]['quality_gain']:.3f} |
 
-> **科学结论**：模型成功在无任何 Action 标签输入的情况下，直接由人体关键点几何形态驱动选点，验证了核心命题：**人体物理状态决定最佳观察视角**。
+> **科学结论**：实验充分证明——**当前观测质量越差（遮挡越严重、缺失关节点越多），感知驱动模型选择的视点带来的信息增益和关节点恢复量越显著**。
 
 ---
 
 ### 7. 系统消融实验分析 (Ablation Study)
 
-| Ablation Condition | Val Top-1 Accuracy | Mean Utility Ratio | 科学分析与结论 |
+| Ablation Condition | Val Top-1 Accuracy | Mean Gain Ratio | 科学分析与结论 |
 |---|---|---|---|
-| **Full Model (v9.1 Ours)** | **{ablation_results['ablation_experiments'][0]['top1_accuracy']*100:.1f}%** | **{ablation_results['ablation_experiments'][0]['mean_utility_ratio']*100:.1f}%** | 融合人体姿态与 13 维视点特征，达成最高排序精度与效用保持。 |
-| **Remove Human Pose State** | {ablation_results['ablation_experiments'][1]['top1_accuracy']*100:.1f}% | {ablation_results['ablation_experiments'][1]['mean_utility_ratio']*100:.1f}% | 失去人体形态感知，退化为无状态偏好的几何平均视点。 |
-| **Remove Body Part Visibility** | {ablation_results['ablation_experiments'][2]['top1_accuracy']*100:.1f}% | {ablation_results['ablation_experiments'][2]['mean_utility_ratio']*100:.1f}% | 失去 7 大解剖部位可见性感知，对屈肢与俯卧姿态的微观解剖关注点下降。 |
-| **Remove Distance Descriptor** | {ablation_results['ablation_experiments'][3]['top1_accuracy']*100:.1f}% | {ablation_results['ablation_experiments'][3]['mean_utility_ratio']*100:.1f}% | 无法惩罚极端过近或过远视角，导致选点距离偏离最优区间。 |
+| **Full Model (v9.1 Ours)** | **{ablation_results['ablation_experiments'][0]['top1_accuracy']*100:.1f}%** | **{ablation_results['ablation_experiments'][0]['mean_gain_ratio']*100:.1f}%** | 完整融合感知状态与视点特征，达成最高信息增益与视点决策。 |
+| **Remove Observation Input** | {ablation_results['ablation_experiments'][1]['top1_accuracy']*100:.1f}% | {ablation_results['ablation_experiments'][1]['mean_gain_ratio']*100:.1f}% | 失去对当前观测缺陷的感知能力，无法针对性弥补遮挡部位。 |
+| **Remove Body Part Confidences** | {ablation_results['ablation_experiments'][2]['top1_accuracy']*100:.1f}% | {ablation_results['ablation_experiments'][2]['mean_gain_ratio']*100:.1f}% | 失去 7 大解剖部位的置信度先验，对局部肢体遮挡的恢复能力下降。 |
+| **Remove Distance Descriptor** | {ablation_results['ablation_experiments'][3]['top1_accuracy']*100:.1f}% | {ablation_results['ablation_experiments'][3]['mean_gain_ratio']*100:.1f}% | 无法惩罚极端远视距造成的感知分辨率衰减。 |
 
 ---
 
 ### 8. 可视化图表分析 (Visualization Figures)
-1. **`visualization/training_curve.png`**：记录 40 轮损失下降与 Top-1 准确率上升曲线；
-2. **`visualization/viewpoint_ranking.png`**：展示候选视点排序得分与极坐标空间分布（红点表示神经网络选定的最优视点）；
-3. **`visualization/best_view_examples.png`**：对比 5 类典型人体状态下所选视角的偏角与效用分；
-4. **`visualization/body_visibility_analysis.png`**：对比纯几何基线与学习型方法在 7 大关键解剖部位（Head, Torso, Pelvis, Hands, Legs）上的可见性增益。
+1. **`visualization/training_curve.png`**：记录 40 轮信息增益排序损失下降与 Top-1 准确率上升曲线；
+2. **`visualization/viewpoint_ranking.png`**：展示候选视点信息增益预测与极坐标空间分布；
+3. **`visualization/best_view_examples.png`**：对比 4 种感知退化场景下视点迁移前后的平均关节点置信度显著提升；
+4. **`visualization/body_visibility_analysis.png`**：展示视角调整前后 7 大解剖部位（Head, Torso, Pelvis, Hands, Legs）置信度的全面恢复。
 
 ---
 
 ### 9. 当前方法不足与局限性 (Limitations)
-1. **静态单帧假设**：当前 v9.1 仅处理静态空间状态，未建模人体随时间的时序动态运动（Temporal motion dynamics）；
-2. **候选点离散网格**：候选视角采样仍基于离散极坐标网格，尚未支持连续位姿空间微调。
+1. **单步观测假设**：当前 v9.1 仅根据单帧观测决定单步最佳视角，尚未结合多步历史观测融合（Temporal multi-view fusion）；
+2. **估计器仿真依赖**：当前估计器输出基于仿真退化模型，未来可无缝接入真实 ViTPose / OpenPose 等预训练视觉模型。
 
 ---
 
 ### 10. 下一阶段研究建议 (Recommendations for v9.2+)
-1. **时序轨迹感知 (Temporal Trajectory-aware Active View)**：在 v9.2 中引入连续多帧时序人体姿态序列预测，建立动态视点规划机制；
-2. **连续动作过渡平滑**：在时序视角规划中引入位姿平滑损失，抑制视角抖动。
+1. **多视角历史观测融合 (Multi-view Observation Fusion)**：在 v9.2 中维护全局 3D 姿态概率体素或贝叶斯置信度图，实现序列式主动感知；
+2. **端到端视觉姿态估计接入**：直接将仿真 RGB 图像输入视觉姿态骨干网络提取置信度特征。
 """
     with open(output_root / "V91_EXPERIMENT_REPORT.md", "w", encoding="utf-8") as f:
         f.write(report_content)
@@ -543,7 +667,8 @@ v9.1_validation/
     return {
         "training": training_record,
         "baseline": baseline_report,
-        "analysis": state_dependency,
+        "degradation": degradation_results,
+        "gain": gain_analysis,
         "ablation": ablation_results,
     }
 

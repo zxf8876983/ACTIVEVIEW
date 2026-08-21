@@ -65,12 +65,12 @@ class ViewScorerTrainer:
         batches = 0
 
         for batch in dataloader:
-            pose = batch["pose_vec"].to(self.device)        # (B, 49)
-            views = batch["view_vecs"].to(self.device)      # (B, N, 13)
-            targets = batch["target_scores"].to(self.device)# (B, N)
+            obs = batch.get("obs_vec", batch.get("pose_vec")).to(self.device)  # (B, 71)
+            views = batch["view_vecs"].to(self.device)                         # (B, N, 13)
+            targets = batch["target_scores"].to(self.device)                   # (B, N)
 
             self.optimizer.zero_grad()
-            preds = self.model(pose, views)                 # (B, N)
+            preds = self.model(obs, views)                                     # (B, N)
             loss = self.criterion(preds, targets)
             loss.backward()
             self.optimizer.step()
@@ -90,12 +90,12 @@ class ViewScorerTrainer:
 
         with torch.no_grad():
             for batch in dataloader:
-                pose = batch["pose_vec"].to(self.device)
+                obs = batch.get("obs_vec", batch.get("pose_vec")).to(self.device)
                 views = batch["view_vecs"].to(self.device)
                 targets = batch["target_scores"].to(self.device)
-                b_size = pose.size(0)
+                b_size = obs.size(0)
 
-                preds = self.model(pose, views)
+                preds = self.model(obs, views)
                 loss = self.criterion(preds, targets)
                 total_loss += float(loss.item()) * b_size
 

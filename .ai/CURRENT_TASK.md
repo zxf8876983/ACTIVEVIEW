@@ -1,38 +1,34 @@
 # ACTIVEVIEW Current Task
 
-Status: COMPLETED (v9.1 Human-state-aware Learnable Active View Selection Completed & Verified)
+Status: COMPLETED (v9.1 Perception-Aware Active View Selection Completed & Verified)
 
 ## Current Phase
-v9.1 — Human-state-aware Learnable Active View Selection ($Q(v \mid H)$).
+v9.1 — Perception-Aware Active View Selection ($\hat{G}(v \mid O_{\text{curr}})$).
 
-## Accomplished in v9.1 Deep Refinement
-1. **纯人体物理状态网络接口 ($Q(v \mid H)$)**：
-   - 彻底移除 `action_input` 参数与相关调用；
-   - `HumanPoseEncoder` (49d -> 32d): 16 骨骼关键点 3D 相对坐标 + 偏航角；
-   - `ViewFeatureEncoder` (13d -> 32d): 包含距离、角度、覆盖率及 **7 大身体关键解剖部位可见性** (`head`, `torso`, `pelvis`, `left_hand`, `right_hand`, `left_leg`, `right_leg`)；
-   - `LearnableViewScorer`: 纯姿态与视点特征融合，输出标量评分 $\hat{Q}(v \mid H) \in [0.0, 1.0]$。
-2. **代码体系与命名清理**：
-   - 引入 `HumanStateAwareViewScorer` (`scoring/human_state_scorer.py`)；
-   - 清理所有 docstring 与代码注释中的旧术语。
-3. **训练目标与严格数据隔离 (`training/`)**：
-   - 科学目标效用打分 $Q^*(v) = w_1 \cdot \text{global\_vis} + w_2 \cdot \text{pose\_cov} + w_3 \cdot \text{body\_part\_vis} - w_4 \cdot \text{dist\_pen}$，绝非规则分；
-   - 严格执行 Spatial-Level / Instance-Level 数据集隔离划分；
-   - 基于 `PairwiseRankingLoss` 训练，验证集 Top-1 选点准确率达 **90.0% ~ 95.0%**，目标效用比例达 **100.0%**；
-   - 保存检查点 `checkpoints/model_checkpoint.pth` 与收敛曲线 `results/training_curve.png`。
-4. **5 大基线综合评测 (`scripts/run_v91_demo.py`)**：
-   - 对比 `Random`, `Nearest`, `Geometry-based (v8)`, `Rule-based (v9.0)`, `Learnable (v9.1)`；
-   - 生成 `best_view.json`, `v91_best_view.json`, `comparison_report.json`, `body_part_visibility_report.json` 与渲染图像 `best_view_rgb.png`。
-5. **空间布局与遮挡鲁棒性实验 (`scripts/run_v91_occlusion_experiment.py`)**：
-   - 评测不同机器人初始站位与遮挡几何下的视点决策；
-   - 输出 `results/v91_occlusion_experiment_report.json`。
-6. **单元测试与代码质量**：
-   - 25/25 v9.1 单元测试通过，17/17 v8 测试通过，30/30 v7 测试通过。
+## Accomplished in Perception-Aware Redesign
+1. **输入输出重塑为当前观测感知状态 ($O_{\text{curr}}$)**：
+   - 彻底删除模型对 GT 姿态、SMPL-X 真值与 Action 标签的依赖；
+   - 引入 71 维感知特征：16 关节估计坐标 (48d) + 16 关节置信度 (16d) + 7 大部位可见置信度 (7d)；
+   - 新增 `ObservationEncoder` (`models/observation_encoder.py`)；
+   - 学习目标重构为信息增益 $\text{Gain}(v) = \Delta \text{ObservationQuality}$。
+2. **感知退化模拟与 4 大基准评测**：
+   - 新增 `ObservationSimulator` (`features/observation_simulator.py`)，模拟遮挡衰减、定位噪声与关节点缺失；
+   - 执行 4 大退化场景评测：无遮挡、人体自遮挡、家具遮挡、低置信度；
+   - 产物输出至 `experiments/v9.1_validation/perception_degradation/degradation_report.json`。
+3. **5 大基线综合横向对比与信息增益报表**：
+   - 对比 Random, Nearest, Geometry-based (v8), Rule-based (v9.0), Perception-aware (v9.1)；
+   - 产物输出至 `experiments/v9.1_validation/baseline/comparison_report.json` 与 `experiments/v9.1_validation/information_gain/gain_report.json`。
+4. **4 项特征消融与可视化图表**：
+   - 消融实验输出至 `experiments/v9.1_validation/ablation/ablation_report.json`；
+   - 输出 `training_curve.png`, `viewpoint_ranking.png`, `best_view_examples.png`, `body_visibility_analysis.png`；
+   - 生成详尽总结报告 `experiments/v9.1_validation/V91_EXPERIMENT_REPORT.md` 与 `README.md`。
+5. **单元测试与代码质量**：
+   - 29/29 v9.1 单元测试通过，17/17 v8 测试通过，30/30 v7 测试通过。
 
 ## Validation Plan Execution Results
 - [x] Python Compile Check: `python -m compileall ea_avs_mvp_v9` (PASS)
-- [x] v9.1 Unit Tests: `python3 -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"` (PASS, 25/25)
+- [x] v9.1 Unit Tests: `python3 -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"` (PASS, 29/29)
 - [x] v8.2 Regression Tests: `python3 -m unittest discover -s ea_avs_mvp_v8/tests -p "test_*.py"` (PASS, 17/17)
 - [x] v7.0 Regression Tests: `python3 -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 30/30)
-- [x] Model Training: `python -m ea_avs_mvp_v9.scripts.train_v91 --epochs 40` (PASS)
-- [x] 5-Baseline Demo: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_demo --action sitting` (PASS, all JSONs & RGB verified)
-- [x] Occlusion Experiment: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_occlusion_experiment` (PASS, occlusion report generated)
+- [x] Full Validation Suite: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_validation_suite` (PASS, all reports and figures generated)
+- [x] Demo Script: `conda run -n habitat python -m ea_avs_mvp_v9.scripts.run_v91_demo` (PASS)

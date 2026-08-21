@@ -18,7 +18,7 @@ class TestV91Dataset(unittest.TestCase):
         self.assertEqual(len(val_ds), 4)
 
         sample = train_ds[0]
-        self.assertEqual(sample["pose_vec"].shape, (49,))
+        self.assertEqual(sample["obs_vec"].shape, (71,))
         self.assertEqual(sample["view_vecs"].shape[1], 13)
         self.assertEqual(sample["target_scores"].shape[0], sample["view_vecs"].shape[0])
 
