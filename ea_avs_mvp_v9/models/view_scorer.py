@@ -4,8 +4,11 @@
 
 职责：
     1. 融合当前不完整感知状态 (Observation Embedding, 32d) 与候选视点描述子 (View Embedding, 32d)；
-    2. 通过全连接 Fusion MLP 预测视角迁移带来的信息增益 (Information Gain) G_hat(v | O_curr) ∈ [0.0, 1.0]；
+    2. 通过全连接 Fusion MLP 预测视角迁移带来的信息增益 (Information Gain) G_hat(v | O_curr) in [0.0, 1.0]；
     3. 严禁任何 Action Label 参与模型输入与前向推理。
+
+# GT is only used for supervision/evaluation.
+# It must never enter model forward pass.
 """
 
 from typing import Dict, List, Optional, Tuple, Union
@@ -63,6 +66,9 @@ class PerceptionAwareViewScorer(nn.Module):
         ablate_obs: bool = False,
     ) -> torch.Tensor:
         """
+        # GT is only used for supervision/evaluation.
+        # It must never enter model forward pass.
+
         Args:
             obs_input: (B, 71) 当前人体观测感知质量特征
             view_input: (B, N, 13) 或 (B, 13) 候选视角多维几何描述子

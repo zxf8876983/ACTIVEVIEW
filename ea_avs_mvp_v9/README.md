@@ -60,11 +60,18 @@ $$\text{ObservationQuality} = 0.40 \cdot \bar{c}_{\text{joints}} + 0.35 \cdot \b
 - **`information_gain_report.json`**: 关节点置信度提升量与缺失关节恢复率；
 - **`ablation_report.json`**: 4 项特征消融实验；
 - **`visualization/`**: 包含收敛曲线、信息增益极坐标排序、退化场景对比等 4 张科研高清图表；
-- **`V91_FINAL_REPORT.md`**: 最终科研总结报告。
+---
+
+## 5. 接口说明与后续版本演进 (Interface & Evolution to v10.0)
+
+- `v9.1 does not study human pose estimation.`
+- `The perception module is abstracted as an imperfect observation provider.`
+- `Future v10.0 will replace this simulator with real RGB-based pose estimation and action recognition modules.`
+- 统一感知抽象基类：`BaseObservationProvider.get_observation(rgb_image, depth_image, **kwargs) -> ObservationState`。
 
 ---
 
-## 5. 快速复现指令 (Execution Guide)
+## 6. 快速复现指令 (Execution Guide)
 
 ### 1. 运行纯 Python 单元测试:
 ```bash

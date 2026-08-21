@@ -7,6 +7,9 @@
     2. 基于当前不完整观测状态 ObservationState 与候选视点池进行神经网络前向推理；
     3. 预测各候选视点的信息增益 Gain(v | O_curr) 并输出排序；
     4. 严禁使用真实 GT 姿态或 Action Label 作为输入。
+
+# GT is only used for supervision/evaluation.
+# It must never enter model forward pass.
 """
 
 import logging
@@ -65,6 +68,9 @@ class ViewPredictor:
         ablate_obs: bool = False,
     ) -> Dict[str, Any]:
         """
+        # GT is only used for supervision/evaluation.
+        # It must never enter model forward pass.
+        
         对所有候选视点进行纯当前观测感知驱动的信息增益预测 Gain(v | O_curr)。
         """
         if not viewpoints:

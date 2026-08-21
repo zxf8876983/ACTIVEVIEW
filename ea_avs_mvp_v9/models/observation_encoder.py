@@ -5,6 +5,9 @@
 职责：
     1. 提取当前观测状态 (Estimated Joints + Joint Confidences + Body Part Confidences, 71d)；
     2. 将 71 维不完整感知状态映射为 32 维稠密特征向量 (Observation Embedding)。
+
+# GT is only used for supervision/evaluation.
+# It must never enter model forward pass.
 """
 
 from typing import Dict, List, Optional
@@ -76,6 +79,9 @@ class ObservationEncoder(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
+        # GT is only used for supervision/evaluation.
+        # It must never enter model forward pass.
+        
         Args:
             x: (B, 71) 感知特征向量
         Returns:

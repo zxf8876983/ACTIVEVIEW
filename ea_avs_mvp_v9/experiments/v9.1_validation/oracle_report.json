@@ -14,6 +14,8 @@
       "left_leg": 0.924,
       "right_leg": 0.906
     },
-    "v91_relative_achievement_ratio": 0.898
+    "v91_relative_achievement_ratio": 0.898,
+    "v91_vs_geometry_gain_advantage": 0.001,
+    "v91_vs_rule_gain_advantage": 0.001
   }
 }

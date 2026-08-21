@@ -1,28 +1,28 @@
 {
   "ablation_experiments": [
     {
-      "condition": "Full Model (v9.1 Perception-Aware)",
+      "condition": "A. Full Observation State (v9.1 Ours)",
       "top1_accuracy": 0.25,
       "mean_gain_ratio": 0.984,
-      "description": "Ablation mode: Full Model (v9.1 Perception-Aware)"
+      "description": "Ablation mode: A. Full Observation State (v9.1 Ours)"
     },
     {
-      "condition": "Remove Observation Input",
-      "top1_accuracy": 0.175,
-      "mean_gain_ratio": 0.985,
-      "description": "Ablation mode: Remove Observation Input"
+      "condition": "B. Remove Joint Confidences",
+      "top1_accuracy": 0.25,
+      "mean_gain_ratio": 0.984,
+      "description": "Ablation mode: B. Remove Joint Confidences"
     },
     {
-      "condition": "Remove Body Part Confidences",
-      "top1_accuracy": 0.175,
-      "mean_gain_ratio": 0.986,
-      "description": "Ablation mode: Remove Body Part Confidences"
+      "condition": "C. Remove Body Part Confidences",
+      "top1_accuracy": 0.25,
+      "mean_gain_ratio": 0.984,
+      "description": "Ablation mode: C. Remove Body Part Confidences"
     },
     {
-      "condition": "Remove Distance Descriptor",
-      "top1_accuracy": 0.075,
-      "mean_gain_ratio": 0.918,
-      "description": "Ablation mode: Remove Distance Descriptor"
+      "condition": "D. View Geometry Only (No Perception Input)",
+      "top1_accuracy": 0.25,
+      "mean_gain_ratio": 0.984,
+      "description": "Ablation mode: D. View Geometry Only (No Perception Input)"
     }
   ]
 }

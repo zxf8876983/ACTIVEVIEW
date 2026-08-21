@@ -4,8 +4,11 @@
 
 职责：
     1. 融合当前不完整感知状态 (Observation Embedding, 32d) 与候选视点几何描述子 (View Embedding, 32d)；
-    2. 预测视角迁移带来的信息增益 (Information Gain) G_hat(v | O_t) ∈ [0.0, 1.0]；
+    2. 预测视角迁移带来的信息增益 (Information Gain) G_hat(v | O_t) in [0.0, 1.0]；
     3. 严禁使用 GT 姿态、SMPL 参数或动作标签作为输入。
+
+# GT is only used for supervision/evaluation.
+# It must never enter model forward pass.
 """
 
 from typing import Dict, List, Optional, Tuple, Union
@@ -63,6 +66,9 @@ class PerceptionAwareViewScorer(nn.Module):
         ablate_obs: bool = False,
     ) -> torch.Tensor:
         """
+        # GT is only used for supervision/evaluation.
+        # It must never enter model forward pass.
+
         Args:
             obs_input: (B, 71) 当前人体观测感知质量特征 (估计坐标 + 关节置信度 + 部位置信度)
             view_input: (B, N, 13) 或 (B, 13) 候选视角多维几何描述子

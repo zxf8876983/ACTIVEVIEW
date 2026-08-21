@@ -2,19 +2,20 @@
 外部视觉姿态估计与感知质量模拟器 —— observation_simulator.py
 ============================================================
 
-职责：
-    1. BaseObservationProvider: 统一感知提供者抽象基类 (为未来 v10.0 RGB Pose Estimator 预留接口)；
-    2. ObservationSimulator: 模拟真实视觉感知误差与不完整观测：
+科研定位与信息边界：
+    1. GT is only used for supervision/evaluation. It must never enter model forward pass.
+    2. 本模块作为感知抽象层 (Perception Abstraction Layer)，模拟真实视觉姿态估计器的误差、遮挡与缺失；
+    3. BaseObservationProvider: 统一感知提供者抽象基类 (为未来 v10.0 RGB Pose Estimator 预留接口)；
+    4. ObservationSimulator: 模拟真实视觉感知误差与不完整观测：
        - Joint localization noise: p_est = p_gt + epsilon
        - Joint confidence: c_i ∈ [0.0, 1.0]
        - Missing joint simulation: 随机/几何缺失 (wrists, ankles, elbows, knees)
        - Body part confidence: head, torso, pelvis, hands, legs (7 大解剖部位)
-    3. 支持 5 大感知退化场景基准：
-       - Scenario A: 无遮挡低噪声 (Clean view)
-       - Scenario B: 人体自遮挡 (Self-occlusion)
-       - Scenario C: 家具与障碍物遮挡 (Furniture occlusion)
-       - Scenario D: 严重姿态估计噪声 (Severe noise)
-       - Scenario E: 关键部位缺失 (Missing keypoints)
+    5. 支持参数化控制：
+       - 随机种子控制 (seed=0, 1, 2, 3, 4) 保证实验完全可复现
+       - 噪声等级控制 (low_noise, medium_noise, high_noise)
+       - 遮挡等级控制 (self_occlusion_weak, self_occlusion_medium, self_occlusion_strong)
+       - 缺失关节点比例控制 (missing_keypoints_ratio)
 """
 
 from abc import ABC, abstractmethod
@@ -44,7 +45,7 @@ ALL_STANDARD_JOINTS = [
 
 
 class BaseObservationProvider(ABC):
-    """感知数据提供者抽象基类 (为 v10+ 视觉感知模型预留统一接口)。"""
+    """感知数据提供者抽象基类 (为 v10+ 真实视觉感知模型预留统一接口)。"""
 
     @abstractmethod
     def get_observation(
@@ -96,6 +97,7 @@ class ObservationSimulator(BaseObservationProvider):
         human_pos = kwargs.get("human_pos", [0.0, 0.0, 0.0])
         human_yaw_deg = kwargs.get("human_yaw_deg", 0.0)
         degradation_mode = kwargs.get("degradation_mode", "auto")
+        seed = kwargs.get("seed", None)
         rng = kwargs.get("rng", None)
 
         return self.simulate_observation(
@@ -104,6 +106,7 @@ class ObservationSimulator(BaseObservationProvider):
             human_pos=human_pos,
             human_yaw_deg=human_yaw_deg,
             degradation_mode=degradation_mode,
+            seed=seed,
             rng=rng,
         )
 
@@ -114,20 +117,36 @@ class ObservationSimulator(BaseObservationProvider):
         human_pos: List[float],
         human_yaw_deg: float = 0.0,
         degradation_mode: str = "auto",
+        noise_level: str = "medium_noise",
+        occlusion_level: str = "self_occlusion_medium",
+        missing_ratio: float = 0.0,
+        seed: Optional[int] = None,
         rng: Optional[np.random.RandomState] = None,
     ) -> ObservationState:
         """
         根据当前相机视点位置与人体相对空间几何，模拟生成视觉估计结果。
         
+        # GT is only used for supervision/evaluation.
+        # It must never enter model forward pass.
+        
         Args:
-            gt_joints: 真实关节点 3D 坐标
+            gt_joints: 真实关节点 3D 坐标 (仅供模拟生成估计观测)
             camera_pos: 相机 [x, y, z] 坐标
             human_pos: 人体根部 [x, y, z] 坐标
             human_yaw_deg: 人体朝向角 (度)
             degradation_mode: "auto", "clean", "none", "self_occlusion", "furniture_occlusion", "heavy_noise", "missing_keypoints"
+            noise_level: "low_noise", "medium_noise", "high_noise"
+            occlusion_level: "self_occlusion_weak", "self_occlusion_medium", "self_occlusion_strong"
+            missing_ratio: 强制缺失关键点比例 [0.0, 1.0]
+            seed: 随机数种子 (支持 seed=0, 1, 2, 3, 4 严格复现)
             rng: 随机数生成器
         """
-        r = rng if rng is not None else np.random.RandomState(42)
+        if rng is not None:
+            r = rng
+        elif seed is not None:
+            r = np.random.RandomState(seed)
+        else:
+            r = np.random.RandomState(42)
 
         # 1. 计算相机相对人体的几何关系
         dx = camera_pos[0] - human_pos[0]
@@ -149,6 +168,14 @@ class ObservationSimulator(BaseObservationProvider):
 
         pelvis_gt = gt_joints.get("pelvis", human_pos)
 
+        # 确定噪声尺度
+        if degradation_mode in ("heavy_noise", "severe_noise", "low_confidence") or noise_level == "high_noise":
+            base_noise_scale = 0.080  # 8cm
+        elif noise_level == "low_noise" or degradation_mode in ("clean", "none"):
+            base_noise_scale = 0.010  # 1cm
+        else:
+            base_noise_scale = 0.025  # 2.5cm
+
         for j_name in ALL_STANDARD_JOINTS:
             if j_name in gt_joints:
                 gx, gy, gz = gt_joints[j_name]
@@ -157,43 +184,50 @@ class ObservationSimulator(BaseObservationProvider):
 
             base_conf = 0.95 * dist_factor
 
-            # 根据 5 大感知退化模式计算关节点置信度
+            # 根据感知退化模式计算关节点置信度
             if degradation_mode in ("clean", "none"):
                 conf = float(np.clip(base_conf - r.uniform(0.0, 0.05), 0.85, 1.0))
-                noise_scale = self.noise_std_vis
-
-            elif degradation_mode == "self_occlusion":
-                # 背向视角遮挡双手与胸腔
-                if not is_front and any(k in j_name for k in ["chest", "wrist", "elbow"]):
-                    conf = float(r.uniform(0.10, 0.35))
-                    noise_scale = self.noise_std_occ * 1.5
-                elif not is_right_side and "right" in j_name:
-                    conf = float(r.uniform(0.15, 0.40))
-                    noise_scale = self.noise_std_occ
-                else:
-                    conf = float(np.clip(base_conf - r.uniform(0.0, 0.15), 0.65, 0.95))
-                    noise_scale = self.noise_std_vis
+                noise_scale = base_noise_scale
 
             elif degradation_mode == "furniture_occlusion":
-                # 下肢严重遮挡
+                # 下肢严重遮挡 (膝盖、脚踝等缺失)
                 if any(k in j_name for k in ["knee", "ankle", "hip"]):
-                    conf = float(r.uniform(0.05, 0.22))
+                    conf = float(r.uniform(0.05, 0.20))
                     noise_scale = self.noise_std_occ * 2.0
                 else:
                     conf = float(np.clip(base_conf - r.uniform(0.0, 0.10), 0.70, 0.95))
                     noise_scale = self.noise_std_vis
 
-            elif degradation_mode in ("heavy_noise", "severe_noise", "low_confidence"):
-                conf = float(r.uniform(0.20, 0.48))
-                noise_scale = 0.080  # 8cm 严重定位噪声
+            elif degradation_mode in ("heavy_noise", "severe_noise", "low_confidence") or noise_level == "high_noise":
+                conf = float(r.uniform(0.18, 0.45))
+                noise_scale = base_noise_scale
 
-            elif degradation_mode == "missing_keypoints":
+            elif degradation_mode == "missing_keypoints" or missing_ratio > 0.0:
                 # 关键肢体端点严重缺失
-                if any(k in j_name for k in ["wrist", "ankle"]):
+                if any(k in j_name for k in ["wrist", "ankle"]) or (missing_ratio > 0.0 and r.uniform(0, 1) < missing_ratio):
                     conf = float(r.uniform(0.02, 0.15))
                     noise_scale = 0.150
                 else:
                     conf = float(np.clip(base_conf - r.uniform(0.0, 0.15), 0.55, 0.88))
+                    noise_scale = self.noise_std_vis
+
+            elif degradation_mode == "self_occlusion":
+                # 遮挡程度分级
+                if occlusion_level == "self_occlusion_weak":
+                    occ_min, occ_max = 0.30, 0.55
+                elif occlusion_level == "self_occlusion_strong":
+                    occ_min, occ_max = 0.05, 0.20
+                else:  # medium
+                    occ_min, occ_max = 0.10, 0.35
+
+                if not is_front and any(k in j_name for k in ["chest", "wrist", "elbow"]):
+                    conf = float(r.uniform(occ_min, occ_max))
+                    noise_scale = self.noise_std_occ * 1.5
+                elif not is_right_side and "right" in j_name:
+                    conf = float(r.uniform(occ_min + 0.05, occ_max + 0.05))
+                    noise_scale = self.noise_std_occ
+                else:
+                    conf = float(np.clip(base_conf - r.uniform(0.0, 0.15), 0.65, 0.95))
                     noise_scale = self.noise_std_vis
 
             else:  # "auto" 几何连续遮挡
@@ -209,7 +243,6 @@ class ObservationSimulator(BaseObservationProvider):
             # 判断缺失关节与合成估计坐标 (p_est = p_gt + epsilon)
             if conf < self.missing_thresh:
                 missing_joints.append(j_name)
-                # 缺失关节：回归到根部估计伴随较大漂移
                 ex = pelvis_gt[0] + float(r.normal(0, 0.25))
                 ey = pelvis_gt[1] + float(r.normal(0, 0.25))
                 ez = pelvis_gt[2] + float(r.normal(0, 0.25))
