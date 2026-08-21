@@ -1,15 +1,21 @@
 """
-动作编码器与先验特征提取器 —— action_encoder.py
-=============================================
+动作编码器与配置映射器 —— action_encoder.py
+=========================================
 
 职责：
-    1. 将离散动作标签转换为 One-hot 向量与语义表示；
-    2. 加载各动作针对老人监护任务的关键身体部位 (critical_regions) 与观测先验 (preferred angles, optimal distance)；
-    3. 输出标准化 ActionEmbedding 结构。
+    1. 接收离散动作标签 (action label)；
+    2. 从配置文件 (configs/action_prior.yaml) 读取关键解剖部位 (critical_regions) 与观测先验 (preferred angles, optimal distance)；
+    3. 生成标准化的 ActionEmbedding 结构；
+    4. 严格禁止在 Python 代码中硬编码动作先验规则。
 """
 
 import logging
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
+import yaml
+
+from ea_avs_mvp_v9.core.paths import get_repo_root
 from ea_avs_mvp_v9.core.types import ActionClass, ActionEmbedding
 from .action_types import normalize_action_label
 
@@ -24,55 +30,41 @@ ALL_ACTION_CLASSES = [
     ActionClass.REACHING,
 ]
 
-DEFAULT_ACTION_PRIORS: Dict[ActionClass, Dict[str, Any]] = {
-    ActionClass.FALL: {
-        "critical_regions": ["torso", "pelvis", "head", "lower_body"],
-        "preferred_angle_range": [20.0, 75.0],
-        "optimal_distance": 2.5,
-        "region_weights": {"torso": 0.30, "pelvis": 0.30, "head": 0.20, "lower_body": 0.20},
-        "aspect_weight": 0.25,
-        "distance_weight": 0.20,
-    },
-    ActionClass.SITTING: {
-        "critical_regions": ["lower_body", "pelvis", "torso"],
-        "preferred_angle_range": [40.0, 90.0],
-        "optimal_distance": 2.0,
-        "region_weights": {"lower_body": 0.45, "pelvis": 0.30, "torso": 0.25, "head": 0.00},
-        "aspect_weight": 0.25,
-        "distance_weight": 0.15,
-    },
-    ActionClass.STANDING: {
-        "critical_regions": ["torso", "head", "upper_body", "lower_body"],
-        "preferred_angle_range": [0.0, 30.0],
-        "optimal_distance": 2.0,
-        "region_weights": {"torso": 0.30, "head": 0.30, "upper_body": 0.20, "lower_body": 0.20},
-        "aspect_weight": 0.20,
-        "distance_weight": 0.15,
-    },
-    ActionClass.BENDING: {
-        "critical_regions": ["torso", "pelvis", "head"],
-        "preferred_angle_range": [45.0, 90.0],
-        "optimal_distance": 2.2,
-        "region_weights": {"torso": 0.45, "pelvis": 0.35, "head": 0.20, "lower_body": 0.00},
-        "aspect_weight": 0.30,
-        "distance_weight": 0.15,
-    },
-    ActionClass.REACHING: {
-        "critical_regions": ["upper_body", "torso", "head"],
-        "preferred_angle_range": [15.0, 60.0],
-        "optimal_distance": 1.8,
-        "region_weights": {"upper_body": 0.50, "torso": 0.30, "head": 0.20, "lower_body": 0.00},
-        "aspect_weight": 0.25,
-        "distance_weight": 0.15,
-    },
-}
+
+def load_action_prior_yaml(config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
+    """从 YAML 配置文件中读取动作先验知识库。"""
+    if config_path:
+        p = Path(config_path)
+    else:
+        base_dir = get_repo_root() / "ea_avs_mvp_v9" / "configs"
+        if not base_dir.exists():
+            base_dir = Path(__file__).resolve().parent.parent / "configs"
+
+        p = base_dir / "action_prior.yaml"
+        if not p.exists():
+            p = base_dir / "action_weights.yaml"
+
+    if not p.exists():
+        raise FileNotFoundError(f"Action prior configuration file not found at: {p}")
+
+    with open(p, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+
+    return data.get("actions", {})
 
 
 class ActionEncoder:
-    """动作编码与先验映射器。"""
+    """解耦的动作编码器，完全由 YAML 配置文件驱动。"""
 
-    def __init__(self, action_weights_config: Optional[Dict[str, Any]] = None):
-        self.action_weights = action_weights_config or {}
+    def __init__(
+        self,
+        action_prior_config: Optional[Dict[str, Any]] = None,
+        config_path: Optional[Union[str, Path]] = None,
+    ):
+        if action_prior_config is not None:
+            self.action_priors = action_prior_config
+        else:
+            self.action_priors = load_action_prior_yaml(config_path)
 
     def encode(self, action_label: Union[str, ActionClass]) -> ActionEmbedding:
         """将动作标签编码为 ActionEmbedding。"""
@@ -83,19 +75,32 @@ class ActionEncoder:
 
         # 1. 生成 One-hot 向量
         one_hot = [0.0] * len(ALL_ACTION_CLASSES)
-        idx = ALL_ACTION_CLASSES.index(act_class)
-        one_hot[idx] = 1.0
+        if act_class in ALL_ACTION_CLASSES:
+            idx = ALL_ACTION_CLASSES.index(act_class)
+            one_hot[idx] = 1.0
 
-        # 2. 读取配置中的先验或使用默认先验
-        cfg_prior = self.action_weights.get(act_class.value, {})
-        default_prior = DEFAULT_ACTION_PRIORS[act_class]
+        # 2. 从配置读取动作先验
+        cfg_prior = self.action_priors.get(act_class.value)
+        if not cfg_prior:
+            # 兼容别名或回退
+            cfg_prior = self.action_priors.get(
+                "standing",
+                {
+                    "critical_regions": ["torso", "head", "upper_body", "lower_body"],
+                    "preferred_angle_range": [0.0, 30.0],
+                    "optimal_distance": 2.0,
+                    "region_weights": {"torso": 0.3, "head": 0.3, "upper_body": 0.2, "lower_body": 0.2},
+                    "aspect_weight": 0.20,
+                    "distance_weight": 0.15,
+                }
+            )
 
-        critical_regions = cfg_prior.get("critical_regions", default_prior["critical_regions"])
-        preferred_angles = cfg_prior.get("preferred_angle_range", default_prior["preferred_angle_range"])
-        optimal_dist = float(cfg_prior.get("optimal_distance", default_prior["optimal_distance"]))
-        region_weights = cfg_prior.get("region_weights", default_prior["region_weights"])
-        aspect_weight = float(cfg_prior.get("aspect_weight", default_prior["aspect_weight"]))
-        dist_weight = float(cfg_prior.get("distance_weight", default_prior["distance_weight"]))
+        critical_regions = list(cfg_prior.get("critical_regions", ["torso"]))
+        preferred_angles = [float(x) for x in cfg_prior.get("preferred_angle_range", [0.0, 45.0])]
+        optimal_dist = float(cfg_prior.get("optimal_distance", 2.0))
+        region_weights = {k: float(v) for k, v in cfg_prior.get("region_weights", {}).items()}
+        aspect_weight = float(cfg_prior.get("aspect_weight", 0.25))
+        dist_weight = float(cfg_prior.get("distance_weight", 0.15))
 
         return ActionEmbedding(
             action_name=act_class.value,

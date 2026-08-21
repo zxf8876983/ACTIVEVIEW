@@ -56,7 +56,11 @@ def load_v9_config(
         with open(demo_p, "r", encoding="utf-8") as f:
             demo_cfg = yaml.safe_load(f) or {}
 
-    act_p = base_dir / "action_weights.yaml"
+    # 优先加载 action_prior.yaml
+    act_p = base_dir / "action_prior.yaml"
+    if not act_p.exists():
+        act_p = base_dir / "action_weights.yaml"
+
     act_cfg = {}
     if act_p.exists():
         with open(act_p, "r", encoding="utf-8") as f:
