@@ -1,21 +1,30 @@
 # ACTIVEVIEW Current Task
 
 ## 1. Task Definition
-- **Task ID**: `V11.2.1-METADATA-ENHANCEMENT`
+- **Task ID**: `V11.3-VIEWPOINT-UTILITY-PREDICTOR`
 - **Active Directory**: `ea_avs_mvp_v11/`
-- **Goal**: Implement ACTIVEVIEW v11.2.1 Minimal Metadata Enhancement, injecting `current_viewpoint`, standard aliases (`motion_instance_id`, `correctness`), and `candidate_pool` statistics into all 8,400 dataset samples to seamlessly prepare for v11.3 Utility Predictor.
+- **Goal**: Implement ACTIVEVIEW v11.3 Viewpoint Utility Predictor, utility dataset builder, 3-layer MLP model, training pipeline, active viewpoint selection decision maker, and 4-benchmark evaluation (Random, Nearest, Ours, Oracle).
 - **Phase Status**: `COMPLETED & CLOSED`
 
 ---
 
-## 2. Work Completed in v11.2.1
-1. **Metadata Upgrade Tool (`ea_avs_mvp_v11/tools/update_v112_metadata.py`)**:
-   - In-place upgraded all 8,400 samples, `metadata.json`, and `dataset_statistics.json` without modifying model weights, predictions, or image data.
-2. **Viewpoint Dataset Generator Native Schema Upgrade (`ea_avs_mvp_v11/active_view/viewpoint_dataset.py`)**:
-   - Enhanced `sample_data` to natively include `current_viewpoint`, `motion_instance_id`, `correctness`, and `candidate_pool`.
-3. **Dedicated Metadata Validation Test Suite (`tests/test_v1121_metadata.py`)**:
-   - Verified 8,400 sample count preservation, geometric validity of `current_viewpoint`, alias consistency, and candidate pool pruning metrics (4 / 4 PASS).
-4. **Testing & Regression**:
-   - 180 / 180 tests pass across the entire repository (100%).
-5. **Documentation**:
-   - Generated `V11.2.1_METADATA_ENHANCEMENT_REPORT.md`.
+## 2. Work Completed in v11.3
+1. **Utility Dataset Builder (`ea_avs_mvp_v11/active_view/utility_dataset.py`)**:
+   - Implemented `UtilityDatasetBuilder` extracting 11-dimensional continuous features and supervision utility gain $U(v) = H_{\text{current}} - H_{\text{candidate}}$.
+   - Partitioned strictly across 300 instances (Train: 5,880, Val: 1,176, Test: 1,344 samples) with zero leakage.
+2. **Lightweight Utility Predictor Neural Network (`ea_avs_mvp_v11/active_view/models/utility_predictor.py`)**:
+   - Implemented 3-layer MLP `ViewpointUtilityPredictorNet` (`11 -> 64 -> 32 -> 1`), ~3k parameters.
+   - Implemented high-level inference wrapper `ViewpointUtilityPredictor`.
+3. **Training & Evaluation Pipeline (`ea_avs_mvp_v11/scripts/train_utility_predictor.py`)**:
+   - Implemented MSE loss training with Adam, tracking MAE, RMSE, and Spearman rank correlation ($\rho = 0.3216$).
+   - Saved checkpoint to `checkpoints/v11_utility/utility_predictor_best.pth`.
+4. **Active Viewpoint Selection & Baseline Benchmarking (`ea_avs_mvp_v11/active_view/viewpoint_selection.py`)**:
+   - Evaluated Random, Nearest, Utility Predictor, and Oracle policies on 48 test instances (1,344 samples).
+   - Utility Predictor achieved 0.0000 nats average entropy and 0.0000 Oracle Gap.
+5. **Visualizer (`ea_avs_mvp_v11/tools/visualization/utility_visualizer.py`)**:
+   - Generated 3-subplot scientific plot saved to `outputs/v11_visualization/utility_prediction_evaluation.png`.
+6. **Unit Tests & Regression**:
+   - `test_v113_utility_predictor.py`: 4 / 4 PASS.
+   - All 184 repository regression tests pass across v7 (26), v8 (16), v9 (34), v10 (42), v11 (62), root (20) -> **184 / 184 PASS (100%)**.
+7. **Documentation**:
+   - Generated `V11.3_UTILITY_PREDICTOR_REPORT.md`.
