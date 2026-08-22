@@ -2,14 +2,30 @@
   "sample_id": "v10_sample_000003",
   "action_label": "standing",
   "num_evaluated_joints": 14,
+  "primary_metrics": {
+    "abs_mpjpe_meters": 1.1504,
+    "abs_mpjpe_mm": 1150.37,
+    "mpjpe_meters": 0.0854,
+    "mpjpe_mm": 85.43
+  },
+  "secondary_metrics": {
+    "pck_5cm": 0.2857,
+    "pck_10cm": 0.7143,
+    "pck_15cm": 0.8571
+  },
+  "supplementary_metrics": {
+    "pa_mpjpe_meters": 0.0493,
+    "pa_mpjpe_mm": 49.31
+  },
+  "abs_mpjpe_meters": 1.1504,
+  "abs_mpjpe_mm": 1150.37,
   "mpjpe_meters": 0.0854,
   "mpjpe_mm": 85.43,
-  "pa_mpjpe_meters": 0.0493,
-  "pa_mpjpe_mm": 49.31,
-  "abs_mpjpe_meters": 1.1504,
-  "pck_05cm": 0.2857,
+  "pck_5cm": 0.2857,
   "pck_10cm": 0.7143,
   "pck_15cm": 0.8571,
+  "pa_mpjpe_meters": 0.0493,
+  "pa_mpjpe_mm": 49.31,
   "per_joint_errors_m": {
     "head": 0.136,
     "left_shoulder": 0.0967,

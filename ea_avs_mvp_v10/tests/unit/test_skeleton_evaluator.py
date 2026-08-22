@@ -100,8 +100,10 @@ class TestSkeletonEvaluator(unittest.TestCase):
 
         self.assertEqual(metrics.sample_id, "test_001")
         self.assertGreater(metrics.num_evaluated_joints, 10)
+        self.assertGreater(metrics.abs_mpjpe_mm, 0.0)
         self.assertGreater(metrics.mpjpe_mm, 0.0)
         self.assertLess(metrics.mpjpe_mm, 150.0) # 合成误差应在 150mm 内
+        self.assertGreaterEqual(metrics.pck_5cm, 0.0)
         self.assertGreaterEqual(metrics.pck_10cm, 0.5)
 
 

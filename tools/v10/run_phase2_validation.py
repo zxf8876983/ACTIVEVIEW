@@ -209,8 +209,14 @@ def run_phase2_1_validation(num_samples: int = 10) -> Dict[str, Any]:
     with open(summary_file, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
 
-    logger.info(">>> Validation Completed. Mean MPJPE: %.2f mm, Mean PA-MPJPE: %.2f mm, Mean PCK@10cm: %.1f%%",
-                summary["mean_mpjpe_mm"], summary["mean_pa_mpjpe_mm"], summary["mean_pck_10cm"] * 100)
+    logger.info(">>> Validation Completed.")
+    logger.info("  [Primary] Absolute MPJPE: %.2f mm | Relative MPJPE: %.2f mm",
+                summary["primary_results"]["mean_abs_mpjpe_mm"], summary["primary_results"]["mean_mpjpe_mm"])
+    logger.info("  [Secondary] PCK@5cm: %.1f%% | PCK@10cm: %.1f%% | PCK@15cm: %.1f%%",
+                summary["secondary_results"]["mean_pck_5cm"] * 100,
+                summary["secondary_results"]["mean_pck_10cm"] * 100,
+                summary["secondary_results"]["mean_pck_15cm"] * 100)
+    logger.info("  [Supplementary] PA-MPJPE: %.2f mm", summary["supplementary_results"]["mean_pa_mpjpe_mm"])
     logger.info("Saved summary report to: %s", summary_file)
     return summary
 

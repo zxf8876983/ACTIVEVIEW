@@ -1,25 +1,66 @@
 {
+  "evaluation_principle": "3D reconstruction is geometrically consistent with observed 2D keypoints",
+  "metric_hierarchy": {
+    "primary_metrics": [
+      "Absolute MPJPE",
+      "MPJPE (Root-relative)"
+    ],
+    "secondary_metrics": [
+      "PCK@5cm",
+      "PCK@10cm",
+      "PCK@15cm"
+    ],
+    "supplementary_metrics": [
+      "PA-MPJPE (Procrustes-Aligned)"
+    ],
+    "rationale": "ACTIVEVIEW targets robot active perception where absolute camera-frame spatial position and scale are vital and cannot be arbitrarily eliminated."
+  },
   "num_evaluated_samples": 10,
-  "mean_mpjpe_meters": 0.117,
-  "mean_mpjpe_mm": 116.98,
-  "median_mpjpe_mm": 110.11,
-  "mean_pa_mpjpe_mm": 87.42,
-  "mean_pck_05cm": 0.1929,
-  "mean_pck_10cm": 0.4429,
-  "mean_pck_15cm": 0.6857,
+  "primary_results": {
+    "mean_abs_mpjpe_meters": 1.1472,
+    "mean_abs_mpjpe_mm": 1147.21,
+    "mean_mpjpe_meters": 0.117,
+    "mean_mpjpe_mm": 116.98,
+    "median_mpjpe_mm": 110.11
+  },
+  "secondary_results": {
+    "mean_pck_5cm": 0.1929,
+    "mean_pck_10cm": 0.4429,
+    "mean_pck_15cm": 0.6857
+  },
+  "supplementary_results": {
+    "mean_pa_mpjpe_meters": 0.0874,
+    "mean_pa_mpjpe_mm": 87.42
+  },
   "samples": [
     {
       "sample_id": "v10_sample_000000",
       "action_label": "standing",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1496,
+        "abs_mpjpe_mm": 1149.6,
+        "mpjpe_meters": 0.1106,
+        "mpjpe_mm": 110.62
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.2143,
+        "pck_10cm": 0.5,
+        "pck_15cm": 0.7143
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.0824,
+        "pa_mpjpe_mm": 82.44
+      },
+      "abs_mpjpe_meters": 1.1496,
+      "abs_mpjpe_mm": 1149.6,
       "mpjpe_meters": 0.1106,
       "mpjpe_mm": 110.62,
-      "pa_mpjpe_meters": 0.0824,
-      "pa_mpjpe_mm": 82.44,
-      "abs_mpjpe_meters": 1.1496,
-      "pck_05cm": 0.2143,
+      "pck_5cm": 0.2143,
       "pck_10cm": 0.5,
       "pck_15cm": 0.7143,
+      "pa_mpjpe_meters": 0.0824,
+      "pa_mpjpe_mm": 82.44,
       "per_joint_errors_m": {
         "head": 0.1866,
         "left_shoulder": 0.1348,
@@ -47,14 +88,30 @@
       "sample_id": "v10_sample_000001",
       "action_label": "standing",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1472,
+        "abs_mpjpe_mm": 1147.24,
+        "mpjpe_meters": 0.1219,
+        "mpjpe_mm": 121.92
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.2143,
+        "pck_10cm": 0.6429,
+        "pck_15cm": 0.8571
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.101,
+        "pa_mpjpe_mm": 100.96
+      },
+      "abs_mpjpe_meters": 1.1472,
+      "abs_mpjpe_mm": 1147.24,
       "mpjpe_meters": 0.1219,
       "mpjpe_mm": 121.92,
-      "pa_mpjpe_meters": 0.101,
-      "pa_mpjpe_mm": 100.96,
-      "abs_mpjpe_meters": 1.1472,
-      "pck_05cm": 0.2143,
+      "pck_5cm": 0.2143,
       "pck_10cm": 0.6429,
       "pck_15cm": 0.8571,
+      "pa_mpjpe_meters": 0.101,
+      "pa_mpjpe_mm": 100.96,
       "per_joint_errors_m": {
         "head": 0.0984,
         "left_shoulder": 0.0796,
@@ -82,14 +139,30 @@
       "sample_id": "v10_sample_000002",
       "action_label": "standing",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.179,
+        "abs_mpjpe_mm": 1179.01,
+        "mpjpe_meters": 0.1648,
+        "mpjpe_mm": 164.8
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.0714,
+        "pck_10cm": 0.2857,
+        "pck_15cm": 0.4286
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.1417,
+        "pa_mpjpe_mm": 141.7
+      },
+      "abs_mpjpe_meters": 1.179,
+      "abs_mpjpe_mm": 1179.01,
       "mpjpe_meters": 0.1648,
       "mpjpe_mm": 164.8,
-      "pa_mpjpe_meters": 0.1417,
-      "pa_mpjpe_mm": 141.7,
-      "abs_mpjpe_meters": 1.179,
-      "pck_05cm": 0.0714,
+      "pck_5cm": 0.0714,
       "pck_10cm": 0.2857,
       "pck_15cm": 0.4286,
+      "pa_mpjpe_meters": 0.1417,
+      "pa_mpjpe_mm": 141.7,
       "per_joint_errors_m": {
         "head": 0.1699,
         "left_shoulder": 0.1467,
@@ -117,14 +190,30 @@
       "sample_id": "v10_sample_000003",
       "action_label": "standing",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1504,
+        "abs_mpjpe_mm": 1150.37,
+        "mpjpe_meters": 0.0854,
+        "mpjpe_mm": 85.43
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.2857,
+        "pck_10cm": 0.7143,
+        "pck_15cm": 0.8571
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.0493,
+        "pa_mpjpe_mm": 49.31
+      },
+      "abs_mpjpe_meters": 1.1504,
+      "abs_mpjpe_mm": 1150.37,
       "mpjpe_meters": 0.0854,
       "mpjpe_mm": 85.43,
-      "pa_mpjpe_meters": 0.0493,
-      "pa_mpjpe_mm": 49.31,
-      "abs_mpjpe_meters": 1.1504,
-      "pck_05cm": 0.2857,
+      "pck_5cm": 0.2857,
       "pck_10cm": 0.7143,
       "pck_15cm": 0.8571,
+      "pa_mpjpe_meters": 0.0493,
+      "pa_mpjpe_mm": 49.31,
       "per_joint_errors_m": {
         "head": 0.136,
         "left_shoulder": 0.0967,
@@ -152,14 +241,30 @@
       "sample_id": "v10_sample_000004",
       "action_label": "standing",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1531,
+        "abs_mpjpe_mm": 1153.1,
+        "mpjpe_meters": 0.1093,
+        "mpjpe_mm": 109.26
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.2143,
+        "pck_10cm": 0.4286,
+        "pck_15cm": 0.7143
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.076,
+        "pa_mpjpe_mm": 76.04
+      },
+      "abs_mpjpe_meters": 1.1531,
+      "abs_mpjpe_mm": 1153.1,
       "mpjpe_meters": 0.1093,
       "mpjpe_mm": 109.26,
-      "pa_mpjpe_meters": 0.076,
-      "pa_mpjpe_mm": 76.04,
-      "abs_mpjpe_meters": 1.1531,
-      "pck_05cm": 0.2143,
+      "pck_5cm": 0.2143,
       "pck_10cm": 0.4286,
       "pck_15cm": 0.7143,
+      "pa_mpjpe_meters": 0.076,
+      "pa_mpjpe_mm": 76.04,
       "per_joint_errors_m": {
         "head": 0.1783,
         "left_shoulder": 0.1287,
@@ -187,14 +292,30 @@
       "sample_id": "v10_sample_000008",
       "action_label": "walking",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1469,
+        "abs_mpjpe_mm": 1146.85,
+        "mpjpe_meters": 0.1401,
+        "mpjpe_mm": 140.14
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.0714,
+        "pck_10cm": 0.2143,
+        "pck_15cm": 0.3571
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.1054,
+        "pa_mpjpe_mm": 105.4
+      },
+      "abs_mpjpe_meters": 1.1469,
+      "abs_mpjpe_mm": 1146.85,
       "mpjpe_meters": 0.1401,
       "mpjpe_mm": 140.14,
-      "pa_mpjpe_meters": 0.1054,
-      "pa_mpjpe_mm": 105.4,
-      "abs_mpjpe_meters": 1.1469,
-      "pck_05cm": 0.0714,
+      "pck_5cm": 0.0714,
       "pck_10cm": 0.2143,
       "pck_15cm": 0.3571,
+      "pa_mpjpe_meters": 0.1054,
+      "pa_mpjpe_mm": 105.4,
       "per_joint_errors_m": {
         "head": 0.22,
         "left_shoulder": 0.1684,
@@ -222,14 +343,30 @@
       "sample_id": "v10_sample_000009",
       "action_label": "walking",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1429,
+        "abs_mpjpe_mm": 1142.92,
+        "mpjpe_meters": 0.0841,
+        "mpjpe_mm": 84.15
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.3571,
+        "pck_10cm": 0.7143,
+        "pck_15cm": 0.9286
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.0537,
+        "pa_mpjpe_mm": 53.65
+      },
+      "abs_mpjpe_meters": 1.1429,
+      "abs_mpjpe_mm": 1142.92,
       "mpjpe_meters": 0.0841,
       "mpjpe_mm": 84.15,
-      "pa_mpjpe_meters": 0.0537,
-      "pa_mpjpe_mm": 53.65,
-      "abs_mpjpe_meters": 1.1429,
-      "pck_05cm": 0.3571,
+      "pck_5cm": 0.3571,
       "pck_10cm": 0.7143,
       "pck_15cm": 0.9286,
+      "pa_mpjpe_meters": 0.0537,
+      "pa_mpjpe_mm": 53.65,
       "per_joint_errors_m": {
         "head": 0.0955,
         "left_shoulder": 0.0834,
@@ -257,14 +394,30 @@
       "sample_id": "v10_sample_000010",
       "action_label": "walking",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1319,
+        "abs_mpjpe_mm": 1131.89,
+        "mpjpe_meters": 0.1043,
+        "mpjpe_mm": 104.34
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.2143,
+        "pck_10cm": 0.3571,
+        "pck_15cm": 0.7857
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.0808,
+        "pa_mpjpe_mm": 80.85
+      },
+      "abs_mpjpe_meters": 1.1319,
+      "abs_mpjpe_mm": 1131.89,
       "mpjpe_meters": 0.1043,
       "mpjpe_mm": 104.34,
-      "pa_mpjpe_meters": 0.0808,
-      "pa_mpjpe_mm": 80.85,
-      "abs_mpjpe_meters": 1.1319,
-      "pck_05cm": 0.2143,
+      "pck_5cm": 0.2143,
       "pck_10cm": 0.3571,
       "pck_15cm": 0.7857,
+      "pa_mpjpe_meters": 0.0808,
+      "pa_mpjpe_mm": 80.85,
       "per_joint_errors_m": {
         "head": 0.1319,
         "left_shoulder": 0.0556,
@@ -292,14 +445,30 @@
       "sample_id": "v10_sample_000011",
       "action_label": "walking",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1276,
+        "abs_mpjpe_mm": 1127.6,
+        "mpjpe_meters": 0.1096,
+        "mpjpe_mm": 109.61
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.2143,
+        "pck_10cm": 0.3571,
+        "pck_15cm": 0.7857
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.0785,
+        "pa_mpjpe_mm": 78.53
+      },
+      "abs_mpjpe_meters": 1.1276,
+      "abs_mpjpe_mm": 1127.6,
       "mpjpe_meters": 0.1096,
       "mpjpe_mm": 109.61,
-      "pa_mpjpe_meters": 0.0785,
-      "pa_mpjpe_mm": 78.53,
-      "abs_mpjpe_meters": 1.1276,
-      "pck_05cm": 0.2143,
+      "pck_5cm": 0.2143,
       "pck_10cm": 0.3571,
       "pck_15cm": 0.7857,
+      "pa_mpjpe_meters": 0.0785,
+      "pa_mpjpe_mm": 78.53,
       "per_joint_errors_m": {
         "head": 0.1456,
         "left_shoulder": 0.1289,
@@ -327,14 +496,30 @@
       "sample_id": "v10_sample_000012",
       "action_label": "walking",
       "num_evaluated_joints": 14,
+      "primary_metrics": {
+        "abs_mpjpe_meters": 1.1435,
+        "abs_mpjpe_mm": 1143.5,
+        "mpjpe_meters": 0.1396,
+        "mpjpe_mm": 139.55
+      },
+      "secondary_metrics": {
+        "pck_5cm": 0.0714,
+        "pck_10cm": 0.2143,
+        "pck_15cm": 0.4286
+      },
+      "supplementary_metrics": {
+        "pa_mpjpe_meters": 0.1053,
+        "pa_mpjpe_mm": 105.3
+      },
+      "abs_mpjpe_meters": 1.1435,
+      "abs_mpjpe_mm": 1143.5,
       "mpjpe_meters": 0.1396,
       "mpjpe_mm": 139.55,
-      "pa_mpjpe_meters": 0.1053,
-      "pa_mpjpe_mm": 105.3,
-      "abs_mpjpe_meters": 1.1435,
-      "pck_05cm": 0.0714,
+      "pck_5cm": 0.0714,
       "pck_10cm": 0.2143,
       "pck_15cm": 0.4286,
+      "pa_mpjpe_meters": 0.1053,
+      "pa_mpjpe_mm": 105.3,
       "per_joint_errors_m": {
         "head": 0.2174,
         "left_shoulder": 0.1695,

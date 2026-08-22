@@ -2,14 +2,30 @@
   "sample_id": "v10_sample_000011",
   "action_label": "walking",
   "num_evaluated_joints": 14,
+  "primary_metrics": {
+    "abs_mpjpe_meters": 1.1276,
+    "abs_mpjpe_mm": 1127.6,
+    "mpjpe_meters": 0.1096,
+    "mpjpe_mm": 109.61
+  },
+  "secondary_metrics": {
+    "pck_5cm": 0.2143,
+    "pck_10cm": 0.3571,
+    "pck_15cm": 0.7857
+  },
+  "supplementary_metrics": {
+    "pa_mpjpe_meters": 0.0785,
+    "pa_mpjpe_mm": 78.53
+  },
+  "abs_mpjpe_meters": 1.1276,
+  "abs_mpjpe_mm": 1127.6,
   "mpjpe_meters": 0.1096,
   "mpjpe_mm": 109.61,
-  "pa_mpjpe_meters": 0.0785,
-  "pa_mpjpe_mm": 78.53,
-  "abs_mpjpe_meters": 1.1276,
-  "pck_05cm": 0.2143,
+  "pck_5cm": 0.2143,
   "pck_10cm": 0.3571,
   "pck_15cm": 0.7857,
+  "pa_mpjpe_meters": 0.0785,
+  "pa_mpjpe_mm": 78.53,
   "per_joint_errors_m": {
     "head": 0.1456,
     "left_shoulder": 0.1289,
