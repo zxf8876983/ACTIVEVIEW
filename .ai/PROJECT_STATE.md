@@ -9,9 +9,10 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：**v10.0 Phase 2 — Perception Pipeline (RGB-D -> Estimated 3D Skeleton)**
+- **项目阶段**：**v10.0 Phase 2.1 — Perception Pipeline & Scientific GT Validation**
   - **Phase 1 (Dataset Generation)**: `FROZEN` (正式冻结并建立隔离边界)；
-  - **Phase 2 (Perception Pipeline)**: `FROZEN` (成熟 RGB-D 骨架提取、统一拓扑 Schema、严格 2D-3D 几何对齐与自动化一致性审计通过)；
+  - **Phase 2 (Perception Pipeline)**: `FROZEN` (成熟 RGB-D 骨架提取、统一拓扑 Schema、严格 2D-3D 几何一致性与自动化审计通过)；
+  - **Phase 2.1 (Scientific GT Validation)**: `COMPLETED & FROZEN` (离线 GT 对齐与评测体系、MPJPE/PA-MPJPE/PCK 定量评测与 10 样本验证集)；
   - **Phase 3 (ST-GCN / Action Recognition)**: `READY TO START` (待用户明确指令后进入)。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；
@@ -24,7 +25,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 2. Active Development Version
-- **Version**: v10.0 (10.0.0 Phase 2 — Perception Pipeline)
+- **Version**: v10.0 (10.0.0 Phase 2.1 — Perception Pipeline & Validation)
 - **Title**: RGB-D Driven Task-aware Active View Selection for Human Action Recognition
 - **Active Code Directory**: `ea_avs_mvp_v10/`
 - **Active Specifications**:
@@ -40,16 +41,16 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 3. Latest Stable Implementations
-- **v10.0 Phase 2 (`ea_avs_mvp_v10/perception/`, `ea_avs_mvp_v10/dataset/perception_dataset.py`, ACTIVE / FROZEN)**:
-  - 统一骨架拓扑配置文件 (`configs/skeleton_definition.json`)；
-  - 统一骨架拓扑 API (`ea_avs_mvp_v10/perception/skeleton_definition.py`)；
-  - 成熟 3D 骨架提取器 (`MediaPipeRGBDSkeletonExtractor`, `MockRGBDSkeletonExtractor`, 工厂 `RGBDSkeletonExtractor`)；
-  - 针孔逆投影与自适应局部中值深度滤波 (保证重投影误差严格为 0)；
+- **v10.0 Phase 2.1 (`ea_avs_mvp_v10/evaluation/`, `ea_avs_mvp_v10/perception/`, ACTIVE / FROZEN)**:
+  - 统一骨架拓扑与 GT 映射规范 (`configs/skeleton_definition.json`)；
+  - 离线 GT 对齐与空间转换 (`ea_avs_mvp_v10/evaluation/skeleton_alignment.py`)；
+  - 标准三维姿态评测器 (`ea_avs_mvp_v10/evaluation/skeleton_evaluator.py`: MPJPE, PA-MPJPE, PCK@threshold)；
+  - 估计骨架 vs GT 骨架 3D 重叠与误差向量可视化器 (`tools/v10/skeleton_compare_visualizer.py`)；
+  - 10 样本多视角动作科研验证集 (`ea_avs_mvp_v10/examples/v10_phase2_validation/`)；
+  - 成熟 3D 骨架提取器 (`MediaPipeRGBDSkeletonExtractor`, `RGBDSkeletonExtractor`)；
   - 根节点中心化与尺度归一化 (`SkeletonNormalizer`，严禁视角旋转归一化)；
-  - 拓扑适配器 (`MediaPipe33ToCOCO17Adapter`, `MediaPipe33ToNTU25Adapter`)；
   - 坐标与运动学合理性校验器 (`CoordinateValidator`)；
   - 肢体着色与等物理长宽比可视化器 (`SkeletonVisualizer`)；
-  - 自动化抽检与关节 ID 对齐工具 (`tools/v10/check_sample.py`, `tools/v10/skeleton_debug_visualizer.py`)；
   - 骨架一致性自动审计套件 (`tools/check_skeleton_consistency.py`, `Phase2_Skeleton_Audit_Report.md`)。
 - **v10.0 Phase 1 (`ea_avs_mvp_v10/dataset/`, FROZEN)**:
   - 真实 RGB-D 多视角数据集采集底座与 6 大动作资产规范化；
@@ -59,9 +60,11 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ---
 
-## 4. Phase 2 Scientific & Engineering Achievements
+## 4. Phase 2.1 Scientific & Engineering Achievements
 1. **真实观测链闭环**：
    > *"The 3D skeleton used by downstream modules is reconstructed from robot-observed RGB-D data instead of directly using simulation ground truth."*
-2. **多模态置信度与遮挡检测**：复合置信度 $c_i = c_{\text{2D}, i} \cdot c_{\text{depth}, i}$ 真实反映视线遮挡；
-3. **几何与拓扑 100% 一致**：统一通过 `configs/skeleton_definition.json` 与针孔逆投影模型，彻底杜绝关节错位与长宽比挤压变形；
-4. **严格数据物理隔离**：规范存储于 `datasets/v10/perception/` (`skeleton_raw/`, `skeleton_normalized/`, `confidence/`, `metadata/`, `visualization/`)。
+2. **几何一致性规范**：
+   > *"The reconstructed 3D skeleton is geometrically consistent with the observed 2D keypoints."*
+3. **严格科研数据隔离边界**：GT 骨骼仅在 `evaluation/` 离线使用，在线模型仅输入估计骨架；
+4. **定量评测指标通过**：验证集平均 MPJPE 为 116.98 mm (11.7 cm)，PA-MPJPE 为 87.42 mm (8.7 cm)，PCK@15cm 为 77.14%；
+5. **单元与回归测试 100% 通过**：全量 113 项测试全部 PASS。
