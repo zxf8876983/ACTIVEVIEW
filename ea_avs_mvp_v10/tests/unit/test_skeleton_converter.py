@@ -1,15 +1,14 @@
 """
-Unit tests for skeleton converter and confidence fusion.
+Unit tests for COCO-17 skeleton converter and confidence fusion.
 """
 
 import unittest
 import numpy as np
 
 from ea_avs_mvp_v10.perception.depth_projection import DepthProjectionResult
-from ea_avs_mvp_v10.perception.pose_estimator import Pose2DResult
+from ea_avs_mvp_v10.perception.pose_estimator import COCO_KEYPOINTS, Pose2DResult
 from ea_avs_mvp_v10.perception.skeleton_converter import (
-    BODY_PART_GROUPS,
-    UNIFIED_JOINT_NAMES,
+    COCO_BODY_PART_GROUPS,
     EstimatedSkeleton3D,
     SkeletonConverter,
 )
@@ -17,7 +16,7 @@ from ea_avs_mvp_v10.perception.skeleton_converter import (
 
 class TestSkeletonConverter(unittest.TestCase):
     def setUp(self):
-        self.converter = SkeletonConverter(occlusion_conf_thresh=0.35)
+        self.converter = SkeletonConverter(uncertainty_conf_thresh=0.35)
 
     def test_convert_and_fuse_structure(self):
         # 17 个 COCO 关键点
@@ -25,9 +24,7 @@ class TestSkeletonConverter(unittest.TestCase):
         conf_2d = np.ones(17, dtype=np.float32) * 0.9
         pose2d = Pose2DResult(keypoints=kpts_2d, confidence=conf_2d)
 
-        joints_cam = np.ones((17, 3), dtype=np.float32)
-        joints_cam[11] = [-0.2, 0.0, 2.0]  # left_hip
-        joints_cam[12] = [0.2, 0.0, 2.0]   # right_hip
+        joints_cam = np.ones((17, 3), dtype=np.float32) * 2.0
         joints_world = joints_cam.copy()
         depth_vals = np.ones(17, dtype=np.float32) * 2.0
         depth_conf = np.ones(17, dtype=np.float32) * 0.8
@@ -43,22 +40,21 @@ class TestSkeletonConverter(unittest.TestCase):
 
         skel = self.converter.convert_and_fuse(pose2d, depth_res)
         self.assertIsInstance(skel, EstimatedSkeleton3D)
-        self.assertEqual(skel.joints_3d_cam.shape, (16, 3))
-        self.assertEqual(skel.confidence.shape, (16,))
-        self.assertEqual(len(skel.joint_names), 16)
+        self.assertEqual(skel.joint_format, "COCO17")
+        self.assertEqual(skel.joints_3d_cam.shape, (17, 3))
+        self.assertEqual(skel.confidence.shape, (17,))
+        self.assertEqual(len(skel.joint_names), 17)
 
-        # 检查 pelvis 合成: ([-0.2, 0, 2] + [0.2, 0, 2])/2 = [0, 0, 2]
-        np.testing.assert_allclose(skel.joints_3d_cam[0], [0.0, 0.0, 2.0], atol=1e-5)
         # 检查复合置信度: 0.9 * 0.8 = 0.72
         self.assertAlmostEqual(skel.confidence[0], 0.72, places=4)
         self.assertFalse(skel.occluded_mask[0])
 
         # 检查部位平均置信度
-        for part in BODY_PART_GROUPS.keys():
+        for part in COCO_BODY_PART_GROUPS.keys():
             self.assertIn(part, skel.part_confidence)
             self.assertGreater(skel.part_confidence[part], 0.5)
 
-    def test_occlusion_flagging(self):
+    def test_uncertainty_flagging(self):
         # 模拟低置信度关键点
         kpts_2d = np.ones((17, 2), dtype=np.float32) * 100.0
         conf_2d = np.zeros(17, dtype=np.float32)  # 0 置信度

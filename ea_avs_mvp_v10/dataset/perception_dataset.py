@@ -4,8 +4,9 @@ Phase 2 感知数据集处理流水线 —— perception_dataset.py
 
 职责：
     1. 批量读取 Phase 1 生成的 RGB-D 样本；
-    2. 执行端到端感知流水线 (RGB -> 2D Pose -> Depth 逆投影 -> 3D 骨架估计)；
-    3. 规范化保存估计结果至 `datasets/v10/perception/` (pose2d, pose3d, confidence)；
+    2. 执行端到端感知流水线：
+       RGB -> 2D Pose (COCO-17) -> Depth 逆投影 -> 3D 骨架生成 -> 根节点与尺度归一化；
+    3. 规范化保存估计结果至 `datasets/v10/perception/` (pose2d, pose3d, normalized_pose3d, confidence)；
     4. 生成并维护 `perception_manifest.json` 元数据索引；
     5. 严格隔离：感知流水线全过程绝不接触或读取 GT Skeleton 真值。
 """
@@ -23,6 +24,7 @@ from ea_avs_mvp_v10.core.types import CameraIntrinsics, CameraPose, V10Sample
 from ea_avs_mvp_v10.perception.depth_projection import DepthProjector
 from ea_avs_mvp_v10.perception.pose_estimator import BasePoseEstimator, TorchvisionPoseEstimator
 from ea_avs_mvp_v10.perception.skeleton_converter import EstimatedSkeleton3D, SkeletonConverter
+from ea_avs_mvp_v10.perception.skeleton_normalizer import SkeletonNormalizer
 
 logger = logging.getLogger(__name__)
 
@@ -35,18 +37,21 @@ class V10PerceptionPipeline:
         pose_estimator: Optional[BasePoseEstimator] = None,
         depth_projector: Optional[DepthProjector] = None,
         skeleton_converter: Optional[SkeletonConverter] = None,
+        skeleton_normalizer: Optional[SkeletonNormalizer] = None,
         dataset_root: Optional[Union[str, Path]] = None,
     ):
         self.dataset_root = Path(dataset_root) if dataset_root else get_v10_dataset_root()
         self.pose_estimator = pose_estimator or TorchvisionPoseEstimator()
         self.depth_projector = depth_projector or DepthProjector()
         self.skeleton_converter = skeleton_converter or SkeletonConverter()
+        self.skeleton_normalizer = skeleton_normalizer or SkeletonNormalizer()
 
         # 初始化输出子目录
         self.perception_root = self.dataset_root / "perception"
         self.dirs = {
             "pose2d": self.perception_root / "pose2d",
             "pose3d": self.perception_root / "pose3d",
+            "normalized_pose3d": self.perception_root / "normalized_pose3d",
             "confidence": self.perception_root / "confidence",
             "visualization": self.perception_root / "visualization",
             "metadata": self.perception_root / "metadata",
@@ -89,10 +94,10 @@ class V10PerceptionPipeline:
         intrinsics = sample.camera_pose.intrinsics
         cam_pose = sample.camera_pose
 
-        # 2. Step 1: RGB -> 2D Pose
+        # 2. Step 1: RGB -> 2D Pose (COCO-17)
         pose2d_res = self.pose_estimator.estimate_pose2d(rgb_arr)
 
-        # 3. Step 2: Depth Back-Projection -> 3D Pose
+        # 3. Step 2: Depth Back-Projection -> 3D Camera/World Pose
         depth_res = self.depth_projector.project_2d_to_3d(
             keypoints_2d=pose2d_res.keypoints,
             depth_map=depth_arr,
@@ -100,13 +105,16 @@ class V10PerceptionPipeline:
             camera_pose=cam_pose,
         )
 
-        # 4. Step 3: Skeleton Fusion & Confidence Mapping
+        # 4. Step 3: Skeleton Fusion (COCO-17)
         skeleton3d = self.skeleton_converter.convert_and_fuse(
             pose2d=pose2d_res,
             depth_res=depth_res,
         )
 
-        # 5. 持久化
+        # 5. Step 4: Skeleton Normalization (Root centered & Scale normalized)
+        skeleton3d = self.skeleton_normalizer.normalize(skeleton3d)
+
+        # 6. 构造元数据记录
         record = {
             "sample_id": sample.sample_id,
             "scene_id": sample.scene_id,
@@ -114,6 +122,7 @@ class V10PerceptionPipeline:
             "action_label": sample.action_label,
             "frame_idx": sample.frame_idx,
             "view_id": sample.view_id,
+            "joint_format": skeleton3d.joint_format,
             "person_detected": bool(pose2d_res.person_score >= 0.5),
             "person_score": float(pose2d_res.person_score),
             "mean_confidence": float(np.mean(skeleton3d.confidence)),
@@ -121,25 +130,43 @@ class V10PerceptionPipeline:
             "part_confidence": skeleton3d.part_confidence,
             "pose2d_path": f"perception/pose2d/{sample.sample_id}.json",
             "pose3d_path": f"perception/pose3d/{sample.sample_id}.json",
+            "normalized_pose3d_path": f"perception/normalized_pose3d/{sample.sample_id}.json",
             "confidence_path": f"perception/confidence/{sample.sample_id}.json",
         }
 
+        # 7. 分级持久化
         if save_outputs:
             p2d_file = self.dirs["pose2d"] / f"{sample.sample_id}.json"
             p3d_file = self.dirs["pose3d"] / f"{sample.sample_id}.json"
+            norm_p3d_file = self.dirs["normalized_pose3d"] / f"{sample.sample_id}.json"
             conf_file = self.dirs["confidence"] / f"{sample.sample_id}.json"
 
             with open(p2d_file, "w", encoding="utf-8") as f:
                 json.dump(pose2d_res.to_dict(), f, indent=2)
 
             with open(p3d_file, "w", encoding="utf-8") as f:
-                json.dump(skeleton3d.to_dict(), f, indent=2)
+                json.dump({
+                    "sample_id": sample.sample_id,
+                    "joint_format": skeleton3d.joint_format,
+                    "joints_3d_cam": skeleton3d.joints_3d_cam.tolist(),
+                    "joints_3d_world": skeleton3d.joints_3d_world.tolist(),
+                    "joint_names": skeleton3d.joint_names,
+                }, f, indent=2)
+
+            with open(norm_p3d_file, "w", encoding="utf-8") as f:
+                json.dump({
+                    "sample_id": sample.sample_id,
+                    "joint_format": skeleton3d.joint_format,
+                    "joints_3d_normalized": skeleton3d.joints_3d_normalized.tolist() if skeleton3d.joints_3d_normalized is not None else None,
+                    "joint_names": skeleton3d.joint_names,
+                }, f, indent=2)
 
             with open(conf_file, "w", encoding="utf-8") as f:
                 json.dump({
                     "sample_id": sample.sample_id,
-                    "confidence": skeleton3d.confidence.tolist(),
-                    "occluded_mask": skeleton3d.occluded_mask.tolist(),
+                    "joint_format": skeleton3d.joint_format,
+                    "perception_confidence": skeleton3d.confidence.tolist(),
+                    "uncertainty_mask": skeleton3d.occluded_mask.tolist(),
                     "part_confidence": skeleton3d.part_confidence,
                 }, f, indent=2)
 
@@ -162,7 +189,7 @@ class V10PerceptionPipeline:
         if max_samples:
             raw_samples = raw_samples[:max_samples]
 
-        logger.info("Processing %d samples with Perception Pipeline...", len(raw_samples))
+        logger.info("Processing %d samples with Perception Pipeline (COCO-17 native)...", len(raw_samples))
         records = []
 
         for idx, s_dict in enumerate(raw_samples):
@@ -179,6 +206,7 @@ class V10PerceptionPipeline:
             json.dump({
                 "version": "10.0.0",
                 "phase": "phase_2_perception",
+                "joint_format": "COCO17",
                 "total_processed": len(records),
                 "records": records,
             }, f, indent=2)

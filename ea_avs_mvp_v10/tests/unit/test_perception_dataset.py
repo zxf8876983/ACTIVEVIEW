@@ -51,14 +51,17 @@ class TestPerceptionDataset(unittest.TestCase):
             save_outputs=True,
         )
 
-        self.assertEqual(skel.joints_3d_cam.shape, (16, 3))
+        self.assertEqual(skel.joint_format, "COCO17")
+        self.assertEqual(skel.joints_3d_cam.shape, (17, 3))
+        self.assertEqual(skel.joints_3d_normalized.shape, (17, 3))
         self.assertEqual(record["sample_id"], "test_perc_001")
-        self.assertEqual(record["num_valid_joints"], 16)
+        self.assertEqual(record["num_valid_joints"], 17)
 
         # 检查文件是否落地
         root = Path(self.tmp_dir) / "perception"
         self.assertTrue((root / "pose2d" / "test_perc_001.json").exists())
         self.assertTrue((root / "pose3d" / "test_perc_001.json").exists())
+        self.assertTrue((root / "normalized_pose3d" / "test_perc_001.json").exists())
         self.assertTrue((root / "confidence" / "test_perc_001.json").exists())
 
 

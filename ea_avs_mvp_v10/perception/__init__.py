@@ -1,6 +1,6 @@
 """
 Perception pipeline module for v10.0.
-RGB-D -> 2D Pose -> Depth Projection -> Estimated 3D Skeleton.
+RGB-D -> 2D Pose -> Depth Projection -> Estimated 3D Skeleton (COCO17) -> Normalization.
 """
 
 from .depth_projection import DepthProjectionResult, DepthProjector
@@ -12,13 +12,13 @@ from .pose_estimator import (
     Pose2DResult,
     TorchvisionPoseEstimator,
 )
+from .skeleton_adapter import BaseSkeletonAdapter, COCO17ToNTU25Adapter, NTU_25_JOINT_NAMES
 from .skeleton_converter import (
-    BODY_PART_GROUPS,
-    UNIFIED_JOINT_NAMES,
-    UNIFIED_SKELETON_PAIRS,
+    COCO_BODY_PART_GROUPS,
     EstimatedSkeleton3D,
     SkeletonConverter,
 )
+from .skeleton_normalizer import SkeletonNormalizer
 
 __all__ = [
     "BasePoseEstimator",
@@ -31,7 +31,9 @@ __all__ = [
     "DepthProjectionResult",
     "EstimatedSkeleton3D",
     "SkeletonConverter",
-    "UNIFIED_JOINT_NAMES",
-    "UNIFIED_SKELETON_PAIRS",
-    "BODY_PART_GROUPS",
+    "COCO_BODY_PART_GROUPS",
+    "SkeletonNormalizer",
+    "BaseSkeletonAdapter",
+    "COCO17ToNTU25Adapter",
+    "NTU_25_JOINT_NAMES",
 ]
