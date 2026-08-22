@@ -1,23 +1,23 @@
 # ACTIVEVIEW Handoff Record
 
-- **Timestamp**: 2026-08-23 02:27:00
+- **Timestamp**: 2026-08-23 02:42:00
 - **Status**: `CLEAN`
 - **Active Version**: `v11.1` (`ea_avs_mvp_v11/`)
 
 ---
 
-## 1. Summary of Completed Work (v11.1 Candidate View Generation & Filtering)
-1. **Modules Implemented in `ea_avs_mvp_v11/`**:
-   - `ea_avs_mvp_v11/configs/viewpoint_config.yaml`: Central viewpoint sampling and filtering configuration.
-   - `ea_avs_mvp_v11/active_view/viewpoint_types.py`: `Viewpoint` dataclass with all required fields.
-   - `ea_avs_mvp_v11/active_view/candidate_generator.py`: `CandidateViewGenerator` generating 32 polar candidate viewpoints with `face_human` yaw calculation.
-   - `ea_avs_mvp_v11/active_view/visibility_checker.py`: `VisibilityChecker` performing ray casting.
-   - `ea_avs_mvp_v11/active_view/habitat_filter.py`: `HabitatViewFilter` implementing 3-stage filtering (`is_navigable`, `is_reachable`, `is_visible`) with structured log output.
-   - `ea_avs_mvp_v11/tools/visualization/viewpoint_visualizer.py`: Top-down and polar visualization tool.
-2. **Testing & Validation**:
-   - `ea_avs_mvp_v11/active_view/tests/`: 8 / 8 tests PASS (100%).
-   - Full repository regression tests (v7, v8, v9, v10, v11): 126 / 126 PASS (100%).
-   - Report: `V11.1_CANDIDATE_VIEW_GENERATION_REPORT.md`.
+## 1. Summary of Completed Work (v11.0 Architecture Migration)
+1. **Self-Contained `ea_avs_mvp_v11/` Architecture**:
+   - `ea_avs_mvp_v11/` is now fully self-contained (`v11 = v10 Frozen Baseline + Active View Extension`).
+   - 0 cross-version imports (`grep -rn ea_avs_mvp_v10 ea_avs_mvp_v11/` -> 0 matches).
+   - `ea_avs_mvp_v10/` remains completely frozen and read-only.
+2. **Active View Module & Standard Stubs**:
+   - `active_view/`: `candidate_generator.py`, `habitat_filter.py`, `visibility_checker.py`, `viewpoint_types.py` fully implemented.
+   - Interface stubs: `viewpoint_dataset.py` (v11.2), `utility_predictor.py` (v11.3), `selector.py` (v11.4).
+3. **Execution & Regression Verification**:
+   - `python run_v11.py` executes end-to-end flawlessly.
+   - 168 / 168 unit tests pass across the entire repository.
+   - Report generated: `V11.0_ARCHITECTURE_MIGRATION_REPORT.md`.
 
 ---
 

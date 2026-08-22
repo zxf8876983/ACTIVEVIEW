@@ -10,8 +10,8 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 
 ## 1. Current Stage
 - **项目阶段**：**v11.0 Phase 1 (v11.1, `ea_avs_mvp_v11/`) — Navigation-Constrained Active View Candidate Generation & Filtering**
-  - **v10.0 (Perception & Action Recognition Foundation)**: `FROZEN` (统一 RGB 驱动 3D 姿态估计、ST-GCN 动作分类与 Shannon 熵不确定度量化体系全面固化)；
-  - **v11.1 (Candidate Generation & Filtering)**: `COMPLETED & CLOSED` (在 `ea_avs_mvp_v11/` 下实现人体中心极坐标 32 候选点生成、相机高度与朝向人体计算、Habitat NavMesh / 可达性 / Raycast 通视性三阶段过滤器、可视化工具与完整单元测试)；
+  - **v10.0 (Perception & Action Recognition Foundation)**: `FROZEN` (只读基准，统一 RGB 驱动 3D 姿态估计、ST-GCN 动作分类与 Shannon 熵不确定度量化体系全面固化)；
+  - **v11.0 / v11.1 (Self-Contained Active Perception Pipeline)**: `COMPLETED & CLOSED` (建立自包含 `ea_avs_mvp_v11/` 目录闭环，内部 100% 解耦；实现人体中心极坐标 32 候选点生成、Face Human Yaw 朝向计算、Habitat NavMesh / 可达性 / Raycast 通视性三阶段过滤器、端到端 `run_v11.py` 与完整单元测试)；
   - **v11.2 (Viewpoint Quality Dataset)**: `READY TO START` (待用户明确指令后进入)；
   - **v11.3 (Utility Predictor)** & **v11.4 (Active Selection Policy)**: `PLANNED`。
 - **历史基线**：
