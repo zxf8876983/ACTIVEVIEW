@@ -50,6 +50,20 @@ class CameraIntrinsics:
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "CameraIntrinsics":
+        return cls(
+            width=int(data.get("width", 640)),
+            height=int(data.get("height", 480)),
+            fx=float(data.get("fx", 320.0)),
+            fy=float(data.get("fy", 320.0)),
+            cx=float(data.get("cx", 320.0)),
+            cy=float(data.get("cy", 240.0)),
+            hfov_deg=float(data.get("hfov_deg", 90.0)),
+            clip_near=float(data.get("clip_near", 0.01)),
+            clip_far=float(data.get("clip_far", 10.0)),
+        )
+
 
 @dataclass
 class CameraPose:
@@ -71,6 +85,17 @@ class CameraPose:
         if self.matrix_4x4 is not None:
             d["matrix_4x4"] = [[round(float(c), 4) for c in row] for row in self.matrix_4x4]
         return d
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "CameraPose":
+        intr = CameraIntrinsics.from_dict(data["intrinsics"]) if data.get("intrinsics") else None
+        return cls(
+            position=data.get("position", [0.0, 0.0, 0.0]),
+            rotation_quat=data.get("rotation_quat", [0.0, 0.0, 0.0, 1.0]),
+            yaw_deg=float(data.get("yaw_deg", 0.0)),
+            intrinsics=intr,
+            matrix_4x4=data.get("matrix_4x4"),
+        )
 
 
 @dataclass
@@ -94,6 +119,18 @@ class CandidateViewpointV10:
             "yaw_deg": round(float(self.yaw_deg), 1),
             "feasible": self.feasible,
         }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "CandidateViewpointV10":
+        return cls(
+            viewpoint_id=data["viewpoint_id"],
+            radius=float(data.get("radius", 1.5)),
+            angle_deg=float(data.get("angle_deg", 0.0)),
+            height=float(data.get("height", 1.2)),
+            position=data.get("position", [0.0, 0.0, 0.0]),
+            yaw_deg=float(data.get("yaw_deg", 0.0)),
+            feasible=bool(data.get("feasible", True)),
+        )
 
 
 @dataclass
@@ -125,3 +162,20 @@ class V10Sample:
             "gt_skeleton_path": self.gt_skeleton_path,
             "metadata": self.metadata,
         }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "V10Sample":
+        cam_pose = CameraPose.from_dict(data["camera_pose"])
+        return cls(
+            sample_id=data["sample_id"],
+            scene_id=data["scene_id"],
+            motion_id=data["motion_id"],
+            action_label=data["action_label"],
+            frame_idx=int(data["frame_idx"]),
+            view_id=data["view_id"],
+            camera_pose=cam_pose,
+            rgb_path=data["rgb_path"],
+            depth_path=data["depth_path"],
+            gt_skeleton_path=data.get("gt_skeleton_path"),
+            metadata=data.get("metadata", {}),
+        )
