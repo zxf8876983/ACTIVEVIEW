@@ -1,34 +1,25 @@
 # ACTIVEVIEW Handoff Record
 
-- **Timestamp**: 2026-08-23 00:30:00
+- **Timestamp**: 2026-08-23 02:27:00
 - **Status**: `CLEAN`
-- **Active Version**: `ea_avs_mvp_v10/` (v10.0 Phase 3 FROZEN)
+- **Active Version**: `v11.1` (`ea_avs_mvp_v11/`)
 
 ---
 
-## 1. Summary of Completed Work (Phase 3.1 Scientific Consistency Patch)
-1. **Scientific Consistency & Boundary Protection**:
-   - Re-verified that ST-GCN input strictly originates from `Pose3DEstimator` (RGB-only MediaPipe 3D backend).
-   - Standardized `Clean Perception Oracle` (Ideal Perception Condition) definition and removed GT upper bound wording.
-   - Added runtime schema assertions (`assert input_joints == configured_joints`).
-2. **Large-Scale Perception Dataset ($N=3,672$)**:
-   - `train/clean_perception/`: 2,400 sequences
-   - `test/clean_perception/`: 600 sequences (Clean Perception Oracle)
-   - `test/habitat_perception/`: 672 sequences (16 viewpoints)
-   - Every class has exactly 612 samples ($\ge 500$).
-   - Full sample metadata recorded in `manifest.json`.
-3. **Model Retraining & Benchmarking**:
-   - Retrained ST-GCN achieving 100.0% validation accuracy on Clean Perception dataset (`best_st_gcn_model.pth`).
-   - Clean Perception Oracle: 100.0% Acc, 1.0000 F1, 0.0551 Entropy.
-   - Habitat Perception Baseline: 70.83% Acc, 0.6251 F1, 0.3482 Entropy ($-29.17\%$ drop).
-   - 16-viewpoint uncertainty analysis quantified.
-4. **Reports & Validation**:
-   - Generated [`PHASE3.1_VALIDATION_REPORT.md`](file:///home/zxf/WorkSpace/code/code/ActiveView/PHASE3.1_VALIDATION_REPORT.md).
-   - Updated [`PHASE3_ACTION_RECOGNITION_REPORT.md`](file:///home/zxf/WorkSpace/code/code/ActiveView/PHASE3_ACTION_RECOGNITION_REPORT.md).
-   - 118 / 118 unit tests PASS (100%).
+## 1. Summary of Completed Work (v11.1 Candidate View Generation & Filtering)
+1. **Modules Implemented in `ea_avs_mvp_v11/`**:
+   - `ea_avs_mvp_v11/configs/viewpoint_config.yaml`: Central viewpoint sampling and filtering configuration.
+   - `ea_avs_mvp_v11/active_view/viewpoint_types.py`: `Viewpoint` dataclass with all required fields.
+   - `ea_avs_mvp_v11/active_view/candidate_generator.py`: `CandidateViewGenerator` generating 32 polar candidate viewpoints with `face_human` yaw calculation.
+   - `ea_avs_mvp_v11/active_view/visibility_checker.py`: `VisibilityChecker` performing ray casting.
+   - `ea_avs_mvp_v11/active_view/habitat_filter.py`: `HabitatViewFilter` implementing 3-stage filtering (`is_navigable`, `is_reachable`, `is_visible`) with structured log output.
+   - `ea_avs_mvp_v11/tools/visualization/viewpoint_visualizer.py`: Top-down and polar visualization tool.
+2. **Testing & Validation**:
+   - `ea_avs_mvp_v11/active_view/tests/`: 8 / 8 tests PASS (100%).
+   - Full repository regression tests (v7, v8, v9, v10, v11): 126 / 126 PASS (100%).
+   - Report: `V11.1_CANDIDATE_VIEW_GENERATION_REPORT.md`.
 
 ---
 
 ## 2. Next Steps
-- Phase 3 is officially **FROZEN**.
-- Await user directive to enter **Phase 4: Active View Selection Policy**.
+- Await user directive to proceed to **v11.2: Viewpoint Quality Dataset Generation**.

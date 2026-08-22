@@ -9,12 +9,11 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：**v10.0 Phase 3 — Skeleton-based Action Recognition (ST-GCN) & Uncertainty Evaluation**
-  - **Phase 1 (Dataset Generation)**: `FROZEN` (正式冻结并建立隔离边界)；
-  - **Phase 2 (Perception Pipeline)**: `FROZEN` (成熟 RGB-D 骨架提取、统一拓扑 Schema、严格 2D-3D 几何一致性与自动化审计通过)；
-  - **Phase 2.1 (Scientific GT Validation)**: `FROZEN` (离线 GT 对齐与评测体系、MPJPE/PA-MPJPE/PCK 定量评测与 10 样本验证集)；
-  - **Phase 3 / 3.1 (ST-GCN / Scientific Consistency Patch)**: `FROZEN` (统一 RGB 驱动感知链路、3672 样本规模化数据集、ST-GCN 动作分类网络、Shannon 熵不确定度量化、Oracle/Habitat 双基准评测闭环并已全面固化)；
-  - **Phase 4 (Active View Selection Policy)**: `READY TO START` (待用户明确指令后进入)。
+- **项目阶段**：**v11.0 Phase 1 (v11.1, `ea_avs_mvp_v11/`) — Navigation-Constrained Active View Candidate Generation & Filtering**
+  - **v10.0 (Perception & Action Recognition Foundation)**: `FROZEN` (统一 RGB 驱动 3D 姿态估计、ST-GCN 动作分类与 Shannon 熵不确定度量化体系全面固化)；
+  - **v11.1 (Candidate Generation & Filtering)**: `COMPLETED & CLOSED` (在 `ea_avs_mvp_v11/` 下实现人体中心极坐标 32 候选点生成、相机高度与朝向人体计算、Habitat NavMesh / 可达性 / Raycast 通视性三阶段过滤器、可视化工具与完整单元测试)；
+  - **v11.2 (Viewpoint Quality Dataset)**: `READY TO START` (待用户明确指令后进入)；
+  - **v11.3 (Utility Predictor)** & **v11.4 (Active Selection Policy)**: `PLANNED`。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；
   - `v7.0`: 拟人化主动感知仿真环境与动作数据集平台（COMPLETED / FINALIZED & FROZEN，保持只读）；

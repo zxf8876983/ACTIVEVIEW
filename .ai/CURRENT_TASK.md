@@ -1,31 +1,32 @@
 # ACTIVEVIEW Current Task
 
 ## 1. Task Definition
-- **Task ID**: `V10-PHASE3.1-SCIENTIFIC-CONSISTENCY-PATCH`
-- **Goal**: Perform Phase 3.1 Scientific Consistency Patch on ST-GCN Action Recognition & Uncertainty Evaluation module.
-- **Phase Status**: `PHASE 3 FROZEN & READY FOR PHASE 4`
+- **Task ID**: `V11.1-CANDIDATE-VIEW-GENERATION-AND-FILTERING`
+- **Active Directory**: `ea_avs_mvp_v11/`
+- **Goal**: Implement ACTIVEVIEW v11.1 Active Viewpoint Candidate Generation, Habitat 3-Stage Feasibility Filtering, Visualization, and Testing under `ea_avs_mvp_v11/`.
+- **Phase Status**: `COMPLETED & CLOSED`
 
 ---
 
-## 2. Work Completed in Phase 3.1
-1. **Core Principle & Physical Boundary Audit**:
-   - Reaffirmed core principle: ST-GCN input must ALWAYS come from the same `Pose3DEstimator`.
-   - Verified that zero SMPL GT joints enter the action recognition pipeline.
-2. **Oracle Naming & Concept Clarification**:
-   - Formally standardized naming to **Clean Perception Oracle** (Ideal Perception Condition, NOT GT skeleton).
-   - Removed all GT skeleton upper bound descriptions.
-3. **RGB-Only 3D Pose Estimator Backend**:
-   - Ensured main active pipeline uses RGB-only MediaPipe BlazePose 3D backend.
-   - Added explicit runtime schema assertions (`assert input_joints == configured_joints`).
-4. **Dataset Scale Expansion & Comprehensive Metadata**:
-   - Expanded dataset to **3,672 sequences** (every class has 612 samples $\ge 500$).
-   - `train/clean_perception/` ($N=2,400$), `test/clean_perception/` ($N=600$, Clean Perception Oracle), `test/habitat_perception/` ($N=672$, 16 viewpoints).
-   - Saved full sample-level metadata dictionary in `manifest.json`.
-5. **Model Retraining & Multi-Metric Benchmark Evaluation**:
-   - Retrained ST-GCN network achieving **100.0% validation accuracy** on Clean Perception dataset.
-   - Evaluated Clean Perception Oracle (100.0% Acc, 1.0 F1, 0.0551 Entropy) vs Habitat Perception Baseline (70.83% Acc, 0.6251 F1, 0.3482 Entropy, $-29.17\%$ drop).
-   - Evaluated Viewpoint Uncertainty Analysis across 16 grid viewpoints.
-6. **Reports & State Updates**:
-   - Updated `PHASE3_ACTION_RECOGNITION_REPORT.md`.
-   - Generated `PHASE3.1_VALIDATION_REPORT.md`.
-   - All 42 v10 unit tests pass, and all 118 full repository regression tests pass.
+## 2. Work Completed in v11.1
+1. **Unified Viewpoint Dataclass (`ea_avs_mvp_v11/active_view/viewpoint_types.py`)**:
+   - Implemented `Viewpoint` dataclass containing `id`, `position`, `rotation`, `yaw`, `pitch`, `distance`, `angle`, `camera_height`, `navigation_cost`, `is_navigable`, `is_reachable`, `is_visible`, `is_feasible`, `camera_position`, `metadata`, and `to_dict()`.
+2. **Candidate View Generator (`ea_avs_mvp_v11/active_view/candidate_generator.py`)**:
+   - Implemented `CandidateViewGenerator` performing human-centered polar sampling (8 angles $\times$ 4 distances = 32 viewpoints).
+   - Computes automatic camera yaw facing human target (`face_human`) and configurable camera height / pitch.
+   - Configurable via `ea_avs_mvp_v11/configs/viewpoint_config.yaml`.
+3. **Line-of-Sight Visibility Checker (`ea_avs_mvp_v11/active_view/visibility_checker.py`)**:
+   - Implemented `VisibilityChecker` with raycast ray tracing against physical Habitat simulator and AABB geometric obstacle volumes.
+4. **Habitat 3-Stage Feasibility Filter (`ea_avs_mvp_v11/active_view/habitat_filter.py`)**:
+   - Implemented `HabitatViewFilter`:
+     - Stage 1: `is_navigable` (NavMesh containment, ground snap);
+     - Stage 2: `is_reachable` (ShortestPath reachability & geodesic `navigation_cost`);
+     - Stage 3: `is_visible` (Raycast visibility checking);
+   - Structured logging reporting generated, filtered, and final feasible counts.
+5. **Visualization Tool (`ea_avs_mvp_v11/tools/visualization/viewpoint_visualizer.py`)**:
+   - Generates top-down 2D floorplan map & polar angle-distance radar chart with human target, robot start position, feasible viewpoints with directional arrows, and filtered obstacle points (`outputs/v11_visualization/candidate_viewpoints.png`).
+6. **Testing & Regression Suite**:
+   - Created unit tests in `ea_avs_mvp_v11/active_view/tests/`, `ea_avs_mvp_v11/tests/`, and `tests/`.
+   - 8 / 8 active_view unit tests PASS; 126 / 126 repository regression tests PASS (100%).
+7. **Reporting**:
+   - Generated `V11.1_CANDIDATE_VIEW_GENERATION_REPORT.md`.

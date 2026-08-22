@@ -1,0 +1,36 @@
+# =============================================================================
+# ACTIVEVIEW v11.0: Active Viewpoint Generation & Filtering Configuration
+# =============================================================================
+
+# 1. 候选视角采样参数 (Polar Sampling Parameters)
+sampling:
+  # 水平方位角候选列表 (单位: 度, 围绕人体中心的圆周角)
+  angles_deg: [0.0, 45.0, 90.0, 135.0, 180.0, 225.0, 270.0, 315.0]
+  # 观察半径 / 距离候选列表 (单位: 米)
+  distances_m: [1.5, 2.0, 2.5, 3.0]
+  # 机器人相机相对地面安装高度 (单位: 米)
+  camera_height_m: 1.25
+  # 观察俯仰角 (单位: 度, 0.0 表示平视, 负值表示轻微俯视人体中心)
+  camera_pitch_deg: 0.0
+
+# 2. 导航可行性过滤约束 (Habitat Navigation & Reachability Constraints)
+navigation:
+  # 是否开启 NavMesh 可行域检测 (过滤墙体内部、家具内部与悬空孤岛)
+  check_navmesh: true
+  # NavMesh 最大贴合吸附容差 (单位: 米)
+  max_snap_distance_m: 0.50
+  # 是否开启连通性与路径可达性检测
+  check_reachability: true
+  # 机器人最大允许单步移动测地线距离 (单位: 米)
+  max_path_cost_m: 15.0
+
+# 3. 视线无遮挡光线追踪检测 (Visibility / Raycast Constraints)
+visibility:
+  # 是否开启视线通视性检测
+  check_visibility: true
+  # 人体目标关键检测部位高程偏移 [dx, dy, dz] (米), 默认躯干/骨盆高程
+  human_target_offsets:
+    - [0.0, 0.80, 0.0]  # 骨盆与躯干中心 (Pelvis / Torso)
+    - [0.0, 1.45, 0.0]  # 头部 / 肩部 (Head / Shoulder)
+  # 光线投射与障碍物表面接触安全缓冲区 (米)
+  hit_buffer_m: 0.20
