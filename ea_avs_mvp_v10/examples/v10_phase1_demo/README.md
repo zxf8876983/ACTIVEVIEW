@@ -37,9 +37,9 @@ datasets/v10/
   "frame_idx": 0,
   "view_id": "vp_000_r1.5_a000",
   "camera_pose": {
-    "position": [1.7999999523162842, 0.8000000715255737, 5.699999809265137],
-    "rotation_quat": [0.0, 1.0, 0.0, 6.123234262925839e-17],
-    "yaw_deg": 180.0,
+    "position": [1.5, -0.3999999761581421, 5.5],
+    "rotation_quat": [0.0, 0.0, 0.0, 1.0],
+    "yaw_deg": 0.0,
     "intrinsics": {
       "width": 640,
       "height": 480,

@@ -107,17 +107,23 @@ class V10DatasetGenerator:
         robot = RobotAgent(sim, agent_id=0)
         capture = RGBDCapture(sim, sensor_cfg=self.config.camera, agent_id=0)
 
-        h_pos = human_position or self.config.human.get("default_position", [1.8, -1.60, 4.2])
+        h_pos = human_position or self.config.human.get("default_position", [1.5, -1.60, 4.0])
         human_yaw_rad = math.radians(human_yaw_deg)
         humanoid.set_base_pose(h_pos, yaw_rad=human_yaw_rad)
 
         candidates = self.vp_gen.generate_candidates(h_pos, human_yaw_deg=human_yaw_deg)
-        if max_viewpoints and len(candidates) > max_viewpoints:
+
+        # 过滤可导航视点 (排除墙体/外部碰撞视点)
+        navigable_candidates = [vp for vp in candidates if env_adapter.is_navigable(vp.position)]
+        if not navigable_candidates:
+            navigable_candidates = candidates
+
+        if max_viewpoints and len(navigable_candidates) > max_viewpoints:
             # 均匀下采样候选视点
-            indices = np.linspace(0, len(candidates) - 1, max_viewpoints, dtype=int)
-            sampled_candidates = [candidates[i] for i in indices]
+            indices = np.linspace(0, len(navigable_candidates) - 1, max_viewpoints, dtype=int)
+            sampled_candidates = [navigable_candidates[i] for i in indices]
         else:
-            sampled_candidates = candidates
+            sampled_candidates = navigable_candidates
 
         target_motions = motion_ids or self.motion_mgr.list_available_motions()[:6]
         all_samples: List[V10Sample] = []

@@ -20,7 +20,7 @@ human:
   avatar_name: "neutral_0"
   assets_root: "assets/humanoids/neutral_0"
   ground_offset: 0.0
-  default_position: [1.8, -1.60, 4.2]
+  default_position: [1.5, -1.60, 4.0]
   default_yaw_deg: 0.0
 
 motion:

@@ -58,7 +58,7 @@ def run_phase1_demo():
     # 2. 执行多视角 RGB-D 采集
     samples = generator.generate_motion_dataset(
         motion_ids=selected_motions,
-        human_position=[1.8, -1.60, 4.2],
+        human_position=[1.5, -1.60, 4.0],
         human_yaw_deg=0.0,
         frame_step=15,
         max_frames_per_motion=2,

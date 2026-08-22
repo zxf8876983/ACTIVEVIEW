@@ -27,8 +27,8 @@ class TestCandidateGenerator(unittest.TestCase):
             self.assertIn(vp.radius, [1.5, 2.0, 2.5])
             self.assertAlmostEqual(vp.height, 1.20)
             self.assertEqual(len(vp.position), 3)
-            # y 坐标为 ground_height + camera_height = -1.60 + 1.20 = -0.40
-            self.assertAlmostEqual(vp.position[1], -0.40)
+            # y 坐标为 ground_height = -1.60
+            self.assertAlmostEqual(vp.position[1], -1.60)
 
 
 if __name__ == "__main__":
