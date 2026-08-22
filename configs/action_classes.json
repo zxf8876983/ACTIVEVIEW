@@ -1,0 +1,57 @@
+{
+  "num_classes": 6,
+  "actions": [
+    {
+      "id": 0,
+      "name": "standing",
+      "display_name": "Standing",
+      "description": "Upright standing posture with minimal translation"
+    },
+    {
+      "id": 1,
+      "name": "walking",
+      "display_name": "Walking",
+      "description": "Locomotion with alternating leg strides"
+    },
+    {
+      "id": 2,
+      "name": "sitting",
+      "display_name": "Sitting",
+      "description": "Seated posture or transition to sitting position"
+    },
+    {
+      "id": 3,
+      "name": "bending",
+      "display_name": "Bending",
+      "description": "Torso forward or lateral flexion"
+    },
+    {
+      "id": 4,
+      "name": "reaching",
+      "display_name": "Reaching",
+      "description": "Upper limb extension towards target"
+    },
+    {
+      "id": 5,
+      "name": "fall_related",
+      "display_name": "Fall Related",
+      "description": "Loss of vertical stability or collapse"
+    }
+  ],
+  "name_to_id": {
+    "standing": 0,
+    "walking": 1,
+    "sitting": 2,
+    "bending": 3,
+    "reaching": 4,
+    "fall_related": 5
+  },
+  "id_to_name": {
+    "0": "standing",
+    "1": "walking",
+    "2": "sitting",
+    "3": "bending",
+    "4": "reaching",
+    "5": "fall_related"
+  }
+}

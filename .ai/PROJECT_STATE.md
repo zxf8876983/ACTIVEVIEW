@@ -9,11 +9,12 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：**v10.0 Phase 2.1 — Perception Pipeline & Scientific GT Validation**
+- **项目阶段**：**v10.0 Phase 3 — Skeleton-based Action Recognition (ST-GCN) & Uncertainty Evaluation**
   - **Phase 1 (Dataset Generation)**: `FROZEN` (正式冻结并建立隔离边界)；
   - **Phase 2 (Perception Pipeline)**: `FROZEN` (成熟 RGB-D 骨架提取、统一拓扑 Schema、严格 2D-3D 几何一致性与自动化审计通过)；
-  - **Phase 2.1 (Scientific GT Validation)**: `COMPLETED & FROZEN` (离线 GT 对齐与评测体系、MPJPE/PA-MPJPE/PCK 定量评测与 10 样本验证集)；
-  - **Phase 3 (ST-GCN / Action Recognition)**: `READY TO START` (待用户明确指令后进入)。
+  - **Phase 2.1 (Scientific GT Validation)**: `FROZEN` (离线 GT 对齐与评测体系、MPJPE/PA-MPJPE/PCK 定量评测与 10 样本验证集)；
+  - **Phase 3 (ST-GCN / Action Recognition)**: `COMPLETED & CLOSED` (统一 RGB 驱动感知链路、ST-GCN 动作分类网络、Shannon 熵不确定度量化、Oracle/Habitat 双基准评测闭环)；
+  - **Phase 4 (Active View Selection Policy)**: `READY TO START` (待用户明确指令后进入)。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；
   - `v7.0`: 拟人化主动感知仿真环境与动作数据集平台（COMPLETED / FINALIZED & FROZEN，保持只读）；
@@ -25,12 +26,13 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 2. Active Development Version
-- **Version**: v10.0 (10.0.0 Phase 2.1 — Perception Pipeline & Validation)
+- **Version**: v10.0 (10.0.0 Phase 3 — Action Recognition & Uncertainty)
 - **Title**: RGB-D Driven Task-aware Active View Selection for Human Action Recognition
 - **Active Code Directory**: `ea_avs_mvp_v10/`
 - **Active Specifications**:
   - `ACTIVEVIEW_V10.0_Research_Development_Document.md`
   - `ACTIVEVIEW_V10.0_Code_Generation_Specification.md`
+  - `PHASE3_ACTION_RECOGNITION_REPORT.md`
 - **Inherited Assets & Infrastructure from v7, v8, v9**:
   - Habitat 室内仿真环境生命周期管理 (`ea_avs_mvp_v7.environment.habitat_env`, `ea_avs_mvp_v8.environment.env_adapter`)
   - KinematicHumanoid 人形模型加载与动作驱动 (`ea_avs_mvp_v7.human`)
@@ -41,30 +43,26 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 3. Latest Stable Implementations
-- **v10.0 Phase 2.1 (`ea_avs_mvp_v10/evaluation/`, `ea_avs_mvp_v10/perception/`, ACTIVE / FROZEN)**:
-  - 统一骨架拓扑与 GT 映射规范 (`configs/skeleton_definition.json`)；
-  - 离线 GT 对齐与空间转换 (`ea_avs_mvp_v10/evaluation/skeleton_alignment.py`)；
-  - 标准三维姿态评测器 (`ea_avs_mvp_v10/evaluation/skeleton_evaluator.py`: MPJPE, PA-MPJPE, PCK@threshold)；
-  - 估计骨架 vs GT 骨架 3D 重叠与误差向量可视化器 (`tools/v10/skeleton_compare_visualizer.py`)；
-  - 10 样本多视角动作科研验证集 (`ea_avs_mvp_v10/examples/v10_phase2_validation/`)；
-  - 成熟 3D 骨架提取器 (`MediaPipeRGBDSkeletonExtractor`, `RGBDSkeletonExtractor`)；
-  - 根节点中心化与尺度归一化 (`SkeletonNormalizer`，严禁视角旋转归一化)；
-  - 坐标与运动学合理性校验器 (`CoordinateValidator`)；
-  - 肢体着色与等物理长宽比可视化器 (`SkeletonVisualizer`)；
-  - 骨架一致性自动审计套件 (`tools/check_skeleton_consistency.py`, `Phase2_Skeleton_Audit_Report.md`)。
+- **v10.0 Phase 3 (`ea_avs_mvp_v10/action_recognition/`, `tools/dataset_generation/`, ACTIVE / CLOSED)**:
+  - 统一 3D 姿态估计器规范与 MediaPipe / Mock 实现 (`ea_avs_mvp_v10/perception/pose3d_estimator.py`)；
+  - 动态时空图拓扑与 33 关节空间划分邻接矩阵 (`ea_avs_mvp_v10/action_recognition/graph.py`)；
+  - 9 层时空图卷积残差动作分类网络 (`ea_avs_mvp_v10/action_recognition/st_gcn_model.py`)；
+  - 动作分类与 Shannon 熵 / 归一化不确定度 / 决策余量计算引擎 (`ea_avs_mvp_v10/action_recognition/action_classifier.py`)；
+  - PyTorch 动作数据集加载器与训练引擎 (`action_dataset.py`, `trainer.py`)；
+  - Clean Perception (Oracle: 87.50% Acc, 0.6048 Ent) vs Habitat Perception (46.88% Acc, 0.9200 Ent) 双基准评测 (`evaluate_benchmarks.py`)；
+  - 视点不确定度定量分析（验证了遮挡视角熵激增与正面视角高确信度，为 Phase 4 Active View 奠定实验依据）。
+- **v10.0 Phase 2.1 (`ea_avs_mvp_v10/evaluation/`, `ea_avs_mvp_v10/perception/`, FROZEN)**:
+  - 统一骨架拓扑规范 (`configs/skeleton_definition.json`) 与 3-tier 几何一致性评价指标 (Absolute/Relative MPJPE, PCK@5cm/10cm/15cm, PA-MPJPE)；
+  - 10 样本多视角动作科研验证集 (`ea_avs_mvp_v10/examples/v10_phase2_validation/`) 与主报告 (`PHASE2_FINAL_VALIDATION_REPORT.md`)。
 - **v10.0 Phase 1 (`ea_avs_mvp_v10/dataset/`, FROZEN)**:
-  - 真实 RGB-D 多视角数据集采集底座与 6 大动作资产规范化；
-  - 样本索引清单与物理隔离目录 (`datasets/v10/raw/`, `ground_truth/`, `metadata/`)。
-- **v9.1 (`ea_avs_mvp_v9/`, CLOSED / FINALIZED)**: 感知质量与信息增益驱动的主动视角规划基准。
-- **v8.2 (`ea_avs_mvp_v8/`, CLOSED / FINALIZED)**: 局部主动视点规划与三阶空间硬约束基准。
+  - 真实 RGB-D 多视角数据集采集底座与 6 大动作资产规范化。
+- **v9.1 / v8.2 / v7.0 (FROZEN)**: 历史版本全部测试通过并保持只读。
 
 ---
 
-## 4. Phase 2.1 Scientific & Engineering Achievements
-1. **真实观测链闭环**：
-   > *"The 3D skeleton used by downstream modules is reconstructed from robot-observed RGB-D data instead of directly using simulation ground truth."*
-2. **几何一致性规范**：
-   > *"The reconstructed 3D skeleton is geometrically consistent with the observed 2D keypoints."*
-3. **严格科研数据隔离边界**：GT 骨骼仅在 `evaluation/` 离线使用，在线模型仅输入估计骨架；
-4. **定量评测指标通过**：验证集平均 MPJPE 为 116.98 mm (11.7 cm)，PA-MPJPE 为 87.42 mm (8.7 cm)，PCK@15cm 为 77.14%；
-5. **单元与回归测试 100% 通过**：全量 113 项测试全部 PASS。
+## 4. Current Work State
+- **当前分支**: `main`
+- **当前正在执行的任务**: Phase 3 实施完成，全部 118 单元测试通过，等待用户指示下一步 (Phase 4)。
+- **下一步行动建议**:
+  1. 保持 Phase 1 ~ Phase 3 代码冻结；
+  2. 启动 Phase 4: Active View Selection Policy (基于 ST-GCN 信息熵不确定度与几何可见性融合的主动视角规划算法)。

@@ -1,30 +1,36 @@
 # ACTIVEVIEW Current Task
 
-Status: FROZEN (v10.0 Phase 2 & Phase 2.1: Perception Pipeline & Scientific Validation Complete; Ready for Phase 3)
+## 1. Task Definition
+- **Task ID**: `V10-PHASE3-STGCN-RECOGNITION`
+- **Goal**: Implement unified RGB-based 3D Pose Estimator, ST-GCN Action Recognition network, Shannon entropy uncertainty evaluation, dual perception datasets (Clean & Habitat), and benchmark evaluation for ACTIVEVIEW v10.0 Phase 3.
+- **Phase Status**: `COMPLETED & CLOSED`
 
-## Current Phase
-v10.0 Phase 2.1 — Perception Pipeline Scientific Validation & GT Benchmark.
+---
 
-## Accomplished Items
-1. **科研表述审查与规范化**：
-   - 废除“100% 几何一致”等夸大表述，统一规范为 *"The reconstructed 3D skeleton is geometrically consistent with the observed 2D keypoints."* / *"重建的 3D 骨架保证与二维视觉观测的几何一致性。"*
-2. **离线 GT 评测模块开发与物理隔离**：
-   - `ea_avs_mvp_v10/evaluation/skeleton_alignment.py`：基于 Schema 动态对齐 Habitat 骨骼并实现 Procrustes 算法；
-   - `ea_avs_mvp_v10/evaluation/skeleton_evaluator.py`：计算 MPJPE、PA-MPJPE、PCK@0.05/0.10/0.15m 指标；
-   - `tools/v10/skeleton_compare_visualizer.py`：生成 3D 重叠图与误差向量线。
-3. **根节点与坐标系严格断言**：
-   - 验证根节点 $(p_{\text{left\_hip}} + p_{\text{right\_hip}})/2$ 归一化后严格为 $(0,0,0)$（误差 $<10^{-6}$）；
-   - 验证垂直运动学序列 $Y_{\text{head}} > Y_{\text{hip}} > Y_{\text{ankle}}$。
-4. **10 样本多视角科研验证集生成**：
-   - 产生 `examples/v10_phase2_validation/`（10 个样本的 rgb, estimated_3d, gt_3d, overlay, metrics, metadata）；
-   - 批量定量结果：Mean MPJPE = 116.98 mm, Mean PA-MPJPE = 87.42 mm, Mean PCK@10cm = 44.29%。
-5. **Phase 2 最终报告更新**：
-   - 更新 `ea_avs_mvp_v10/examples/v10_phase2_demo/PHASE2_FINAL_REPORT.md`。
+## 2. Work Completed
+1. **Config & Schema**:
+   - Created `configs/action_classes.json` defining 6 action classes (`standing`, `walking`, `sitting`, `bending`, `reaching`, `fall_related`).
+2. **Unified 3D Pose Estimator (`ea_avs_mvp_v10/perception/pose3d_estimator.py`)**:
+   - Implemented standard `BasePose3DEstimator` ABC, `MediaPipe3DPoseEstimator`, `Mock3DPoseEstimator`, and `create_pose3d_estimator()`.
+   - Enhanced `SkeletonNormalizer` with continuous sequence and batch tensor normalization.
+3. **ST-GCN Action Recognition Architecture (`ea_avs_mvp_v10/action_recognition/`)**:
+   - `graph.py`: Dynamic $K=3$ Spatial Partitioning adjacency matrix from `skeleton_definition.json`.
+   - `st_gcn_model.py`: 9-block spatial-temporal graph convolutional neural network with residual connections and learnable edge importance.
+   - `action_classifier.py`: Softmax inference, Shannon Entropy $H(p)$, Normalized Uncertainty $U_{\text{norm}}(p)$, Margin Confidence $M(p)$.
+   - `action_dataset.py`: PyTorch `ActionSkeletonDataset` with temporal resampling to $T=30$.
+   - `trainer.py`: Supervised training loop, validation, and checkpoint saving.
+4. **Dataset Generation Pipeline (`tools/dataset_generation/`)**:
+   - Generated Clean Perception training ($N=60$) and test sets ($N=24$, Oracle), and Habitat Perception multi-view test set ($N=96$) in `/home/zxf/WorkSpace/code/data/ActiveView/datasets/action/`.
+5. **Model Training & Benchmarking**:
+   - Trained ST-GCN model achieving **87.50% validation accuracy** on Clean Perception dataset.
+   - Evaluated Clean Oracle (87.50% Acc, 0.6048 Ent) vs Habitat Baseline (46.88% Acc, 0.9200 Ent) vs Viewpoint Uncertainty (16 viewpoints).
+   - Generated master report `PHASE3_ACTION_RECOGNITION_REPORT.md`.
+6. **Testing & Integrity**:
+   - 42/42 unit tests pass in v10; 118/118 regression tests pass across repository.
 
-## Validation Plan Execution Results
-- [x] Python Compile Check: `python -m compileall ea_avs_mvp_v10` (PASS)
-- [x] v10.0 Unit Tests: `python -m unittest discover -s ea_avs_mvp_v10/tests/unit -p "test_*.py"` (PASS, 32/32)
-- [x] v9.1 Regression Tests: `python -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"` (PASS, 34/34)
-- [x] v8.2 Regression Tests: `python -m unittest discover -s ea_avs_mvp_v8/tests -p "test_*.py"` (PASS, 17/17)
-- [x] v7.0 Regression Tests: `python -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 30/30)
-- [x] 10-Sample GT Scientific Validation: `python tools/v10/run_phase2_validation.py --num_samples 10` (PASS)
+---
+
+## 3. Validation Summary
+- `python -m unittest discover -s ea_avs_mvp_v10/tests/unit -p "test_*.py"`: **42/42 PASS (100%)**
+- Full cross-version regression: **118/118 PASS (100%)**
+- Clean Oracle vs Habitat Baseline: evaluated and logged in `PHASE3_ACTION_RECOGNITION_REPORT.md`.
