@@ -1,0 +1,16 @@
+{
+  "sample_id": "v10_sample_000010",
+  "action_label": "walking",
+  "view_id": "vp_013_r2.0_a225",
+  "backend": "mediapipe_33",
+  "joint_definition": "configs/skeleton_definition.json",
+  "coordinate_system": "camera_frame_right_hand",
+  "unit": "meter",
+  "has_gt": true,
+  "evaluation_available": true,
+  "metrics_summary": {
+    "mpjpe_mm": 104.33639585971832,
+    "pa_mpjpe_mm": 80.84554225206375,
+    "pck_10cm": 0.35714285714285715
+  }
+}

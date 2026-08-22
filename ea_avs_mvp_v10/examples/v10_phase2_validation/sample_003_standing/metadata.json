@@ -1,0 +1,16 @@
+{
+  "sample_id": "v10_sample_000003",
+  "action_label": "standing",
+  "view_id": "vp_023_r2.5_a315",
+  "backend": "mediapipe_33",
+  "joint_definition": "configs/skeleton_definition.json",
+  "coordinate_system": "camera_frame_right_hand",
+  "unit": "meter",
+  "has_gt": true,
+  "evaluation_available": true,
+  "metrics_summary": {
+    "mpjpe_mm": 85.43386310338974,
+    "pa_mpjpe_mm": 49.31046441197395,
+    "pck_10cm": 0.7142857142857143
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "sample_id": "v10_sample_000010",
+  "action_label": "walking",
+  "num_evaluated_joints": 14,
+  "mpjpe_meters": 0.1043,
+  "mpjpe_mm": 104.34,
+  "pa_mpjpe_meters": 0.0808,
+  "pa_mpjpe_mm": 80.85,
+  "abs_mpjpe_meters": 1.1319,
+  "pck_05cm": 0.2143,
+  "pck_10cm": 0.3571,
+  "pck_15cm": 0.7857,
+  "per_joint_errors_m": {
+    "head": 0.1319,
+    "left_shoulder": 0.0556,
+    "right_shoulder": 0.1322,
+    "left_elbow": 0.18,
+    "right_elbow": 0.1278,
+    "left_wrist": 0.1088,
+    "right_wrist": 0.172,
+    "left_hip": 0.0341,
+    "right_hip": 0.0342,
+    "left_knee": 0.1035,
+    "right_knee": 0.0647,
+    "left_ankle": 0.188,
+    "right_ankle": 0.1279,
+    "pelvis": 0.0
+  },
+  "per_part_errors_m": {
+    "head": 0.1319,
+    "torso": 0.0512,
+    "arms": 0.1472,
+    "legs": 0.121
+  }
+}

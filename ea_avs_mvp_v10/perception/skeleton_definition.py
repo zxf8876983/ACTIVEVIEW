@@ -6,7 +6,8 @@
     1. 作为 ACTIVEVIEW v10.0 全局唯一的人体骨架拓扑、关节定义与坐标系规范标准；
     2. 加载并维护 `configs/skeleton_definition.json`；
     3. 提供所有关节索引、名称、父子关系与官方骨骼连接边；
-    4. 禁止任何业务代码硬编码关节索引。
+    4. 提供 GT 关节与估计关节之间的动态映射标准；
+    5. 禁止任何业务代码硬编码关节索引。
 """
 
 import json
@@ -37,6 +38,7 @@ class SkeletonDefinition:
     joints: List[JointDef]
     edges: List[Tuple[int, int]]
     bone_symmetry_pairs: List[Dict[str, Any]] = field(default_factory=list)
+    gt_joint_mapping: Dict[str, Any] = field(default_factory=dict)
 
     @property
     def joint_names(self) -> List[str]:
@@ -68,6 +70,7 @@ class SkeletonDefinition:
             "joints": [{"id": j.id, "name": j.name, "part": j.part, "parent": j.parent} for j in self.joints],
             "edges": self.edges,
             "bone_symmetry_pairs": self.bone_symmetry_pairs,
+            "gt_joint_mapping": self.gt_joint_mapping,
         }
 
 
@@ -113,8 +116,8 @@ def get_skeleton_definition(config_path: Optional[Path] = None) -> SkeletonDefin
             joints=joints,
             edges=edges,
             bone_symmetry_pairs=data.get("bone_symmetry_pairs", []),
+            gt_joint_mapping=data.get("gt_joint_mapping", {}),
         )
         return _GLOBAL_SKELETON_DEF
 
-    # 备用默认定义
     raise FileNotFoundError("configs/skeleton_definition.json not found!")

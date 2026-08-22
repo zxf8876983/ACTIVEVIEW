@@ -255,7 +255,7 @@ def run_full_audit(num_samples: int = 10) -> Path:
 2. **重构解决方案**：
    建立统一的针孔几何反投影模型（Pinhole Back-Projection）：
    $$X_{{\\text{{cam}}, i}} = \\frac{{(u_i - c_x) \\cdot Z_i}}{{f_x}}, \\quad Y_{{\\text{{cam}}, i}} = -\\frac{{(v_i - c_y) \\cdot Z_i}}{{f_y}}, \\quad Z_{{\\text{{cam}}, i}} = Z_i$$
-   使 3D 骨架正投影至图像平面的位置与 2D 检测骨架在数学上 **100% 严格一致（Re-projection Error = 0）**。
+   使重建的 3D 骨架保证与二维视觉观测的几何一致性（*The reconstructed 3D skeleton is geometrically consistent with the observed 2D keypoints*）。
 3. **骨骼拓扑与定义全局唯一化**：
    全局唯一骨架拓扑定义保存在 `configs/skeleton_definition.json`，所有模块（Visualizer、Normalizer、Validator、Adapter）禁止硬编码索引。
 

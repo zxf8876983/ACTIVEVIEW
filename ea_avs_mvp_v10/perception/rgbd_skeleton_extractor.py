@@ -5,7 +5,7 @@
 职责：
     1. 接收 RGB (HxWx3, uint8) + Depth (HxW, float32, 米) + 相机内参与位姿；
     2. 基于 MediaPipe 2D 姿态检测 + 深度图多尺度中值空间对齐 + 针孔逆投影模型恢复 Camera 3D 骨架；
-    3. 确保 3D 骨架正向投影至图像平面的像素坐标与 2D 骨架 100% 严格一致；
+    3. 重建的 3D 骨架保证与二维视觉观测的几何一致性 (The reconstructed 3D skeleton is geometrically consistent with the observed 2D keypoints)；
     4. 严格读取统一骨架拓扑规范 `configs/skeleton_definition.json`；
     5. 输出结构化的 EstimatedSkeleton3D 实体对象。
 """
@@ -40,10 +40,10 @@ class BaseRGBDSkeletonExtractor(ABC):
 
 class MediaPipeRGBDSkeletonExtractor(BaseRGBDSkeletonExtractor):
     """
-    基于 MediaPipe 2D 关键点检测与深度图空间融合的物理一致性 3D 人体骨架提取器。
+    基于 MediaPipe 2D 关键点检测与深度图空间融合的几何一致性 3D 人体骨架提取器。
 
     特性：
-        - 严格保证 2D 骨架与 3D 骨架几何映射一致性 (Re-projection Error = 0)；
+        - 重建的 3D 骨架保证与二维视觉观测的几何一致性 (Geometrically consistent with 2D observations)；
         - 读取全局统一骨架拓扑 `configs/skeleton_definition.json`；
         - 自适应局部深度中值采样与骨骼运动学深度平滑；
         - 输出标准相机右手系 3D 坐标 (+X: 右, +Y: 上, +Z: 前/深度)。

@@ -70,5 +70,23 @@
     {"name": "pelvis_width", "left": [23, 24], "right": [23, 24], "nominal_len": [0.15, 0.35]},
     {"name": "thigh", "left": [23, 25], "right": [24, 26], "nominal_len": [0.30, 0.55]},
     {"name": "shank", "left": [25, 27], "right": [26, 28], "nominal_len": [0.30, 0.55]}
-  ]
+  ],
+  "gt_joint_mapping": {
+    "head": 0,
+    "neck": null,
+    "left_shoulder": 11,
+    "right_shoulder": 12,
+    "left_elbow": 13,
+    "right_elbow": 14,
+    "left_wrist": 15,
+    "right_wrist": 16,
+    "left_hip": 23,
+    "right_hip": 24,
+    "left_knee": 25,
+    "right_knee": 26,
+    "left_ankle": 27,
+    "right_ankle": 28,
+    "pelvis": "hip_center",
+    "spine3": null
+  }
 }

@@ -1,0 +1,35 @@
+{
+  "sample_id": "v10_sample_000003",
+  "action_label": "standing",
+  "num_evaluated_joints": 14,
+  "mpjpe_meters": 0.0854,
+  "mpjpe_mm": 85.43,
+  "pa_mpjpe_meters": 0.0493,
+  "pa_mpjpe_mm": 49.31,
+  "abs_mpjpe_meters": 1.1504,
+  "pck_05cm": 0.2857,
+  "pck_10cm": 0.7143,
+  "pck_15cm": 0.8571,
+  "per_joint_errors_m": {
+    "head": 0.136,
+    "left_shoulder": 0.0967,
+    "right_shoulder": 0.086,
+    "left_elbow": 0.085,
+    "right_elbow": 0.0975,
+    "left_wrist": 0.1564,
+    "right_wrist": 0.1686,
+    "left_hip": 0.0414,
+    "right_hip": 0.0414,
+    "left_knee": 0.0372,
+    "right_knee": 0.0592,
+    "left_ankle": 0.0824,
+    "right_ankle": 0.1083,
+    "pelvis": 0.0
+  },
+  "per_part_errors_m": {
+    "head": 0.136,
+    "torso": 0.0531,
+    "arms": 0.1269,
+    "legs": 0.0718
+  }
+}
