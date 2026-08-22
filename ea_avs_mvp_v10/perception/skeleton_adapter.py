@@ -128,11 +128,11 @@ class COCO17ToNTU25Adapter(BaseSkeletonAdapter):
 
         return EstimatedSkeleton3D(
             joint_format="NTU25",
-            joints_3d_cam=ntu_cam,
+            joints_3d_camera=ntu_cam,
             joints_3d_world=ntu_world,
             joints_2d=np.zeros((25, 2), dtype=np.float32),
-            confidence=ntu_conf,
-            occluded_mask=ntu_conf < 0.35,
+            perception_confidence=ntu_conf,
+            uncertainty_mask=ntu_conf < 0.35,
             part_confidence={},
             joint_names=list(NTU_25_JOINT_NAMES),
         )

@@ -1,8 +1,9 @@
 """
 Perception pipeline module for v10.0.
-RGB-D -> 2D Pose -> Depth Projection -> Estimated 3D Skeleton (COCO17) -> Normalization.
+RGB-D -> 2D Pose -> Depth Projection -> Estimated 3D Skeleton (COCO17) -> Normalization -> Validation.
 """
 
+from .coordinate_validator import CoordinateValidator, ValidationResult
 from .depth_projection import DepthProjectionResult, DepthProjector
 from .pose_estimator import (
     COCO_KEYPOINTS,
@@ -36,4 +37,6 @@ __all__ = [
     "BaseSkeletonAdapter",
     "COCO17ToNTU25Adapter",
     "NTU_25_JOINT_NAMES",
+    "CoordinateValidator",
+    "ValidationResult",
 ]

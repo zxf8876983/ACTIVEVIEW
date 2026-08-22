@@ -60,7 +60,8 @@ class TestPerceptionDataset(unittest.TestCase):
         # 检查文件是否落地
         root = Path(self.tmp_dir) / "perception"
         self.assertTrue((root / "pose2d" / "test_perc_001.json").exists())
-        self.assertTrue((root / "pose3d" / "test_perc_001.json").exists())
+        self.assertTrue((root / "pose3d_camera" / "test_perc_001.json").exists())
+        self.assertTrue((root / "pose3d_world" / "test_perc_001.json").exists())
         self.assertTrue((root / "normalized_pose3d" / "test_perc_001.json").exists())
         self.assertTrue((root / "confidence" / "test_perc_001.json").exists())
 
