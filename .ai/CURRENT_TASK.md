@@ -1,31 +1,29 @@
 # ACTIVEVIEW Current Task
 
-Status: COMPLETED (v10.0 Phase 2: Perception Pipeline Verified; Phase 1 Frozen)
+Status: FROZEN (v10.0 Phase 2: Perception Pipeline Frozen & Audited; Ready for Phase 3)
 
 ## Current Phase
 v10.0 Phase 2 — Perception Pipeline (RGB-D -> Estimated 3D Skeleton).
 
 ## Accomplished Items
-1. **Phase 1 冻结与收尾**：
-   - 生成 `ea_avs_mvp_v10/examples/v10_phase1_demo/PHASE1_FINAL_REPORT.md`，将 Phase 1 状态正式标记为 `FROZEN`；
-   - 确认数据隔离：`ground_truth/` 中的真值骨骼仅供 Oracle/评测，严格禁止进入在线模型。
-2. **Phase 2 核心模块开发**：
-   - `ea_avs_mvp_v10/perception/pose_estimator.py`：开箱即用 2D 姿态检测封装 (`TorchvisionPoseEstimator`, `MockPoseEstimator`)；
-   - `ea_avs_mvp_v10/perception/depth_projection.py`：局部自适应窗口滤波与 3D 深度逆投影 (`DepthProjector`)；
-   - `ea_avs_mvp_v10/perception/skeleton_converter.py`：统一 16 关键点格式与复合置信度融合 (`SkeletonConverter`)；
-   - `ea_avs_mvp_v10/dataset/perception_dataset.py`：批量感知流水线处理器 (`V10PerceptionPipeline`)；
-   - `ea_avs_mvp_v10/visualization/skeleton_visualizer.py`：多模态 2D/3D 骨架渲染器 (`SkeletonVisualizer`)。
-3. **输出持久化与规范**：
-   - 在 `data/ActiveView/datasets/v10/perception/` 生成 `pose2d/`, `pose3d/`, `confidence/`, `metadata/perception_manifest.json`；
-   - 48 个 Phase 1 样本平均估计置信度达到 0.810。
-4. **遮挡与不确定性验证**：
-   - 完成下肢合成遮挡对比测试，验证遮挡时关节置信度跌至 $<0.05$ 且准确标记 `occluded_mask`；
-   - 输出 `examples/v10_phase2_demo/occlusion_confidence_drop_test.png` 与 `perception_overview.png`。
+1. **Phase 2 感知后端重构与骨架拓扑统一**：
+   - 确立全局唯一 Schema：`configs/skeleton_definition.json` 与 `ea_avs_mvp_v10/perception/skeleton_definition.py`；
+   - 彻底废弃单目未标定 3D 先验，全面采用 MediaPipe 2D + 局部深度中值采样 + 针孔逆投影模型（Re-projection Error = 0）；
+   - 实现根节点中心化与尺度归一化 (`SkeletonNormalizer`)，严格禁止相机朝向旋转归一化。
+2. **可视化与解剖学生理着色优化**：
+   - `SkeletonVisualizer` 引入真实物理长宽比限制 (True Metric Aspect Ratio)，杜绝坐标轴挤压变形；
+   - 引入解剖学生理分色（左蓝 🔵、右绿 🟢、躯干紫 🟣、颈橙 🟠），骨架层次清晰自然；
+   - 自动化单样本诊断工具 (`tools/v10/check_sample.py`) 与逐关节 ID 诊断工具 (`tools/v10/skeleton_debug_visualizer.py`)。
+3. **一致性审计与全量测试**：
+   - 自动化审计工具 (`tools/check_skeleton_consistency.py`)，输出 `Phase2_Skeleton_Audit_Report.md` 与 10 个独立样本详细诊断卡；
+   - 48 个多视角样本全量感知处理通过率 87.5%，平均置信度 0.565（遮挡与不确定性准确建模）；
+   - 全版本单元测试与回归测试（v10, v9.1, v8.2, v7.0 共 107 项测试）100% 全部通过。
 
 ## Validation Plan Execution Results
 - [x] Python Compile Check: `python -m compileall ea_avs_mvp_v10` (PASS)
-- [x] v10.0 Unit Tests: `python3 -m unittest discover -s ea_avs_mvp_v10/tests -p "test_*.py"` (PASS, 17/17)
-- [x] v9.1 Regression Tests: `python3 -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"` (PASS, 34/34)
-- [x] v8.2 Regression Tests: `python3 -m unittest discover -s ea_avs_mvp_v8/tests -p "test_*.py"` (PASS, 17/17)
-- [x] v7.0 Regression Tests: `python3 -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 30/30)
-- [x] Phase 2 Demo Script: `conda run -n habitat python -m ea_avs_mvp_v10.scripts.run_v10_phase2_demo` (PASS)
+- [x] v10.0 Unit Tests: `python -m unittest discover -s ea_avs_mvp_v10/tests/unit -p "test_*.py"` (PASS, 26/26)
+- [x] v9.1 Regression Tests: `python -m unittest discover -s ea_avs_mvp_v9/tests -p "test_*.py"` (PASS, 34/34)
+- [x] v8.2 Regression Tests: `python -m unittest discover -s ea_avs_mvp_v8/tests -p "test_*.py"` (PASS, 17/17)
+- [x] v7.0 Regression Tests: `python -m unittest discover -s ea_avs_mvp_v7/tests -p "test_*.py"` (PASS, 30/30)
+- [x] Full Skeleton Consistency Audit: `python tools/check_skeleton_consistency.py --num_samples 10` (PASS, 10/10)
+- [x] Phase 2 Demo Script: `python -m ea_avs_mvp_v10.scripts.run_v10_phase2_demo` (PASS)

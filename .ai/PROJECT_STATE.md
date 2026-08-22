@@ -11,8 +11,8 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ## 1. Current Stage
 - **项目阶段**：**v10.0 Phase 2 — Perception Pipeline (RGB-D -> Estimated 3D Skeleton)**
   - **Phase 1 (Dataset Generation)**: `FROZEN` (正式冻结并建立隔离边界)；
-  - **Phase 2 (Perception Pipeline)**: `COMPLETED & VERIFIED` (RGB -> 2D Pose -> Depth 逆投影 -> 3D 骨架与置信度融合闭环跑通)；
-  - **Phase 3 (ST-GCN / Action Recognition)**: `READY TO START` (待进入)。
+  - **Phase 2 (Perception Pipeline)**: `FROZEN` (成熟 RGB-D 骨架提取、统一拓扑 Schema、严格 2D-3D 几何对齐与自动化一致性审计通过)；
+  - **Phase 3 (ST-GCN / Action Recognition)**: `READY TO START` (待用户明确指令后进入)。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；
   - `v7.0`: 拟人化主动感知仿真环境与动作数据集平台（COMPLETED / FINALIZED & FROZEN，保持只读）；
@@ -40,12 +40,17 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 3. Latest Stable Implementations
-- **v10.0 Phase 2 (`ea_avs_mvp_v10/perception/`, `ea_avs_mvp_v10/dataset/perception_dataset.py`, ACTIVE / COMPLETED & VERIFIED)**:
-  - 2D 关键点检测器 (`TorchvisionPoseEstimator`, `MockPoseEstimator`)；
-  - 深度邻域滤波与相机逆投影 (`DepthProjector`)；
-  - 骨架格式转换与置信度融合器 (`SkeletonConverter`: $c = c_{\text{2D}} \cdot c_{\text{depth}}$)；
-  - 2D/3D 多模态可视化诊断器 (`SkeletonVisualizer`)；
-  - 遮挡检测与不确定性验证套件 (`examples/v10_phase2_demo/`)。
+- **v10.0 Phase 2 (`ea_avs_mvp_v10/perception/`, `ea_avs_mvp_v10/dataset/perception_dataset.py`, ACTIVE / FROZEN)**:
+  - 统一骨架拓扑配置文件 (`configs/skeleton_definition.json`)；
+  - 统一骨架拓扑 API (`ea_avs_mvp_v10/perception/skeleton_definition.py`)；
+  - 成熟 3D 骨架提取器 (`MediaPipeRGBDSkeletonExtractor`, `MockRGBDSkeletonExtractor`, 工厂 `RGBDSkeletonExtractor`)；
+  - 针孔逆投影与自适应局部中值深度滤波 (保证重投影误差严格为 0)；
+  - 根节点中心化与尺度归一化 (`SkeletonNormalizer`，严禁视角旋转归一化)；
+  - 拓扑适配器 (`MediaPipe33ToCOCO17Adapter`, `MediaPipe33ToNTU25Adapter`)；
+  - 坐标与运动学合理性校验器 (`CoordinateValidator`)；
+  - 肢体着色与等物理长宽比可视化器 (`SkeletonVisualizer`)；
+  - 自动化抽检与关节 ID 对齐工具 (`tools/v10/check_sample.py`, `tools/v10/skeleton_debug_visualizer.py`)；
+  - 骨架一致性自动审计套件 (`tools/check_skeleton_consistency.py`, `Phase2_Skeleton_Audit_Report.md`)。
 - **v10.0 Phase 1 (`ea_avs_mvp_v10/dataset/`, FROZEN)**:
   - 真实 RGB-D 多视角数据集采集底座与 6 大动作资产规范化；
   - 样本索引清单与物理隔离目录 (`datasets/v10/raw/`, `ground_truth/`, `metadata/`)。
@@ -55,6 +60,8 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 4. Phase 2 Scientific & Engineering Achievements
-1. **真实观测链闭环**：完全基于 RGB-D 观测输入（无需 GT 骨骼，无需 GT 可见性），实现 RGB 图像 $\to$ 2D 姿态 $\to$ 局部自适应深度逆投影 $\to$ 3D 关节坐标（相机系/世界系）的自动化估计；
-2. **多模态置信度与遮挡检测**：复合置信度 $c_i = c_{\text{2D}, i} \cdot c_{\text{depth}, i}$ 能够真实反映视线遮挡（如下肢遮挡时置信度急剧下降至 $<0.05$ 并触发 `occluded_mask` 预警）；
-3. **严格数据物理隔离**：估计产物规范存储于 `datasets/v10/perception/` (`pose2d/`, `pose3d/`, `confidence/`, `metadata/`)，为 Phase 3 ST-GCN 动作识别提供纯粹基于估计姿态的输入。
+1. **真实观测链闭环**：
+   > *"The 3D skeleton used by downstream modules is reconstructed from robot-observed RGB-D data instead of directly using simulation ground truth."*
+2. **多模态置信度与遮挡检测**：复合置信度 $c_i = c_{\text{2D}, i} \cdot c_{\text{depth}, i}$ 真实反映视线遮挡；
+3. **几何与拓扑 100% 一致**：统一通过 `configs/skeleton_definition.json` 与针孔逆投影模型，彻底杜绝关节错位与长宽比挤压变形；
+4. **严格数据物理隔离**：规范存储于 `datasets/v10/perception/` (`skeleton_raw/`, `skeleton_normalized/`, `confidence/`, `metadata/`, `visualization/`)。
