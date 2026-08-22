@@ -19,6 +19,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 def main():
     parser = argparse.ArgumentParser(description="Generate Multi-Scene Active View Dataset")
     parser.add_argument("--output_dir", type=str, default=None, help="Output dataset directory")
+    parser.add_argument("--num_scenes", type=int, default=10, help="Number of primary scenes to use")
     parser.add_argument("--total_episodes", type=int, default=300, help="Total episodes to generate")
     parser.add_argument("--estimator_type", type=str, default="oracle", help="Pose estimator type")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
@@ -27,6 +28,7 @@ def main():
     generator = MultiSceneViewpointDatasetGenerator(estimator_type=args.estimator_type, seed=args.seed)
     generator.generate_multiscene_dataset(
         output_dir=args.output_dir,
+        num_scenes=args.num_scenes,
         total_episodes=args.total_episodes,
     )
 

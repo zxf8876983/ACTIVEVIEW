@@ -96,12 +96,13 @@ class MultiSceneViewpointDatasetGenerator:
     def generate_multiscene_dataset(
         self,
         output_dir: Optional[Union[str, Path]] = None,
+        num_scenes: int = 10,
         total_episodes: int = 300,
         train_ratio: float = 0.70,
         val_ratio: float = 0.15,
     ) -> Dict[str, Any]:
         """
-        跨多个 Habitat 场景生成包含随机人体放置与机器人初始位姿的 Episode 数据集。
+        跨多个 Habitat / HSSD 场景生成包含随机人体放置与机器人初始位姿的 Episode 数据集。
         """
         out_dir = Path(output_dir) if output_dir else (self.data_root / "v11_multiscene_viewpoint_dataset")
         episodes_dir = out_dir / "episodes"
@@ -112,7 +113,7 @@ class MultiSceneViewpointDatasetGenerator:
         samples_dir.mkdir(parents=True, exist_ok=True)
         splits_dir.mkdir(parents=True, exist_ok=True)
 
-        primary_scenes = self.scene_mgr.get_primary_scenes(count=3)
+        primary_scenes = self.scene_mgr.get_primary_scenes(count=num_scenes)
         scene_ids = [s.scene_id for s in primary_scenes]
         logger.info("Generating dataset across %d primary scenes: %s", len(scene_ids), scene_ids)
 
@@ -327,8 +328,15 @@ class MultiSceneViewpointDatasetGenerator:
         with open(out_dir / "episodes_metadata.json", "w", encoding="utf-8") as f:
             json.dump(all_episodes, f, indent=2)
 
-        all_entropies = [s["entropy"] for s in all_samples_meta]
+        all_entropies = np.array([s["entropy"] for s in all_samples_meta], dtype=np.float64)
         all_corrects = [1 if s["is_correct"] else 0 for s in all_samples_meta]
+
+        # 统计详细的分位数与合理区间跨度分布
+        bin_0_005 = int(np.sum(all_entropies < 0.05))
+        bin_005_020 = int(np.sum((all_entropies >= 0.05) & (all_entropies < 0.20)))
+        bin_020_050 = int(np.sum((all_entropies >= 0.20) & (all_entropies < 0.50)))
+        bin_050_100 = int(np.sum((all_entropies >= 0.50) & (all_entropies < 1.00)))
+        bin_100_plus = int(np.sum(all_entropies >= 1.00))
 
         dataset_stats = {
             "total_episodes": len(all_episodes),
@@ -344,20 +352,52 @@ class MultiSceneViewpointDatasetGenerator:
                 "test_samples": len([s for s in all_samples_meta if s["split"] == "test"]),
             },
             "overall_accuracy": round(float(np.mean(all_corrects)), 4) if all_corrects else 0.0,
-            "mean_entropy": round(float(np.mean(all_entropies)), 4) if all_entropies else 0.0,
+            "entropy_distribution_statistics": {
+                "min": round(float(np.min(all_entropies)), 6) if len(all_entropies) else 0.0,
+                "max": round(float(np.max(all_entropies)), 6) if len(all_entropies) else 0.0,
+                "mean": round(float(np.mean(all_entropies)), 6) if len(all_entropies) else 0.0,
+                "std": round(float(np.std(all_entropies)), 6) if len(all_entropies) else 0.0,
+                "percentiles": {
+                    "p10": round(float(np.percentile(all_entropies, 10)), 6) if len(all_entropies) else 0.0,
+                    "p25": round(float(np.percentile(all_entropies, 25)), 6) if len(all_entropies) else 0.0,
+                    "p50_median": round(float(np.percentile(all_entropies, 50)), 6) if len(all_entropies) else 0.0,
+                    "p75": round(float(np.percentile(all_entropies, 75)), 6) if len(all_entropies) else 0.0,
+                    "p90": round(float(np.percentile(all_entropies, 90)), 6) if len(all_entropies) else 0.0,
+                    "p95": round(float(np.percentile(all_entropies, 95)), 6) if len(all_entropies) else 0.0,
+                    "p99": round(float(np.percentile(all_entropies, 99)), 6) if len(all_entropies) else 0.0,
+                },
+                "binned_histogram": {
+                    "[0.00, 0.05) (Near-Zero / Optimal Frontal)": {
+                        "count": bin_0_005,
+                        "ratio": round(bin_0_005 / max(len(all_entropies), 1), 4),
+                    },
+                    "[0.05, 0.20) (Low / Clear Oblique)": {
+                        "count": bin_005_020,
+                        "ratio": round(bin_005_020 / max(len(all_entropies), 1), 4),
+                    },
+                    "[0.20, 0.50) (Moderate / Side View)": {
+                        "count": bin_020_050,
+                        "ratio": round(bin_020_050 / max(len(all_entropies), 1), 4),
+                    },
+                    "[0.50, 1.00) (High / Distance & Occlusion)": {
+                        "count": bin_050_100,
+                        "ratio": round(bin_050_100 / max(len(all_entropies), 1), 4),
+                    },
+                    "[1.00, 1.79] (Extreme / Back Self-Occlusion)": {
+                        "count": bin_100_plus,
+                        "ratio": round(bin_100_plus / max(len(all_entropies), 1), 4),
+                    },
+                },
+            },
             "non_zero_entropy_ratio": round(non_zero_entropy_count / max(total_viewpoint_count, 1), 4),
             "non_zero_entropy_count": non_zero_entropy_count,
             "average_candidates_per_episode": round(len(all_samples_meta) / max(len(all_episodes), 1), 2),
-            "candidate_pool_statistics": {
-                "raw_candidates": 32,
-                "average_feasible_candidates": round(len(all_samples_meta) / max(len(all_episodes), 1), 2),
-                "filtering_rate": round(1.0 - (len(all_samples_meta) / max(len(all_episodes) * 32, 1)), 4),
-            },
             "scene_statistics": {
                 s: {
                     "episodes": stats_by_scene[s]["episodes"],
                     "samples": stats_by_scene[s]["samples"],
                     "mean_entropy": round(float(np.mean(stats_by_scene[s]["entropies"])), 4) if stats_by_scene[s]["entropies"] else 0.0,
+                    "std_entropy": round(float(np.std(stats_by_scene[s]["entropies"])), 4) if stats_by_scene[s]["entropies"] else 0.0,
                 }
                 for s in scene_ids
             },
@@ -370,9 +410,12 @@ class MultiSceneViewpointDatasetGenerator:
         logger.info("  Multi-Scene Active View Dataset Generation Completed!         ")
         logger.info("  Total Episodes:     %d across %d scenes", len(all_episodes), len(scene_ids))
         logger.info("  Total Samples:      %d", len(all_samples_meta))
-        logger.info("  Non-Zero Entropy:   %d / %d (%.2f%%)",
-                    non_zero_entropy_count, total_viewpoint_count, dataset_stats["non_zero_entropy_ratio"] * 100)
-        logger.info("  Mean Entropy:       %.4f", dataset_stats["mean_entropy"])
+        logger.info("  Entropy Spectrum:   Min=%.4f, Median=%.4f, Mean=%.4f, Max=%.4f (Std=%.4f)",
+                    dataset_stats["entropy_distribution_statistics"]["min"],
+                    dataset_stats["entropy_distribution_statistics"]["percentiles"]["p50_median"],
+                    dataset_stats["entropy_distribution_statistics"]["mean"],
+                    dataset_stats["entropy_distribution_statistics"]["max"],
+                    dataset_stats["entropy_distribution_statistics"]["std"])
         logger.info("=================================================================")
 
         return dataset_stats
