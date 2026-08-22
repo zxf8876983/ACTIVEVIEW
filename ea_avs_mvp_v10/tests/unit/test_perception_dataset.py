@@ -68,7 +68,7 @@ class TestPerceptionDataset(unittest.TestCase):
 
     def test_process_single_sample(self):
         skel, record = self.pipeline.process_sample(self.sample, save_outputs=True)
-        self.assertEqual(skel.joint_format, "MediaPipe33")
+        self.assertEqual(skel.joint_format, "mediapipe_33")
         self.assertEqual(record["sample_id"], "test_perc_001")
         self.assertEqual(record["validation_status"], "VALID")
 

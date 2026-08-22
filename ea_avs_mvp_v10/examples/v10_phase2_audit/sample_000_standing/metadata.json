@@ -1,0 +1,16 @@
+{
+  "sample_id": "v10_sample_000000",
+  "action_label": "standing",
+  "view_id": "vp_000_r1.5_a000",
+  "backend": "mediapipe_33",
+  "joint_num": 33,
+  "coordinate_system": {
+    "name": "camera_frame_right_hand",
+    "x_axis": "right (+X)",
+    "y_axis": "up (+Y)",
+    "z_axis": "forward/depth (+Z)",
+    "unit": "meter"
+  },
+  "mean_confidence": 0.7641745209693909,
+  "num_valid_joints": 27
+}

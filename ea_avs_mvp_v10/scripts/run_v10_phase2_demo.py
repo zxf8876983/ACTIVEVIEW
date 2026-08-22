@@ -26,12 +26,9 @@ from ea_avs_mvp_v10.core.paths import get_data_root, get_repo_root, get_v10_data
 from ea_avs_mvp_v10.core.types import V10Sample
 from ea_avs_mvp_v10.dataset.perception_dataset import V10PerceptionPipeline
 from ea_avs_mvp_v10.perception.coordinate_validator import CoordinateValidator
-from ea_avs_mvp_v10.perception.rgbd_skeleton_extractor import (
-    MEDIAPIPE_33_KEYPOINTS,
-    MEDIAPIPE_33_SKELETON_PAIRS,
-    RGBDSkeletonExtractor,
-)
+from ea_avs_mvp_v10.perception.rgbd_skeleton_extractor import RGBDSkeletonExtractor
 from ea_avs_mvp_v10.perception.skeleton_adapter import MediaPipe33ToCOCO17Adapter, MediaPipe33ToNTU25Adapter
+from ea_avs_mvp_v10.perception.skeleton_definition import get_skeleton_definition
 from ea_avs_mvp_v10.perception.skeleton_normalizer import SkeletonNormalizer
 from ea_avs_mvp_v10.visualization.skeleton_visualizer import SkeletonVisualizer
 
@@ -52,11 +49,11 @@ def run_phase2_demo():
 
     logger.info(">>> Starting ACTIVEVIEW v10.0 Phase 2: RGB-D Skeleton Extractor Demo (MediaPipe-33)...")
 
-    # 1. 实例化感知流水线与组件
-    extractor = RGBDSkeletonExtractor(backend="mediapipe", model_complexity=2)
-    skeleton_normalizer = SkeletonNormalizer()
+    skel_def = get_skeleton_definition()
+    extractor = RGBDSkeletonExtractor(backend="mediapipe", model_complexity=2, skel_def=skel_def)
+    skeleton_normalizer = SkeletonNormalizer(skel_def=skel_def)
     coordinate_validator = CoordinateValidator()
-    visualizer = SkeletonVisualizer(output_dpi=150)
+    visualizer = SkeletonVisualizer(output_dpi=150, skel_def=skel_def)
 
     pipeline = V10PerceptionPipeline(
         extractor=extractor,
@@ -109,10 +106,10 @@ def run_phase2_demo():
     clean_skel, _ = pipeline.process_sample(test_sample, rgb_image=rgb_test, depth_map=depth_test, save_outputs=False)
 
     fig = plt.figure(figsize=(14, 5.5))
-    # Subplot 1: Raw Camera Frame 3D Skeleton
+    # Subplot 1: Raw Camera Frame 3D Skeleton (Front View)
     ax1 = fig.add_subplot(1, 2, 1, projection="3d")
     raw_3d = clean_skel.joints_3d_camera
-    pairs = MEDIAPIPE_33_SKELETON_PAIRS
+    pairs = skel_def.edges
     confs = clean_skel.perception_confidence
     for j1, j2 in pairs:
         if confs[j1] >= 0.35 and confs[j2] >= 0.35:
@@ -124,11 +121,11 @@ def run_phase2_demo():
             )
     valid_idx = np.where(confs >= 0.35)[0]
     ax1.scatter(raw_3d[valid_idx, 0], raw_3d[valid_idx, 2], raw_3d[valid_idx, 1], color="blue", s=30)
-    ax1.set_title(f"Raw Camera Coordinate 3D Pose\n(Center at Z={np.mean(raw_3d[valid_idx, 2]):.2f}m)", fontsize=11, fontweight="bold")
+    ax1.set_title(f"Raw Camera Coordinate 3D Pose (Front View)\n(Center at Z={np.mean(raw_3d[valid_idx, 2]):.2f}m)", fontsize=11, fontweight="bold")
     ax1.set_xlabel("X (m)")
     ax1.set_ylabel("Z (m)")
     ax1.set_zlabel("Y (m)")
-    ax1.view_init(elev=15, azim=-60)
+    ax1.view_init(elev=0, azim=-90)
 
     # Subplot 2: Normalized 3D Skeleton
     ax2 = fig.add_subplot(1, 2, 2, projection="3d")
@@ -148,9 +145,9 @@ def run_phase2_demo():
     ax2.set_ylabel("Normalized Z")
     ax2.set_zlabel("Normalized Y")
     ax2.legend(loc="upper right")
-    ax2.view_init(elev=15, azim=-60)
+    ax2.view_init(elev=5, azim=-80)
 
-    plt.suptitle("ACTIVEVIEW v10.0 Phase 2: 3D Skeleton Normalization Verification (MediaPipe-33)", fontsize=13, fontweight="bold")
+    plt.suptitle("ACTIVEVIEW v10.0 Phase 2: 3D Skeleton Normalization Verification", fontsize=13, fontweight="bold")
     plt.tight_layout()
     norm_save_p = demo_dir / "normalization_verification.png"
     plt.savefig(norm_save_p, dpi=150, bbox_inches="tight")
@@ -167,7 +164,7 @@ def run_phase2_demo():
     occ_skel, _ = pipeline.process_sample(test_sample, rgb_image=occ_rgb, depth_map=occ_depth, save_outputs=False)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5))
-    joint_abbr = [name[:8] for name in MEDIAPIPE_33_KEYPOINTS]
+    joint_abbr = [name[:8] for name in skel_def.joint_names]
     y_pos = np.arange(len(joint_abbr))
     bar_width = 0.35
 
@@ -225,17 +222,17 @@ def run_phase2_demo():
 
         # Col 2: Joint Confidence Bar Chart
         colors = ["#2ECC71" if c >= 0.35 else "#E74C3C" for c in skel.perception_confidence]
-        axes[row_idx, 2].barh(range(33), skel.perception_confidence, color=colors, height=0.65)
+        axes[row_idx, 2].barh(range(len(skel_def.joint_names)), skel.perception_confidence, color=colors, height=0.65)
         axes[row_idx, 2].axvline(0.35, color="red", linestyle="--", linewidth=1.2)
-        axes[row_idx, 2].set_yticks(range(33))
-        axes[row_idx, 2].set_yticklabels([name[:6] for name in MEDIAPIPE_33_KEYPOINTS], fontsize=6)
+        axes[row_idx, 2].set_yticks(range(len(skel_def.joint_names)))
+        axes[row_idx, 2].set_yticklabels([name[:6] for name in skel_def.joint_names], fontsize=6)
         axes[row_idx, 2].set_xlim(0.0, 1.05)
-        axes[row_idx, 2].set_title(f"Perception Confidence\nTorso: {skel.part_confidence['torso']:.2f}", fontsize=9.5, fontweight="bold")
+        axes[row_idx, 2].set_title(f"Perception Confidence\nTorso: {skel.part_confidence.get('torso', 0.0):.2f}", fontsize=9.5, fontweight="bold")
         axes[row_idx, 2].grid(axis="x", alpha=0.3)
 
         # Col 3: Normalized 3D Skeleton 2D Projection
         norm_j = skel.joints_3d_normalized
-        for j1, j2 in MEDIAPIPE_33_SKELETON_PAIRS:
+        for j1, j2 in skel_def.edges:
             if confs[j1] >= 0.35 and confs[j2] >= 0.35:
                 axes[row_idx, 3].plot(
                     [norm_j[j1, 0], norm_j[j2, 0]],

@@ -44,12 +44,9 @@ from ea_avs_mvp_v10.core.paths import get_data_root, get_v10_dataset_root
 from ea_avs_mvp_v10.core.types import V10Sample
 from ea_avs_mvp_v10.dataset.perception_dataset import V10PerceptionPipeline
 from ea_avs_mvp_v10.perception.coordinate_validator import CoordinateValidator
-from ea_avs_mvp_v10.perception.rgbd_skeleton_extractor import (
-    MEDIAPIPE_33_KEYPOINTS,
-    MEDIAPIPE_33_SKELETON_PAIRS,
-    RGBDSkeletonExtractor,
-)
+from ea_avs_mvp_v10.perception.rgbd_skeleton_extractor import RGBDSkeletonExtractor
 from ea_avs_mvp_v10.perception.skeleton_converter import EstimatedSkeleton3D
+from ea_avs_mvp_v10.perception.skeleton_definition import get_skeleton_definition
 from ea_avs_mvp_v10.perception.skeleton_normalizer import SkeletonNormalizer
 from ea_avs_mvp_v10.visualization.skeleton_visualizer import SkeletonVisualizer
 
@@ -70,7 +67,7 @@ def plot_single_sample_inspection(
 ) -> Path:
     """绘制 4 面板标准单样本检查图。"""
     fig = plt.figure(figsize=(19, 5.0))
-    pairs = visualizer.get_skeleton_pairs(skeleton.joint_format)
+    pairs = visualizer.get_skeleton_pairs()
     confs = skeleton.perception_confidence
 
     # 1. Panel 1: RGB + 2D Pose Overlay
@@ -80,7 +77,7 @@ def plot_single_sample_inspection(
     ax1.set_title(f"1. RGB + 2D Skeleton ({skeleton.joint_format})\nAction: {sample_meta.get('action_label', '').upper()}", fontsize=11, fontweight="bold")
     ax1.axis("off")
 
-    # 2. Panel 2: Camera Coordinate 3D Skeleton
+    # 2. Panel 2: Camera Coordinate 3D Skeleton (Front View)
     ax2 = fig.add_subplot(1, 4, 2, projection="3d")
     j_cam = skeleton.joints_3d_camera
     for j1, j2 in pairs:
@@ -95,11 +92,11 @@ def plot_single_sample_inspection(
     valid_idx = np.where(confs >= 0.35)[0]
     ax2.scatter(j_cam[valid_idx, 0], j_cam[valid_idx, 2], j_cam[valid_idx, 1], color="blue", s=30)
     depth_mean = np.mean(j_cam[valid_idx, 2]) if len(valid_idx) > 0 else 0.0
-    ax2.set_title(f"2. Camera 3D Skeleton\n(Depth Z={depth_mean:.2f}m)", fontsize=11, fontweight="bold")
+    ax2.set_title(f"2. Camera 3D Skeleton (Front View)\n(Depth Z={depth_mean:.2f}m)", fontsize=11, fontweight="bold")
     ax2.set_xlabel("X (m)", fontsize=8)
     ax2.set_ylabel("Z (m)", fontsize=8)
     ax2.set_zlabel("Y (m)", fontsize=8)
-    ax2.view_init(elev=15, azim=-60)
+    ax2.view_init(elev=0, azim=-90)
 
     # 3. Panel 3: Normalized 3D Skeleton (ST-GCN Input)
     ax3 = fig.add_subplot(1, 4, 3, projection="3d")

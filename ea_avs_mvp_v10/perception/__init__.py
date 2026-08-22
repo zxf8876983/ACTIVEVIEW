@@ -14,9 +14,6 @@ from .pose_estimator import (
     TorchvisionPoseEstimator,
 )
 from .rgbd_skeleton_extractor import (
-    MEDIAPIPE_33_KEYPOINTS,
-    MEDIAPIPE_33_SKELETON_PAIRS,
-    MEDIAPIPE_BODY_PART_GROUPS,
     BaseRGBDSkeletonExtractor,
     MediaPipeRGBDSkeletonExtractor,
     MockRGBDSkeletonExtractor,
@@ -34,17 +31,23 @@ from .skeleton_converter import (
     EstimatedSkeleton3D,
     SkeletonConverter,
 )
+from .skeleton_definition import (
+    JointDef,
+    SkeletonDefinition,
+    get_skeleton_definition,
+)
 from .skeleton_normalizer import SkeletonNormalizer
 
 __all__ = [
+    # Skeleton Definition
+    "SkeletonDefinition",
+    "JointDef",
+    "get_skeleton_definition",
     # RGB-D Extractor
     "BaseRGBDSkeletonExtractor",
     "MediaPipeRGBDSkeletonExtractor",
     "MockRGBDSkeletonExtractor",
     "RGBDSkeletonExtractor",
-    "MEDIAPIPE_33_KEYPOINTS",
-    "MEDIAPIPE_33_SKELETON_PAIRS",
-    "MEDIAPIPE_BODY_PART_GROUPS",
     # Core Structures & Adapters
     "EstimatedSkeleton3D",
     "SkeletonConverter",

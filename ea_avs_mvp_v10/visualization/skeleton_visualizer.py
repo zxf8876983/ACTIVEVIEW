@@ -3,10 +3,10 @@ RGB-D 3D 骨架与多模态感知可视化渲染器 —— skeleton_visualizer.p
 ============================================================
 
 职责：
-    1. 严格基于 Extractor 官方关节拓扑 (MediaPipe 33 / COCO 17) 渲染骨骼连线与关节点；
+    1. 严格从 `configs/skeleton_definition.json` 读取官方骨骼连线与关节定义；
     2. 禁止硬编码错误骨骼连线；
-    3. 绘制 RGB + 2D 投影、Camera 坐标系 3D 骨架与 Normalized 3D 骨架；
-    4. 绘制感知置信度直方图与健康度校验卡。
+    3. 提供标准正投影 (Front View) 与 3D 空间透视投影 (Perspective View)；
+    4. 绘制 RGB + 2D 投影、Camera 坐标系 3D 骨架与 Normalized 3D 骨架。
 """
 
 import logging
@@ -20,15 +20,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from PIL import Image, ImageDraw
 
-from ea_avs_mvp_v10.perception.pose_estimator import (
-    COCO_KEYPOINTS,
-    COCO_SKELETON_PAIRS,
-)
-from ea_avs_mvp_v10.perception.rgbd_skeleton_extractor import (
-    MEDIAPIPE_33_KEYPOINTS,
-    MEDIAPIPE_33_SKELETON_PAIRS,
-)
 from ea_avs_mvp_v10.perception.skeleton_converter import EstimatedSkeleton3D
+from ea_avs_mvp_v10.perception.skeleton_definition import SkeletonDefinition, get_skeleton_definition
 
 logger = logging.getLogger(__name__)
 
@@ -36,17 +29,13 @@ logger = logging.getLogger(__name__)
 class SkeletonVisualizer:
     """标准 3D 骨架与多模态感知可视化渲染器。"""
 
-    def __init__(self, output_dpi: int = 150):
+    def __init__(self, output_dpi: int = 150, skel_def: Optional[SkeletonDefinition] = None):
         self.output_dpi = output_dpi
+        self.skel_def = skel_def or get_skeleton_definition()
 
-    def get_skeleton_pairs(self, joint_format: str) -> List[Tuple[int, int]]:
-        """获取对应拓扑的官方骨骼连线定义。"""
-        if joint_format == "MediaPipe33":
-            return MEDIAPIPE_33_SKELETON_PAIRS
-        elif joint_format == "COCO17":
-            return COCO_SKELETON_PAIRS
-        else:
-            return []
+    def get_skeleton_pairs(self) -> List[Tuple[int, int]]:
+        """从中央骨架定义获取官方骨骼连线列表。"""
+        return self.skel_def.edges
 
     def draw_2d_skeleton_on_rgb(
         self,
@@ -63,7 +52,7 @@ class SkeletonVisualizer:
         draw = ImageDraw.Draw(pil_img)
         kpts_2d = skeleton.joints_2d
         confs = skeleton.perception_confidence
-        pairs = self.get_skeleton_pairs(skeleton.joint_format)
+        pairs = self.get_skeleton_pairs()
 
         # 绘制官方骨骼连线
         for j1, j2 in pairs:
@@ -76,7 +65,7 @@ class SkeletonVisualizer:
                     draw.line([p1, p2], fill=line_color, width=3)
 
         # 绘制关键点圆圈
-        r = 3 if skeleton.joint_format == "MediaPipe33" else 4
+        r = 3
         for i in range(len(confs)):
             u, v = float(kpts_2d[i, 0]), float(kpts_2d[i, 1])
             c = float(confs[i])
@@ -99,10 +88,10 @@ class SkeletonVisualizer:
     ) -> plt.Figure:
         """
         生成 5 面板多模态感知全景诊断图：
-        [1. RGB + 2D 骨架] [2. 深度图 + 投影] [3. 3D 骨架 (相机系)] [4. Normalized 3D 骨架] [5. 逐关节置信度]
+        [1. RGB + 2D 骨架] [2. 深度图 + 投影] [3. 3D 骨架 (Front View)] [4. Normalized 3D 骨架] [5. 逐关节置信度]
         """
         fig = plt.figure(figsize=(22, 4.5))
-        pairs = self.get_skeleton_pairs(skeleton.joint_format)
+        pairs = self.get_skeleton_pairs()
         confs = skeleton.perception_confidence
 
         # Panel 1: RGB + 2D 骨架
@@ -122,7 +111,7 @@ class SkeletonVisualizer:
         ax2.axis("off")
         fig.colorbar(d_plot, ax=ax2, fraction=0.046, pad=0.04)
 
-        # Panel 3: 3D Camera Coordinate Skeleton
+        # Panel 3: 3D Camera Coordinate Skeleton (Front View, matching camera view)
         ax3 = fig.add_subplot(1, 5, 3, projection="3d")
         j3d = skeleton.joints_3d_camera
         for j1, j2 in pairs:
@@ -135,11 +124,13 @@ class SkeletonVisualizer:
                         color="deepskyblue", linewidth=2.2,
                     )
         ax3.scatter(j3d[valid_idx, 0], j3d[valid_idx, 2], j3d[valid_idx, 1], color="blue", s=25)
-        ax3.set_title("3. Extracted 3D Pose (Cam Frame)", fontsize=10, fontweight="bold")
+        depth_mean = float(np.mean(j3d[valid_idx, 2])) if len(valid_idx) > 0 else 0.0
+        ax3.set_title(f"3. Extracted 3D Pose\n(Z_depth={depth_mean:.2f}m)", fontsize=10, fontweight="bold")
         ax3.set_xlabel("X (m)", fontsize=7)
-        ax3.set_ylabel("Z/Depth (m)", fontsize=7)
-        ax3.set_zlabel("Y/Up (m)", fontsize=7)
-        ax3.view_init(elev=15, azim=-60)
+        ax3.set_ylabel("Z (m)", fontsize=7)
+        ax3.set_zlabel("Y (m)", fontsize=7)
+        # 将视点设定为相机视角 (elev=0, azim=-90 代表正对 +Z 轴观看，完全匹配相机图像投影)
+        ax3.view_init(elev=5, azim=-80)
 
         # Panel 4: Normalized 3D Skeleton (Root centered at origin & scale normalized)
         ax4 = fig.add_subplot(1, 5, 4, projection="3d")
@@ -155,16 +146,16 @@ class SkeletonVisualizer:
                     )
         ax4.scatter(norm_j3d[valid_idx, 0], norm_j3d[valid_idx, 2], norm_j3d[valid_idx, 1], color="#E67E22", s=25)
         ax4.scatter(0, 0, 0, color="red", marker="^", s=60, label="Root (Origin)")
-        ax4.set_title("4. Normalized 3D Pose (ST-GCN Ready)", fontsize=10, fontweight="bold")
+        ax4.set_title("4. Normalized 3D Pose\n(ST-GCN Ready)", fontsize=10, fontweight="bold")
         ax4.set_xlabel("Norm X", fontsize=7)
         ax4.set_ylabel("Norm Z", fontsize=7)
         ax4.set_zlabel("Norm Y", fontsize=7)
         ax4.legend(loc="upper right", fontsize=7)
-        ax4.view_init(elev=15, azim=-60)
+        ax4.view_init(elev=5, azim=-80)
 
         # Panel 5: 逐关节置信度直方图
         ax5 = fig.add_subplot(1, 5, 5)
-        names = [name[:6] for name in skeleton.joint_names]
+        names = [self.skel_def.id_to_name.get(i, f"j_{i}")[:6] for i in range(len(confs))]
         colors = ["#2ECC71" if c >= 0.35 else "#E74C3C" for c in confs]
         ax5.barh(range(len(names)), confs, color=colors, height=0.65)
         ax5.axvline(0.35, color="red", linestyle="--", linewidth=1.2, label="Uncertainty (0.35)")

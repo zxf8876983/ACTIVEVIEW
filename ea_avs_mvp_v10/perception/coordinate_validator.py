@@ -33,6 +33,10 @@ class ValidationResult:
     kinematics_valid: bool = True       # 关节相对几何是否合理
     metrics: Dict[str, float] = field(default_factory=dict)
 
+    @property
+    def is_valid(self) -> bool:
+        return self.status in ["VALID", "WARNING"]
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "status": self.status,

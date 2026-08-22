@@ -1,0 +1,116 @@
+{
+  "joint_count_match": true,
+  "joint_names_match": true,
+  "root_present": true,
+  "root_centered_at_origin": true,
+  "bone_length_checks": [
+    {
+      "bone": "clavicle/shoulder",
+      "left_len_m": 0.083,
+      "right_len_m": 0.083,
+      "nominal_range": [
+        0.25,
+        0.45
+      ],
+      "valid": false
+    },
+    {
+      "bone": "upper_arm",
+      "left_len_m": 0.283,
+      "right_len_m": 0.288,
+      "nominal_range": [
+        0.2,
+        0.4
+      ],
+      "valid": true
+    },
+    {
+      "bone": "forearm",
+      "left_len_m": 0.209,
+      "right_len_m": 0.212,
+      "nominal_range": [
+        0.18,
+        0.35
+      ],
+      "valid": true
+    },
+    {
+      "bone": "torso_lateral",
+      "left_len_m": 0.461,
+      "right_len_m": 0.439,
+      "nominal_range": [
+        0.35,
+        0.65
+      ],
+      "valid": true
+    },
+    {
+      "bone": "pelvis_width",
+      "left_len_m": 0.023,
+      "right_len_m": 0.023,
+      "nominal_range": [
+        0.15,
+        0.35
+      ],
+      "valid": false
+    },
+    {
+      "bone": "thigh",
+      "left_len_m": 0.469,
+      "right_len_m": 0.356,
+      "nominal_range": [
+        0.3,
+        0.55
+      ],
+      "valid": true
+    },
+    {
+      "bone": "shank",
+      "left_len_m": 0.382,
+      "right_len_m": 0.372,
+      "nominal_range": [
+        0.3,
+        0.55
+      ],
+      "valid": true
+    }
+  ],
+  "symmetry_checks": [
+    {
+      "bone": "clavicle/shoulder",
+      "diff_m": 0.0,
+      "symmetric": true
+    },
+    {
+      "bone": "upper_arm",
+      "diff_m": 0.005,
+      "symmetric": true
+    },
+    {
+      "bone": "forearm",
+      "diff_m": 0.002,
+      "symmetric": true
+    },
+    {
+      "bone": "torso_lateral",
+      "diff_m": 0.021,
+      "symmetric": true
+    },
+    {
+      "bone": "pelvis_width",
+      "diff_m": 0.0,
+      "symmetric": true
+    },
+    {
+      "bone": "thigh",
+      "diff_m": 0.113,
+      "symmetric": true
+    },
+    {
+      "bone": "shank",
+      "diff_m": 0.009,
+      "symmetric": true
+    }
+  ],
+  "overall_pass": false
+}
