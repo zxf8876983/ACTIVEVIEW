@@ -1,10 +1,10 @@
 """
 Perception pipeline module for v10.0.
-RGB-D -> 2D Pose -> Depth Projection -> Estimated 3D Skeleton (COCO17) -> Normalization -> Validation.
+RGB-D Observation -> RGB-D Skeleton Extractor -> 3D Skeleton -> Normalizer -> Validator -> ST-GCN ready.
 """
 
 from .coordinate_validator import CoordinateValidator, ValidationResult
-from .depth_projection import DepthProjectionResult, DepthProjector
+from .depth_projection import DepthProjectionResult, DepthProjector  # Retained for legacy/deprecated support
 from .pose_estimator import (
     COCO_KEYPOINTS,
     COCO_SKELETON_PAIRS,
@@ -13,7 +13,22 @@ from .pose_estimator import (
     Pose2DResult,
     TorchvisionPoseEstimator,
 )
-from .skeleton_adapter import BaseSkeletonAdapter, COCO17ToNTU25Adapter, NTU_25_JOINT_NAMES
+from .rgbd_skeleton_extractor import (
+    MEDIAPIPE_33_KEYPOINTS,
+    MEDIAPIPE_33_SKELETON_PAIRS,
+    MEDIAPIPE_BODY_PART_GROUPS,
+    BaseRGBDSkeletonExtractor,
+    MediaPipeRGBDSkeletonExtractor,
+    MockRGBDSkeletonExtractor,
+    RGBDSkeletonExtractor,
+)
+from .skeleton_adapter import (
+    BaseSkeletonAdapter,
+    COCO17ToNTU25Adapter,
+    MediaPipe33ToCOCO17Adapter,
+    MediaPipe33ToNTU25Adapter,
+    NTU_25_JOINT_NAMES,
+)
 from .skeleton_converter import (
     COCO_BODY_PART_GROUPS,
     EstimatedSkeleton3D,
@@ -22,21 +37,34 @@ from .skeleton_converter import (
 from .skeleton_normalizer import SkeletonNormalizer
 
 __all__ = [
+    # RGB-D Extractor
+    "BaseRGBDSkeletonExtractor",
+    "MediaPipeRGBDSkeletonExtractor",
+    "MockRGBDSkeletonExtractor",
+    "RGBDSkeletonExtractor",
+    "MEDIAPIPE_33_KEYPOINTS",
+    "MEDIAPIPE_33_SKELETON_PAIRS",
+    "MEDIAPIPE_BODY_PART_GROUPS",
+    # Core Structures & Adapters
+    "EstimatedSkeleton3D",
+    "SkeletonConverter",
+    "SkeletonNormalizer",
+    "BaseSkeletonAdapter",
+    "MediaPipe33ToCOCO17Adapter",
+    "MediaPipe33ToNTU25Adapter",
+    "COCO17ToNTU25Adapter",
+    "NTU_25_JOINT_NAMES",
+    # Validation
+    "CoordinateValidator",
+    "ValidationResult",
+    # Legacy / Deprecated
     "BasePoseEstimator",
     "TorchvisionPoseEstimator",
     "MockPoseEstimator",
     "Pose2DResult",
-    "COCO_KEYPOINTS",
-    "COCO_SKELETON_PAIRS",
     "DepthProjector",
     "DepthProjectionResult",
-    "EstimatedSkeleton3D",
-    "SkeletonConverter",
+    "COCO_KEYPOINTS",
+    "COCO_SKELETON_PAIRS",
     "COCO_BODY_PART_GROUPS",
-    "SkeletonNormalizer",
-    "BaseSkeletonAdapter",
-    "COCO17ToNTU25Adapter",
-    "NTU_25_JOINT_NAMES",
-    "CoordinateValidator",
-    "ValidationResult",
 ]

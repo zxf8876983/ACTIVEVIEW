@@ -18,7 +18,6 @@ ACTIVEVIEW v10.0 单样本感知与骨架自动可视化检查工具 —— chec
 
 输出：
     生成多模态诊断图 (RGB + 2D 骨架、Camera 3D 骨架、Normalized 3D 骨架、置信度与坐标校验卡)。
-    默认保存至: /home/zxf/WorkSpace/code/data/ActiveView/datasets/v10/perception/visualization/<sample_id>_check.png
 """
 
 import argparse
@@ -45,13 +44,12 @@ from ea_avs_mvp_v10.core.paths import get_data_root, get_v10_dataset_root
 from ea_avs_mvp_v10.core.types import V10Sample
 from ea_avs_mvp_v10.dataset.perception_dataset import V10PerceptionPipeline
 from ea_avs_mvp_v10.perception.coordinate_validator import CoordinateValidator
-from ea_avs_mvp_v10.perception.depth_projection import DepthProjector
-from ea_avs_mvp_v10.perception.pose_estimator import (
-    COCO_KEYPOINTS,
-    COCO_SKELETON_PAIRS,
-    TorchvisionPoseEstimator,
+from ea_avs_mvp_v10.perception.rgbd_skeleton_extractor import (
+    MEDIAPIPE_33_KEYPOINTS,
+    MEDIAPIPE_33_SKELETON_PAIRS,
+    RGBDSkeletonExtractor,
 )
-from ea_avs_mvp_v10.perception.skeleton_converter import EstimatedSkeleton3D, SkeletonConverter
+from ea_avs_mvp_v10.perception.skeleton_converter import EstimatedSkeleton3D
 from ea_avs_mvp_v10.perception.skeleton_normalizer import SkeletonNormalizer
 from ea_avs_mvp_v10.visualization.skeleton_visualizer import SkeletonVisualizer
 
@@ -72,69 +70,73 @@ def plot_single_sample_inspection(
 ) -> Path:
     """绘制 4 面板标准单样本检查图。"""
     fig = plt.figure(figsize=(19, 5.0))
+    pairs = visualizer.get_skeleton_pairs(skeleton.joint_format)
+    confs = skeleton.perception_confidence
 
-    # 1. Panel 1: RGB + 2D COCO-17 Pose Overlay
+    # 1. Panel 1: RGB + 2D Pose Overlay
     ax1 = fig.add_subplot(1, 4, 1)
     overlay = visualizer.draw_2d_skeleton_on_rgb(rgb_img, skeleton)
     ax1.imshow(overlay)
-    ax1.set_title(f"1. RGB + 2D Pose\nAction: {sample_meta.get('action_label', '').upper()}", fontsize=11, fontweight="bold")
+    ax1.set_title(f"1. RGB + 2D Skeleton ({skeleton.joint_format})\nAction: {sample_meta.get('action_label', '').upper()}", fontsize=11, fontweight="bold")
     ax1.axis("off")
 
     # 2. Panel 2: Camera Coordinate 3D Skeleton
     ax2 = fig.add_subplot(1, 4, 2, projection="3d")
     j_cam = skeleton.joints_3d_camera
-    confs = skeleton.perception_confidence
-    for j1, j2 in COCO_SKELETON_PAIRS:
-        if confs[j1] >= 0.35 and confs[j2] >= 0.35:
-            ax2.plot(
-                [j_cam[j1, 0], j_cam[j2, 0]],
-                [j_cam[j1, 2], j_cam[j2, 2]],
-                [-j_cam[j1, 1], -j_cam[j2, 1]],
-                color="deepskyblue", linewidth=2.2,
-            )
+    for j1, j2 in pairs:
+        if j1 < len(confs) and j2 < len(confs):
+            if confs[j1] >= 0.35 and confs[j2] >= 0.35:
+                ax2.plot(
+                    [j_cam[j1, 0], j_cam[j2, 0]],
+                    [j_cam[j1, 2], j_cam[j2, 2]],
+                    [j_cam[j1, 1], j_cam[j2, 1]],
+                    color="deepskyblue", linewidth=2.2,
+                )
     valid_idx = np.where(confs >= 0.35)[0]
-    ax2.scatter(j_cam[valid_idx, 0], j_cam[valid_idx, 2], -j_cam[valid_idx, 1], color="blue", s=30)
-    ax2.set_title(f"2. Camera 3D Skeleton\n(Depth Z={np.mean(j_cam[valid_idx, 2]):.2f}m)", fontsize=11, fontweight="bold")
+    ax2.scatter(j_cam[valid_idx, 0], j_cam[valid_idx, 2], j_cam[valid_idx, 1], color="blue", s=30)
+    depth_mean = np.mean(j_cam[valid_idx, 2]) if len(valid_idx) > 0 else 0.0
+    ax2.set_title(f"2. Camera 3D Skeleton\n(Depth Z={depth_mean:.2f}m)", fontsize=11, fontweight="bold")
     ax2.set_xlabel("X (m)", fontsize=8)
     ax2.set_ylabel("Z (m)", fontsize=8)
-    ax2.set_zlabel("-Y (m)", fontsize=8)
+    ax2.set_zlabel("Y (m)", fontsize=8)
     ax2.view_init(elev=15, azim=-60)
 
     # 3. Panel 3: Normalized 3D Skeleton (ST-GCN Input)
     ax3 = fig.add_subplot(1, 4, 3, projection="3d")
     j_norm = skeleton.joints_3d_normalized if skeleton.joints_3d_normalized is not None else j_cam
-    for j1, j2 in COCO_SKELETON_PAIRS:
-        if confs[j1] >= 0.35 and confs[j2] >= 0.35:
-            ax3.plot(
-                [j_norm[j1, 0], j_norm[j2, 0]],
-                [j_norm[j1, 2], j_norm[j2, 2]],
-                [-j_norm[j1, 1], -j_norm[j2, 1]],
-                color="#8E44AD", linewidth=2.2,
-            )
-    ax3.scatter(j_norm[valid_idx, 0], j_norm[valid_idx, 2], -j_norm[valid_idx, 1], color="#E67E22", s=30)
+    for j1, j2 in pairs:
+        if j1 < len(confs) and j2 < len(confs):
+            if confs[j1] >= 0.35 and confs[j2] >= 0.35:
+                ax3.plot(
+                    [j_norm[j1, 0], j_norm[j2, 0]],
+                    [j_norm[j1, 2], j_norm[j2, 2]],
+                    [j_norm[j1, 1], j_norm[j2, 1]],
+                    color="#8E44AD", linewidth=2.2,
+                )
+    ax3.scatter(j_norm[valid_idx, 0], j_norm[valid_idx, 2], j_norm[valid_idx, 1], color="#E67E22", s=30)
     ax3.scatter(0, 0, 0, color="red", marker="^", s=80, label="Root (0,0,0)")
     ax3.set_title("3. Normalized 3D Skeleton\n(Root-Centered & Scale-Normalized)", fontsize=11, fontweight="bold")
     ax3.set_xlabel("Norm X", fontsize=8)
     ax3.set_ylabel("Norm Z", fontsize=8)
-    ax3.set_zlabel("Norm -Y", fontsize=8)
+    ax3.set_zlabel("Norm Y", fontsize=8)
     ax3.legend(loc="upper right", fontsize=8)
     ax3.view_init(elev=15, azim=-60)
 
     # 4. Panel 4: Perception Confidence & Sanity Info Card
     ax4 = fig.add_subplot(1, 4, 4)
-    names = [name[:6] for name in COCO_KEYPOINTS]
+    names = [name[:6] for name in skeleton.joint_names]
     colors = ["#2ECC71" if c >= 0.35 else "#E74C3C" for c in confs]
     ax4.barh(range(len(names)), confs, color=colors, height=0.65)
     ax4.axvline(0.35, color="red", linestyle="--", linewidth=1.2, label="Uncertainty (0.35)")
     ax4.set_yticks(range(len(names)))
-    ax4.set_yticklabels(names, fontsize=8)
+    ax4.set_yticklabels(names, fontsize=6.5)
     ax4.set_xlim(0.0, 1.05)
     ax4.set_xlabel("Confidence", fontsize=9)
     ax4.legend(loc="lower right", fontsize=8)
     ax4.grid(axis="x", alpha=0.3)
 
     status_color = "green" if val_status == "VALID" else ("orange" if val_status == "WARNING" else "red")
-    info_text = f"Status: {val_status} | Mean Conf: {np.mean(confs):.2f}\nValid Joints: {len(valid_idx)}/17"
+    info_text = f"Status: {val_status} | Mean Conf: {np.mean(confs):.2f}\nValid Joints: {len(valid_idx)}/{len(confs)}"
     if val_reasons:
         info_text += f"\nNote: {', '.join(val_reasons[:2])}"
     ax4.set_title(f"4. Confidence & Sanity\n[{val_status}]", fontsize=11, fontweight="bold", color=status_color)

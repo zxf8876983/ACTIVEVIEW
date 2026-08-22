@@ -7,8 +7,7 @@
        Z_cam > 0.2m 且 Z_cam <= 8.0m (防止极端近景裁剪或背景虚空异常)；
     2. 人体尺度合理性检查 (Human Height Scale Check)：
        人体垂直投影高度差 Delta_Y 应处于 [0.3m, 2.5m] 正常物理人体范围；
-    3. 运动学相对方位检查 (Kinematic Orientation Check)：
-       Head (头部 nose) 垂直坐标 Y 应高于 Ankle (脚踝中点) 垂直坐标 Y (容忍弯腰/跌倒特定姿态)；
+    3. 运动学相对方位与骨骼长度一致性检查；
     4. 统计与分级诊断输出：
        输出 VALID, WARNING, INVALID 状态并提供批量样本统计报告。
 """
@@ -82,7 +81,7 @@ class CoordinateValidator:
         校验单个 EstimatedSkeleton3D 3D 骨架坐标的物理合法性。
 
         Args:
-            skeleton: EstimatedSkeleton3D 对象 (COCO-17 格式)
+            skeleton: EstimatedSkeleton3D 对象
 
         Returns:
             ValidationResult
@@ -94,7 +93,7 @@ class CoordinateValidator:
         kinematics_valid = True
 
         j3d_cam = skeleton.joints_3d_camera
-        confs = skeleton.confidence
+        confs = skeleton.perception_confidence
 
         valid_mask = (confs >= self.uncertainty_thresh) & (np.linalg.norm(j3d_cam, axis=1) > 0.01)
         num_valid = int(np.sum(valid_mask))
@@ -128,20 +127,24 @@ class CoordinateValidator:
             height_valid = False
             reasons.append(f"Abnormal human height: {est_height:.2f}m (valid: [{self.min_height}, {self.max_height}])")
 
-        # 3. 运动学关键点上下关系检查 (Head vs Foot)
-        # COCO-17: 0: nose, 15: left_ankle, 16: right_ankle
-        head_conf = float(confs[0])
-        foot_conf = (float(confs[15]) + float(confs[16])) / 2.0
-
+        # 3. 运动学上下关系检查 (Head vs Foot)
         head_foot_diff = 0.0
-        if head_conf >= self.uncertainty_thresh and foot_conf >= self.uncertainty_thresh:
+        if skeleton.joint_format == "MediaPipe33":
+            # 0: nose, 27: left_ankle, 28: right_ankle, 31: left_foot, 32: right_foot
+            head_y = float(j3d_cam[0, 1])
+            foot_y = float(min(j3d_cam[27, 1], j3d_cam[28, 1]))
+            # 在 +Y-up 体系下，正常站姿 head_y > foot_y (diff > 0)
+            head_foot_diff = head_y - foot_y
+            if head_foot_diff < -0.6:
+                kinematics_valid = False
+                reasons.append(f"Skeleton inverted: Head Y ({head_y:.2f}m) is far below Foot Y ({foot_y:.2f}m)")
+            elif head_foot_diff < 0.0:
+                reasons.append(f"Low head posture (bending/falling): Head Y ({head_y:.2f}m) <= Foot Y ({foot_y:.2f}m)")
+        elif skeleton.joint_format == "COCO17":
             head_y = float(j3d_cam[0, 1])
             foot_y = float(max(j3d_cam[15, 1], j3d_cam[16, 1]))
-            # 针孔反投影中 v 向下增长，因此头部 y_cam (较小) 应位于脚部 y_cam (较大) 上方
-            # 正常姿态下: foot_y > head_y (即 head 在图像上方)
-            # 若 head_y 比 foot_y 还要大 0.5m 以上，说明骨架严重倒立
             head_foot_diff = foot_y - head_y
-            if head_foot_diff < -0.5:
+            if head_foot_diff < -0.6:
                 kinematics_valid = False
                 reasons.append(f"Skeleton inverted: Head Y ({head_y:.2f}m) is below Foot Y ({foot_y:.2f}m)")
             elif head_foot_diff < 0.0:

@@ -1,19 +1,17 @@
 """
-深度反投影与 3D 关节几何恢复 —— depth_projection.py
-===================================================
+[DEPRECATED] 深度反投影与 3D 关节几何恢复 —— depth_projection.py
+============================================================
 
-职责：
-    1. 接收 2D 关键点坐标 (u, v)、深度图与相机几何内参 (fx, fy, cx, cy)；
-    2. 执行局部窗口邻域自适应滤波 (Patch Depth Filtering)，剔除边缘深度混叠与非正值异常；
-    3. 基于针孔相机逆投影模型恢复相机坐标系下的 3D 关节坐标：
-       X_cam = (u - cx) * Z / fx
-       Y_cam = (v - cy) * Z / fy
-       Z_cam = depth(u, v)
-    4. 结合相机外参矩阵 (Camera Extrinsics) 将关节映射至世界坐标系；
-    5. 计算局部深度一致性置信度 (depth_confidence) 与有效掩码。
+警告 (Deprecation Notice):
+    本模块基于 2D 像素加单点/局部 Patch 深度直接反投影，容易因深度噪声、遮挡和边缘深度跳变
+    导致 3D 骨架肢体拉伸变形。在 v10.0 Phase 2 最终设计中已废弃主流程调用。
+    主流程现统一采用成熟工业级 RGB-D 3D 骨架提取器:
+        `ea_avs_mvp_v10.perception.rgbd_skeleton_extractor.RGBDSkeletonExtractor`
+    本文件仅作为历史参考与兼容性辅助工具保留。
 """
 
 import logging
+import warnings
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union
 
