@@ -70,18 +70,17 @@ def run_phase1_demo():
     # 3. 选取代表性样本生成多模态组合可视化图
     dataset_root = get_v10_dataset_root()
 
-    # 按动作类别挑选 4 个展示样例
+    # 按照 6 个不同动作与循环轮转不同视角挑选 6 个代表性样本
     display_samples = []
-    seen_classes = set()
+    action_groups = {}
     for s in samples:
-        if s.action_label not in seen_classes:
-            display_samples.append(s)
-            seen_classes.add(s.action_label)
-        if len(display_samples) >= 4:
-            break
+        action_groups.setdefault(s.action_label, []).append(s)
 
-    if not display_samples and samples:
-        display_samples = samples[:4]
+    view_cycler = 0
+    for act_label, s_list in action_groups.items():
+        chosen_sample = s_list[view_cycler % len(s_list)]
+        display_samples.append(chosen_sample)
+        view_cycler += 1
 
     fig, axes = plt.subplots(len(display_samples), 3, figsize=(15, 3.8 * len(display_samples)))
     if len(display_samples) == 1:

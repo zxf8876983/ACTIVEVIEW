@@ -68,10 +68,10 @@ class CandidateViewpointGeneratorV10:
                 rz = hz + r * math.cos(world_angle_rad)
 
                 # 计算机器人面向人体的注视偏航角
-                # Habitat 坐标系中，Agent 默认朝向为 -Z，偏角为 atan2(dx, -dz)
+                # Habitat 坐标系中，Agent 绕 +Y 轴旋转：朝向目标向量为 (-dx, -dz)
                 dx = hx - rx
                 dz = hz - rz
-                gaze_yaw_rad = math.atan2(dx, -dz)
+                gaze_yaw_rad = math.atan2(-dx, -dz)
                 gaze_yaw_deg = (math.degrees(gaze_yaw_rad) + 360.0) % 360.0
 
                 vp_id = f"vp_{vp_idx:03d}_r{r:.1f}_a{int(rel_angle_deg):03d}"

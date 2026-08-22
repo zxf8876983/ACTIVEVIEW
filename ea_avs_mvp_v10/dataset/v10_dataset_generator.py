@@ -113,17 +113,36 @@ class V10DatasetGenerator:
 
         candidates = self.vp_gen.generate_candidates(h_pos, human_yaw_deg=human_yaw_deg)
 
-        # 过滤可导航视点 (排除墙体/外部碰撞视点)
-        navigable_candidates = [vp for vp in candidates if env_adapter.is_navigable(vp.position)]
-        if not navigable_candidates:
-            navigable_candidates = candidates
+        # 过滤可导航且视线无物理阻挡的有效视点 (排除墙体/隔断阻挡)
+        from ea_avs_mvp_v8.constraints.line_of_sight_constraint import LineOfSightConstraint
+        from ea_avs_mvp_v8.core.types import CandidateViewpoint
 
-        if max_viewpoints and len(navigable_candidates) > max_viewpoints:
+        los_checker = LineOfSightConstraint(env_adapter=env_adapter)
+        valid_candidates = []
+        for vp in candidates:
+            if not env_adapter.is_navigable(vp.position):
+                continue
+            v8_vp = CandidateViewpoint(
+                viewpoint_id=vp.viewpoint_id,
+                position=vp.position,
+                yaw_deg=vp.yaw_deg,
+                radius=vp.radius,
+                angle_deg=vp.angle_deg,
+                camera_height=vp.height,
+            )
+            is_los, _ = los_checker.evaluate(v8_vp, human_position=h_pos)
+            if is_los:
+                valid_candidates.append(vp)
+
+        if not valid_candidates:
+            valid_candidates = [vp for vp in candidates if env_adapter.is_navigable(vp.position)] or candidates
+
+        if max_viewpoints and len(valid_candidates) > max_viewpoints:
             # 均匀下采样候选视点
-            indices = np.linspace(0, len(navigable_candidates) - 1, max_viewpoints, dtype=int)
-            sampled_candidates = [navigable_candidates[i] for i in indices]
+            indices = np.linspace(0, len(valid_candidates) - 1, max_viewpoints, dtype=int)
+            sampled_candidates = [valid_candidates[i] for i in indices]
         else:
-            sampled_candidates = navigable_candidates
+            sampled_candidates = valid_candidates
 
         target_motions = motion_ids or self.motion_mgr.list_available_motions()[:6]
         all_samples: List[V10Sample] = []
