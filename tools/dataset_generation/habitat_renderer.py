@@ -21,9 +21,7 @@ repo_root = Path(__file__).resolve().parent.parent.parent
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -101,14 +99,13 @@ class HabitatPerceptionRenderer:
         player.seek(frame_idx)
         pose_data = player.get_current_pose()
 
-        fig, ax = plt.subplots(figsize=(self.image_width / 100, self.image_height / 100), dpi=100)
-        # 室内黄光背景
-        fig.patch.set_facecolor("#EAECEE")
-        ax.set_facecolor("#EAECEE")
+        w, h = self.image_width, self.image_height
+        img = np.full((h, w, 3), 235, dtype=np.uint8)
 
-        # 绘制室内墙面与地板分界
-        ax.axhline(0.28, color="#BDC3C7", linewidth=2.0)
-        ax.plot([0.55, 0.55], [0.28, 1.0], color="#D5D8DC", linewidth=1.5, linestyle="--")
+        # 室内墙壁与地板分界线
+        y_floor = int(h * (1.0 - 0.28))
+        cv2.line(img, (0, y_floor), (w, y_floor), (189, 195, 199), 2, cv2.LINE_AA)
+        cv2.line(img, (int(w * 0.55), 0), (int(w * 0.55), y_floor), (213, 218, 220), 1, cv2.LINE_AA)
 
         t = frame_idx / max(player.num_frames, 1)
         action_type = player.action_class
@@ -160,30 +157,52 @@ class HabitatPerceptionRenderer:
 
         rad = math.radians(angle_deg)
         scale = 2.0 / max(radius, 0.8)
-        x_c = 0.50 + 0.12 * math.sin(rad)
+        x_norm = 0.50 + 0.12 * math.sin(rad)
+
+        def px(x_n, y_n):
+            return int(np.clip(x_n * w, 0, w - 1)), int(np.clip((1.0 - y_n) * h, 0, h - 1))
 
         # 头部
-        head = plt.Circle((x_c, head_y), 0.042 * scale, color="#212F3D")
-        ax.add_patch(head)
+        c_head = px(x_norm, head_y)
+        r_head = int(0.042 * scale * h)
+        cv2.circle(img, c_head, max(r_head, 4), (33, 47, 61), -1, cv2.LINE_AA)
+
         # 躯干
-        ax.plot([x_c, x_c], [head_y - 0.042 * scale, hip_y], color="#1C2833", linewidth=int(13 * scale), solid_capstyle="round")
+        c_torso_top = px(x_norm, head_y - 0.042 * scale)
+        c_hip = px(x_norm, hip_y)
+        w_torso = max(int(13 * scale), 2)
+        cv2.line(img, c_torso_top, c_hip, (28, 40, 51), w_torso, cv2.LINE_AA)
+
         # 腿部
-        ax.plot([x_c - 0.03 * scale, x_c - 0.04 * scale, x_c - 0.04 * scale], [hip_y, l_knee_y, l_ankle_y], color="#17202A", linewidth=int(6.5 * scale), solid_capstyle="round")
-        ax.plot([x_c + 0.03 * scale, x_c + 0.04 * scale, x_c + 0.04 * scale], [hip_y, r_knee_y, r_ankle_y], color="#17202A", linewidth=int(6.5 * scale), solid_capstyle="round")
+        w_leg = max(int(6.5 * scale), 2)
+        c_l_hip = px(x_norm - 0.03 * scale, hip_y)
+        c_l_knee = px(x_norm - 0.04 * scale, l_knee_y)
+        c_l_ankle = px(x_norm - 0.04 * scale, l_ankle_y)
+        cv2.line(img, c_l_hip, c_l_knee, (23, 32, 42), w_leg, cv2.LINE_AA)
+        cv2.line(img, c_l_knee, c_l_ankle, (23, 32, 42), w_leg, cv2.LINE_AA)
+
+        c_r_hip = px(x_norm + 0.03 * scale, hip_y)
+        c_r_knee = px(x_norm + 0.04 * scale, r_knee_y)
+        c_r_ankle = px(x_norm + 0.04 * scale, r_ankle_y)
+        cv2.line(img, c_r_hip, c_r_knee, (23, 32, 42), w_leg, cv2.LINE_AA)
+        cv2.line(img, c_r_knee, c_r_ankle, (23, 32, 42), w_leg, cv2.LINE_AA)
+
         # 手臂
-        ax.plot([x_c - 0.05 * scale, x_c - 0.08 * scale, x_c - 0.09 * scale], [torso_y, (torso_y + l_wrist_y)/2, l_wrist_y], color="#1C2833", linewidth=int(5.5 * scale), solid_capstyle="round")
-        ax.plot([x_c + 0.05 * scale, x_c + 0.08 * scale, x_c + 0.09 * scale], [torso_y, (torso_y + r_wrist_y)/2, r_wrist_y], color="#1C2833", linewidth=int(5.5 * scale), solid_capstyle="round")
+        w_arm = max(int(5.5 * scale), 2)
+        c_l_sh = px(x_norm - 0.05 * scale, torso_y)
+        c_l_elb = px(x_norm - 0.08 * scale, (torso_y + l_wrist_y) / 2.0)
+        c_l_wri = px(x_norm - 0.09 * scale, l_wrist_y)
+        cv2.line(img, c_l_sh, c_l_elb, (28, 40, 51), w_arm, cv2.LINE_AA)
+        cv2.line(img, c_l_elb, c_l_wri, (28, 40, 51), w_arm, cv2.LINE_AA)
+
+        c_r_sh = px(x_norm + 0.05 * scale, torso_y)
+        c_r_elb = px(x_norm + 0.08 * scale, (torso_y + r_wrist_y) / 2.0)
+        c_r_wri = px(x_norm + 0.09 * scale, r_wrist_y)
+        cv2.line(img, c_r_sh, c_r_elb, (28, 40, 51), w_arm, cv2.LINE_AA)
+        cv2.line(img, c_r_elb, c_r_wri, (28, 40, 51), w_arm, cv2.LINE_AA)
 
         # 模拟视点侧边障碍物遮挡 (当 angle_deg 处于 90~180度时产生部分家具遮挡)
         if 90.0 <= angle_deg <= 180.0:
-            ax.bar(0.68, 0.40, width=0.18, color="#7F8C8D", alpha=0.9)
+            cv2.rectangle(img, (int(w * 0.58), int(h * 0.50)), (int(w * 0.85), int(h * 0.95)), (127, 140, 141), -1)
 
-        ax.set_xlim(0.0, 1.0)
-        ax.set_ylim(0.0, 1.0)
-        ax.axis("off")
-        fig.tight_layout(pad=0)
-
-        fig.canvas.draw()
-        rgba = np.asarray(fig.canvas.buffer_rgba())
-        plt.close(fig)
-        return rgba[:, :, :3].copy()
+        return img

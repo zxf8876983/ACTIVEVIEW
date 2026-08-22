@@ -5,7 +5,7 @@ AMASS 干净感知数据渲染器 —— amass_renderer.py
 
 职责：
     1. 加载 AMASS / converted motion 动作文件 (.pkl) 与 MotionPlayer；
-    2. 在干净、无遮挡的纯色/中性背景环境中渲染人体动作 RGB 序列；
+    2. 在干净、无遮挡的中性背景环境中渲染人体动作 RGB 序列；
     3. 输出：高质量无遮挡的 RGB 序列 (T, H, W, 3)，作为 Clean Perception 数据源；
     4. 严格隔离：只输出 RGB 图像，禁止直接输出 SMPL 骨骼坐标至下游。
 """
@@ -21,9 +21,7 @@ repo_root = Path(__file__).resolve().parent.parent.parent
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -74,7 +72,6 @@ class AMASSCleanRenderer:
 
         frames: List[np.ndarray] = []
 
-        # 使用高精度运动学透视投影渲染干净人体 RGB 图像
         for f_idx in frame_indices:
             frame_rgb = self._render_kinematic_frame(player, int(f_idx), viewpoint_distance, camera_height, camera_angle_deg)
             frames.append(frame_rgb)
@@ -93,9 +90,8 @@ class AMASSCleanRenderer:
         player.seek(frame_idx)
         pose_data = player.get_current_pose()
 
-        fig, ax = plt.subplots(figsize=(self.image_width / 100, self.image_height / 100), dpi=100)
-        fig.patch.set_facecolor("#FAFAFA")
-        ax.set_facecolor("#FAFAFA")
+        w, h = self.image_width, self.image_height
+        img = np.full((h, w, 3), 250, dtype=np.uint8)
 
         t = frame_idx / max(player.num_frames, 1)
         action_type = player.action_class
@@ -145,31 +141,53 @@ class AMASSCleanRenderer:
             l_ankle_y = r_ankle_y = 0.16
             l_wrist_y = r_wrist_y = 0.36
 
-        # 绘制背景地面线
-        ax.axhline(0.14, color="#D5D8DC", linewidth=1.5)
-
         rad = math.radians(angle_deg)
         scale = 2.2 / max(distance, 0.8)
-        x_c = 0.50 + 0.08 * math.sin(rad)
+        x_norm = 0.50 + 0.08 * math.sin(rad)
+
+        def px(x_n, y_n):
+            return int(np.clip(x_n * w, 0, w - 1)), int(np.clip((1.0 - y_n) * h, 0, h - 1))
+
+        # 地面参考线
+        cv2.line(img, (0, int(h * (1.0 - 0.14))), (w, int(h * (1.0 - 0.14))), (213, 216, 220), 2, cv2.LINE_AA)
 
         # 头部
-        head = plt.Circle((x_c, head_y), 0.045 * scale, color="#34495E")
-        ax.add_patch(head)
+        c_head = px(x_norm, head_y)
+        r_head = int(0.045 * scale * h)
+        cv2.circle(img, c_head, max(r_head, 4), (94, 109, 126), -1, cv2.LINE_AA)
+
         # 躯干
-        ax.plot([x_c, x_c], [head_y - 0.045 * scale, hip_y], color="#2C3E50", linewidth=int(14 * scale), solid_capstyle="round")
+        c_torso_top = px(x_norm, head_y - 0.045 * scale)
+        c_hip = px(x_norm, hip_y)
+        w_torso = max(int(14 * scale), 2)
+        cv2.line(img, c_torso_top, c_hip, (44, 62, 80), w_torso, cv2.LINE_AA)
+
         # 腿部
-        ax.plot([x_c - 0.03 * scale, x_c - 0.04 * scale, x_c - 0.04 * scale], [hip_y, l_knee_y, l_ankle_y], color="#1A252F", linewidth=int(7 * scale), solid_capstyle="round")
-        ax.plot([x_c + 0.03 * scale, x_c + 0.04 * scale, x_c + 0.04 * scale], [hip_y, r_knee_y, r_ankle_y], color="#1A252F", linewidth=int(7 * scale), solid_capstyle="round")
+        w_leg = max(int(7 * scale), 2)
+        c_l_hip = px(x_norm - 0.03 * scale, hip_y)
+        c_l_knee = px(x_norm - 0.04 * scale, l_knee_y)
+        c_l_ankle = px(x_norm - 0.04 * scale, l_ankle_y)
+        cv2.line(img, c_l_hip, c_l_knee, (26, 37, 47), w_leg, cv2.LINE_AA)
+        cv2.line(img, c_l_knee, c_l_ankle, (26, 37, 47), w_leg, cv2.LINE_AA)
+
+        c_r_hip = px(x_norm + 0.03 * scale, hip_y)
+        c_r_knee = px(x_norm + 0.04 * scale, r_knee_y)
+        c_r_ankle = px(x_norm + 0.04 * scale, r_ankle_y)
+        cv2.line(img, c_r_hip, c_r_knee, (26, 37, 47), w_leg, cv2.LINE_AA)
+        cv2.line(img, c_r_knee, c_r_ankle, (26, 37, 47), w_leg, cv2.LINE_AA)
+
         # 手臂
-        ax.plot([x_c - 0.05 * scale, x_c - 0.08 * scale, x_c - 0.09 * scale], [torso_y, (torso_y + l_wrist_y)/2, l_wrist_y], color="#2C3E50", linewidth=int(6 * scale), solid_capstyle="round")
-        ax.plot([x_c + 0.05 * scale, x_c + 0.08 * scale, x_c + 0.09 * scale], [torso_y, (torso_y + r_wrist_y)/2, r_wrist_y], color="#2C3E50", linewidth=int(6 * scale), solid_capstyle="round")
+        w_arm = max(int(6 * scale), 2)
+        c_l_sh = px(x_norm - 0.05 * scale, torso_y)
+        c_l_elb = px(x_norm - 0.08 * scale, (torso_y + l_wrist_y) / 2.0)
+        c_l_wri = px(x_norm - 0.09 * scale, l_wrist_y)
+        cv2.line(img, c_l_sh, c_l_elb, (44, 62, 80), w_arm, cv2.LINE_AA)
+        cv2.line(img, c_l_elb, c_l_wri, (44, 62, 80), w_arm, cv2.LINE_AA)
 
-        ax.set_xlim(0.0, 1.0)
-        ax.set_ylim(0.0, 1.0)
-        ax.axis("off")
-        fig.tight_layout(pad=0)
+        c_r_sh = px(x_norm + 0.05 * scale, torso_y)
+        c_r_elb = px(x_norm + 0.08 * scale, (torso_y + r_wrist_y) / 2.0)
+        c_r_wri = px(x_norm + 0.09 * scale, r_wrist_y)
+        cv2.line(img, c_r_sh, c_r_elb, (44, 62, 80), w_arm, cv2.LINE_AA)
+        cv2.line(img, c_r_elb, c_r_wri, (44, 62, 80), w_arm, cv2.LINE_AA)
 
-        fig.canvas.draw()
-        rgba = np.asarray(fig.canvas.buffer_rgba())
-        plt.close(fig)
-        return rgba[:, :, :3].copy()
+        return img

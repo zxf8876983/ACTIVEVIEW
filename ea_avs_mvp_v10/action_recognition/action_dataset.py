@@ -72,6 +72,8 @@ class ActionSkeletonDataset(Dataset):
 
         # 统一格式化为 (N, C, T, V, M)
         self.formatted_data = self._format_data(self.data)
+        assert self.formatted_data.shape[1] == 3, f"Expected 3 channels (XYZ), got {self.formatted_data.shape[1]}"
+        assert self.formatted_data.shape[3] == 33, f"Expected 33 joints, got {self.formatted_data.shape[3]}"
 
     def _format_data(self, raw_data: np.ndarray) -> np.ndarray:
         # 输入可能是:

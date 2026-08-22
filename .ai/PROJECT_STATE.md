@@ -13,7 +13,7 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
   - **Phase 1 (Dataset Generation)**: `FROZEN` (正式冻结并建立隔离边界)；
   - **Phase 2 (Perception Pipeline)**: `FROZEN` (成熟 RGB-D 骨架提取、统一拓扑 Schema、严格 2D-3D 几何一致性与自动化审计通过)；
   - **Phase 2.1 (Scientific GT Validation)**: `FROZEN` (离线 GT 对齐与评测体系、MPJPE/PA-MPJPE/PCK 定量评测与 10 样本验证集)；
-  - **Phase 3 (ST-GCN / Action Recognition)**: `COMPLETED & CLOSED` (统一 RGB 驱动感知链路、ST-GCN 动作分类网络、Shannon 熵不确定度量化、Oracle/Habitat 双基准评测闭环)；
+  - **Phase 3 / 3.1 (ST-GCN / Scientific Consistency Patch)**: `FROZEN` (统一 RGB 驱动感知链路、3672 样本规模化数据集、ST-GCN 动作分类网络、Shannon 熵不确定度量化、Oracle/Habitat 双基准评测闭环并已全面固化)；
   - **Phase 4 (Active View Selection Policy)**: `READY TO START` (待用户明确指令后进入)。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；

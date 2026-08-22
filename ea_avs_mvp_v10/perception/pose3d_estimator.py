@@ -153,6 +153,10 @@ class MediaPipe3DPoseEstimator(BasePose3DEstimator):
             # 视觉前景轮廓自适应形态学估计 (Visual Foreground Contour Recovery)
             joints_3d, confidence = self._estimate_from_rgb_foreground(rgb_np)
 
+        # 严格骨架 Schema 校验 (Strict Skeleton Schema Assertion)
+        assert joints_3d.shape[0] == num_joints, f"Estimated joint count {joints_3d.shape[0]} != configured {num_joints}"
+        assert len(joint_names) == num_joints, f"Joint names count {len(joint_names)} != configured {num_joints}"
+
         return Pose3DEstimationResult(
             joints=joints_3d,
             joint_names=joint_names,

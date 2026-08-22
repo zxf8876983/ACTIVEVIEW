@@ -71,6 +71,8 @@ class Graph:
 
         self.hop_dis = build_hop_distance_matrix(self.num_node, self.edges, max_hop=max_hop)
         self.A = self.get_adjacency_matrix()
+        assert self.A.shape[1] == self.skel_def.joint_num, f"Graph adjacency matrix V={self.A.shape[1]} != configured {self.skel_def.joint_num}"
+        assert self.A.shape[2] == self.skel_def.joint_num, f"Graph adjacency matrix V={self.A.shape[2]} != configured {self.skel_def.joint_num}"
 
     def get_adjacency_matrix(self) -> np.ndarray:
         """根据策略构建空间邻接矩阵张量 (K, V, V)。"""

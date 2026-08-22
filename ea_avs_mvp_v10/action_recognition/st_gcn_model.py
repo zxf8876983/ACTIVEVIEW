@@ -167,6 +167,8 @@ class STGCN(nn.Module):
             x = x.unsqueeze(-1) # (N, C, T, V, 1)
 
         N, C, T, V, M = x.size()
+        assert V == self.skel_def.joint_num, f"Input joint dimension V={V} does not match configured {self.skel_def.joint_num}"
+        assert C == 3, f"Input feature dimension C={C} (expected 3 for XYZ)"
 
         # 对单人/多人通道进行折叠处理
         x = x.permute(0, 4, 3, 1, 2).contiguous() # (N, M, V, C, T)

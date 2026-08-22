@@ -1,36 +1,31 @@
 # ACTIVEVIEW Current Task
 
 ## 1. Task Definition
-- **Task ID**: `V10-PHASE3-STGCN-RECOGNITION`
-- **Goal**: Implement unified RGB-based 3D Pose Estimator, ST-GCN Action Recognition network, Shannon entropy uncertainty evaluation, dual perception datasets (Clean & Habitat), and benchmark evaluation for ACTIVEVIEW v10.0 Phase 3.
-- **Phase Status**: `COMPLETED & CLOSED`
+- **Task ID**: `V10-PHASE3.1-SCIENTIFIC-CONSISTENCY-PATCH`
+- **Goal**: Perform Phase 3.1 Scientific Consistency Patch on ST-GCN Action Recognition & Uncertainty Evaluation module.
+- **Phase Status**: `PHASE 3 FROZEN & READY FOR PHASE 4`
 
 ---
 
-## 2. Work Completed
-1. **Config & Schema**:
-   - Created `configs/action_classes.json` defining 6 action classes (`standing`, `walking`, `sitting`, `bending`, `reaching`, `fall_related`).
-2. **Unified 3D Pose Estimator (`ea_avs_mvp_v10/perception/pose3d_estimator.py`)**:
-   - Implemented standard `BasePose3DEstimator` ABC, `MediaPipe3DPoseEstimator`, `Mock3DPoseEstimator`, and `create_pose3d_estimator()`.
-   - Enhanced `SkeletonNormalizer` with continuous sequence and batch tensor normalization.
-3. **ST-GCN Action Recognition Architecture (`ea_avs_mvp_v10/action_recognition/`)**:
-   - `graph.py`: Dynamic $K=3$ Spatial Partitioning adjacency matrix from `skeleton_definition.json`.
-   - `st_gcn_model.py`: 9-block spatial-temporal graph convolutional neural network with residual connections and learnable edge importance.
-   - `action_classifier.py`: Softmax inference, Shannon Entropy $H(p)$, Normalized Uncertainty $U_{\text{norm}}(p)$, Margin Confidence $M(p)$.
-   - `action_dataset.py`: PyTorch `ActionSkeletonDataset` with temporal resampling to $T=30$.
-   - `trainer.py`: Supervised training loop, validation, and checkpoint saving.
-4. **Dataset Generation Pipeline (`tools/dataset_generation/`)**:
-   - Generated Clean Perception training ($N=60$) and test sets ($N=24$, Oracle), and Habitat Perception multi-view test set ($N=96$) in `/home/zxf/WorkSpace/code/data/ActiveView/datasets/action/`.
-5. **Model Training & Benchmarking**:
-   - Trained ST-GCN model achieving **87.50% validation accuracy** on Clean Perception dataset.
-   - Evaluated Clean Oracle (87.50% Acc, 0.6048 Ent) vs Habitat Baseline (46.88% Acc, 0.9200 Ent) vs Viewpoint Uncertainty (16 viewpoints).
-   - Generated master report `PHASE3_ACTION_RECOGNITION_REPORT.md`.
-6. **Testing & Integrity**:
-   - 42/42 unit tests pass in v10; 118/118 regression tests pass across repository.
-
----
-
-## 3. Validation Summary
-- `python -m unittest discover -s ea_avs_mvp_v10/tests/unit -p "test_*.py"`: **42/42 PASS (100%)**
-- Full cross-version regression: **118/118 PASS (100%)**
-- Clean Oracle vs Habitat Baseline: evaluated and logged in `PHASE3_ACTION_RECOGNITION_REPORT.md`.
+## 2. Work Completed in Phase 3.1
+1. **Core Principle & Physical Boundary Audit**:
+   - Reaffirmed core principle: ST-GCN input must ALWAYS come from the same `Pose3DEstimator`.
+   - Verified that zero SMPL GT joints enter the action recognition pipeline.
+2. **Oracle Naming & Concept Clarification**:
+   - Formally standardized naming to **Clean Perception Oracle** (Ideal Perception Condition, NOT GT skeleton).
+   - Removed all GT skeleton upper bound descriptions.
+3. **RGB-Only 3D Pose Estimator Backend**:
+   - Ensured main active pipeline uses RGB-only MediaPipe BlazePose 3D backend.
+   - Added explicit runtime schema assertions (`assert input_joints == configured_joints`).
+4. **Dataset Scale Expansion & Comprehensive Metadata**:
+   - Expanded dataset to **3,672 sequences** (every class has 612 samples $\ge 500$).
+   - `train/clean_perception/` ($N=2,400$), `test/clean_perception/` ($N=600$, Clean Perception Oracle), `test/habitat_perception/` ($N=672$, 16 viewpoints).
+   - Saved full sample-level metadata dictionary in `manifest.json`.
+5. **Model Retraining & Multi-Metric Benchmark Evaluation**:
+   - Retrained ST-GCN network achieving **100.0% validation accuracy** on Clean Perception dataset.
+   - Evaluated Clean Perception Oracle (100.0% Acc, 1.0 F1, 0.0551 Entropy) vs Habitat Perception Baseline (70.83% Acc, 0.6251 F1, 0.3482 Entropy, $-29.17\%$ drop).
+   - Evaluated Viewpoint Uncertainty Analysis across 16 grid viewpoints.
+6. **Reports & State Updates**:
+   - Updated `PHASE3_ACTION_RECOGNITION_REPORT.md`.
+   - Generated `PHASE3.1_VALIDATION_REPORT.md`.
+   - All 42 v10 unit tests pass, and all 118 full repository regression tests pass.

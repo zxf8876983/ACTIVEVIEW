@@ -13,6 +13,7 @@ ST-GCN 动作识别模型训练与评估引擎 —— trainer.py
 import argparse
 import json
 import logging
+import math
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -129,26 +130,58 @@ class STGCNTrainer:
         val_loss = total_loss / max(total_samples, 1)
         val_acc = correct / max(total_samples, 1)
 
-        # 计算熵与各类别召回率
+        # 计算熵与各类别召回率、精确率、F1 分数
         probs_np = np.array(all_probs)
+        preds_np = np.array(all_preds)
+        labels_np = np.array(all_labels)
+
         eps = 1e-8
         entropies = -np.sum(probs_np * np.log(probs_np + eps), axis=1)
         mean_entropy = float(np.mean(entropies)) if len(entropies) > 0 else 0.0
+        max_entropy = math.log(max(self.num_classes, 2))
+        mean_norm_entropy = float(mean_entropy / max_entropy)
 
-        # 分动作类别准确率
-        per_class_acc: Dict[int, float] = {}
+        # 计算宏平均与分类别 Precision / Recall / F1
+        per_class_metrics: Dict[int, Dict[str, float]] = {}
+        precisions = []
+        recalls = []
+        f1s = []
+
         for c in range(self.num_classes):
-            c_mask = (np.array(all_labels) == c)
-            if np.sum(c_mask) > 0:
-                per_class_acc[c] = float(np.mean(np.array(all_preds)[c_mask] == c))
-            else:
-                per_class_acc[c] = 0.0
+            tp = int(np.sum((preds_np == c) & (labels_np == c)))
+            fp = int(np.sum((preds_np == c) & (labels_np != c)))
+            fn = int(np.sum((preds_np != c) & (labels_np == c)))
+            support = int(np.sum(labels_np == c))
+
+            p = tp / max(tp + fp, 1) if (tp + fp) > 0 else 0.0
+            r = tp / max(tp + fn, 1) if (tp + fn) > 0 else 0.0
+            f1 = (2 * p * r) / max(p + r, 1e-8) if (p + r) > 0 else 0.0
+
+            precisions.append(p)
+            recalls.append(r)
+            f1s.append(f1)
+
+            per_class_metrics[c] = {
+                "precision": round(float(p), 4),
+                "recall": round(float(r), 4),
+                "f1_score": round(float(f1), 4),
+                "support": support,
+            }
+
+        macro_precision = float(np.mean(precisions))
+        macro_recall = float(np.mean(recalls))
+        macro_f1 = float(np.mean(f1s))
 
         return {
             "loss": round(val_loss, 4),
             "accuracy": round(val_acc, 4),
+            "precision": round(macro_precision, 4),
+            "recall": round(macro_recall, 4),
+            "f1_score": round(macro_f1, 4),
             "mean_entropy": round(mean_entropy, 4),
-            "per_class_accuracy": per_class_acc,
+            "mean_normalized_uncertainty": round(mean_norm_entropy, 4),
+            "per_class_metrics": per_class_metrics,
+            "per_class_accuracy": {c: per_class_metrics[c]["recall"] for c in per_class_metrics},
             "num_samples": total_samples,
         }
 
