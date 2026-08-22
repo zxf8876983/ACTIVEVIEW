@@ -127,6 +127,8 @@ def main():
     parser.add_argument("--weight_decay", type=float, default=1e-4, help="Weight decay")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--device", type=str, default=None, help="Device (cpu/cuda)")
+    parser.add_argument("--dataset_dir", type=str, default=None, help="Utility dataset directory")
+    parser.add_argument("--checkpoint_dir", type=str, default=None, help="Checkpoint output directory")
     parser.add_argument("--rebuild_dataset", action="store_true", help="Force rebuild utility dataset")
     args = parser.parse_args()
 
@@ -135,7 +137,7 @@ def main():
     logger.info("Using device: %s", device)
 
     data_root = get_data_root()
-    util_dir = data_root / "v11_utility_dataset"
+    util_dir = Path(args.dataset_dir) if args.dataset_dir else (data_root / "v11_utility_dataset")
 
     # 1. 构建或加载 Utility Dataset
     if args.rebuild_dataset or not (util_dir / "train.json").exists():
@@ -149,8 +151,8 @@ def main():
     with open(util_dir / "test.json", "r", encoding="utf-8") as f:
         test_records = json.load(f)
 
-    logger.info("Loaded Utility Dataset: Train=%d, Val=%d, Test=%d",
-                len(train_records), len(val_records), len(test_records))
+    logger.info("Loaded Utility Dataset from %s: Train=%d, Val=%d, Test=%d",
+                util_dir, len(train_records), len(val_records), len(test_records))
 
     train_loader = DataLoader(UtilityDataset(train_records), batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(UtilityDataset(val_records), batch_size=args.batch_size, shuffle=False)
@@ -167,7 +169,7 @@ def main():
     best_val_metrics = {}
     best_model_state = None
 
-    ckpt_dir = data_root / "checkpoints" / "v11_utility"
+    ckpt_dir = Path(args.checkpoint_dir) if args.checkpoint_dir else (data_root / "checkpoints" / "v11_utility")
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     best_ckpt_path = ckpt_dir / "utility_predictor_best.pth"
 
@@ -233,7 +235,7 @@ def main():
         "checkpoint_path": str(best_ckpt_path),
     }
 
-    results_file = data_root / "v11_utility_dataset" / "evaluation_results.json"
+    results_file = util_dir / "evaluation_results.json"
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(results_payload, f, indent=2)
 

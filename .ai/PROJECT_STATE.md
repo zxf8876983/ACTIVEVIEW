@@ -9,11 +9,11 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：**v11.0 Phase 3 (v11.3, `ea_avs_mvp_v11/`) — Viewpoint Utility Predictor**
+- **项目阶段**：**v11.0 Phase 3 (v11.3-MultiScene, `ea_avs_mvp_v11/`) — Multi-Scene Multi-Position Active View Upgrade**
   - **v10.0 (Perception & Action Recognition Foundation)**: `FROZEN` (只读基准，统一 RGB 驱动 3D 姿态估计、ST-GCN 动作分类与 Shannon 熵不确定度量化体系全面固化)；
   - **v11.1 (Candidate Generation & Filtering)**: `COMPLETED & CLOSED` (实现人体中心极坐标 32 候选点生成、Face Human Yaw 朝向计算、Habitat 3阶段过滤器与自包含闭环架构)；
   - **v11.2 / v11.2.1 (Viewpoint Quality Dataset & Metadata Enhancement)**: `COMPLETED & CLOSED` (生成 8,400 视点质量样本，严格实例互斥划分，完成 current_viewpoint 与标准别名注入)；
-  - **v11.3 (Utility Predictor)**: `COMPLETED & CLOSED` (实现 `UtilityDatasetBuilder`、轻量 3 层 MLP `ViewpointUtilityPredictorNet`、训练流水线、4 大策略基准选择对比与 184/184 单元测试回归)；
+  - **v11.3 (Utility Predictor & Multi-Scene Distribution Upgrade)**: `COMPLETED & SCIENTIFICALLY VALIDATED` (多场景多位置数据集升级：3 个 Habitat 场景，300 Episodes，9,600 样本，100% 非零熵；重新训练 Utility Predictor MLP 测试集 Spearman $\rho=0.9836$；Benchmark 对比 Ours $H=0.0004$ 远优于 Nearest $H=0.3517$)；
   - **v11.4 (Active Selection Policy & Simulation Closed Loop)**: `READY TO START` (待用户明确指令后进入)。
 - **历史基线**：
   - `v1.0` ~ `v6.0`: Active View 几何与物理遮挡评测探索（CLOSED / FINALIZED，保持只读）；
@@ -21,18 +21,19 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
   - `v8.0` ~ `v8.2`: 局部主动视角规划与几何质量基准（COMPLETED / FINALIZED & FROZEN，保持只读）；
   - `v9.0`: 任务先验规则主动视角打分基准（COMPLETED & RETAINED AS BASELINE）；
   - `v9.1`: 感知质量驱动主动视角选择与退化基准（COMPLETED / FINALIZED & FROZEN，保持只读）。
-- **架构组织**：处于版本化递进过渡期（`v1 -> ... -> v9 -> v10`），各版本保留独立目录与设计文档。
+- **架构组织**：独立版本目录架构（`ea_avs_mvp_v11/`）。
 
 ---
 
 ## 2. Active Development Version
-- **Version**: v10.0 (10.0.0 Phase 3 — Action Recognition & Uncertainty)
-- **Title**: RGB-D Driven Task-aware Active View Selection for Human Action Recognition
-- **Active Code Directory**: `ea_avs_mvp_v10/`
+- **Version**: v11.0 (v11.3 Active View Utility Predictor)
+- **Title**: Multi-Scene Active View Selection for Human Action Recognition
+- **Active Code Directory**: `ea_avs_mvp_v11/`
 - **Active Specifications**:
-  - `ACTIVEVIEW_V10.0_Research_Development_Document.md`
-  - `ACTIVEVIEW_V10.0_Code_Generation_Specification.md`
-  - `PHASE3_ACTION_RECOGNITION_REPORT.md`
+  - `ACTIVEVIEW_V11.0_Research_Development_Document.md`
+  - `ACTIVEVIEW_V11.0_Code_Generation_Specification.md`
+  - `V11.3_MULTISCENE_DATASET_UPGRADE_REPORT.md`
+  - `V11.3_UTILITY_PREDICTOR_REPORT.md`
 - **Inherited Assets & Infrastructure from v7, v8, v9**:
   - Habitat 室内仿真环境生命周期管理 (`ea_avs_mvp_v7.environment.habitat_env`, `ea_avs_mvp_v8.environment.env_adapter`)
   - KinematicHumanoid 人形模型加载与动作驱动 (`ea_avs_mvp_v7.human`)

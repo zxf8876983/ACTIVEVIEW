@@ -102,14 +102,16 @@ class UtilityDatasetBuilder:
         all_utilities: List[float] = []
 
         for m_id, sample_list in instance_samples.items():
-            # 确定当前实例的初始参考熵 H_current (取侧向/背向等大视距观察位姿的平均熵，或最高熵，作为起始状态不确定度)
-            # 在没有额外初始帧时，默认当前机器人位于远离人体处 (dist=4.0m)，其不确定度基线设为 max(entropy) + 0.1 或 0.40
-            h_candidate_list = [float(s["entropy"]) for s in sample_list]
-            # 基准起始熵: 设为该实例候选集中较大不确定度 (模拟未移动前的初始观察状态)
-            h_current = max(0.40, float(np.mean(h_candidate_list)) + 0.15)
-
             for s in sample_list:
+                cv = s.get("current_viewpoint", {})
+                d_curr = float(cv.get("distance_to_human", 4.0))
+                ang_curr = float(cv.get("angle_to_human", 0.0))
+                is_back_c = (90.0 <= ang_curr <= 270.0)
+
                 h_cand = float(s["entropy"])
+                # 初始观察状态不确定度: 基于初始大视距 (2~8m) 与初始观察朝向综合确定
+                h_current = max(h_cand + 0.05, 0.50 + 0.10 * min(d_curr, 6.0) + (0.20 if is_back_c else 0.0))
+
                 # 效用收益定义: U(v) = H_current - H_candidate (降低的不确定度，越大越好)
                 utility_gain = round(float(h_current - h_cand), 6)
 
@@ -117,6 +119,8 @@ class UtilityDatasetBuilder:
 
                 record = {
                     "sample_id": s["sample_id"],
+                    "episode_id": s.get("episode_id", s["sample_id"]),
+                    "scene_id": s.get("scene_id", "apartment_1"),
                     "action_label": s["action_label"],
                     "action_id": s["action_id"],
                     "human_id": s["human_id"],
@@ -128,7 +132,7 @@ class UtilityDatasetBuilder:
                     "candidate_entropy": round(float(h_cand), 6),
                     "utility_gain": utility_gain,
                     "target_utility": utility_gain,
-                    "candidate_viewpoint": s["viewpoint"],
+                    "candidate_viewpoint": s.get("candidate_viewpoint", s["viewpoint"]),
                     "current_viewpoint": s["current_viewpoint"],
                 }
 

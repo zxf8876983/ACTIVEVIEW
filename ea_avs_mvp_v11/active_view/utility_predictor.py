@@ -114,3 +114,12 @@ class ViewpointUtilityPredictor:
         if preds.ndim == 0:
             return [float(preds)]
         return [float(p) for p in preds]
+
+    def predict_single(self, features: Union[List[float], np.ndarray]) -> float:
+        """单样本前向预测。"""
+        feat_arr = np.array(features, dtype=np.float32).reshape(1, -1)
+        tensor_in = torch.tensor(feat_arr, dtype=torch.float32).to(self.device)
+        self.model.eval()
+        with torch.no_grad():
+            pred = self.model(tensor_in).cpu().numpy().item()
+        return float(pred)
