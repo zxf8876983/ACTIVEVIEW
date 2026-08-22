@@ -77,47 +77,17 @@ def plot_single_sample_inspection(
     ax1.set_title(f"1. RGB + 2D Skeleton ({skeleton.joint_format})\nAction: {sample_meta.get('action_label', '').upper()}", fontsize=11, fontweight="bold")
     ax1.axis("off")
 
-    # 2. Panel 2: Camera Coordinate 3D Skeleton (Front View)
+    # 2. Panel 2: Camera Coordinate 3D Skeleton (Front View, True Aspect Ratio)
     ax2 = fig.add_subplot(1, 4, 2, projection="3d")
     j_cam = skeleton.joints_3d_camera
-    for j1, j2 in pairs:
-        if j1 < len(confs) and j2 < len(confs):
-            if confs[j1] >= 0.35 and confs[j2] >= 0.35:
-                ax2.plot(
-                    [j_cam[j1, 0], j_cam[j2, 0]],
-                    [j_cam[j1, 2], j_cam[j2, 2]],
-                    [j_cam[j1, 1], j_cam[j2, 1]],
-                    color="deepskyblue", linewidth=2.2,
-                )
     valid_idx = np.where(confs >= 0.35)[0]
-    ax2.scatter(j_cam[valid_idx, 0], j_cam[valid_idx, 2], j_cam[valid_idx, 1], color="blue", s=30)
     depth_mean = np.mean(j_cam[valid_idx, 2]) if len(valid_idx) > 0 else 0.0
-    ax2.set_title(f"2. Camera 3D Skeleton (Front View)\n(Depth Z={depth_mean:.2f}m)", fontsize=11, fontweight="bold")
-    ax2.set_xlabel("X (m)", fontsize=8)
-    ax2.set_ylabel("Z (m)", fontsize=8)
-    ax2.set_zlabel("Y (m)", fontsize=8)
-    ax2.view_init(elev=0, azim=-90)
+    visualizer.draw_3d_limbs(ax2, j_cam, confs, f"2. Camera 3D Skeleton (Front View)\n(Depth Z={depth_mean:.2f}m)", is_normalized=False, view_mode="front")
 
-    # 3. Panel 3: Normalized 3D Skeleton (ST-GCN Input)
+    # 3. Panel 3: Normalized 3D Skeleton (ST-GCN Input, 3D Orbit View, True Aspect Ratio)
     ax3 = fig.add_subplot(1, 4, 3, projection="3d")
     j_norm = skeleton.joints_3d_normalized if skeleton.joints_3d_normalized is not None else j_cam
-    for j1, j2 in pairs:
-        if j1 < len(confs) and j2 < len(confs):
-            if confs[j1] >= 0.35 and confs[j2] >= 0.35:
-                ax3.plot(
-                    [j_norm[j1, 0], j_norm[j2, 0]],
-                    [j_norm[j1, 2], j_norm[j2, 2]],
-                    [j_norm[j1, 1], j_norm[j2, 1]],
-                    color="#8E44AD", linewidth=2.2,
-                )
-    ax3.scatter(j_norm[valid_idx, 0], j_norm[valid_idx, 2], j_norm[valid_idx, 1], color="#E67E22", s=30)
-    ax3.scatter(0, 0, 0, color="red", marker="^", s=80, label="Root (0,0,0)")
-    ax3.set_title("3. Normalized 3D Skeleton\n(Root-Centered & Scale-Normalized)", fontsize=11, fontweight="bold")
-    ax3.set_xlabel("Norm X", fontsize=8)
-    ax3.set_ylabel("Norm Z", fontsize=8)
-    ax3.set_zlabel("Norm Y", fontsize=8)
-    ax3.legend(loc="upper right", fontsize=8)
-    ax3.view_init(elev=15, azim=-60)
+    visualizer.draw_3d_limbs(ax3, j_norm, confs, "3. Normalized 3D Skeleton\n(Root-Centered & Scale-Normalized)", is_normalized=True, view_mode="orbit")
 
     # 4. Panel 4: Perception Confidence & Sanity Info Card
     ax4 = fig.add_subplot(1, 4, 4)
