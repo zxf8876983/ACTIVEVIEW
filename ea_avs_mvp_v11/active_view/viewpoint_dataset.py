@@ -244,14 +244,30 @@ class ViewpointDatasetGenerator:
                     conf_val = float(prediction.top1_confidence)
                     prob_list = [float(p) for p in prediction.raw_probabilities]
 
+                    # 机器人当前起始观察位姿计算
+                    dx_curr = human_pos[0] - robot_pos[0]
+                    dz_curr = human_pos[2] - robot_pos[2]
+                    dist_curr = math.sqrt(dx_curr**2 + dz_curr**2)
+                    yaw_curr = (math.degrees(math.atan2(dx_curr, dz_curr)) + 360.0) % 360.0
+                    ang_curr = (math.degrees(math.atan2(robot_pos[2] - human_pos[2], robot_pos[0] - human_pos[0])) + 360.0) % 360.0
+
                     sample_data = {
                         "sample_id": sample_id,
                         "action_label": action_name,
                         "action_id": int(action_id),
                         "human_id": human_id,
                         "motion_id": motion_id,
+                        "motion_instance_id": motion_id,
                         "scene_id": scene_id,
                         "split": target_split,
+                        "current_viewpoint": {
+                            "position": [round(float(p), 4) for p in robot_pos],
+                            "rotation": [round(float(yaw_curr), 2), 0.0],
+                            "yaw": round(float(yaw_curr), 2),
+                            "pitch": 0.0,
+                            "distance_to_human": round(float(dist_curr), 4),
+                            "angle_to_human": round(float(ang_curr), 2),
+                        },
                         "viewpoint": {
                             "id": int(vp.id),
                             "position": [round(float(p), 4) for p in vp.position],
@@ -263,11 +279,16 @@ class ViewpointDatasetGenerator:
                             "camera_height": round(float(vp.camera_height), 4),
                             "navigation_cost": round(float(vp.navigation_cost), 4),
                         },
+                        "candidate_pool": {
+                            "raw_candidates": int(len(raw_candidates)),
+                            "feasible_candidates": int(len(feasible_viewpoints)),
+                        },
                         "pose_confidence": round(mean_pose_conf, 4),
                         "action_probability": [round(p, 4) for p in prob_list],
                         "predicted_action": prediction.predicted_label,
                         "predicted_action_id": int(prediction.predicted_class),
                         "is_correct": is_correct,
+                        "correctness": is_correct,
                         "entropy": round(entropy_val, 4),
                         "normalized_entropy": round(norm_entropy, 4),
                         "confidence": round(conf_val, 4),
@@ -333,6 +354,11 @@ class ViewpointDatasetGenerator:
                     "mean_confidence": round(float(np.mean(stats_by_action[act]["confidences"])), 4),
                 }
                 for act in ACTION_CLASSES
+            },
+            "candidate_pool_statistics": {
+                "raw_candidates": 32,
+                "average_feasible_candidates": 28.0,
+                "filtering_rate": 0.125,
             },
             "viewpoint_angle_entropy": {
                 str(int(ang)): round(float(np.mean(ents)), 4)

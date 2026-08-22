@@ -9,10 +9,10 @@ Target Audience: Coding Agents (Codex, DeepSeek, Claude Code, Gemini) & Research
 ---
 
 ## 1. Current Stage
-- **项目阶段**：**v11.0 Phase 2 (v11.2, `ea_avs_mvp_v11/`) — Viewpoint Quality Dataset Generation**
+- **项目阶段**：**v11.0 Phase 2.1 (v11.2.1, `ea_avs_mvp_v11/`) — Viewpoint Quality Dataset Metadata Enhancement**
   - **v10.0 (Perception & Action Recognition Foundation)**: `FROZEN` (只读基准，统一 RGB 驱动 3D 姿态估计、ST-GCN 动作分类与 Shannon 熵不确定度量化体系全面固化)；
   - **v11.1 (Candidate Generation & Filtering)**: `COMPLETED & CLOSED` (实现人体中心极坐标 32 候选点生成、Face Human Yaw 朝向计算、Habitat 3阶段过滤器与自包含闭环架构)；
-  - **v11.2 (Viewpoint Quality Dataset Generation)**: `COMPLETED & CLOSED` (实现 `ViewpointDatasetGenerator`，批量生成 300 动作实例 $\times$ 28 视点 = 8,400 视点质量样本，严格实例互斥划分 70% Train / 15% Val / 15% Test，生成角度-距离熵热力图可视化与 176/176 单元测试回归)；
+  - **v11.2 / v11.2.1 (Viewpoint Quality Dataset & Metadata Enhancement)**: `COMPLETED & CLOSED` (实现 `ViewpointDatasetGenerator` 与 `update_v112_metadata.py`，8,400 视点质量样本全量注入 `current_viewpoint` 起始观察位姿、标准别名与候选池剪枝统计，180/180 单元测试回归通过)；
   - **v11.3 (Utility Predictor)**: `READY TO START` (待用户明确指令后进入)；
   - **v11.4 (Active Selection Policy)**: `PLANNED`。
 - **历史基线**：
