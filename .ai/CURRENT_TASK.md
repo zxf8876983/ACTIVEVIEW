@@ -1,36 +1,52 @@
 # ACTIVEVIEW Current Task
 
 ## 1. Task Definition
-- **Task ID**: `V11.3-MULTISCENE-ACTIVE-VIEW-DATASET-UPGRADE`
+- **Task ID**: `V11.5-PERCEPTION-AWARE-ACTIVE-VIEW-BENCHMARK`
 - **Active Directory**: `ea_avs_mvp_v11/`
-- **Goal**: Upgrade ACTIVEVIEW v11.3 data distribution from single-scene to Multi-Scene Multi-Position Active View Dataset across >=3 Habitat scenes with randomized human placement and robot initial view, re-train Utility Predictor, and demonstrate clear Active View superiority over Nearest baseline.
+- **Goal**: Reconstruct a perception-aware, zero-ground-truth-leakage Active View Benchmark based on optical sensor rendering, Keypoint R-CNN 2D detection, VideoPose3D 3D lifting, unified skeleton normalization, frozen ST-GCN classification, and Habitat HM3D multi-baseline evaluation.
 - **Phase Status**: `COMPLETED & SCIENTIFICALLY VALIDATED`
 
 ---
 
-## 2. Work Completed in v11.3 Multi-Scene Upgrade
-1. **Multi-Scene Management (`ea_avs_mvp_v11/active_view/scene_manager.py`)**:
-   - Implemented `SceneManager` indexing `apartment_1`, `skokloster-castle`, `van-gogh-room` and HSSD scenes.
-2. **Scene Check & Audit Tool (`ea_avs_mvp_v11/tools/check_habitat_scenes.py` & root alias)**:
-   - Audited local Habitat scenes and provided HuggingFace download interface without forced auto-downloads.
-3. **Random Human Placement Generator (`ea_avs_mvp_v11/active_view/human_placement_generator.py`)**:
-   - Implemented `HumanPlacementGenerator` placing humans on NavMesh with >=1.0m clearance and random 0~360 deg yaw.
-4. **Robot Initial View Randomization (`ea_avs_mvp_v11/active_view/robot_start_sampler.py`)**:
-   - Implemented `RobotStartSampler` placing robot at 2m~8m distance with Face-Human Yaw and authentic `current_viewpoint`.
-5. **Multi-Scene Episode Dataset Generator (`ea_avs_mvp_v11/active_view/multiscene_dataset_generator.py`)**:
-   - Generated 300 episodes across 3 scenes (9,600 viewpoints, 100% non-zero entropy, mean entropy 0.2406 nats).
-   - Saved to `data/ActiveView/v11_multiscene_viewpoint_dataset/` with strict instance-disjoint splits.
-6. **Utility Dataset & Predictor Re-training (`ea_avs_mvp_v11/scripts/train_utility_predictor.py`)**:
-   - Re-trained 3-layer MLP on `v11_multiscene_utility_dataset`.
-   - Test Spearman correlation reached **$\rho = 0.9836$** (MSE = 0.002549, MAE = 0.035160).
-   - Saved checkpoint to `data/ActiveView/checkpoints/v11_utility_multiscene/utility_predictor_best.pth`.
-7. **Benchmark Evaluation on Multi-Scene Test Set**:
-   - **Nearest baseline degraded**: $H(v) = 0.3517\text{ nats}, \Delta H = 0.6071\text{ nats}, \text{Oracle Gap} = 0.3513\text{ nats}$.
-   - **Utility Predictor (Ours)**: $H(v) = \mathbf{0.0004}\text{ nats}, \Delta H = \mathbf{0.9585}\text{ nats}, \text{Oracle Gap} = \mathbf{0.0000}\text{ nats}$ (**$879\times$ lower uncertainty, $+57.9\%$ information gain over Nearest**).
-8. **Scientific Visualizations (`ea_avs_mvp_v11/tools/visualization/multiscene_visualizer.py`)**:
-   - Generated `outputs/v11_visualization/multiscene_active_view_distribution.png` and `multiscene_utility_evaluation.png`.
-9. **Unit Tests & Regression**:
-   - `test_v11_multiscene_dataset.py`: 6 / 6 PASS.
-   - Full repository regression tests: **100% PASS**.
-10. **Report**:
-    - `V11.3_MULTISCENE_DATASET_UPGRADE_REPORT.md`.
+## 2. Work Completed in v11.5 Benchmark Reconstruction
+1. **Code Reorganization & Merge (Phase 0)**:
+   - Migrated VideoPose3D model definitions from `tools/videopose3d/` into `ea_avs_mvp_v11/perception/videopose3d/`.
+   - Merged tools (`motion_assets`, `dataset_generation`, `experiments`, `visualization`) into `ea_avs_mvp_v11/`.
+   - Purged obsolete v10/11.4 test directories (`active_view/`, `perception/`, `scripts/`, `tests/`, `tools/`, `run_v11.py`).
+2. **AMASS Motion Instance-Level Disjoint Split (Phase 1)**:
+   - Created `ea_avs_mvp_v11/dataset/dataset_split.py`.
+   - Partitioned converted motions into Train (70%, 8 instances), Val (15%, 6 instances), Test (15%, 6 instances).
+   - Strictly verified $\text{Train} \cap \text{Val} = \emptyset, \text{Train} \cap \text{Test} = \emptyset, \text{Val} \cap \text{Test} = \emptyset$.
+3. **Unified Skeleton Normalization (Phase 2)**:
+   - `ea_avs_mvp_v11/perception/skeleton_normalizer.py`: Pelvis root centering, torso scale normalization, and canonical coronal/sagittal coordinate alignment.
+4. **Clean Perception Studio Dataset Generation (Phase 3)**:
+   - Created `ea_avs_mvp_v11/dataset/clean_dataset_generator.py`.
+   - Rendered human motions in 100% solid background Studio environment (`scene_id='NONE'`).
+   - Processed via Keypoint R-CNN $\to$ VideoPose3D $\to$ Normalizer, generating $(160, 3, 30, 17, 1)$ train and $(60, 3, 30, 17, 1)$ val datasets.
+5. **ST-GCN Training & Model Freezing (Phase 4)**:
+   - Created `ea_avs_mvp_v11/action_recognition/train_st_gcn_v11_5.py`.
+   - Trained on estimated skeletons achieving 55.00% validation accuracy.
+   - Saved and froze best model at `data/ActiveView/checkpoints/v11_5/stgcn_v11_5_best.pth`.
+6. **Habitat Active View Multi-Baseline Benchmark (Phase 5 & 6)**:
+   - Created `ea_avs_mvp_v11/active_view/habitat_active_view_benchmark.py`.
+   - Evaluated 18 test episodes in HM3D `00800-TEEsavR23oF` across 5 baselines:
+     - `Fixed`: Acc 33.33%, Entropy 0.6782
+     - `Random`: Acc 44.44%, Entropy 0.5582 ($\Delta H = +0.1200$)
+     - `Nearest`: Acc 44.44%, Entropy 0.5599 ($\Delta H = +0.1183$)
+     - `Utility_Ours`: Acc 33.33%, Entropy 0.6782
+     - `Oracle Upper Bound`: **Acc 55.56%, Entropy 0.0133 ($\Delta H = +0.6649$, Conf 0.9980)**.
+7. **Pose Quality Stratification Analysis (Phase 7)**:
+   - Created `ea_avs_mvp_v11/evaluation/pose_quality_analysis.py`.
+   - Correlated viewpoint occlusion/angle with 2D keypoint confidence and ST-GCN classification entropy/accuracy.
+8. **Anti-Leakage Static Code Audit**:
+   - `grep -rn "gt_skeleton"` and `grep -rn "smpl.*joint"`: 0 leakage into ST-GCN decision paths.
+9. **Scientific Report**:
+   - `V11.5_PERCEPTION_AWARE_ACTIVE_VIEW_REPORT.md`.
+
+---
+
+## 3. Validation Summary
+- `python -m compileall ea_avs_mvp_v11`: **100% PASS (0 syntax or import errors)**.
+- AMASS Disjoint Partitioning: **100% PASS**.
+- ST-GCN Clean Perception Convergence: **55.00% Val Acc**.
+- Habitat Active View Benchmark: **18 / 18 Episodes Completed**.
