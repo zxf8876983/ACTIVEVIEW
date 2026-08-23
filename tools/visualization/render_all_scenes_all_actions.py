@@ -250,18 +250,33 @@ def render_single_scene_all_actions(
     human_root_pos = np.array([valid_human_pt[0], y_floor + 0.90, valid_human_pt[2]], dtype=np.float32)
     art_obj.translation = human_root_pos
 
-    # 预先生成可行的环绕机位列表
+    # 预先生成完全直视人体、无视线遮挡的环绕机位列表 (Line-of-Sight Clear Viewpoints)
     candidate_viewpoints = []
     for ang in np.linspace(0, 360, 32, endpoint=False):
         rad = np.radians(ang)
         cand = np.array([valid_human_pt[0] + 2.2 * np.sin(rad), y_floor, valid_human_pt[2] + 2.2 * np.cos(rad)], dtype=np.float32)
-        if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.20:
-            candidate_viewpoints.append(cand)
+        if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.25:
+            # 视线中点与四分点障碍物检测，确保相机到人体之间无墙壁阻挡
+            p_mid = (cand + valid_human_pt) * 0.5
+            p_q1 = cand * 0.75 + valid_human_pt * 0.25
+            p_q3 = cand * 0.25 + valid_human_pt * 0.75
+            if (nav.is_navigable(p_mid) and nav.distance_to_closest_obstacle(p_mid) >= 0.15 and
+                nav.is_navigable(p_q1) and nav.distance_to_closest_obstacle(p_q1) >= 0.15 and
+                nav.is_navigable(p_q3) and nav.distance_to_closest_obstacle(p_q3) >= 0.15):
+                candidate_viewpoints.append(cand)
+
+    if not candidate_viewpoints:
+        # 后备：正前方与环绕采样
+        for ang in [0.0, 45.0, 90.0, 135.0, 180.0, 225.0, 270.0, 315.0]:
+            rad = np.radians(ang)
+            cand = np.array([valid_human_pt[0] + 2.0 * np.sin(rad), y_floor, valid_human_pt[2] + 2.0 * np.cos(rad)], dtype=np.float32)
+            if nav.is_navigable(cand):
+                candidate_viewpoints.append(cand)
 
     if not candidate_viewpoints:
         candidate_viewpoints = [np.array([valid_human_pt[0] + 1.8, y_floor, valid_human_pt[2] + 0.8], dtype=np.float32)]
 
-    logger.info("[%s] Human placed at %s (Clearance: %.2fm, Available 360-views: %d)", scene_name, human_root_pos, root_clearance, len(candidate_viewpoints))
+    logger.info("[%s] Human placed at %s (Clearance: %.2fm, Clean LOS 360-views: %d)", scene_name, human_root_pos, root_clearance, len(candidate_viewpoints))
 
     action_figure_paths = {}
 
@@ -285,7 +300,7 @@ def render_single_scene_all_actions(
         human_current_pos = np.array([valid_human_pt[0], grounded_root_y, valid_human_pt[2]], dtype=np.float32)
         art_obj.translation = human_current_pos
 
-        # 从开阔环绕机位中选择
+        # 从完全无遮挡的机位列表中选择
         robot_pt = candidate_viewpoints[act_idx % len(candidate_viewpoints)]
 
         cam_height = 1.50  # 固定为 1.50m
@@ -295,8 +310,9 @@ def render_single_scene_all_actions(
         dir_vec = target_pos - cam_pos
         dir_norm = dir_vec / np.linalg.norm(dir_vec)
 
-        yaw = np.arctan2(dir_norm[0], -dir_norm[2])
-        pitch = np.arcsin(dir_norm[1])  # 负角俯视对准人体中心
+        # 精确对准人体的相机构形旋转计算 (Rigorous Look-At Quaternions)
+        yaw = np.arctan2(-dir_norm[0], -dir_norm[2])
+        pitch = np.arcsin(dir_norm[1])  # 负角俯视对准人体躯干中心
 
         cam_rot = quaternion.from_rotation_vector([0, yaw, 0]) * quaternion.from_rotation_vector([pitch, 0, 0])
 
