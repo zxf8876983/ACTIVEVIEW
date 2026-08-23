@@ -12,7 +12,7 @@ camera:
   width: 640
   height: 480
   hfov_deg: 90.0
-  camera_height: 1.20
+  camera_height: 1.50
   clip_near: 0.01
   clip_far: 10.0
 
@@ -36,8 +36,9 @@ motion:
 viewpoint:
   radii: [1.5, 2.0, 2.5]
   num_angles: 8
-  camera_height: 1.20
+  camera_height: 1.50
   ground_height: -1.60
+
   min_distance_to_human: 1.0
   max_distance_to_human: 3.5
 

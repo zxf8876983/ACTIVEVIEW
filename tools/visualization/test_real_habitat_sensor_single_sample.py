@@ -122,8 +122,11 @@ def run_fullbody_collision_aware_test():
     if robot_pt is None:
         robot_pt = np.array([valid_human_pt[0], y_floor, valid_human_pt[2] + 2.3], dtype=np.float32)
 
-    cam_pos = np.array([robot_pt[0], y_floor + 1.1, robot_pt[2]], dtype=np.float32)
+    # 相机高度固定为 1.5m
+    camera_height = 1.50
+    cam_pos = np.array([robot_pt[0], y_floor + camera_height, robot_pt[2]], dtype=np.float32)
     target_pos = np.array([valid_human_pt[0], y_floor + 0.9, valid_human_pt[2]], dtype=np.float32)
+
 
     dir_vec = target_pos - cam_pos
     dir_norm = dir_vec / np.linalg.norm(dir_vec)

@@ -9,8 +9,9 @@ sampling:
   # 观察半径 / 距离候选列表 (单位: 米)
   distances_m: [1.5, 2.0, 2.5, 3.0]
   # 机器人相机相对地面安装高度 (单位: 米)
-  camera_height_m: 1.25
+  camera_height_m: 1.50
   # 观察俯仰角 (单位: 度, 0.0 表示平视, 负值表示轻微俯视人体中心)
+
   camera_pitch_deg: 0.0
 
 # 2. 导航可行性过滤约束 (Habitat Navigation & Reachability Constraints)

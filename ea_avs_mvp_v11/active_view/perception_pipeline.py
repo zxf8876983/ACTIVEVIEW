@@ -41,11 +41,12 @@ class HabitatSensorRenderer:
         self,
         image_size: Tuple[int, int] = (256, 256),
         hfov_deg: float = 90.0,
-        camera_height: float = 1.2,
+        camera_height: float = 1.5,
     ):
         self.width, self.height = image_size
         self.hfov_deg = hfov_deg
         self.camera_height = camera_height
+
         self._sim = None
         self._current_scene = None
 
