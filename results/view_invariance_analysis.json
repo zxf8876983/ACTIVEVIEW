@@ -1,0 +1,142 @@
+{
+  "title": "ACTIVEVIEW v11.4.1 View Rotation Robustness & Invariance Analysis",
+  "categories": [
+    "standing",
+    "sitting",
+    "bending",
+    "reaching",
+    "fall_related"
+  ],
+  "angles_evaluated": [
+    0.0,
+    45.0,
+    90.0,
+    135.0,
+    180.0,
+    225.0,
+    270.0,
+    315.0
+  ],
+  "results_before_canonical_alignment": {
+    "000deg": {
+      "angle_deg": 0.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "045deg": {
+      "angle_deg": 45.0,
+      "accuracy_pct": 20.0,
+      "mean_entropy": 0.0,
+      "mean_confidence": 1.0,
+      "num_samples": 100
+    },
+    "090deg": {
+      "angle_deg": 90.0,
+      "accuracy_pct": 20.0,
+      "mean_entropy": 0.0,
+      "mean_confidence": 1.0,
+      "num_samples": 100
+    },
+    "135deg": {
+      "angle_deg": 135.0,
+      "accuracy_pct": 20.0,
+      "mean_entropy": 0.0,
+      "mean_confidence": 1.0,
+      "num_samples": 100
+    },
+    "180deg": {
+      "angle_deg": 180.0,
+      "accuracy_pct": 20.0,
+      "mean_entropy": 0.0,
+      "mean_confidence": 1.0,
+      "num_samples": 100
+    },
+    "225deg": {
+      "angle_deg": 225.0,
+      "accuracy_pct": 20.0,
+      "mean_entropy": 0.0,
+      "mean_confidence": 1.0,
+      "num_samples": 100
+    },
+    "270deg": {
+      "angle_deg": 270.0,
+      "accuracy_pct": 20.0,
+      "mean_entropy": 0.0,
+      "mean_confidence": 1.0,
+      "num_samples": 100
+    },
+    "315deg": {
+      "angle_deg": 315.0,
+      "accuracy_pct": 20.0,
+      "mean_entropy": 0.0,
+      "mean_confidence": 1.0,
+      "num_samples": 100
+    }
+  },
+  "results_after_canonical_alignment": {
+    "000deg": {
+      "angle_deg": 0.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "045deg": {
+      "angle_deg": 45.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "090deg": {
+      "angle_deg": 90.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "135deg": {
+      "angle_deg": 135.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "180deg": {
+      "angle_deg": 180.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "225deg": {
+      "angle_deg": 225.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "270deg": {
+      "angle_deg": 270.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    },
+    "315deg": {
+      "angle_deg": 315.0,
+      "accuracy_pct": 97.0,
+      "mean_entropy": 0.1739,
+      "mean_confidence": 0.9408,
+      "num_samples": 100
+    }
+  },
+  "summary": {
+    "mean_accuracy_before_pct": 29.62,
+    "mean_accuracy_after_pct": 97.0,
+    "variance_before": 648.48,
+    "variance_after": 0.0
+  }
+}

@@ -81,6 +81,11 @@ class ActionClassifier:
 
         self.num_classes = len(self.action_classes)
 
+        # 初始化归一化器与正规化对齐器
+        self.normalizer = SkeletonNormalizer(skel_def=self.skel_def)
+        from ea_avs_mvp_v11.active_view.skeleton_canonicalizer import CanonicalSkeletonAligner
+        self.canonical_aligner = CanonicalSkeletonAligner(skel_def=self.skel_def)
+
         # 设备选择
         if device is None:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -125,7 +130,6 @@ class ActionClassifier:
         logger.info("Loaded ST-GCN checkpoint (%d classes) from: %s", self.num_classes, checkpoint_path)
         self.model.eval()
 
-
     @staticmethod
     def compute_uncertainty_metrics(probs: np.ndarray, num_classes: int) -> Tuple[float, float, float]:
         """
@@ -147,19 +151,25 @@ class ActionClassifier:
         self,
         skeleton_sequence: np.ndarray,
         is_normalized: bool = False,
+        apply_canonical: bool = True,
     ) -> ActionPredictionResult:
         """
-        对单段 (T, V, 3) 骨架时序进行动作分类与不确定度计算。
+        对单段 (T, V, 3) 骨架时序进行动作分类与不确定度计算 (包含人体坐标系正规化)。
         """
         if not is_normalized:
             norm_seq = self.normalizer.normalize_sequence(skeleton_sequence)
         else:
             norm_seq = skeleton_sequence
 
+        # 应用 Canonical Alignment 消除视点偏航旋转
+        if apply_canonical:
+            norm_seq = self.canonical_aligner.align(norm_seq)
+
         # 转换为 PyTorch (1, C, T, V, 1)
         # norm_seq: (T, V, C) -> (C, T, V)
         tensor_data = np.transpose(norm_seq, (2, 0, 1)) # (3, T, V)
         tensor_input = torch.tensor(tensor_data, dtype=torch.float32).unsqueeze(0).unsqueeze(-1).to(self.device)
+
 
         with torch.no_grad():
             logits = self.model(tensor_input) # (1, num_classes)

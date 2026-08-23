@@ -88,6 +88,36 @@ def train_st_gcn(
         val_data = raw_val_data
         val_labels = np.load(val_labels_p)
 
+    skel_def = get_skeleton_definition()
+    from ea_avs_mvp_v11.active_view.skeleton_canonicalizer import CanonicalSkeletonAligner
+    aligner = CanonicalSkeletonAligner(skel_def=skel_def)
+
+
+    # 对训练与验证数据全部执行 Canonical Alignment (并增加随机视点旋转增强)
+    canonical_train_data = np.zeros_like(train_data)
+    canonical_val_data = np.zeros_like(val_data)
+
+    logger.info("Applying Canonical Skeleton Alignment to %d train and %d val samples...", len(train_data), len(val_data))
+    for i in range(len(train_data)):
+        # raw sample: (3, 30, 33, 1) -> (30, 33, 3)
+        raw_skel = np.transpose(train_data[i, :, :, :, 0], (1, 2, 0))
+        # 训练增强：模拟随机相机偏航角旋转
+        rand_yaw = np.random.uniform(0, 2 * np.pi)
+        cos_y, sin_y = np.cos(rand_yaw), np.sin(rand_yaw)
+        R_rand = np.array([[cos_y, 0, -sin_y], [0, 1, 0], [sin_y, 0, cos_y]], dtype=np.float32)
+        aug_skel = np.zeros_like(raw_skel)
+        for t in range(raw_skel.shape[0]):
+            aug_skel[t] = (R_rand @ raw_skel[t].T).T
+
+        # Canonical 对齐
+        canon_skel = aligner.align(aug_skel)
+        canonical_train_data[i, :, :, :, 0] = np.transpose(canon_skel, (2, 0, 1))
+
+    for i in range(len(val_data)):
+        raw_skel = np.transpose(val_data[i, :, :, :, 0], (1, 2, 0))
+        canon_skel = aligner.align(raw_skel)
+        canonical_val_data[i, :, :, :, 0] = np.transpose(canon_skel, (2, 0, 1))
+
     # 临时保存过滤后的数据文件用于 DataLoader
     filtered_dir = data_root / "cache" / "filtered_action_dataset"
     filtered_dir.mkdir(parents=True, exist_ok=True)
@@ -96,16 +126,16 @@ def train_st_gcn(
     f_val_data_p = filtered_dir / "val_data.npy"
     f_val_lbl_p = filtered_dir / "val_labels.npy"
 
-    np.save(f_train_data_p, train_data)
+    np.save(f_train_data_p, canonical_train_data)
     np.save(f_train_lbl_p, train_labels)
-    np.save(f_val_data_p, val_data)
+    np.save(f_val_data_p, canonical_val_data)
     np.save(f_val_lbl_p, val_labels)
 
-    skel_def = get_skeleton_definition()
     train_loader = create_action_dataloader(f_train_data_p, f_train_lbl_p, batch_size=batch_size, shuffle=True)
     val_loader = create_action_dataloader(f_val_data_p, f_val_lbl_p, batch_size=batch_size, shuffle=False)
 
     trainer = STGCNTrainer(num_classes=num_classes, lr=lr, skel_def=skel_def)
+
 
     logger.info("Starting ST-GCN training for %d epochs on %d train / %d val non-locomotion samples...",
                 epochs, len(train_data), len(val_data))
