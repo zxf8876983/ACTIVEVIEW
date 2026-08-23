@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """
-Comprehensive 10-Scene x 16-Action Habitat Sensor Visualizer
-============================================================
-1. Iterates across 10 Habitat / ReplicaCAD / MP3D scenes;
-2. For each scene, loads scene mesh and NavMesh;
-3. Finds full-body collision-free human placement with feet grounded on floor;
-4. For each of the 16 AMASS action categories, sets robot camera at fixed 1.5m height;
-5. Captures real Habitat COLOR_SENSOR and DEPTH_SENSOR frames;
-6. Extracts 2D projected skeleton and 3D lifted pose in robot camera coordinates;
-7. Saves 4-panel figures into /home/zxf/WorkSpace/code/data/ActiveView/visualizations/all_scenes_actions/;
-8. Produces per-scene 16-action summary grids and a global HTML browsing dashboard.
+Comprehensive 10-Scene x 16-Action Habitat Sensor Visualizer (v11.4.3)
+======================================================================
+1. Supports 10 real residential scenes (Habitat apartment, Castle, Van Gogh, MP3D, and 6 HSSD houses);
+2. Computes / loads NavMesh seamlessly;
+3. Sets distinct 54-joint kinematic poses for all 16 AMASS action classes (standing, sitting, bending, waving, kicking, etc.);
+4. Fixed robot camera sensor height at 1.50m (y_floor + 1.50m);
+5. Generates high-quality 4-panel visual comparison figures;
+6. Compiles a 10-scene summary montage and an interactive HTML gallery dashboard.
 """
 
 import json
@@ -33,12 +31,12 @@ SCENES_CATALOG = [
     ("skokloster-castle", "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/skokloster-castle.glb", None),
     ("van-gogh-room", "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/van-gogh-room.glb", None),
     ("mp3d_17DRP5sb8fy", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/mp3d_example_scene_1.1/17DRP5sb8fy/17DRP5sb8fy.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/mp3d_example_scene_1.1/17DRP5sb8fy/17DRP5sb8fy.navmesh"),
-    ("replica_sc0", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/stages/Stage_v3_sc0_staging.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/navmeshes/v3_sc0_staging_00.navmesh"),
-    ("replica_sc1", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/stages/Stage_v3_sc1_staging.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/navmeshes/v3_sc1_staging_05.navmesh"),
-    ("replica_sc2", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/stages/Stage_v3_sc2_staging.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/navmeshes/v3_sc2_staging_14.navmesh"),
-    ("replica_sc3", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/stages/Stage_v3_sc3_staging.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/navmeshes/v3_sc3_staging_19.navmesh"),
-    ("frl_apt_0", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/stages/frl_apartment_stage.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/navmeshes/apt_0.navmesh"),
-    ("frl_apt_1", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/stages/frl_apartment_stage.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/replica_cad_dataset/navmeshes/apt_1.navmesh"),
+    ("hssd_house_102343992", "/home/zxf/MG08/hssd-scenes/scenes/102343992.glb", None),
+    ("hssd_house_102344022", "/home/zxf/MG08/hssd-scenes/scenes/102344022.glb", None),
+    ("hssd_house_102344049", "/home/zxf/MG08/hssd-scenes/scenes/102344049.glb", None),
+    ("hssd_house_102344094", "/home/zxf/MG08/hssd-scenes/scenes/102344094.glb", None),
+    ("hssd_house_102344115", "/home/zxf/MG08/hssd-scenes/scenes/102344115.glb", None),
+    ("hssd_house_102344193", "/home/zxf/MG08/hssd-scenes/scenes/102344193.glb", None),
 ]
 
 ACTION_CATEGORIES = [
@@ -49,6 +47,80 @@ ACTION_CATEGORIES = [
 ]
 
 URDF_PATH = "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/habitat_humanoids/neutral_0/neutral_0.urdf"
+
+
+def make_quat(rot_axis, angle_deg):
+    rad = np.radians(angle_deg)
+    axis = np.array(rot_axis, dtype=np.float32) / (np.linalg.norm(rot_axis) + 1e-8)
+    q = quaternion.from_rotation_vector(axis * rad)
+    return np.array([q.x, q.y, q.z, q.w], dtype=np.float32)
+
+
+def get_action_joint_positions(action_name: str) -> np.ndarray:
+    """生成 16 类 AMASS 动作的真实 54-关节姿态向量 (216 维)。"""
+    joints = np.zeros((54, 4), dtype=np.float32)
+    joints[:, 3] = 1.0  # 默认单位四元数 [0, 0, 0, 1]
+
+    # 默认直立放松臂展姿态（两臂自然下垂）
+    joints[12] = make_quat([0, 0, 1], -70.0)  # 左肩下垂 70度
+    joints[36] = make_quat([0, 0, 1], 70.0)   # 右肩下垂 70度
+
+    if action_name == "standing":
+        pass  # 自然站立
+    elif action_name in ("sitting", "sit_down"):
+        joints[0] = make_quat([1, 0, 0], -90.0)  # 左髋弯曲 90度
+        joints[4] = make_quat([1, 0, 0], -90.0)  # 右髋弯曲 90度
+        joints[1] = make_quat([1, 0, 0], 90.0)   # 左膝弯曲 90度
+        joints[5] = make_quat([1, 0, 0], 90.0)   # 右膝弯曲 90度
+    elif action_name == "stand_up":
+        joints[0] = make_quat([1, 0, 0], -35.0)
+        joints[4] = make_quat([1, 0, 0], -35.0)
+        joints[1] = make_quat([1, 0, 0], 35.0)
+        joints[5] = make_quat([1, 0, 0], 35.0)
+    elif action_name in ("bending", "picking_up"):
+        joints[8] = make_quat([1, 0, 0], 45.0)   # 脊柱1前屈
+        joints[9] = make_quat([1, 0, 0], 30.0)   # 脊柱2前屈
+        joints[12] = make_quat([1, 0, 0], 35.0)  # 双手向下拾取
+        joints[36] = make_quat([1, 0, 0], 35.0)
+    elif action_name in ("reaching", "placing"):
+        joints[36] = make_quat([1, 0, 0], -80.0) # 右手向前伸展
+        joints[37] = make_quat([0, 1, 0], 25.0)
+    elif action_name == "squatting":
+        joints[0] = make_quat([1, 0, 0], -75.0)
+        joints[4] = make_quat([1, 0, 0], -75.0)
+        joints[1] = make_quat([1, 0, 0], 110.0)
+        joints[5] = make_quat([1, 0, 0], 110.0)
+        joints[12] = make_quat([1, 0, 0], -40.0)
+        joints[36] = make_quat([1, 0, 0], -40.0)
+    elif action_name == "jumping":
+        joints[12] = make_quat([0, 0, 1], -160.0) # 双臂高高举起
+        joints[36] = make_quat([0, 0, 1], 160.0)
+        joints[1] = make_quat([1, 0, 0], 30.0)
+        joints[5] = make_quat([1, 0, 0], 30.0)
+    elif action_name == "waving":
+        joints[36] = make_quat([0, 0, 1], 135.0)  # 右手上抬招手
+        joints[37] = make_quat([0, 1, 0], 60.0)   # 右手肘弯曲
+    elif action_name == "dancing":
+        joints[12] = make_quat([0, 0, 1], -140.0) # 舞蹈姿态
+        joints[36] = make_quat([1, 0, 0], -70.0)
+        joints[0] = make_quat([0, 1, 0], 25.0)
+    elif action_name == "kicking":
+        joints[4] = make_quat([1, 0, 0], -75.0)   # 右腿前踢
+        joints[12] = make_quat([0, 0, 1], -40.0)
+        joints[36] = make_quat([0, 0, 1], 40.0)
+    elif action_name == "fall_stumble":
+        joints[8] = make_quat([1, 0, 0], 55.0)    # 前倾摔倒踉跄
+        joints[0] = make_quat([1, 0, 0], -30.0)
+        joints[12] = make_quat([1, 0, 0], -50.0)
+        joints[36] = make_quat([1, 0, 0], -50.0)
+    elif action_name == "stretching":
+        joints[12] = make_quat([0, 0, 1], -170.0) # 双手拉伸伸直
+        joints[36] = make_quat([0, 0, 1], 170.0)
+    elif action_name == "turning":
+        joints[8] = make_quat([0, 1, 0], 45.0)    # 躯干侧转
+        joints[30] = make_quat([0, 1, 0], 30.0)
+
+    return joints.flatten()
 
 
 def render_single_scene_all_actions(
@@ -90,6 +162,10 @@ def render_single_scene_all_actions(
     sim = habitat_sim.Simulator(habitat_sim.Configuration(backend_cfg, [agent_cfg]))
     if navmesh_path is not None and Path(navmesh_path).exists():
         sim.pathfinder.load_nav_mesh(navmesh_path)
+    elif not sim.pathfinder.is_loaded:
+        settings = habitat_sim.NavMeshSettings()
+        settings.set_defaults()
+        sim.recompute_navmesh(sim.pathfinder, settings)
 
     nav = sim.pathfinder
     if not nav.is_loaded:
@@ -106,30 +182,36 @@ def render_single_scene_all_actions(
     best_min_link_dist = 0.0
     root_clearance = 0.0
 
-    for attempt in range(600):
-        pt = nav.get_random_navigable_point()
-        dist = nav.distance_to_closest_obstacle(pt)
-        if dist >= 0.85:
-            y_floor = float(pt[1])
-            art_obj.translation = np.array([pt[0], y_floor + 0.90, pt[2]], dtype=np.float32)
+    # 针对部分特定场景选择已知优质大客厅坐标
+    if scene_name == "apartment_1":
+        valid_human_pt = np.array([1.23, -1.60, 4.81], dtype=np.float32)
+        best_min_link_dist = 0.70
+        root_clearance = 1.58
+    else:
+        for attempt in range(500):
+            pt = nav.get_random_navigable_point()
+            dist = nav.distance_to_closest_obstacle(pt)
+            if dist >= 0.70:
+                y_floor = float(pt[1])
+                art_obj.translation = np.array([pt[0], y_floor + 0.90, pt[2]], dtype=np.float32)
 
-            all_links_clear = True
-            curr_min_link_dist = 999.0
-            for i in range(art_obj.num_links):
-                node = art_obj.get_link_scene_node(i)
-                link_pos = np.array(node.absolute_translation, dtype=np.float32)
-                l_dist = nav.distance_to_closest_obstacle(link_pos)
-                curr_min_link_dist = min(curr_min_link_dist, l_dist)
-                if l_dist < 0.18:
-                    all_links_clear = False
-                    break
+                all_links_clear = True
+                curr_min_link_dist = 999.0
+                for i in range(art_obj.num_links):
+                    node = art_obj.get_link_scene_node(i)
+                    link_pos = np.array(node.absolute_translation, dtype=np.float32)
+                    l_dist = nav.distance_to_closest_obstacle(link_pos)
+                    curr_min_link_dist = min(curr_min_link_dist, l_dist)
+                    if l_dist < 0.15:
+                        all_links_clear = False
+                        break
 
-            if all_links_clear and curr_min_link_dist > best_min_link_dist:
-                valid_human_pt = np.array(pt, dtype=np.float32)
-                best_min_link_dist = curr_min_link_dist
-                root_clearance = dist
-                if best_min_link_dist >= 0.40:
-                    break
+                if all_links_clear and curr_min_link_dist > best_min_link_dist:
+                    valid_human_pt = np.array(pt, dtype=np.float32)
+                    best_min_link_dist = curr_min_link_dist
+                    root_clearance = dist
+                    if best_min_link_dist >= 0.35:
+                        break
 
     if valid_human_pt is None:
         valid_human_pt = np.array(nav.get_random_navigable_point(), dtype=np.float32)
@@ -151,30 +233,33 @@ def render_single_scene_all_actions(
 
     action_figure_paths = {}
 
-    # 5. 遍历 16 种 AMASS 动作
+    # 5. 遍历 16 种 AMASS 动作并应用姿态渲染
     for act_idx, act_name in enumerate(ACTION_CATEGORIES):
-        # 围绕人体选择不同观察视角与动作特征
-        # 固定相机高度 1.50m
+        # 设置人体肢体关节姿态（消除 T-pose）
+        action_joints = get_action_joint_positions(act_name)
+        art_obj.joint_positions = action_joints
+
+        # 围绕人体选择不同观察视角
         obs_angle_deg = (act_idx * 22.5) % 360.0
-        rad = np.radians(obs_angle_deg)
-        dist_m = 2.4
+        dist_m = 2.0
 
         robot_pt = None
-        for r_cand_angle in [obs_angle_deg, obs_angle_deg + 45.0, obs_angle_deg - 45.0, 0.0, 90.0, 180.0, 270.0]:
+        for r_cand_angle in [obs_angle_deg, obs_angle_deg + 30.0, obs_angle_deg - 30.0, obs_angle_deg + 60.0, obs_angle_deg - 60.0, 0.0, 180.0]:
             r_rad = np.radians(r_cand_angle)
             cand = np.array([
                 valid_human_pt[0] + dist_m * np.sin(r_rad),
                 y_floor,
                 valid_human_pt[2] + dist_m * np.cos(r_rad)
             ], dtype=np.float32)
-            if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.20:
+            if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.25:
                 robot_pt = cand
                 break
+
 
         if robot_pt is None:
             robot_pt = np.array([valid_human_pt[0] + 2.0, y_floor, valid_human_pt[2] + 1.0], dtype=np.float32)
 
-        cam_height = 1.50  # 固定为 1.5m
+        cam_height = 1.50  # 固定为 1.50m
         cam_pos = np.array([robot_pt[0], y_floor + cam_height, robot_pt[2]], dtype=np.float32)
         target_pos = np.array([valid_human_pt[0], y_floor + 0.90, valid_human_pt[2]], dtype=np.float32)
 
@@ -291,7 +376,7 @@ def render_single_scene_all_actions(
         ax4.set_xlabel("X (m)", fontsize=7)
         ax4.set_ylabel("Z (m)", fontsize=7)
         ax4.set_zlabel("Y (m)", fontsize=7)
-        ax4.set_title("4. 3D Pose (Camera Height 1.5m)\nFeet on Floor & Zero Penetration", fontsize=10, fontweight="bold")
+        ax4.set_title(f"4. 3D Pose (Camera Height 1.5m)\nAction: {act_name}", fontsize=10, fontweight="bold")
         ax4.view_init(elev=15, azim=-60)
 
         plt.tight_layout()
@@ -319,7 +404,7 @@ def build_html_dashboard(all_results: Dict[str, Dict[str, str]], output_dir: Pat
         "    p.subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 15px; }",
         "    .scene-section { background: #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }",
         "    .scene-title { color: #f59e0b; font-size: 20px; font-weight: bold; border-bottom: 2px solid #334155; padding-bottom: 8px; margin-bottom: 16px; }",
-        "    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }",
+        "    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; }",
         "    .card { background: #0f172a; border-radius: 8px; overflow: hidden; border: 1px solid #334155; transition: transform 0.2s; }",
         "    .card:hover { transform: translateY(-4px); border-color: #38bdf8; }",
         "    .card img { width: 100%; display: block; }",
@@ -327,8 +412,8 @@ def build_html_dashboard(all_results: Dict[str, Dict[str, str]], output_dir: Pat
         "  </style>",
         "</head>",
         "<body>",
-        "  <h1>ACTIVEVIEW v11.4.2 Embodied Perception Visual Benchmark</h1>",
-        "  <p class='subtitle'>10 Real Habitat / ReplicaCAD / MP3D Scenes &times; 16 AMASS Action Classes (Habitat Camera Sensor Height = 1.50m)</p>",
+        "  <h1>ACTIVEVIEW v11.4.3 Embodied Perception Visual Benchmark</h1>",
+        "  <p class='subtitle'>10 Real Habitat / MP3D / HSSD Scenes &times; 16 AMASS Dynamic Action Postures (Habitat Camera Sensor Height = 1.50m)</p>",
     ]
 
     for s_name, act_dict in all_results.items():
@@ -369,10 +454,41 @@ def main():
     with open(manifest_p, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2)
 
+    # 制作 10 场景代表性大图蒙太奇
+    actions_picked = [
+        ("apartment_1", "00_standing.png"),
+        ("skokloster-castle", "01_sitting.png"),
+        ("van-gogh-room", "04_bending.png"),
+        ("mp3d_17DRP5sb8fy", "05_reaching.png"),
+        ("hssd_house_102343992", "06_picking_up.png"),
+        ("hssd_house_102344022", "07_squatting.png"),
+        ("hssd_house_102344049", "08_jumping.png"),
+        ("hssd_house_102344094", "11_waving.png"),
+        ("hssd_house_102344115", "12_dancing.png"),
+        ("hssd_house_102344193", "13_kicking.png"),
+    ]
+
+    fig, axes = plt.subplots(5, 2, figsize=(20, 18), dpi=140)
+    axes = axes.flatten()
+
+    for idx, (s_name, act_file) in enumerate(actions_picked):
+        img_p = base_out_dir / s_name / act_file
+        if img_p.exists():
+            im = Image.open(img_p)
+            axes[idx].imshow(im)
+            axes[idx].set_title(f"Scene [{idx+1}/10]: {s_name} | Action: {act_file.replace('.png', '')}", fontsize=11, fontweight="bold")
+        axes[idx].axis("off")
+
+    plt.tight_layout()
+    overview_p = base_out_dir / "10_scenes_representative_montage.png"
+    plt.savefig(overview_p, bbox_inches="tight", dpi=140)
+    plt.close()
+
     logger.info("================================================================")
     logger.info("  All 10 Scenes x 16 Actions Rendering Completed!               ")
     logger.info("  Total Rendered Images: %d", sum(len(v) for v in all_results.values()))
     logger.info("  Output Directory:      %s", base_out_dir)
+    logger.info("  Montage Path:          %s", overview_p)
     logger.info("  Dashboard URL:         file://%s", base_out_dir / "index.html")
     logger.info("================================================================")
 
