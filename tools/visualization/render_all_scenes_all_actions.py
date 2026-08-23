@@ -206,15 +206,15 @@ def render_single_scene_all_actions(
     aom = sim.get_articulated_object_manager()
     art_obj = aom.add_articulated_object_from_urdf(URDF_PATH)
 
-    # 3. 执行全身 54 关节 3D 碰撞检测与多机位无遮挡开阔空间筛选
+    # 3. 执行全身 54 关节 3D 碰撞检测与人体站立空间筛选
     valid_human_pt = None
-    best_num_views = 0
+    best_clearance = 0.0
     root_clearance = 0.0
 
-    for attempt in range(1500):
+    for attempt in range(1000):
         pt = nav.get_random_navigable_point()
         dist = nav.distance_to_closest_obstacle(pt)
-        if dist >= 0.85:
+        if dist >= 0.75:
             y_floor = float(pt[1])
             art_obj.translation = np.array([pt[0], y_floor + 0.90, pt[2]], dtype=np.float32)
 
@@ -226,21 +226,12 @@ def render_single_scene_all_actions(
                     all_links_clear = False
                     break
 
-            if all_links_clear:
-                # 统计围绕人体 360度可导航机位数量
-                valid_cands = []
-                for ang in np.linspace(0, 360, 16, endpoint=False):
-                    rad = np.radians(ang)
-                    cand = np.array([pt[0] + 2.2 * np.sin(rad), y_floor, pt[2] + 2.2 * np.cos(rad)], dtype=np.float32)
-                    if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.25:
-                        valid_cands.append(cand)
-
-                if len(valid_cands) > best_num_views:
-                    best_num_views = len(valid_cands)
-                    valid_human_pt = np.array(pt, dtype=np.float32)
-                    root_clearance = dist
-                    if best_num_views >= 8:
-                        break
+            if all_links_clear and dist > best_clearance:
+                best_clearance = dist
+                valid_human_pt = np.array(pt, dtype=np.float32)
+                root_clearance = dist
+                if best_clearance >= 1.0:
+                    break
 
     if valid_human_pt is None:
         valid_human_pt = np.array(nav.get_random_navigable_point(), dtype=np.float32)
@@ -250,33 +241,18 @@ def render_single_scene_all_actions(
     human_root_pos = np.array([valid_human_pt[0], y_floor + 0.90, valid_human_pt[2]], dtype=np.float32)
     art_obj.translation = human_root_pos
 
-    # 预先生成完全直视人体、无视线遮挡的环绕机位列表 (Line-of-Sight Clear Viewpoints)
+    # 预先生成可导航的环绕候选机位列表（仅检查物理可行性，保留自然环境遮挡供主动感知评测）
     candidate_viewpoints = []
     for ang in np.linspace(0, 360, 32, endpoint=False):
         rad = np.radians(ang)
         cand = np.array([valid_human_pt[0] + 2.2 * np.sin(rad), y_floor, valid_human_pt[2] + 2.2 * np.cos(rad)], dtype=np.float32)
-        if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.25:
-            # 视线中点与四分点障碍物检测，确保相机到人体之间无墙壁阻挡
-            p_mid = (cand + valid_human_pt) * 0.5
-            p_q1 = cand * 0.75 + valid_human_pt * 0.25
-            p_q3 = cand * 0.25 + valid_human_pt * 0.75
-            if (nav.is_navigable(p_mid) and nav.distance_to_closest_obstacle(p_mid) >= 0.15 and
-                nav.is_navigable(p_q1) and nav.distance_to_closest_obstacle(p_q1) >= 0.15 and
-                nav.is_navigable(p_q3) and nav.distance_to_closest_obstacle(p_q3) >= 0.15):
-                candidate_viewpoints.append(cand)
-
-    if not candidate_viewpoints:
-        # 后备：正前方与环绕采样
-        for ang in [0.0, 45.0, 90.0, 135.0, 180.0, 225.0, 270.0, 315.0]:
-            rad = np.radians(ang)
-            cand = np.array([valid_human_pt[0] + 2.0 * np.sin(rad), y_floor, valid_human_pt[2] + 2.0 * np.cos(rad)], dtype=np.float32)
-            if nav.is_navigable(cand):
-                candidate_viewpoints.append(cand)
+        if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.20:
+            candidate_viewpoints.append(cand)
 
     if not candidate_viewpoints:
         candidate_viewpoints = [np.array([valid_human_pt[0] + 1.8, y_floor, valid_human_pt[2] + 0.8], dtype=np.float32)]
 
-    logger.info("[%s] Human placed at %s (Clearance: %.2fm, Clean LOS 360-views: %d)", scene_name, human_root_pos, root_clearance, len(candidate_viewpoints))
+    logger.info("[%s] Human placed at %s (Clearance: %.2fm, Navigable candidate viewpoints: %d)", scene_name, human_root_pos, root_clearance, len(candidate_viewpoints))
 
     action_figure_paths = {}
 
