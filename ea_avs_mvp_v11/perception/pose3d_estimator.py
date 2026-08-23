@@ -291,14 +291,15 @@ class VideoPose3DEstimator(BasePose3DEstimator):
         # 2. 3D Pose Model (VideoPose3D)
         if checkpoint_path is None:
             possible_ckpts = [
-                Path(__file__).resolve().parent.parent.parent / "tools" / "pretrained_h36m_detectron_coco.bin",
-                Path(__file__).resolve().parent.parent / "tools" / "pretrained_h36m_detectron_coco.bin",
-                Path("tools/pretrained_h36m_detectron_coco.bin"),
+                Path(__file__).resolve().parent / "pretrained_h36m_detectron_coco.bin",
+                Path(__file__).resolve().parent / "videopose3d" / "pretrained_h36m_detectron_coco.bin",
+                Path(__file__).resolve().parent.parent / "perception" / "pretrained_h36m_detectron_coco.bin",
             ]
             for p in possible_ckpts:
                 if p.exists():
                     checkpoint_path = p
                     break
+
 
         self.videopose_model = TemporalModel(
             num_joints_in=17,
