@@ -41,6 +41,7 @@ from ea_avs_mvp_v11.active_view.candidate_generator import CandidateViewGenerato
 from ea_avs_mvp_v11.active_view.habitat_filter import HabitatViewFilter
 from ea_avs_mvp_v11.active_view.human_placement_generator import HumanPlacementGenerator
 from ea_avs_mvp_v11.active_view.navigation_controller import NavigationController, NavigationTrajectory
+from ea_avs_mvp_v11.active_view.occlusion_analyzer import OcclusionAnalyzer
 from ea_avs_mvp_v11.active_view.robot_start_sampler import RobotStartSampler
 from ea_avs_mvp_v11.active_view.scene_manager import SceneManager
 from ea_avs_mvp_v11.active_view.utility_predictor import ViewpointUtilityPredictor
@@ -71,6 +72,8 @@ class PolicyExecutionResult:
     accuracy_improved: bool
     navigation_efficiency: float
     oracle_gap: float
+    occlusion_ratio: float = 0.0
+    occlusion_level: str = "Easy"
 
 
 @dataclass
@@ -85,6 +88,7 @@ class ClosedLoopEpisodeResult:
     robot_initial_viewpoint: Dict[str, Any]
     initial_observation: Dict[str, Any]
     candidate_pool_stats: Dict[str, int]
+    occlusion_level: str = "Medium"
     policy_results: Dict[str, PolicyExecutionResult] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -98,6 +102,7 @@ class ClosedLoopEpisodeResult:
             "robot_initial_viewpoint": self.robot_initial_viewpoint,
             "initial_observation": self.initial_observation,
             "candidate_pool_stats": self.candidate_pool_stats,
+            "occlusion_level": self.occlusion_level,
             "policy_results": {k: v.__dict__ for k, v in self.policy_results.items()},
         }
 
@@ -120,6 +125,7 @@ class ClosedLoopActivePerceptionRunner:
         self.candidate_gen = CandidateViewGenerator()
         self.view_filter = HabitatViewFilter()
         self.nav_controller = NavigationController()
+        self.occlusion_analyzer = OcclusionAnalyzer(data_root=self.data_root)
 
         # 加载训练好的 ST-GCN 分类器
         stgcn_ckpt = self.data_root / "checkpoints" / "v10_st_gcn" / "best_st_gcn_model.pth"
@@ -160,9 +166,11 @@ class ClosedLoopActivePerceptionRunner:
         action_id: int,
         angle_deg: float,
         distance_m: float,
-    ) -> Tuple[float, float, int, str, bool]:
+        placement_difficulty: float = 0.5,
+        scene_id: Optional[str] = None,
+    ) -> Tuple[float, float, int, str, bool, Dict[str, Any]]:
         """
-        在指定角度与视距下进行动作识别与物理不确定度推断。
+        在指定角度、视距与室内遮挡下进行动作识别与物理不确定度推断。
         """
         ang_rad = math.radians(angle_deg)
         cos_a, sin_a = math.cos(ang_rad), math.sin(ang_rad)
@@ -172,10 +180,19 @@ class ClosedLoopActivePerceptionRunner:
         joints_3d[:, :, 1] = base_skel[:, :, 1]
         joints_3d[:, :, 2] = base_skel[:, :, 0] * sin_a + base_skel[:, :, 2] * cos_a
 
-        # 物理温度衰减建模
+        # 严密计算遮挡指标
+        occ_res = self.occlusion_analyzer.analyze_viewpoint_occlusion(
+            angle_deg=angle_deg,
+            distance_m=distance_m,
+            scene_id=scene_id,
+            placement_difficulty=placement_difficulty,
+        )
+
+        # 物理温度衰减建模 (结合方位角自遮挡与家具遮挡)
         gamma_theta = 1.0 + 1.2 * (1.0 - math.cos(ang_rad))
         gamma_r = 1.0 + 0.6 * max(0.0, (distance_m - 1.5) / 1.5)
-        temperature = float(gamma_theta * gamma_r)
+        occ_penalty = 1.8 * occ_res.occlusion_ratio
+        temperature = float(gamma_theta * gamma_r + occ_penalty)
 
         pred = self.classifier.predict_sequence(joints_3d, is_normalized=True)
 
@@ -191,7 +208,7 @@ class ClosedLoopActivePerceptionRunner:
         pred_label = ACTION_CLASSES[pred_class] if pred_class < len(ACTION_CLASSES) else f"class_{pred_class}"
         is_correct = bool(pred_class == action_id)
 
-        return entropy, conf, pred_class, pred_label, is_correct
+        return entropy, conf, pred_class, pred_label, is_correct, occ_res.to_dict()
 
     def run_single_episode(
         self,
@@ -219,11 +236,13 @@ class ClosedLoopActivePerceptionRunner:
         base_skel = self._get_skeleton(action_id, instance_idx)
 
         # 2. 计算初始观察 (Initial Observation O_0)
-        h_init, conf_init, pred_class_init, pred_lbl_init, is_corr_init = self._evaluate_viewpoint_perception(
+        h_init, conf_init, pred_class_init, pred_lbl_init, is_corr_init, init_occ = self._evaluate_viewpoint_perception(
             base_skel=base_skel,
             action_id=action_id,
             angle_deg=init_ang,
             distance_m=init_dist,
+            placement_difficulty=human_placement.get("placement_difficulty", 0.5),
+            scene_id=scene_id,
         )
         init_obs_dict = {
             "entropy": round(h_init, 4),
@@ -233,6 +252,8 @@ class ClosedLoopActivePerceptionRunner:
             "is_correct": is_corr_init,
             "distance": round(init_dist, 4),
             "angle": round(init_ang, 2),
+            "occlusion_ratio": init_occ["occlusion_ratio"],
+            "occlusion_level": init_occ["occlusion_level"],
         }
 
         # 3. 候选视点生成与过滤
@@ -250,11 +271,13 @@ class ClosedLoopActivePerceptionRunner:
         candidate_features = []
         candidate_evals = []
         for vp in feasible_viewpoints:
-            ent, conf, p_cls, p_lbl, corr = self._evaluate_viewpoint_perception(
+            ent, conf, p_cls, p_lbl, corr, cand_occ = self._evaluate_viewpoint_perception(
                 base_skel=base_skel,
                 action_id=action_id,
                 angle_deg=vp.angle,
                 distance_m=vp.distance,
+                placement_difficulty=human_placement.get("placement_difficulty", 0.5),
+                scene_id=scene_id,
             )
             candidate_evals.append({
                 "entropy": ent,
@@ -262,6 +285,8 @@ class ClosedLoopActivePerceptionRunner:
                 "predicted_action_id": p_cls,
                 "predicted_action_label": p_lbl,
                 "is_correct": corr,
+                "occlusion_ratio": cand_occ["occlusion_ratio"],
+                "occlusion_level": cand_occ["occlusion_level"],
             })
             feat = self.predictor.construct_features(robot_init_vp, vp)
             candidate_features.append(feat)
@@ -304,6 +329,7 @@ class ClosedLoopActivePerceptionRunner:
             robot_initial_viewpoint=robot_init_vp,
             initial_observation=init_obs_dict,
             candidate_pool_stats={"raw": len(raw_candidates), "feasible": len(feasible_viewpoints)},
+            occlusion_level=init_occ["occlusion_level"],
         )
 
         for p_name, p_idx in policy_indices.items():

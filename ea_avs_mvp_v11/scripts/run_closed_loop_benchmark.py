@@ -123,32 +123,92 @@ def run_benchmark(
 
     # 统计并格式化汇总报告
     benchmark_summary = {}
-    for p_name in policies:
-        m = metrics_by_policy[p_name]
-        mean_acc_before = float(np.mean(m["accuracy_before"])) * 100
-        mean_acc_after = float(np.mean(m["accuracy_after"])) * 100
-        delta_acc = mean_acc_after - mean_acc_before
-
-        benchmark_summary[p_name] = {
-            "mean_entropy_before": round(float(np.mean(m["entropy_before"])), 4),
-            "mean_entropy_after": round(float(np.mean(m["entropy_after"])), 4),
-            "mean_entropy_reduction": round(float(np.mean(m["entropy_reduction"])), 4),
-            "mean_confidence_before": round(float(np.mean(m["confidence_before"])), 4),
-            "mean_confidence_after": round(float(np.mean(m["confidence_after"])), 4),
-            "mean_accuracy_before_pct": round(mean_acc_before, 2),
-            "mean_accuracy_after_pct": round(mean_acc_after, 2),
-            "accuracy_improvement_pct": round(delta_acc, 2),
-            "mean_navigation_distance_m": round(float(np.mean(m["navigation_distance"])), 4),
-            "mean_navigation_efficiency": round(float(np.mean(m["navigation_efficiency"])), 4),
-            "navigation_success_rate_pct": round(float(np.mean(m["navigation_success"])) * 100, 2),
-            "mean_oracle_gap": round(float(np.mean(m["oracle_gap"])), 4),
+    difficulty_levels = ["Overall", "Easy", "Medium", "Hard"]
+    
+    metrics_by_difficulty = {
+        diff: {
+            p: {
+                "entropy_before": [],
+                "entropy_after": [],
+                "entropy_reduction": [],
+                "confidence_before": [],
+                "confidence_after": [],
+                "accuracy_before": [],
+                "accuracy_after": [],
+                "accuracy_improved_count": 0,
+                "navigation_distance": [],
+                "navigation_steps": [],
+                "navigation_efficiency": [],
+                "navigation_success": [],
+                "oracle_gap": [],
+            }
+            for p in policies
         }
+        for diff in difficulty_levels
+    }
+
+    # 填充按难度分层的指标
+    for ep in all_episode_records:
+        ep_diff = ep.get("occlusion_level", "Medium")
+        init_obs = ep["initial_observation"]
+        h_init = init_obs["entropy"]
+        conf_init = init_obs["confidence"]
+        is_corr_init = init_obs["is_correct"]
+
+        for p_name in policies:
+            p_res = ep["policy_results"][p_name]
+
+            for diff_cat in ["Overall", ep_diff]:
+                m_diff = metrics_by_difficulty[diff_cat][p_name]
+                m_diff["entropy_before"].append(h_init)
+                m_diff["entropy_after"].append(p_res["entropy_after"])
+                m_diff["entropy_reduction"].append(p_res["entropy_reduction"])
+                m_diff["confidence_before"].append(conf_init)
+                m_diff["confidence_after"].append(p_res["confidence_after"])
+                m_diff["accuracy_before"].append(1 if is_corr_init else 0)
+                m_diff["accuracy_after"].append(1 if p_res["is_correct_after"] else 0)
+                if p_res["accuracy_improved"]:
+                    m_diff["accuracy_improved_count"] += 1
+                m_diff["navigation_distance"].append(p_res["navigation_distance"])
+                m_diff["navigation_steps"].append(p_res["navigation_steps"])
+                m_diff["navigation_efficiency"].append(p_res["navigation_efficiency"])
+                m_diff["navigation_success"].append(1 if p_res["navigation_success"] else 0)
+                m_diff["oracle_gap"].append(p_res["oracle_gap"])
+
+    def summarize_metrics(m_dict):
+        res = {}
+        for p_name, m in m_dict.items():
+            if not m["entropy_after"]:
+                continue
+            mean_acc_b = float(np.mean(m["accuracy_before"])) * 100
+            mean_acc_a = float(np.mean(m["accuracy_after"])) * 100
+            res[p_name] = {
+                "mean_entropy_before": round(float(np.mean(m["entropy_before"])), 4),
+                "mean_entropy_after": round(float(np.mean(m["entropy_after"])), 4),
+                "mean_entropy_reduction": round(float(np.mean(m["entropy_reduction"])), 4),
+                "mean_confidence_before": round(float(np.mean(m["confidence_before"])), 4),
+                "mean_confidence_after": round(float(np.mean(m["confidence_after"])), 4),
+                "mean_accuracy_before_pct": round(mean_acc_b, 2),
+                "mean_accuracy_after_pct": round(mean_acc_a, 2),
+                "accuracy_improvement_pct": round(mean_acc_a - mean_acc_b, 2),
+                "mean_navigation_distance_m": round(float(np.mean(m["navigation_distance"])), 4),
+                "mean_navigation_efficiency": round(float(np.mean(m["navigation_efficiency"])), 4),
+                "navigation_success_rate_pct": round(float(np.mean(m["navigation_success"])) * 100, 2),
+                "mean_oracle_gap": round(float(np.mean(m["oracle_gap"])), 4),
+            }
+        return res
+
+    stratified_summary = {
+        diff: summarize_metrics(metrics_by_difficulty[diff]) for diff in difficulty_levels
+    }
+    benchmark_summary = stratified_summary["Overall"]
 
     logger.info("=========================================================================================")
-    logger.info("  ACTIVEVIEW v11.4 CLOSED-LOOP ACTIVE PERCEPTION BENCHMARK RESULTS                       ")
+    logger.info("  ACTIVEVIEW v11.5 CLOSED-LOOP ACTIVE PERCEPTION BENCHMARK RESULTS                       ")
     logger.info("=========================================================================================")
     logger.info("  Total Episodes: %d across %d Scenes", num_episodes, len(scene_ids))
     logger.info("  ---------------------------------------------------------------------------------------")
+    logger.info("  [OVERALL BENCHMARK PERFORMANCE]")
     logger.info("  Strategy            | H_after | ΔH (Gain) | Conf_after | Acc_after | Nav Dist | Efficiency")
     logger.info("  --------------------+---------+-----------+------------+-----------+----------+-----------")
     for p_name, s in benchmark_summary.items():
@@ -158,11 +218,24 @@ def run_benchmark(
                     s["mean_navigation_distance_m"], s["mean_navigation_efficiency"])
     logger.info("=========================================================================================")
 
+    # 打印困难遮挡场景对比
+    if "Hard" in stratified_summary and stratified_summary["Hard"]:
+        logger.info("  [HARD OCCLUSION SUBCORT - Occlusion >= 0.40]")
+        logger.info("  Strategy            | H_after | ΔH (Gain) | Conf_after | Acc_after | Nav Dist | Efficiency")
+        logger.info("  --------------------+---------+-----------+------------+-----------+----------+-----------")
+        for p_name, s in stratified_summary["Hard"].items():
+            logger.info("  %-19s | %7.4f | %9.4f | %10.4f | %8.2f%% | %7.2fm | %9.4f",
+                        p_name, s["mean_entropy_after"], s["mean_entropy_reduction"],
+                        s["mean_confidence_after"], s["mean_accuracy_after_pct"],
+                        s["mean_navigation_distance_m"], s["mean_navigation_efficiency"])
+        logger.info("=========================================================================================")
+
     results_payload = {
         "num_episodes": num_episodes,
         "num_scenes": len(scene_ids),
         "scenes": scene_ids,
         "benchmark_summary": benchmark_summary,
+        "stratified_by_difficulty": stratified_summary,
     }
 
     # 保存全量数据集元数据与评估结果
@@ -176,7 +249,7 @@ def run_benchmark(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run ACTIVEVIEW v11.4 Closed-Loop Active Perception Benchmark")
+    parser = argparse.ArgumentParser(description="Run ACTIVEVIEW v11.5 Closed-Loop Active Perception Benchmark")
     parser.add_argument("--num_episodes", type=int, default=100, help="Number of closed-loop episodes")
     parser.add_argument("--num_scenes", type=int, default=10, help="Number of primary scenes")
     parser.add_argument("--output_dir", type=str, default=None, help="Output dataset directory")
@@ -193,3 +266,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

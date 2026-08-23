@@ -132,6 +132,9 @@ class UtilityDatasetBuilder:
                     "candidate_entropy": round(float(h_cand), 6),
                     "utility_gain": utility_gain,
                     "target_utility": utility_gain,
+                    "occlusion_ratio": round(float(s.get("occlusion_ratio", 0.0)), 4),
+                    "visible_joint_ratio": round(float(s.get("visible_joint_ratio", 1.0)), 4),
+                    "occlusion_level": str(s.get("occlusion_level", "Easy")),
                     "candidate_viewpoint": s.get("candidate_viewpoint", s["viewpoint"]),
                     "current_viewpoint": s["current_viewpoint"],
                 }

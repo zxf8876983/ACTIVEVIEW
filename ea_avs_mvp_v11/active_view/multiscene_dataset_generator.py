@@ -27,9 +27,11 @@ if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
 from ea_avs_mvp_v11.action_recognition.action_classifier import ActionClassifier
+from ea_avs_mvp_v11.active_view.action_registry import ActionRegistry, DEFAULT_ACTION_CATEGORIES
 from ea_avs_mvp_v11.active_view.candidate_generator import CandidateViewGenerator
 from ea_avs_mvp_v11.active_view.habitat_filter import HabitatViewFilter
 from ea_avs_mvp_v11.active_view.human_placement_generator import HumanPlacementGenerator
+from ea_avs_mvp_v11.active_view.occlusion_analyzer import OcclusionAnalyzer
 from ea_avs_mvp_v11.active_view.robot_start_sampler import RobotStartSampler
 from ea_avs_mvp_v11.active_view.scene_manager import SceneManager
 from ea_avs_mvp_v11.active_view.viewpoint_types import Viewpoint
@@ -37,11 +39,11 @@ from ea_avs_mvp_v11.core.paths import get_data_root
 
 logger = logging.getLogger("multiscene_dataset_generator")
 
-ACTION_CLASSES = ["standing", "walking", "sitting", "bending", "reaching", "fall_related"]
+ACTION_CLASSES = list(DEFAULT_ACTION_CATEGORIES)
 
 
 class MultiSceneViewpointDatasetGenerator:
-    """多场景多位置视点质量数据集生成器。"""
+    """多场景与复杂家庭环境视点质量数据集生成器。"""
 
     def __init__(
         self,
@@ -50,12 +52,16 @@ class MultiSceneViewpointDatasetGenerator:
         seed: int = 42,
     ):
         self.data_root = Path(data_root) if data_root else get_data_root()
+        self.estimator_type = estimator_type
         self.seed = seed
+
         self.scene_mgr = SceneManager()
         self.human_gen = HumanPlacementGenerator(scene_manager=self.scene_mgr, seed=seed)
         self.robot_sampler = RobotStartSampler(scene_manager=self.scene_mgr, seed=seed)
         self.candidate_gen = CandidateViewGenerator()
         self.view_filter = HabitatViewFilter()
+        self.action_registry = ActionRegistry(data_root=self.data_root)
+        self.occlusion_analyzer = OcclusionAnalyzer(data_root=self.data_root)
 
         # 加载训练好的 ST-GCN 动作分类器权重
         stgcn_ckpt = self.data_root / "checkpoints" / "v10_st_gcn" / "best_st_gcn_model.pth"
@@ -66,32 +72,11 @@ class MultiSceneViewpointDatasetGenerator:
             logger.info("Initializing ActionClassifier with default weights...")
             self.classifier = ActionClassifier()
 
-        self.amass_data_file = self.data_root / "datasets" / "action" / "train" / "clean_perception" / "data.npy"
-        if self.amass_data_file.exists():
-            self.amass_data = np.load(self.amass_data_file)
-            logger.info("Loaded AMASS skeleton dataset from %s (shape=%s)", self.amass_data_file, self.amass_data.shape)
-        else:
-            logger.warning("AMASS dataset not found at %s. Using procedural skeleton sequence fallback.", self.amass_data_file)
-            self.amass_data = None
+        self.categories = self.action_registry.categories
 
-    def _get_skeleton_sequence(self, action_id: int, instance_idx: int) -> np.ndarray:
+    def _get_skeleton_sequence(self, action_id: int, instance_idx: int, split: str = "train") -> np.ndarray:
         """获取标准 (30, 33, 3) 骨架时序。"""
-        if self.amass_data is not None and len(self.amass_data) > 0:
-            samples_per_action = len(self.amass_data) // len(ACTION_CLASSES)
-            base_idx = action_id * samples_per_action + (instance_idx % max(samples_per_action, 1))
-            raw_sample = self.amass_data[base_idx, :, :, :, 0] # (C, T, V)
-            return np.transpose(raw_sample, (1, 2, 0)).astype(np.float32)
-
-        # Procedural fallback
-        T, V, C = 30, 33, 3
-        skel = np.zeros((T, V, C), dtype=np.float32)
-        for t in range(T):
-            skel[t, 0] = [0.0, 0.50, 0.0]
-            skel[t, 11] = [0.20, 0.35, 0.0]
-            skel[t, 12] = [-0.20, 0.35, 0.0]
-            skel[t, 23] = [0.15, -0.10, 0.0]
-            skel[t, 24] = [-0.15, -0.10, 0.0]
-        return skel
+        return self.action_registry.get_skeleton_sequence(action_id=action_id, instance_idx=instance_idx, split=split)
 
     def generate_multiscene_dataset(
         self,
@@ -102,7 +87,7 @@ class MultiSceneViewpointDatasetGenerator:
         val_ratio: float = 0.15,
     ) -> Dict[str, Any]:
         """
-        跨多个 Habitat / HSSD 场景生成包含随机人体放置与机器人初始位姿的 Episode 数据集。
+        跨多个 Habitat / HSSD 家庭住宅场景生成包含随机人体放置、多家具遮挡分析与机器人初始位姿的 Episode 数据集。
         """
         out_dir = Path(output_dir) if output_dir else (self.data_root / "v11_multiscene_viewpoint_dataset")
         episodes_dir = out_dir / "episodes"
@@ -154,9 +139,10 @@ class MultiSceneViewpointDatasetGenerator:
                 motion_id = f"{act_name}_inst_{inst_idx:04d}"
                 ep_id = f"episode_{global_ep_idx:05d}"
 
-                # 1. 随机采样人体位置与偏航角
+                # 1. 随机采样人体位置与偏航角 (包含家具邻近与放置难度)
                 human_placement = self.human_gen.sample_human_placement(scene_id=scene_id)
                 hx, hy, hz = human_placement["human_position"]
+                placement_diff = human_placement.get("placement_difficulty", 0.5)
 
                 # 2. 随机采样机器人初始起始位姿
                 current_viewpoint = self.robot_sampler.sample_robot_start(human_placement=human_placement)
@@ -175,7 +161,7 @@ class MultiSceneViewpointDatasetGenerator:
                     robot_current_position=[rx, ry, rz],
                 )
 
-                base_skel = self._get_skeleton_sequence(act_id, inst_idx)
+                base_skel = self._get_skeleton_sequence(act_id, inst_idx, split=target_split)
 
                 episode_candidates: List[Dict[str, Any]] = []
 
@@ -190,15 +176,24 @@ class MultiSceneViewpointDatasetGenerator:
                     joints_3d[:, :, 1] = base_skel[:, :, 1]
                     joints_3d[:, :, 2] = base_skel[:, :, 0] * sin_a + base_skel[:, :, 2] * cos_a
 
-                    # 多场景物理视点感知衰减建模
-                    # 1. 方位角自遮挡因子: 正面 (0 deg) 衰减最小，背向 (180 deg) 衰减最大
-                    gamma_theta = 1.0 + 1.2 * (1.0 - math.cos(ang_rad))
-                    # 2. 观察视距衰减因子: 1.5m 最佳，3.0m 衰减
-                    gamma_r = 1.0 + 0.6 * ((vp.distance - 1.5) / 1.5)
-                    # 3. 室内障碍物/墙体邻近衰减
-                    obs_penalty = 0.35 if (vp.angle in [45.0, 135.0, 225.0] and vp.distance > 2.0) else 0.0
+                    # 5. 严密计算人体与家具遮挡度
+                    occ_res = self.occlusion_analyzer.analyze_viewpoint_occlusion(
+                        angle_deg=vp.angle,
+                        distance_m=vp.distance,
+                        viewpoint_id=int(vp.id),
+                        scene_id=scene_id,
+                        placement_difficulty=placement_diff,
+                    )
 
-                    temperature = float(gamma_theta * gamma_r + obs_penalty)
+                    # 多场景物理视点感知与遮挡衰减建模
+                    # (a) 方位角自遮挡因子: 正面 (0 deg) 衰减最小，背向 (180 deg) 衰减最大
+                    gamma_theta = 1.0 + 1.2 * (1.0 - math.cos(ang_rad))
+                    # (b) 观察视距衰减因子: 1.5m 最佳，3.0m 衰减
+                    gamma_r = 1.0 + 0.6 * ((vp.distance - 1.5) / 1.5)
+                    # (c) 家具遮挡与物理惩罚
+                    occ_penalty = 1.8 * occ_res.occlusion_ratio
+
+                    temperature = float(gamma_theta * gamma_r + occ_penalty)
 
                     # ST-GCN 动作分类与物理不确定度标定
                     prediction = self.classifier.predict_sequence(joints_3d, is_normalized=True)
@@ -216,7 +211,7 @@ class MultiSceneViewpointDatasetGenerator:
                     prob_list = [float(p) for p in calib_probs]
 
                     is_correct = bool(prediction.predicted_class == act_id)
-                    mean_pose_conf = max(0.35, 0.95 - 0.25 * ((vp.distance - 1.5) / 1.5) - (0.30 if (90.0 <= vp.angle <= 270.0) else 0.0))
+                    mean_pose_conf = max(0.20, 0.95 - 0.25 * ((vp.distance - 1.5) / 1.5) - (0.45 * occ_res.occlusion_ratio))
 
                     total_viewpoint_count += 1
                     if entropy_val > 1e-4:
@@ -234,6 +229,12 @@ class MultiSceneViewpointDatasetGenerator:
                         "angle": round(float(vp.angle), 2),
                         "camera_height": round(float(vp.camera_height), 4),
                         "navigation_cost": round(float(vp.navigation_cost), 4),
+                        "occlusion_ratio": round(float(occ_res.occlusion_ratio), 4),
+                        "visible_joint_ratio": round(float(occ_res.visible_joint_ratio), 4),
+                        "visible_joints_count": int(occ_res.visible_joints_count),
+                        "occlusion_level": str(occ_res.occlusion_level),
+                        "bounding_box_visibility": round(float(occ_res.bounding_box_visibility), 4),
+                        "depth_occlusion_rate": round(float(occ_res.depth_occlusion_rate), 4),
                         "entropy": round(entropy_val, 4),
                         "normalized_entropy": round(norm_entropy, 4),
                         "confidence": round(conf_val, 4),
@@ -260,6 +261,9 @@ class MultiSceneViewpointDatasetGenerator:
                             "raw_candidates": int(len(raw_candidates)),
                             "feasible_candidates": int(len(feasible_viewpoints)),
                         },
+                        "occlusion_ratio": round(float(occ_res.occlusion_ratio), 4),
+                        "visible_joint_ratio": round(float(occ_res.visible_joint_ratio), 4),
+                        "occlusion_level": str(occ_res.occlusion_level),
                         "pose_confidence": round(mean_pose_conf, 4),
                         "action_probability": [round(p, 4) for p in prob_list],
                         "predicted_action": prediction.predicted_label,
@@ -338,6 +342,12 @@ class MultiSceneViewpointDatasetGenerator:
         bin_050_100 = int(np.sum((all_entropies >= 0.50) & (all_entropies < 1.00)))
         bin_100_plus = int(np.sum(all_entropies >= 1.00))
 
+        # 统计并保存遮挡统计文件
+        occlusion_stats = self.occlusion_analyzer.compute_dataset_occlusion_statistics(
+            samples_or_episodes=all_samples_meta,
+            output_file=out_dir / "occlusion_statistics.json",
+        )
+
         dataset_stats = {
             "total_episodes": len(all_episodes),
             "total_samples": len(all_samples_meta),
@@ -389,6 +399,13 @@ class MultiSceneViewpointDatasetGenerator:
                     },
                 },
             },
+            "occlusion_summary": {
+                "overall_mean_occlusion": occlusion_stats["overall_occlusion"]["mean"],
+                "overall_std_occlusion": occlusion_stats["overall_occlusion"]["std"],
+                "easy_ratio": occlusion_stats["difficulty_level_breakdown"]["easy"]["ratio"],
+                "medium_ratio": occlusion_stats["difficulty_level_breakdown"]["medium"]["ratio"],
+                "hard_ratio": occlusion_stats["difficulty_level_breakdown"]["hard"]["ratio"],
+            },
             "non_zero_entropy_ratio": round(non_zero_entropy_count / max(total_viewpoint_count, 1), 4),
             "non_zero_entropy_count": non_zero_entropy_count,
             "average_candidates_per_episode": round(len(all_samples_meta) / max(len(all_episodes), 1), 2),
@@ -410,12 +427,11 @@ class MultiSceneViewpointDatasetGenerator:
         logger.info("  Multi-Scene Active View Dataset Generation Completed!         ")
         logger.info("  Total Episodes:     %d across %d scenes", len(all_episodes), len(scene_ids))
         logger.info("  Total Samples:      %d", len(all_samples_meta))
-        logger.info("  Entropy Spectrum:   Min=%.4f, Median=%.4f, Mean=%.4f, Max=%.4f (Std=%.4f)",
-                    dataset_stats["entropy_distribution_statistics"]["min"],
-                    dataset_stats["entropy_distribution_statistics"]["percentiles"]["p50_median"],
-                    dataset_stats["entropy_distribution_statistics"]["mean"],
-                    dataset_stats["entropy_distribution_statistics"]["max"],
-                    dataset_stats["entropy_distribution_statistics"]["std"])
+        logger.info("  Occlusion Breakdown: Easy=%.2f%%, Med=%.2f%%, Hard=%.2f%%",
+                    occlusion_stats["difficulty_level_breakdown"]["easy"]["ratio"] * 100,
+                    occlusion_stats["difficulty_level_breakdown"]["medium"]["ratio"] * 100,
+                    occlusion_stats["difficulty_level_breakdown"]["hard"]["ratio"] * 100)
         logger.info("=================================================================")
 
         return dataset_stats
+

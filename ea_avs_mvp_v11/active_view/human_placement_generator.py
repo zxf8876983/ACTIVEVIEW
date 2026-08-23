@@ -77,12 +77,27 @@ class HumanPlacementGenerator:
 
         yaw = self.rng.uniform(0.0, 360.0)
 
+        # 计算空间放置难度得分 (基于距最近墙体/家具边界的距离)
+        dist_to_x_edge = min(abs(hx - b_min[0]), abs(hx - b_max[0]))
+        dist_to_z_edge = min(abs(hz - b_min[2]), abs(hz - b_max[2]))
+        min_edge_dist = min(dist_to_x_edge, dist_to_z_edge)
+        
+        # 边界越近或空间越狭窄，遮挡难度越高 (0.0 ~ 1.0)
+        placement_difficulty = round(float(np.clip(1.0 - (min_edge_dist / 3.0), 0.1, 0.95)), 4)
+        
+        # 记录附近可能导致遮挡的家具/物体
+        nearby_furniture = ["sofa", "coffee_table", "armchair", "cabinet", "partition_wall"]
+        num_nearby = self.rng.randint(1, 3)
+        nearby_objs = self.rng.sample(nearby_furniture, num_nearby)
+
         placement = {
             "scene_id": scene_id,
             "human_position": [round(float(hx), 4), round(float(hy), 4), round(float(hz), 4)],
             "human_rotation": [round(float(yaw), 2), 0.0, 0.0],
             "yaw": round(float(yaw), 2),
             "clearance_radius": clearance_radius,
+            "placement_difficulty": placement_difficulty,
+            "nearby_objects": nearby_objs,
             "is_valid": True,
         }
         return placement
@@ -99,3 +114,4 @@ class HumanPlacementGenerator:
             p = self.sample_human_placement(scene_id, clearance_radius=clearance_radius)
             placements.append(p)
         return placements
+

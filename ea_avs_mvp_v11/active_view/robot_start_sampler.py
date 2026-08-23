@@ -17,6 +17,8 @@ import math
 import random
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+import numpy as np
+
 from ea_avs_mvp_v11.active_view.scene_manager import SceneMetadata, SceneManager
 
 logger = logging.getLogger("robot_start_sampler")
@@ -78,6 +80,22 @@ class RobotStartSampler:
         yaw_to_human = (math.degrees(math.atan2(dx, dz)) + 360.0) % 360.0
         angle_to_human = (math.degrees(math.atan2(rz - hz, rx - hx)) + 360.0) % 360.0
 
+        # 计算初始可见性与遮挡状态
+        is_back = (90.0 <= angle_to_human <= 270.0)
+        dist_factor = max(0.0, (actual_dist - 2.0) / 6.0)
+        
+        # 初始可见性 (0.0 ~ 1.0)
+        base_vis = 0.90 - (0.45 if is_back else 0.0) - 0.35 * dist_factor
+        vis_before = round(float(np.clip(base_vis, 0.15, 0.95)), 4)
+        init_occlusion = round(float(1.0 - vis_before), 4)
+
+        if actual_dist >= 5.0:
+            obs_type = "far_observation"
+        elif init_occlusion >= 0.40:
+            obs_type = "partially_occluded"
+        else:
+            obs_type = "unoccluded"
+
         current_viewpoint = {
             "position": [round(float(rx), 4), round(float(ry), 4), round(float(rz), 4)],
             "rotation": [round(float(yaw_to_human), 2), 0.0],
@@ -86,5 +104,9 @@ class RobotStartSampler:
             "distance_to_human": round(float(actual_dist), 4),
             "angle_to_human": round(float(angle_to_human), 2),
             "camera_height": round(float(camera_height), 4),
+            "visibility_before_action": vis_before,
+            "initial_occlusion_ratio": init_occlusion,
+            "initial_observation_type": obs_type,
         }
         return current_viewpoint
+
