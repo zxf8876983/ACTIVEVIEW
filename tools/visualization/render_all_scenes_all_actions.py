@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-Comprehensive 10-Scene x 16-Action Habitat Sensor Visualizer (v11.4.3)
-======================================================================
-1. Supports 10 real residential scenes (Habitat apartment, Castle, Van Gogh, MP3D, and 6 HSSD houses);
-2. Computes / loads NavMesh seamlessly;
-3. Sets distinct 54-joint kinematic poses for all 16 AMASS action classes (standing, sitting, bending, waving, kicking, etc.);
-4. Fixed robot camera sensor height at 1.50m (y_floor + 1.50m);
-5. Generates high-quality 4-panel visual comparison figures;
-6. Compiles a 10-scene summary montage and an interactive HTML gallery dashboard.
+10 HM3D Minival Scenes x 16 Dynamic AMASS Actions Habitat Sensor Visualizer
+===========================================================================
+1. Uses 10 photorealistic HM3D minival scenes from /home/zxf/WorkSpace/code/code/robot/DATA/hm3d-minival/;
+2. Loads official precomputed HM3D .basis.navmesh files for 100% navigation accuracy;
+3. Runs 54-joint full-body 3D collision check and grounds feet to floor;
+4. Drives all 16 AMASS dynamic action classes with articulated SMPL-X joint kinematics;
+5. Uses Habitat real Camera Sensors (COLOR & DEPTH) with fixed 1.50m camera height;
+6. Saves 160 figures into /home/zxf/WorkSpace/code/data/ActiveView/visualizations/all_scenes_actions/;
+7. Compiles a 10-scene summary montage and interactive HTML gallery dashboard.
 """
 
 import json
@@ -24,20 +25,20 @@ import quaternion
 from PIL import Image
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-logger = logging.getLogger("habitat_multiscene_visualizer")
+logger = logging.getLogger("hm3d_action_visualizer")
 
-SCENES_CATALOG = [
-    ("apartment_1", "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.glb", None),
-    ("skokloster-castle", "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/skokloster-castle.glb", None),
-    ("van-gogh-room", "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/versioned_data/habitat_test_scenes/van-gogh-room.glb", None),
-    ("mp3d_17DRP5sb8fy", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/mp3d_example_scene_1.1/17DRP5sb8fy/17DRP5sb8fy.glb", "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/mp3d_example_scene_1.1/17DRP5sb8fy/17DRP5sb8fy.navmesh"),
-    ("hssd_house_102343992", "/home/zxf/MG08/hssd-scenes/scenes/102343992.glb", None),
-    ("hssd_house_102344022", "/home/zxf/MG08/hssd-scenes/scenes/102344022.glb", None),
-    ("hssd_house_102344049", "/home/zxf/MG08/hssd-scenes/scenes/102344049.glb", None),
-    ("hssd_house_102344094", "/home/zxf/MG08/hssd-scenes/scenes/102344094.glb", None),
-    ("hssd_house_102344115", "/home/zxf/MG08/hssd-scenes/scenes/102344115.glb", None),
-    ("hssd_house_102344193", "/home/zxf/MG08/hssd-scenes/scenes/102344193.glb", None),
-]
+HM3D_ROOT = Path("/home/zxf/WorkSpace/code/code/robot/DATA/hm3d-minival")
+
+# 10 HM3D Minival 场景列表
+HM3D_SCENE_DIRS = sorted([d for d in HM3D_ROOT.iterdir() if d.is_dir()])[:10]
+
+SCENES_CATALOG = []
+for d in HM3D_SCENE_DIRS:
+    s_name = d.name
+    glb_files = list(d.glob("*.basis.glb"))
+    nav_files = list(d.glob("*.basis.navmesh"))
+    if glb_files and nav_files:
+        SCENES_CATALOG.append((s_name, str(glb_files[0]), str(nav_files[0])))
 
 ACTION_CATEGORIES = [
     "standing", "sitting", "sit_down", "stand_up",
@@ -61,7 +62,7 @@ def get_action_joint_positions(action_name: str) -> np.ndarray:
     joints = np.zeros((54, 4), dtype=np.float32)
     joints[:, 3] = 1.0  # 默认单位四元数 [0, 0, 0, 1]
 
-    # 默认直立放松臂展姿态（两臂自然下垂）
+    # 默认自然垂臂姿态
     joints[12] = make_quat([0, 0, 1], -70.0)  # 左肩下垂 70度
     joints[36] = make_quat([0, 0, 1], 70.0)   # 右肩下垂 70度
 
@@ -109,12 +110,12 @@ def get_action_joint_positions(action_name: str) -> np.ndarray:
         joints[12] = make_quat([0, 0, 1], -40.0)
         joints[36] = make_quat([0, 0, 1], 40.0)
     elif action_name == "fall_stumble":
-        joints[8] = make_quat([1, 0, 0], 55.0)    # 前倾摔倒踉跄
+        joints[8] = make_quat([1, 0, 0], 55.0)    # 前倾摔倒
         joints[0] = make_quat([1, 0, 0], -30.0)
         joints[12] = make_quat([1, 0, 0], -50.0)
         joints[36] = make_quat([1, 0, 0], -50.0)
     elif action_name == "stretching":
-        joints[12] = make_quat([0, 0, 1], -170.0) # 双手拉伸伸直
+        joints[12] = make_quat([0, 0, 1], -170.0) # 双手拉伸
         joints[36] = make_quat([0, 0, 1], 170.0)
     elif action_name == "turning":
         joints[8] = make_quat([0, 1, 0], 45.0)    # 躯干侧转
@@ -132,7 +133,7 @@ def render_single_scene_all_actions(
     scene_out_dir = base_output_dir / scene_name
     scene_out_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info(">>> Initializing Habitat Scene [%s]...", scene_name)
+    logger.info(">>> Initializing HM3D Scene [%s]...", scene_name)
 
     # 1. 配置 Habitat Simulator
     backend_cfg = habitat_sim.SimulatorConfiguration()
@@ -160,16 +161,11 @@ def render_single_scene_all_actions(
     agent_cfg.sensor_specifications = [rgb_spec, depth_spec]
 
     sim = habitat_sim.Simulator(habitat_sim.Configuration(backend_cfg, [agent_cfg]))
-    if navmesh_path is not None and Path(navmesh_path).exists():
-        sim.pathfinder.load_nav_mesh(navmesh_path)
-    elif not sim.pathfinder.is_loaded:
-        settings = habitat_sim.NavMeshSettings()
-        settings.set_defaults()
-        sim.recompute_navmesh(sim.pathfinder, settings)
+    sim.pathfinder.load_nav_mesh(navmesh_path)
 
     nav = sim.pathfinder
     if not nav.is_loaded:
-        logger.warning("NavMesh not loaded for scene %s, skipping.", scene_name)
+        logger.warning("NavMesh not loaded for HM3D scene %s, skipping.", scene_name)
         sim.close()
         return {}
 
@@ -182,36 +178,30 @@ def render_single_scene_all_actions(
     best_min_link_dist = 0.0
     root_clearance = 0.0
 
-    # 针对部分特定场景选择已知优质大客厅坐标
-    if scene_name == "apartment_1":
-        valid_human_pt = np.array([1.23, -1.60, 4.81], dtype=np.float32)
-        best_min_link_dist = 0.70
-        root_clearance = 1.58
-    else:
-        for attempt in range(500):
-            pt = nav.get_random_navigable_point()
-            dist = nav.distance_to_closest_obstacle(pt)
-            if dist >= 0.70:
-                y_floor = float(pt[1])
-                art_obj.translation = np.array([pt[0], y_floor + 0.90, pt[2]], dtype=np.float32)
+    for attempt in range(800):
+        pt = nav.get_random_navigable_point()
+        dist = nav.distance_to_closest_obstacle(pt)
+        if dist >= 0.70:
+            y_floor = float(pt[1])
+            art_obj.translation = np.array([pt[0], y_floor + 0.90, pt[2]], dtype=np.float32)
 
-                all_links_clear = True
-                curr_min_link_dist = 999.0
-                for i in range(art_obj.num_links):
-                    node = art_obj.get_link_scene_node(i)
-                    link_pos = np.array(node.absolute_translation, dtype=np.float32)
-                    l_dist = nav.distance_to_closest_obstacle(link_pos)
-                    curr_min_link_dist = min(curr_min_link_dist, l_dist)
-                    if l_dist < 0.15:
-                        all_links_clear = False
-                        break
+            all_links_clear = True
+            curr_min_link_dist = 999.0
+            for i in range(art_obj.num_links):
+                node = art_obj.get_link_scene_node(i)
+                link_pos = np.array(node.absolute_translation, dtype=np.float32)
+                l_dist = nav.distance_to_closest_obstacle(link_pos)
+                curr_min_link_dist = min(curr_min_link_dist, l_dist)
+                if l_dist < 0.15:
+                    all_links_clear = False
+                    break
 
-                if all_links_clear and curr_min_link_dist > best_min_link_dist:
-                    valid_human_pt = np.array(pt, dtype=np.float32)
-                    best_min_link_dist = curr_min_link_dist
-                    root_clearance = dist
-                    if best_min_link_dist >= 0.35:
-                        break
+            if all_links_clear and curr_min_link_dist > best_min_link_dist:
+                valid_human_pt = np.array(pt, dtype=np.float32)
+                best_min_link_dist = curr_min_link_dist
+                root_clearance = dist
+                if best_min_link_dist >= 0.40:
+                    break
 
     if valid_human_pt is None:
         valid_human_pt = np.array(nav.get_random_navigable_point(), dtype=np.float32)
@@ -235,7 +225,7 @@ def render_single_scene_all_actions(
 
     # 5. 遍历 16 种 AMASS 动作并应用姿态渲染
     for act_idx, act_name in enumerate(ACTION_CATEGORIES):
-        # 设置人体肢体关节姿态（消除 T-pose）
+        # 设置人体肢体关节姿态
         action_joints = get_action_joint_positions(act_name)
         art_obj.joint_positions = action_joints
 
@@ -244,20 +234,19 @@ def render_single_scene_all_actions(
         dist_m = 2.0
 
         robot_pt = None
-        for r_cand_angle in [obs_angle_deg, obs_angle_deg + 30.0, obs_angle_deg - 30.0, obs_angle_deg + 60.0, obs_angle_deg - 60.0, 0.0, 180.0]:
+        for r_cand_angle in [obs_angle_deg, obs_angle_deg + 30.0, obs_angle_deg - 30.0, obs_angle_deg + 60.0, obs_angle_deg - 60.0, 0.0, 90.0, 180.0, 270.0]:
             r_rad = np.radians(r_cand_angle)
             cand = np.array([
                 valid_human_pt[0] + dist_m * np.sin(r_rad),
                 y_floor,
                 valid_human_pt[2] + dist_m * np.cos(r_rad)
             ], dtype=np.float32)
-            if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.25:
+            if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.20:
                 robot_pt = cand
                 break
 
-
         if robot_pt is None:
-            robot_pt = np.array([valid_human_pt[0] + 2.0, y_floor, valid_human_pt[2] + 1.0], dtype=np.float32)
+            robot_pt = np.array([valid_human_pt[0] + 1.8, y_floor, valid_human_pt[2] + 0.8], dtype=np.float32)
 
         cam_height = 1.50  # 固定为 1.50m
         cam_pos = np.array([robot_pt[0], y_floor + cam_height, robot_pt[2]], dtype=np.float32)
@@ -329,7 +318,7 @@ def render_single_scene_all_actions(
         # Panel 1: RGB
         ax1 = fig.add_subplot(1, 4, 1)
         ax1.imshow(rgb)
-        ax1.set_title(f"1. Habitat COLOR_SENSOR (RGB)\nScene: {scene_name} | Action: {act_name}", fontsize=10, fontweight="bold")
+        ax1.set_title(f"1. Habitat COLOR_SENSOR (RGB)\nHM3D: {scene_name} | Action: {act_name}", fontsize=10, fontweight="bold")
         ax1.axis("off")
 
         # Panel 2: Depth
@@ -387,7 +376,7 @@ def render_single_scene_all_actions(
         action_figure_paths[act_name] = str(act_fig_p)
 
     sim.close()
-    logger.info("Finished rendering 16 actions for scene [%s].", scene_name)
+    logger.info("Finished rendering 16 actions for HM3D scene [%s].", scene_name)
     return action_figure_paths
 
 
@@ -397,7 +386,7 @@ def build_html_dashboard(all_results: Dict[str, Dict[str, str]], output_dir: Pat
         "<html lang='en'>",
         "<head>",
         "  <meta charset='UTF-8'>",
-        "  <title>ACTIVEVIEW: 10 Scenes x 16 AMASS Actions Habitat Sensor Benchmark</title>",
+        "  <title>ACTIVEVIEW: 10 HM3D Scenes x 16 AMASS Actions Benchmark</title>",
         "  <style>",
         "    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; }",
         "    h1 { color: #38bdf8; text-align: center; margin-bottom: 8px; }",
@@ -412,13 +401,13 @@ def build_html_dashboard(all_results: Dict[str, Dict[str, str]], output_dir: Pat
         "  </style>",
         "</head>",
         "<body>",
-        "  <h1>ACTIVEVIEW v11.4.3 Embodied Perception Visual Benchmark</h1>",
-        "  <p class='subtitle'>10 Real Habitat / MP3D / HSSD Scenes &times; 16 AMASS Dynamic Action Postures (Habitat Camera Sensor Height = 1.50m)</p>",
+        "  <h1>ACTIVEVIEW HM3D Photorealistic Embodied Perception Benchmark</h1>",
+        "  <p class='subtitle'>10 Real HM3D Photorealistic Scenes &times; 16 AMASS Dynamic Action Postures (Camera Height = 1.50m)</p>",
     ]
 
     for s_name, act_dict in all_results.items():
         html_lines.append("  <div class='scene-section'>")
-        html_lines.append(f"    <div class='scene-title'>Scene: {s_name} ({len(act_dict)} Actions)</div>")
+        html_lines.append(f"    <div class='scene-title'>HM3D Scene: {s_name} ({len(act_dict)} Actions)</div>")
         html_lines.append("    <div class='grid'>")
         for act_name, img_path in act_dict.items():
             rel_p = Path(img_path).relative_to(output_dir)
@@ -456,16 +445,16 @@ def main():
 
     # 制作 10 场景代表性大图蒙太奇
     actions_picked = [
-        ("apartment_1", "00_standing.png"),
-        ("skokloster-castle", "01_sitting.png"),
-        ("van-gogh-room", "04_bending.png"),
-        ("mp3d_17DRP5sb8fy", "05_reaching.png"),
-        ("hssd_house_102343992", "06_picking_up.png"),
-        ("hssd_house_102344022", "07_squatting.png"),
-        ("hssd_house_102344049", "08_jumping.png"),
-        ("hssd_house_102344094", "11_waving.png"),
-        ("hssd_house_102344115", "12_dancing.png"),
-        ("hssd_house_102344193", "13_kicking.png"),
+        (SCENES_CATALOG[0][0], "00_standing.png"),
+        (SCENES_CATALOG[1][0], "01_sitting.png"),
+        (SCENES_CATALOG[2][0], "04_bending.png"),
+        (SCENES_CATALOG[3][0], "05_reaching.png"),
+        (SCENES_CATALOG[4][0], "06_picking_up.png"),
+        (SCENES_CATALOG[5][0], "07_squatting.png"),
+        (SCENES_CATALOG[6][0], "08_jumping.png"),
+        (SCENES_CATALOG[7][0], "11_waving.png"),
+        (SCENES_CATALOG[8][0], "12_dancing.png"),
+        (SCENES_CATALOG[9][0], "13_kicking.png"),
     ]
 
     fig, axes = plt.subplots(5, 2, figsize=(20, 18), dpi=140)
@@ -476,7 +465,7 @@ def main():
         if img_p.exists():
             im = Image.open(img_p)
             axes[idx].imshow(im)
-            axes[idx].set_title(f"Scene [{idx+1}/10]: {s_name} | Action: {act_file.replace('.png', '')}", fontsize=11, fontweight="bold")
+            axes[idx].set_title(f"HM3D [{idx+1}/10]: {s_name} | Action: {act_file.replace('.png', '')}", fontsize=11, fontweight="bold")
         axes[idx].axis("off")
 
     plt.tight_layout()
@@ -485,7 +474,7 @@ def main():
     plt.close()
 
     logger.info("================================================================")
-    logger.info("  All 10 Scenes x 16 Actions Rendering Completed!               ")
+    logger.info("  All 10 HM3D Scenes x 16 Actions Rendering Completed!          ")
     logger.info("  Total Rendered Images: %d", sum(len(v) for v in all_results.values()))
     logger.info("  Output Directory:      %s", base_out_dir)
     logger.info("  Montage Path:          %s", overview_p)
