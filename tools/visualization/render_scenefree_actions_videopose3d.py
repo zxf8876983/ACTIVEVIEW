@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
-Scene-Free Humanoid Action 3D Pose Extraction with VideoPose3D —— render_scenefree_actions_videopose3d.py
-=========================================================================================================
+Pure Solid Background Humanoid Action 3D Pose Extraction with VideoPose3D —— render_scenefree_actions_videopose3d.py
+===================================================================================================================
 
 职责：
-    1. 在无复杂家具/房屋建筑的纯净中性摄影棚环境（Neutral Studio Stage）中加载与渲染 SMPL 关节仿真人体；
-    2. 遍历 16 种非位移（Non-Locomotion）AMASS 日常与应急动作；
-    3. 运行纯视觉 2D 姿态检测模型 (Keypoint R-CNN on CUDA GPU)；
-    4. 使用学术界成熟的 3D 姿态模型 (VideoPose3D on CUDA GPU) 端到端提取规范 3D 骨架 (Human3.6M 17 关节)；
-    5. 生成 16 种动作的高清 4-Panel 可视化图片、16 动作全景拼图与交互式 Web Gallery。
+    1. 在 100% 纯色背景（Pure Solid Black Background, scene_id="NONE"，零场景网格）下渲染 SMPL 仿真人体；
+    2. 正面正对人体（Frontal View），精准居中人体完整视野（从头顶到脚底全覆盖）；
+    3. 遍历 16 种非位移（Non-Locomotion）AMASS 日常与应急动作；
+    4. 运行纯视觉 2D 姿态检测模型 (Keypoint R-CNN on CUDA GPU)；
+    5. 使用学术界成熟的 3D 姿态模型 (VideoPose3D on CUDA GPU) 端到端提取规范 3D 骨架 (Human3.6M 17 关节)；
+    6. 生成 16 种动作的高清 4-Panel 可视化图片、16 动作全景拼图与交互式 Web Gallery。
 """
 
 import logging
@@ -42,7 +43,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger("scenefree_videopose3d")
 
 # 资源路径
-STAGE_PATH = "/home/zxf/WorkSpace/code/code/robot/habitat-sim/data/test_assets/scenes/stage_floor1.glb"
 URDF_PATH = "/home/zxf/WorkSpace/code/code/robot/habitat-lab/data/versioned_data/habitat_humanoids/neutral_0/neutral_0.urdf"
 OUTPUT_DIR = Path("/home/zxf/WorkSpace/code/data/ActiveView/visualizations/scenefree_videopose3d")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -172,9 +172,9 @@ def run_scenefree_videopose3d_benchmark():
     videopose_model.eval()
     logger.info("Keypoint R-CNN and VideoPose3D loaded successfully!")
 
-    # 3. 初始化 Habitat Scene-Free Studio (Neutral Studio Stage)
+    # 3. 初始化 100% 纯色单色背景 (scene_id = 'NONE', 零网格加载)
     backend_cfg = habitat_sim.SimulatorConfiguration()
-    backend_cfg.scene_id = STAGE_PATH
+    backend_cfg.scene_id = "NONE"
     backend_cfg.enable_physics = True
 
     H, W = 512, 512
@@ -203,40 +203,37 @@ def run_scenefree_videopose3d_benchmark():
 
     action_figure_paths = {}
 
-    logger.info(">>> Starting Scene-Free Rendering & 3D Pose Extraction across 16 Actions...")
+    logger.info(">>> Starting Pure Solid Background Rendering & 3D Pose Extraction across 16 Actions...")
 
     for act_idx, act_name in enumerate(ACTION_CATEGORIES):
         # 1. 设置动作关节姿态
         action_joints = get_action_joint_positions(act_name)
         art_obj.joint_positions = action_joints
 
-        # 2. 动态贴地计算 (Dynamic Posture-Aware Foot Grounding in Studio Frame)
+        # 2. 动态贴地与中心高度计算
         art_obj.translation = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         min_link_y = min(art_obj.get_link_scene_node(i).absolute_translation[1] for i in range(art_obj.num_links))
+        max_link_y = max(art_obj.get_link_scene_node(i).absolute_translation[1] for i in range(art_obj.num_links))
+        grounded_y = -min_link_y
+        art_obj.translation = np.array([0.0, grounded_y, 0.0], dtype=np.float32)
 
-        if act_name == "jumping":
-            grounded_y = -min_link_y + 0.35  # 跳跃动作悬空 0.35m
-        else:
-            grounded_y = -min_link_y         # 脚底/受力面精准贴合 y=0 地面
+        human_center_y = grounded_y + (max_link_y - min_link_y) * 0.50
 
-        human_dist = 2.6  # 人机标准距离 2.6 米
-        art_obj.translation = np.array([0.0, grounded_y, -human_dist], dtype=np.float32)
-
-        # 3. 设定相机位姿（标准机位：高 0.85m，居中平视人体躯干几何中心）
-        cam_pos = np.array([0.0, 0.85, 0.0], dtype=np.float32)
-        target_pos = np.array([0.0, 0.85, -human_dist], dtype=np.float32)
-        dir_vec = target_pos - cam_pos
+        # 3. 正面正视机位 (Frontal View, 精准居中对齐)
+        cam_pos = np.array([0.0, human_center_y - 0.75, 2.6], dtype=np.float32)
+        target_pos = np.array([0.0, human_center_y, 0.0], dtype=np.float32)
+        dir_vec = target_pos - (cam_pos + np.array([0.0, 0.75, 0.0]))
         dir_norm = dir_vec / np.linalg.norm(dir_vec)
         yaw = np.arctan2(-dir_norm[0], -dir_norm[2])
         pitch = np.arcsin(dir_norm[1])
         cam_rot = quaternion.from_rotation_vector([0, yaw, 0]) * quaternion.from_rotation_vector([pitch, 0, 0])
 
-        st = habitat_sim.AgentState()
-        st.position = cam_pos
-        st.rotation = cam_rot
-        sim.get_agent(0).set_state(st)
+        agent_state = habitat_sim.AgentState()
+        agent_state.position = cam_pos
+        agent_state.rotation = cam_rot
+        sim.get_agent(0).set_state(agent_state)
 
-        # 4. 采集传感器观测
+        # 4. 采集传感器观测 (100% 纯色黑底)
         obs = sim.get_sensor_observations()
         rgb = obs["color_sensor"][:, :, :3]
         depth = obs["depth_sensor"]
@@ -269,17 +266,17 @@ def run_scenefree_videopose3d_benchmark():
         # 7. 渲染 4-Panel 图像
         fig = plt.figure(figsize=(18, 5), dpi=130)
 
-        # Panel 1: Scene-Free RGB
+        # Panel 1: Pure Solid Background RGB (Frontal View)
         ax1 = fig.add_subplot(1, 4, 1)
         ax1.imshow(rgb)
-        ax1.set_title(f"1. Scene-Free COLOR_SENSOR (RGB)\nStudio Mode | Action: {act_name}", fontsize=10, fontweight="bold")
+        ax1.set_title(f"1. Pure Solid Background (RGB)\nFrontal View | Action: {act_name}", fontsize=10, fontweight="bold")
         ax1.axis("off")
 
         # Panel 2: Depth Sensor
         ax2 = fig.add_subplot(1, 4, 2)
         valid_depth = np.where(depth > 10.0, np.nan, depth)
         im2 = ax2.imshow(valid_depth, cmap="viridis")
-        ax2.set_title(f"2. Isolated DEPTH_SENSOR\nMetric Depth [{depth[depth>0].min() if np.any(depth>0) else 0:.2f}m, {depth.max():.2f}m]", fontsize=10, fontweight="bold")
+        ax2.set_title(f"2. Pure Human DEPTH_SENSOR\nMetric Depth [{depth[depth>0].min() if np.any(depth>0) else 0:.2f}m, {depth.max():.2f}m]", fontsize=10, fontweight="bold")
         ax2.axis("off")
         cbar = fig.colorbar(im2, ax=ax2, fraction=0.046, pad=0.04)
         cbar.set_label("Depth (m)", fontsize=8)
@@ -348,7 +345,7 @@ def run_scenefree_videopose3d_benchmark():
     build_scenefree_html(action_figure_paths, OUTPUT_DIR / "index.html")
 
     logger.info("================================================================")
-    logger.info("  Scene-Free 16-Action VideoPose3D Generation Completed!")
+    logger.info("  Pure Solid Background 16-Action VideoPose3D Completed!")
     logger.info("  Total Rendered Images: %d", len(action_figure_paths))
     logger.info("  Output Directory:      %s", OUTPUT_DIR)
     logger.info("  Montage Path:          %s", OUTPUT_DIR / "16_actions_scenefree_montage.png")
@@ -383,7 +380,7 @@ def build_scenefree_html(action_figure_paths: Dict[str, str], html_path: Path):
         "<html lang='en'>",
         "<head>",
         "  <meta charset='UTF-8'>",
-        "  <title>ACTIVEVIEW: Scene-Free 16 AMASS Actions VideoPose3D Benchmark</title>",
+        "  <title>ACTIVEVIEW: Pure Solid Background 16 Actions VideoPose3D Benchmark</title>",
         "  <style>",
         "    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; }",
         "    h1 { color: #38bdf8; text-align: center; margin-bottom: 8px; }",
@@ -396,8 +393,8 @@ def build_scenefree_html(action_figure_paths: Dict[str, str], html_path: Path):
         "  </style>",
         "</head>",
         "<body>",
-        "  <h1>ACTIVEVIEW: Scene-Free 16 AMASS Actions VideoPose3D Benchmark</h1>",
-        "  <p class='subtitle'>Isolated Humanoid Studio &bull; Keypoint R-CNN (2D) &bull; VideoPose3D (3D HPE) &bull; Canonical 1:1 Metric Scale</p>",
+        "  <h1>ACTIVEVIEW: Pure Solid Background 16 Actions VideoPose3D Benchmark</h1>",
+        "  <p class='subtitle'>100% Solid Black Background (scene_id='NONE') &bull; Frontal View &bull; Keypoint R-CNN (2D) &bull; VideoPose3D (3D HPE)</p>",
         "  <div class='gallery'>"
     ]
 
