@@ -24,9 +24,20 @@ logger = logging.getLogger("action_registry")
 DEFAULT_ACTION_CATEGORIES = [
     "standing",
     "sitting",
+    "sit_down",
+    "stand_up",
     "bending",
     "reaching",
-    "fall_related",
+    "picking_up",
+    "squatting",
+    "jumping",
+    "turning",
+    "stretching",
+    "waving",
+    "dancing",
+    "kicking",
+    "fall_stumble",
+    "placing",
 ]
 
 
@@ -152,27 +163,30 @@ class ActionRegistry:
         data_source = self._train_data if split == "train" else (self._test_data if self._test_data is not None else self._train_data)
         
         if data_source is not None and len(data_source) > 0:
+            num_cats = len(self.categories)
+            samples_per_action = len(data_source) // num_cats
+            if samples_per_action > 0:
+                base_idx = (action_id % num_cats) * samples_per_action + (instance_idx % max(samples_per_action, 1))
+                if base_idx < len(data_source):
+                    raw_sample = data_source[base_idx, :, :, :, 0] # (C, T, V)
+                    return np.transpose(raw_sample, (1, 2, 0)).astype(np.float32)
+
+        # 过程化合成回退机制
+        try:
+            from tools.dataset_generation.generate_16class_amass_dataset import synthesize_canonical_motion
             target_cat = self.id_to_category.get(action_id, self.categories[action_id % len(self.categories)])
-            # 6-class base mapping to original clean perception idx
-            ORIGINAL_MAP = {"standing": 0, "walking": 1, "sitting": 2, "bending": 3, "reaching": 4, "fall_related": 5}
-            orig_act_id = ORIGINAL_MAP.get(target_cat, action_id)
-            
-            samples_per_action = len(data_source) // 6
-            base_idx = orig_act_id * samples_per_action + (instance_idx % max(samples_per_action, 1))
-            raw_sample = data_source[base_idx, :, :, :, 0] # (C, T, V)
-            return np.transpose(raw_sample, (1, 2, 0)).astype(np.float32)
+            return synthesize_canonical_motion(target_cat, seed=action_id * 1000 + instance_idx)
+        except Exception:
+            T, V, C = 30, 33, 3
+            skel = np.zeros((T, V, C), dtype=np.float32)
+            for t in range(T):
+                skel[t, 0] = [0.0, 0.50, 0.0]
+                skel[t, 11] = [0.20, 0.35, 0.0]
+                skel[t, 12] = [-0.20, 0.35, 0.0]
+                skel[t, 23] = [0.15, -0.10, 0.0]
+                skel[t, 24] = [-0.15, -0.10, 0.0]
+            return skel
 
-
-        # Procedural fallback canonical skeleton
-        T, V, C = 30, 33, 3
-        skel = np.zeros((T, V, C), dtype=np.float32)
-        for t in range(T):
-            skel[t, 0] = [0.0, 0.50, 0.0]
-            skel[t, 11] = [0.20, 0.35, 0.0]
-            skel[t, 12] = [-0.20, 0.35, 0.0]
-            skel[t, 23] = [0.15, -0.10, 0.0]
-            skel[t, 24] = [-0.15, -0.10, 0.0]
-        return skel
 
     def export_statistics(self, output_file: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
         """导出动作类别统计字典并持久化。"""

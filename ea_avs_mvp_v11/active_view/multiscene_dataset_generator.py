@@ -102,9 +102,6 @@ class MultiSceneViewpointDatasetGenerator:
         scene_ids = [s.scene_id for s in primary_scenes]
         logger.info("Generating dataset across %d primary scenes: %s", len(scene_ids), scene_ids)
 
-        episodes_per_scene = total_episodes // len(scene_ids)
-        episodes_per_action = total_episodes // len(ACTION_CLASSES)
-
         all_episodes: List[Dict[str, Any]] = []
         all_samples_meta: List[Dict[str, Any]] = []
 
@@ -116,14 +113,18 @@ class MultiSceneViewpointDatasetGenerator:
         non_zero_entropy_count = 0
         total_viewpoint_count = 0
 
+        num_acts = len(ACTION_CLASSES)
+        episodes_per_cat_list = [total_episodes // num_acts + (1 if i < (total_episodes % num_acts) else 0) for i in range(num_acts)]
+
         # 按动作类别生成
         for act_id, act_name in enumerate(ACTION_CLASSES):
-            num_instances_for_act = episodes_per_action
+            num_instances_for_act = episodes_per_cat_list[act_id]
 
             # 划分实例
-            num_train = int(num_instances_for_act * train_ratio)
-            num_val = int(num_instances_for_act * val_ratio)
+            num_train = max(1, int(num_instances_for_act * train_ratio))
+            num_val = max(0, int(num_instances_for_act * val_ratio))
             num_test = num_instances_for_act - num_train - num_val
+
 
             for inst_idx in range(num_instances_for_act):
                 if inst_idx < num_train:

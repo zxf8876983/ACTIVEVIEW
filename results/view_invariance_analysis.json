@@ -3,9 +3,20 @@
   "categories": [
     "standing",
     "sitting",
+    "sit_down",
+    "stand_up",
     "bending",
     "reaching",
-    "fall_related"
+    "picking_up",
+    "squatting",
+    "jumping",
+    "turning",
+    "stretching",
+    "waving",
+    "dancing",
+    "kicking",
+    "fall_stumble",
+    "placing"
   ],
   "angles_evaluated": [
     0.0,
@@ -20,123 +31,123 @@
   "results_before_canonical_alignment": {
     "000deg": {
       "angle_deg": 0.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0495,
+      "mean_confidence": 0.9839,
+      "num_samples": 320
     },
     "045deg": {
       "angle_deg": 45.0,
-      "accuracy_pct": 20.0,
-      "mean_entropy": 0.0,
-      "mean_confidence": 1.0,
-      "num_samples": 100
+      "accuracy_pct": 31.25,
+      "mean_entropy": 0.193,
+      "mean_confidence": 0.9245,
+      "num_samples": 320
     },
     "090deg": {
       "angle_deg": 90.0,
-      "accuracy_pct": 20.0,
-      "mean_entropy": 0.0,
-      "mean_confidence": 1.0,
-      "num_samples": 100
+      "accuracy_pct": 6.25,
+      "mean_entropy": 0.2988,
+      "mean_confidence": 0.9036,
+      "num_samples": 320
     },
     "135deg": {
       "angle_deg": 135.0,
-      "accuracy_pct": 20.0,
-      "mean_entropy": 0.0,
-      "mean_confidence": 1.0,
-      "num_samples": 100
+      "accuracy_pct": 6.25,
+      "mean_entropy": 0.015,
+      "mean_confidence": 0.9973,
+      "num_samples": 320
     },
     "180deg": {
       "angle_deg": 180.0,
-      "accuracy_pct": 20.0,
-      "mean_entropy": 0.0,
-      "mean_confidence": 1.0,
-      "num_samples": 100
+      "accuracy_pct": 6.25,
+      "mean_entropy": 0.0592,
+      "mean_confidence": 0.9818,
+      "num_samples": 320
     },
     "225deg": {
       "angle_deg": 225.0,
-      "accuracy_pct": 20.0,
-      "mean_entropy": 0.0,
-      "mean_confidence": 1.0,
-      "num_samples": 100
+      "accuracy_pct": 6.25,
+      "mean_entropy": 0.0089,
+      "mean_confidence": 0.9986,
+      "num_samples": 320
     },
     "270deg": {
       "angle_deg": 270.0,
-      "accuracy_pct": 20.0,
-      "mean_entropy": 0.0,
-      "mean_confidence": 1.0,
-      "num_samples": 100
+      "accuracy_pct": 0.0,
+      "mean_entropy": 0.2331,
+      "mean_confidence": 0.9149,
+      "num_samples": 320
     },
     "315deg": {
       "angle_deg": 315.0,
-      "accuracy_pct": 20.0,
-      "mean_entropy": 0.0,
-      "mean_confidence": 1.0,
-      "num_samples": 100
+      "accuracy_pct": 31.25,
+      "mean_entropy": 0.1701,
+      "mean_confidence": 0.9564,
+      "num_samples": 320
     }
   },
   "results_after_canonical_alignment": {
     "000deg": {
       "angle_deg": 0.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     },
     "045deg": {
       "angle_deg": 45.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     },
     "090deg": {
       "angle_deg": 90.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     },
     "135deg": {
       "angle_deg": 135.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     },
     "180deg": {
       "angle_deg": 180.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     },
     "225deg": {
       "angle_deg": 225.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     },
     "270deg": {
       "angle_deg": 270.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     },
     "315deg": {
       "angle_deg": 315.0,
-      "accuracy_pct": 97.0,
-      "mean_entropy": 0.1739,
-      "mean_confidence": 0.9408,
-      "num_samples": 100
+      "accuracy_pct": 100.0,
+      "mean_entropy": 0.0496,
+      "mean_confidence": 0.9838,
+      "num_samples": 320
     }
   },
   "summary": {
-    "mean_accuracy_before_pct": 29.62,
-    "mean_accuracy_after_pct": 97.0,
-    "variance_before": 648.48,
+    "mean_accuracy_before_pct": 23.44,
+    "mean_accuracy_after_pct": 100.0,
+    "variance_before": 964.36,
     "variance_after": 0.0
   }
 }
