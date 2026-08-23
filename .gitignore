@@ -21,3 +21,12 @@ tmp/
 **/tmp/
 datasets/
 **/datasets/
+
+# Large Model Weights & Binary Checkpoints
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.npz
+tools/videopose3d/images/
+
