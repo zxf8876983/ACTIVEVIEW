@@ -103,16 +103,28 @@ class ActionClassifier:
         self.model.eval()
 
     def load_checkpoint(self, checkpoint_path: Union[str, Path]) -> None:
-        """加载训练好的模型权重。"""
+        """加载训练好的模型权重 (支持自适应不同分类数)。"""
         ckpt = torch.load(checkpoint_path, map_location=self.device)
-        if isinstance(ckpt, dict) and "state_dict" in ckpt:
-            self.model.load_state_dict(ckpt["state_dict"])
-        elif isinstance(ckpt, dict) and "model_state_dict" in ckpt:
-            self.model.load_state_dict(ckpt["model_state_dict"])
-        else:
-            self.model.load_state_dict(ckpt)
-        logger.info("Loaded ST-GCN checkpoint from: %s", checkpoint_path)
+        sd = ckpt.get("model_state_dict", ckpt.get("state_dict", ckpt))
+        
+        if "fc.weight" in sd:
+            ckpt_classes = sd["fc.weight"].shape[0]
+            if ckpt_classes != self.num_classes:
+                self.num_classes = ckpt_classes
+                if len(self.action_classes) != ckpt_classes:
+                    from ea_avs_mvp_v11.active_view.action_registry import DEFAULT_ACTION_CATEGORIES
+                    if len(DEFAULT_ACTION_CATEGORIES) == ckpt_classes:
+                        self.action_classes = list(DEFAULT_ACTION_CATEGORIES)
+                self.model = STGCN(
+                    in_channels=3,
+                    num_classes=self.num_classes,
+                    skel_def=self.skel_def,
+                ).to(self.device)
+
+        self.model.load_state_dict(sd)
+        logger.info("Loaded ST-GCN checkpoint (%d classes) from: %s", self.num_classes, checkpoint_path)
         self.model.eval()
+
 
     @staticmethod
     def compute_uncertainty_metrics(probs: np.ndarray, num_classes: int) -> Tuple[float, float, float]:

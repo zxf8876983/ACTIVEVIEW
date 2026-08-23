@@ -36,11 +36,12 @@ logger = logging.getLogger("train_st_gcn_v115")
 
 
 def train_st_gcn(
-    epochs: int = 40,
+    epochs: int = 30,
     batch_size: int = 16,
     lr: float = 1e-3,
     dataset_dir: str = None,
     checkpoint_dir: str = None,
+    exclude_locomotion: bool = True,
 ) -> Dict[str, Any]:
     """训练 ST-GCN 模型并输出详细评估指标。"""
     data_root = get_data_root()
@@ -50,20 +51,65 @@ def train_st_gcn(
 
     train_data_p = action_data_root / "train" / "clean_perception" / "data.npy"
     train_labels_p = action_data_root / "train" / "clean_perception" / "labels.npy"
+    train_mf_p = action_data_root / "train" / "clean_perception" / "manifest.json"
+
     val_data_p = action_data_root / "test" / "clean_perception" / "data.npy"
     val_labels_p = action_data_root / "test" / "clean_perception" / "labels.npy"
+    val_mf_p = action_data_root / "test" / "clean_perception" / "manifest.json"
 
     if not train_data_p.exists():
         raise FileNotFoundError(f"Training data not found at: {train_data_p}")
 
-    skel_def = get_skeleton_definition()
-    train_loader = create_action_dataloader(train_data_p, train_labels_p, batch_size=batch_size, shuffle=True)
-    val_loader = create_action_dataloader(val_data_p, val_labels_p, batch_size=batch_size, shuffle=False)
+    categories = list(DEFAULT_ACTION_CATEGORIES)
+    num_classes = len(categories)
+    cat_to_id = {c: i for i, c in enumerate(categories)}
 
-    num_classes = len(DEFAULT_ACTION_CATEGORIES)
+    # 加载并过滤非位移动作数据
+    raw_train_data = np.load(train_data_p)
+    raw_val_data = np.load(val_data_p)
+    
+    with open(train_mf_p, "r", encoding="utf-8") as f:
+        train_mf = json.load(f)
+    with open(val_mf_p, "r", encoding="utf-8") as f:
+        val_mf = json.load(f)
+
+    if exclude_locomotion:
+        train_idx = [i for i, item in enumerate(train_mf) if item.get("action_label") in cat_to_id]
+        val_idx = [i for i, item in enumerate(val_mf) if item.get("action_label") in cat_to_id]
+
+        train_data = raw_train_data[train_idx]
+        train_labels = np.array([cat_to_id[train_mf[i]["action_label"]] for i in train_idx], dtype=np.int64)
+
+        val_data = raw_val_data[val_idx]
+        val_labels = np.array([cat_to_id[val_mf[i]["action_label"]] for i in val_idx], dtype=np.int64)
+    else:
+        train_data = raw_train_data
+        train_labels = np.load(train_labels_p)
+        val_data = raw_val_data
+        val_labels = np.load(val_labels_p)
+
+    # 临时保存过滤后的数据文件用于 DataLoader
+    filtered_dir = data_root / "cache" / "filtered_action_dataset"
+    filtered_dir.mkdir(parents=True, exist_ok=True)
+    f_train_data_p = filtered_dir / "train_data.npy"
+    f_train_lbl_p = filtered_dir / "train_labels.npy"
+    f_val_data_p = filtered_dir / "val_data.npy"
+    f_val_lbl_p = filtered_dir / "val_labels.npy"
+
+    np.save(f_train_data_p, train_data)
+    np.save(f_train_lbl_p, train_labels)
+    np.save(f_val_data_p, val_data)
+    np.save(f_val_lbl_p, val_labels)
+
+    skel_def = get_skeleton_definition()
+    train_loader = create_action_dataloader(f_train_data_p, f_train_lbl_p, batch_size=batch_size, shuffle=True)
+    val_loader = create_action_dataloader(f_val_data_p, f_val_lbl_p, batch_size=batch_size, shuffle=False)
+
     trainer = STGCNTrainer(num_classes=num_classes, lr=lr, skel_def=skel_def)
 
-    logger.info("Starting ST-GCN training for %d epochs on %s...", epochs, train_data_p)
+    logger.info("Starting ST-GCN training for %d epochs on %d train / %d val non-locomotion samples...",
+                epochs, len(train_data), len(val_data))
+
     summary = trainer.fit(
         train_loader=train_loader,
         val_loader=val_loader,

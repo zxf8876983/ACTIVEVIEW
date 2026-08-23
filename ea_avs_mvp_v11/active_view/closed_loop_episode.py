@@ -37,6 +37,7 @@ if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
 from ea_avs_mvp_v11.action_recognition.action_classifier import ActionClassifier
+from ea_avs_mvp_v11.active_view.action_registry import ActionRegistry, DEFAULT_ACTION_CATEGORIES
 from ea_avs_mvp_v11.active_view.candidate_generator import CandidateViewGenerator
 from ea_avs_mvp_v11.active_view.habitat_filter import HabitatViewFilter
 from ea_avs_mvp_v11.active_view.human_placement_generator import HumanPlacementGenerator
@@ -50,7 +51,8 @@ from ea_avs_mvp_v11.core.paths import get_data_root
 
 logger = logging.getLogger("closed_loop_episode")
 
-ACTION_CLASSES = ["standing", "walking", "sitting", "bending", "reaching", "fall_related"]
+ACTION_CLASSES = list(DEFAULT_ACTION_CATEGORIES)
+
 
 
 @dataclass
@@ -126,9 +128,13 @@ class ClosedLoopActivePerceptionRunner:
         self.view_filter = HabitatViewFilter()
         self.nav_controller = NavigationController()
         self.occlusion_analyzer = OcclusionAnalyzer(data_root=self.data_root)
+        self.action_registry = ActionRegistry(data_root=self.data_root, exclude_locomotion=True)
 
         # 加载训练好的 ST-GCN 分类器
-        stgcn_ckpt = self.data_root / "checkpoints" / "v10_st_gcn" / "best_st_gcn_model.pth"
+        stgcn_ckpt = self.data_root / "checkpoints" / "v11_st_gcn" / "best_st_gcn_model.pth"
+        if not stgcn_ckpt.exists():
+            stgcn_ckpt = self.data_root / "checkpoints" / "v10_st_gcn" / "best_st_gcn_model.pth"
+
         if stgcn_ckpt.exists():
             self.classifier = ActionClassifier(checkpoint_path=stgcn_ckpt)
         else:
@@ -142,23 +148,10 @@ class ClosedLoopActivePerceptionRunner:
 
         self.predictor = ViewpointUtilityPredictor(model_path=predictor_model_path, in_dim=11)
 
-        # 加载 AMASS 动作骨架库
-        amass_file = self.data_root / "datasets" / "action" / "train" / "clean_perception" / "data.npy"
-        if amass_file.exists():
-            self.amass_data = np.load(amass_file)
-        else:
-            self.amass_data = None
-
     def _get_skeleton(self, action_id: int, instance_idx: int) -> np.ndarray:
         """提取动作序列。"""
-        if self.amass_data is not None and len(self.amass_data) > 0:
-            samples_per_action = len(self.amass_data) // len(ACTION_CLASSES)
-            base_idx = action_id * samples_per_action + (instance_idx % max(samples_per_action, 1))
-            raw = self.amass_data[base_idx, :, :, :, 0]
-            return np.transpose(raw, (1, 2, 0)).astype(np.float32)
+        return self.action_registry.get_skeleton_sequence(action_id=action_id, instance_idx=instance_idx)
 
-        T, V, C = 30, 33, 3
-        return np.zeros((T, V, C), dtype=np.float32)
 
     def _evaluate_viewpoint_perception(
         self,

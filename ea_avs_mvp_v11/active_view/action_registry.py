@@ -23,7 +23,6 @@ logger = logging.getLogger("action_registry")
 
 DEFAULT_ACTION_CATEGORIES = [
     "standing",
-    "walking",
     "sitting",
     "bending",
     "reaching",
@@ -61,11 +60,12 @@ class MotionMetadata:
 
 
 class ActionRegistry:
-    """AMASS 动作资产注册表。"""
+    """AMASS 动作资产注册表 (支持排除 walk/run 等位移动作，全面启用其余动作)。"""
 
-    def __init__(self, data_root: Optional[Union[str, Path]] = None):
+    def __init__(self, data_root: Optional[Union[str, Path]] = None, exclude_locomotion: bool = True):
         self.data_root = Path(data_root) if data_root else get_data_root()
         self.action_dataset_dir = self.data_root / "datasets" / "action"
+        self.exclude_locomotion = exclude_locomotion
         
         self.categories: List[str] = list(DEFAULT_ACTION_CATEGORIES)
         self.category_to_id: Dict[str, int] = {c: i for i, c in enumerate(self.categories)}
@@ -79,6 +79,7 @@ class ActionRegistry:
         self._test_labels: Optional[np.ndarray] = None
         
         self.scan_and_register_all_motions()
+
 
     def scan_and_register_all_motions(self) -> Dict[str, MotionMetadata]:
         """扫描所有可用 AMASS 动作文件并构建全量动作注册表。"""
@@ -115,6 +116,11 @@ class ActionRegistry:
         for item, split in all_manifest_items:
             m_id = item.get("motion_id", item.get("sample_id", ""))
             act_lbl = item.get("action_label", "standing")
+            
+            # 排除 walk / run 动作
+            if self.exclude_locomotion and any(k in act_lbl.lower() for k in ["walk", "run", "jog"]):
+                continue
+
             if act_lbl not in self.category_to_id:
                 self.categories.append(act_lbl)
                 self.category_to_id[act_lbl] = len(self.categories) - 1
@@ -137,8 +143,8 @@ class ActionRegistry:
             self._motions[m_id] = meta
             self._category_index[act_lbl].append(m_id)
 
-        logger.info("ActionRegistry loaded %d motion sequences across %d categories.",
-                    len(self._motions), len(self.categories))
+        logger.info("ActionRegistry loaded %d non-locomotion motion sequences across %d categories: %s.",
+                    len(self._motions), len(self.categories), self.categories)
         return self._motions
 
     def get_skeleton_sequence(self, action_id: int, instance_idx: int, split: str = "train") -> np.ndarray:
@@ -146,10 +152,16 @@ class ActionRegistry:
         data_source = self._train_data if split == "train" else (self._test_data if self._test_data is not None else self._train_data)
         
         if data_source is not None and len(data_source) > 0:
-            samples_per_action = len(data_source) // len(self.categories)
-            base_idx = action_id * samples_per_action + (instance_idx % max(samples_per_action, 1))
+            target_cat = self.id_to_category.get(action_id, self.categories[action_id % len(self.categories)])
+            # 6-class base mapping to original clean perception idx
+            ORIGINAL_MAP = {"standing": 0, "walking": 1, "sitting": 2, "bending": 3, "reaching": 4, "fall_related": 5}
+            orig_act_id = ORIGINAL_MAP.get(target_cat, action_id)
+            
+            samples_per_action = len(data_source) // 6
+            base_idx = orig_act_id * samples_per_action + (instance_idx % max(samples_per_action, 1))
             raw_sample = data_source[base_idx, :, :, :, 0] # (C, T, V)
             return np.transpose(raw_sample, (1, 2, 0)).astype(np.float32)
+
 
         # Procedural fallback canonical skeleton
         T, V, C = 30, 33, 3
