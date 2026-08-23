@@ -146,27 +146,31 @@ def train_st_gcn(
         epochs=epochs,
         checkpoint_dir=ckpt_dir,
     )
+    best_acc = summary.get("best_val_accuracy", 0.0)
 
-    # 评估混淆矩阵
-    model = STGCN(in_channels=3, num_classes=num_classes, skel_def=skel_def)
+    # 保存额外命名检查点
     best_pth = ckpt_dir / "best_st_gcn_model.pth"
+    v11_pth = ckpt_dir / "v11_4_1_stgcn_estimated_pose.pth"
     if best_pth.exists():
-        ckpt = torch.load(best_pth, map_location="cpu")
-        model.load_state_dict(ckpt.get("model_state_dict", ckpt))
+        import shutil
+        shutil.copyfile(best_pth, v11_pth)
 
-    model.eval()
-    all_preds, all_gts = [], []
+    # 评估最终混淆矩阵与验证准确率
+
+    all_preds = []
+    all_gts = []
+    trainer.model.eval()
     with torch.no_grad():
         for batch_data, batch_labels in val_loader:
-            outputs = model(batch_data)
-            preds = torch.argmax(outputs, dim=1).numpy()
+            batch_data = batch_data.to(trainer.device)
+            outputs = trainer.model(batch_data)
+            preds = torch.argmax(outputs, dim=-1).cpu().numpy()
             all_preds.extend(preds)
             all_gts.extend(batch_labels.numpy())
 
     conf_matrix = np.zeros((num_classes, num_classes), dtype=int)
-    for t, p in zip(all_gts, all_preds):
-        conf_matrix[t, p] += 1
-
+    for p, g in zip(all_preds, all_gts):
+        conf_matrix[g, p] += 1
     accuracy = float(np.mean(np.array(all_preds) == np.array(all_gts))) * 100
 
     results = {
@@ -175,7 +179,10 @@ def train_st_gcn(
         "val_accuracy": round(accuracy, 2),
         "confusion_matrix": conf_matrix.tolist(),
         "checkpoint_path": str(best_pth),
+        "estimated_checkpoint_path": str(v11_pth),
+        "skeleton_source": "estimated",
     }
+
 
     with open(ckpt_dir / "evaluation_summary.json", "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2)
