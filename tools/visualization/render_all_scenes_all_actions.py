@@ -124,36 +124,29 @@ def get_action_joint_positions(action_name: str) -> np.ndarray:
     return joints.flatten()
 
 
-# 55 关节解剖学生物力学运动学树骨骼连接对 (Parent -> Child)
-# 0..53 对应 ArticulatedObject links, 54 对应 Pelvis 骨盆根节点
-PELVIS_IDX = 54
-HUMAN_BONES = [
-    # 躯干与脊柱头颈 (Spine & Head)
-    (PELVIS_IDX, 8),    # pelvis -> spine1
-    (8, 9),             # spine1 -> spine2
-    (9, 10),            # spine2 -> spine3
-    (10, 30),           # spine3 -> neck
-    (30, 31),           # neck -> head
-    # 左上肢 (Left Arm)
-    (10, 11),           # spine3 -> left_collar
-    (11, 12),           # left_collar -> left_shoulder
-    (12, 13),           # left_shoulder -> left_elbow
-    (13, 14),           # left_elbow -> left_wrist
-    # 右上肢 (Right Arm)
-    (10, 35),           # spine3 -> right_collar
-    (35, 36),           # right_collar -> right_shoulder
-    (36, 37),           # right_shoulder -> right_elbow
-    (37, 38),           # right_elbow -> right_wrist
-    # 左下肢 (Left Leg)
-    (PELVIS_IDX, 0),    # pelvis -> left_hip
-    (0, 1),             # left_hip -> left_knee
-    (1, 2),             # left_knee -> left_ankle
-    (2, 3),             # left_ankle -> left_foot
-    # 右下肢 (Right Leg)
-    (PELVIS_IDX, 4),    # pelvis -> right_hip
-    (4, 5),             # right_hip -> right_knee
-    (5, 6),             # right_knee -> right_ankle
-    (6, 7),             # right_ankle -> right_foot
+import torch
+import torchvision
+from torchvision.models.detection import keypointrcnn_resnet50_fpn, KeypointRCNN_ResNet50_FPN_Weights
+import torchvision.transforms.functional as F
+
+# 初始化纯视觉 2D 姿态估计模型 (TorchVision Keypoint R-CNN on CUDA GPU)
+_DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+_POSE_MODEL = keypointrcnn_resnet50_fpn(weights=KeypointRCNN_ResNet50_FPN_Weights.DEFAULT).to(_DEVICE)
+_POSE_MODEL.eval()
+
+# COCO-17 骨架解剖学骨骼连接对 (Parent -> Child)
+COCO_BONES = [
+    # 头部与面部
+    (0, 1), (0, 2), (1, 3), (2, 4),
+    # 上肢与躯干
+    (5, 6),             # Left shoulder -> Right shoulder
+    (5, 7), (7, 9),     # Left shoulder -> Left elbow -> Left wrist
+    (6, 8), (8, 10),    # Right shoulder -> Right elbow -> Right wrist
+    (5, 11), (6, 12),   # Shoulders to Hips
+    (11, 12),           # Left hip -> Right hip
+    # 下肢
+    (11, 13), (13, 15), # Left hip -> Left knee -> Left ankle
+    (12, 14), (14, 16), # Right hip -> Right knee -> Right ankle
 ]
 
 
@@ -303,55 +296,49 @@ def render_single_scene_all_actions(
         rgb = obs["color_sensor"][:, :, :3]
         depth = obs["depth_sensor"]
 
-        # 直接获取 Habitat 原生渲染相机的 4x4 View Matrix 与 4x4 Projection Matrix
-        rc = sim._sensors["color_sensor"]._sensor_object.render_camera
-        cam_mat = np.array(rc.camera_matrix)     # 4x4 世界坐标 -> 相机坐标系
-        proj_mat = np.array(rc.projection_matrix) # 4x4 相机坐标 -> 裁剪空间
+        # =========================================================================
+        # 纯视觉 2D 姿态估计与 3D Lifting (Pure RGB-D Estimation, No GT Simulator Leakage)
+        # =========================================================================
+        img_t = F.to_tensor(rgb).to(_DEVICE)
+        with torch.no_grad():
+            outputs = _POSE_MODEL([img_t])[0]
 
-        joint_3d_cam = []
+        scores = outputs["scores"].cpu().numpy()
+        if len(scores) > 0:
+            kpts_2d_raw = outputs["keypoints"][0].cpu().numpy()  # (17, 3) [u, v, score]
+            person_score = float(scores[0])
+        else:
+            kpts_2d_raw = np.zeros((17, 3), dtype=np.float32)
+            person_score = 0.0
+
+        # 相机内参 (HFOV = 90 deg)
+        fx = W / 2.0
+        fy = H / 2.0
+        cx = W / 2.0
+        cy = H / 2.0
+
+        joint_3d_cam = np.zeros((17, 3), dtype=np.float32)
         joint_2d_proj = []
-        joint_visibilities = []
 
-        # 54 个子关节 (Links 0..53)
-        for i in range(art_obj.num_links):
-            node = art_obj.get_link_scene_node(i)
-            w_pos = np.array(node.absolute_translation, dtype=np.float32)
-            p_w4 = np.array([w_pos[0], w_pos[1], w_pos[2], 1.0])
-            p_c = cam_mat @ p_w4
-            c_x, c_y, c_z = float(p_c[0]), float(p_c[1]), float(-p_c[2])
-            joint_3d_cam.append([c_x, c_y, c_z])
-
-            p_clip = proj_mat @ p_c
-            p_ndc = p_clip[:3] / p_clip[3]
-            u = int(round((p_ndc[0] + 1.0) * 0.5 * W))
-            v = int(round((1.0 - (p_ndc[1] + 1.0) * 0.5) * H))
+        for j_idx in range(17):
+            u_f, v_f, conf = kpts_2d_raw[j_idx]
+            u = int(np.clip(round(u_f), 0, W - 1))
+            v = int(np.clip(round(v_f), 0, H - 1))
             joint_2d_proj.append([u, v])
 
-            if 0 <= u < W and 0 <= v < H:
-                sensor_depth = depth[v, u]
-                is_visible = bool(sensor_depth >= (c_z - 0.25))
-                joint_visibilities.append(is_visible)
-            else:
-                joint_visibilities.append(False)
+            # 读取深度图对应的度量深度值
+            z = float(depth[v, u])
+            if z <= 0.05 or z > 10.0 or np.isnan(z):
+                z = 2.0  # 深度边界安全回退
 
-        # 骨盆根节点 (Pelvis, 索引 54)
-        p_w4 = np.array([art_obj.translation[0], art_obj.translation[1], art_obj.translation[2], 1.0])
-        p_c = cam_mat @ p_w4
-        c_x, c_y, c_z = float(p_c[0]), float(p_c[1]), float(-p_c[2])
-        joint_3d_cam.append([c_x, c_y, c_z])
-        p_clip = proj_mat @ p_c
-        p_ndc = p_clip[:3] / p_clip[3]
-        u = int(round((p_ndc[0] + 1.0) * 0.5 * W))
-        v = int(round((1.0 - (p_ndc[1] + 1.0) * 0.5) * H))
-        joint_2d_proj.append([u, v])
-        if 0 <= u < W and 0 <= v < H:
-            joint_visibilities.append(bool(depth[v, u] >= (c_z - 0.25)))
-        else:
-            joint_visibilities.append(False)
+            # 针孔相机反向几何投影 (3D Lifting to Camera Frame)
+            x_c = (u - cx) * z / fx
+            y_c = -(v - cy) * z / fy
+            z_c = -z
+            joint_3d_cam[j_idx] = [x_c, y_c, z_c]
 
         joint_3d_cam = np.array(joint_3d_cam)
         joint_2d_proj = np.array(joint_2d_proj)
-        joint_visibilities = np.array(joint_visibilities)
 
         # 生成 4-Panel 图像
         fig = plt.figure(figsize=(18, 5), dpi=130)
@@ -371,23 +358,21 @@ def render_single_scene_all_actions(
         cbar = fig.colorbar(im2, ax=ax2, fraction=0.046, pad=0.04)
         cbar.set_label("Metric Depth (m)", fontsize=8)
 
-        # Panel 3: 2D Overlay (基于人体真实运动学树连线)
+        # Panel 3: 2D Model Prediction Overlay (纯视觉模型预测，无 GT 泄露)
         ax3 = fig.add_subplot(1, 4, 3)
         ax3.imshow(rgb)
-        for idx_j, (u, v) in enumerate(joint_2d_proj):
-            if 0 <= u < W and 0 <= v < H:
-                c = "#00FF66" if joint_visibilities[idx_j] else "#FF3333"
-                ax3.scatter(u, v, s=24, c=c, edgecolors="white", linewidth=0.5, zorder=5)
+        for u_f, v_f, conf in kpts_2d_raw:
+            if u_f > 0 or v_f > 0:
+                c = "#00FF66" if conf >= 0.50 else "#FFCC00"
+                ax3.scatter(u_f, v_f, s=24, c=c, edgecolors="white", linewidth=0.5, zorder=5)
 
-        for p1, p2 in HUMAN_BONES:
-            u1, v1 = joint_2d_proj[p1]
-            u2, v2 = joint_2d_proj[p2]
-            if 0 <= u1 < W and 0 <= v1 < H and 0 <= u2 < W and 0 <= v2 < H:
+        for p1, p2 in COCO_BONES:
+            u1, v1, _ = kpts_2d_raw[p1]
+            u2, v2, _ = kpts_2d_raw[p2]
+            if (u1 > 0 or v1 > 0) and (u2 > 0 or v2 > 0):
                 ax3.plot([u1, u2], [v1, v2], color="#00E5FF", linewidth=1.8, alpha=0.85, zorder=4)
 
-        vis_cnt = int(np.sum(joint_visibilities))
-        vis_pct = vis_cnt / max(1, len(joint_visibilities)) * 100.0
-        ax3.set_title(f"3. 2D Pose Estimation Overlay\nVisible: {vis_cnt}/{len(joint_visibilities)} ({vis_pct:.1f}%)", fontsize=10, fontweight="bold")
+        ax3.set_title(f"3. Pure RGB Pose Model 2D Prediction\nPerson Confidence: {person_score:.2f}", fontsize=10, fontweight="bold")
         ax3.axis("off")
 
         # Panel 4: 3D Lifted Pose (1:1 真实人体度量空间比例与运动学连线)
@@ -396,16 +381,15 @@ def render_single_scene_all_actions(
         ys = joint_3d_cam[:, 2] # 深度 Z
         zs = joint_3d_cam[:, 1] # 高度 Y
 
-        for i in range(len(joint_3d_cam)):
-            c = "#00E5FF" if joint_visibilities[i] else "#FF5252"
-            ax4.scatter(xs[i], ys[i], zs[i], s=26, c=c, edgecolors="k", depthshade=True)
+        for i in range(17):
+            ax4.scatter(xs[i], ys[i], zs[i], s=26, c="#00E5FF", edgecolors="k", depthshade=True)
 
-        for p1, p2 in HUMAN_BONES:
+        for p1, p2 in COCO_BONES:
             ax4.plot([xs[p1], xs[p2]], [ys[p1], ys[p2]], [zs[p1], zs[p2]], color="#7C4DFF", linewidth=2.0)
 
         # 严格保持 1:1:1 各向同性度量尺度 (1:1 Metric Scale)，防止人体视觉压扁或拉伸
         max_range = np.array([xs.max() - xs.min(), ys.max() - ys.min(), zs.max() - zs.min()]).max() / 2.0
-        max_range = max(max_range, 0.9)
+        max_range = max(max_range, 0.8)
         mid_x = (xs.max() + xs.min()) * 0.5
         mid_y = (ys.max() + ys.min()) * 0.5
         mid_z = (zs.max() + zs.min()) * 0.5
@@ -418,7 +402,7 @@ def render_single_scene_all_actions(
         ax4.set_xlabel("X (m)", fontsize=8)
         ax4.set_ylabel("Depth Z (m)", fontsize=8)
         ax4.set_zlabel("Height Y (m)", fontsize=8)
-        ax4.set_title(f"4. 3D Pose (1:1 Metric Scale)\nAction: {act_name}", fontsize=10, fontweight="bold")
+        ax4.set_title(f"4. Estimated 3D Pose (RGB-D Lifting)\nAction: {act_name}", fontsize=10, fontweight="bold")
         ax4.view_init(elev=12, azim=-70)
 
         plt.tight_layout()
