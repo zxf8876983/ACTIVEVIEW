@@ -223,11 +223,26 @@ def render_single_scene_all_actions(
 
     action_figure_paths = {}
 
-    # 5. 遍历 16 种 AMASS 动作并应用姿态渲染
+    # 5. 遍历 16 种 AMASS 动作并应用动态自适应脚部贴地与姿态渲染
     for act_idx, act_name in enumerate(ACTION_CATEGORIES):
         # 设置人体肢体关节姿态
         action_joints = get_action_joint_positions(act_name)
         art_obj.joint_positions = action_joints
+
+        # 动态脚部贴地计算 (Dynamic Posture-Aware Foot Grounding)
+        # 先将 root 临时放置在 y=0 测量该动作下最低关节（脚底/脚踝/臀部）相对于 root 的垂直偏移
+        art_obj.translation = np.array([valid_human_pt[0], 0.0, valid_human_pt[2]], dtype=np.float32)
+        min_link_y = min(art_obj.get_link_scene_node(i).absolute_translation[1] for i in range(art_obj.num_links))
+
+        if act_name == "jumping":
+            # 跳跃动作：允许空中离地 0.35m
+            grounded_root_y = y_floor - min_link_y + 0.35
+        else:
+            # 其余所有动作：精确贴地，确保脚底/受力点紧贴地面（零悬空、零没入）
+            grounded_root_y = y_floor - min_link_y
+
+        human_current_pos = np.array([valid_human_pt[0], grounded_root_y, valid_human_pt[2]], dtype=np.float32)
+        art_obj.translation = human_current_pos
 
         # 围绕人体选择不同观察视角
         obs_angle_deg = (act_idx * 22.5) % 360.0
@@ -250,7 +265,7 @@ def render_single_scene_all_actions(
 
         cam_height = 1.50  # 固定为 1.50m
         cam_pos = np.array([robot_pt[0], y_floor + cam_height, robot_pt[2]], dtype=np.float32)
-        target_pos = np.array([valid_human_pt[0], y_floor + 0.90, valid_human_pt[2]], dtype=np.float32)
+        target_pos = np.array([valid_human_pt[0], grounded_root_y, valid_human_pt[2]], dtype=np.float32)
 
         dir_vec = target_pos - cam_pos
         dir_norm = dir_vec / np.linalg.norm(dir_vec)
