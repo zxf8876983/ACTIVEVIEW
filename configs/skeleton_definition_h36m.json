@@ -1,0 +1,48 @@
+{
+  "backend": "h36m_17",
+  "joint_num": 17,
+  "root_joints": [0],
+  "root_name": "pelvis",
+  "torso_joints": [0, 7, 8, 11, 14],
+  "coordinate_system": {
+    "name": "camera_frame_right_hand",
+    "x_axis": "right (+X)",
+    "y_axis": "up (+Y)",
+    "z_axis": "forward/depth (+Z)",
+    "unit": "meter"
+  },
+  "joints": [
+    {"id": 0, "name": "pelvis", "part": "torso", "parent": null},
+    {"id": 1, "name": "right_hip", "part": "right_leg", "parent": 0},
+    {"id": 2, "name": "right_knee", "part": "right_leg", "parent": 1},
+    {"id": 3, "name": "right_ankle", "part": "right_leg", "parent": 2},
+    {"id": 4, "name": "left_hip", "part": "left_leg", "parent": 0},
+    {"id": 5, "name": "left_knee", "part": "left_leg", "parent": 4},
+    {"id": 6, "name": "left_ankle", "part": "left_leg", "parent": 5},
+    {"id": 7, "name": "spine", "part": "torso", "parent": 0},
+    {"id": 8, "name": "thorax", "part": "torso", "parent": 7},
+    {"id": 9, "name": "neck", "part": "head", "parent": 8},
+    {"id": 10, "name": "head", "part": "head", "parent": 9},
+    {"id": 11, "name": "left_shoulder", "part": "left_arm", "parent": 8},
+    {"id": 12, "name": "left_elbow", "part": "left_arm", "parent": 11},
+    {"id": 13, "name": "left_wrist", "part": "left_arm", "parent": 12},
+    {"id": 14, "name": "right_shoulder", "part": "right_arm", "parent": 8},
+    {"id": 15, "name": "right_elbow", "part": "right_arm", "parent": 14},
+    {"id": 16, "name": "right_wrist", "part": "right_arm", "parent": 15}
+  ],
+  "edges": [
+    [0, 1], [1, 2], [2, 3],
+    [0, 4], [4, 5], [5, 6],
+    [0, 7], [7, 8], [8, 9], [9, 10],
+    [8, 11], [11, 12], [12, 13],
+    [8, 14], [14, 15], [15, 16]
+  ],
+  "bone_symmetry_pairs": [
+    {"name": "hip", "left": 4, "right": 1},
+    {"name": "knee", "left": 5, "right": 2},
+    {"name": "ankle", "left": 6, "right": 3},
+    {"name": "shoulder", "left": 11, "right": 14},
+    {"name": "elbow", "left": 12, "right": 15},
+    {"name": "wrist", "left": 13, "right": 16}
+  ]
+}

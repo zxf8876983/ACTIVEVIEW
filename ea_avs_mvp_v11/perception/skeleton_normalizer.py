@@ -86,12 +86,57 @@ class SkeletonNormalizer:
         skeleton.joints_3d_normalized = normalized_joints.astype(np.float32)
         return skeleton
 
-    def normalize_sequence(self, sequence: np.ndarray) -> np.ndarray:
+    def align_to_canonical_frame(self, skeleton_seq: np.ndarray) -> np.ndarray:
+        """
+        根据双髋轴 (Hip Axis) 与躯干轴 (Spine Axis) 将 (T, V, 3) 骨架序列对齐至人体标准正向坐标系 (+Z 朝前, +Y 向上)。
+        """
+        T, V, C = skeleton_seq.shape
+        aligned_seq = np.zeros_like(skeleton_seq, dtype=np.float32)
+
+        # 确定左右髋与脊柱索引
+        if self.skel_def.joint_num == 17:
+            r_hip, l_hip = 1, 4
+            spine_or_neck = 8
+        else:
+            r_hip, l_hip = 24, 23
+            spine_or_neck = 11
+
+        for t in range(T):
+            frame = skeleton_seq[t]
+            # 1. 估算左右髋向量 (横轴 X)
+            hip_vec = frame[l_hip] - frame[r_hip]
+            hip_dist = np.linalg.norm(hip_vec)
+            if hip_dist > 1e-4:
+                u_x = hip_vec / hip_dist
+            else:
+                u_x = np.array([1.0, 0.0, 0.0], dtype=np.float32)
+
+            # 2. 估算躯干向量 (纵轴 Y)
+            torso_vec = frame[spine_or_neck] - np.mean([frame[l_hip], frame[r_hip]], axis=0)
+            # 正交化
+            torso_vec = torso_vec - np.dot(torso_vec, u_x) * u_x
+            torso_dist = np.linalg.norm(torso_vec)
+            if torso_dist > 1e-4:
+                u_y = torso_vec / torso_dist
+            else:
+                u_y = np.array([0.0, 1.0, 0.0], dtype=np.float32)
+
+            # 3. 矢状面前向轴 (Z = X x Y)
+            u_z = np.cross(u_x, u_y)
+            u_z = u_z / (np.linalg.norm(u_z) + 1e-8)
+
+            R_canonical = np.stack([u_x, u_y, u_z], axis=0) # (3, 3)
+            aligned_seq[t] = np.dot(frame, R_canonical.T)
+
+        return aligned_seq
+
+    def normalize_sequence(self, sequence: np.ndarray, align_canonical: bool = False) -> np.ndarray:
         """
         对形状为 (T, V, 3) 的三维骨架时间序列进行逐帧空间归一化。
 
         Args:
             sequence: (T, V, 3) 原始相机系骨骼时序数据
+            align_canonical: 是否旋转对齐至人体标准正向参考系
 
         Returns:
             normalized_sequence: (T, V, 3) 归一化后时序数据
@@ -116,9 +161,12 @@ class SkeletonNormalizer:
 
             normalized_seq[t] = centered / (scale + self.eps)
 
+        if align_canonical:
+            normalized_seq = self.align_to_canonical_frame(normalized_seq)
+
         return normalized_seq
 
-    def normalize_tensor_batch(self, tensor_data: np.ndarray) -> np.ndarray:
+    def normalize_tensor_batch(self, tensor_data: np.ndarray, align_canonical: bool = False) -> np.ndarray:
         """
         对形状为 (N, C, T, V, M) 的 ST-GCN 标准五维张量进行批量归一化。
         """
@@ -127,6 +175,7 @@ class SkeletonNormalizer:
         for n in range(N):
             for m in range(M):
                 seq_t_v_c = np.transpose(tensor_data[n, :, :, :, m], (1, 2, 0)) # (T, V, C)
-                norm_seq = self.normalize_sequence(seq_t_v_c)
+                norm_seq = self.normalize_sequence(seq_t_v_c, align_canonical=align_canonical)
                 out[n, :, :, :, m] = np.transpose(norm_seq, (2, 0, 1))
         return out
+

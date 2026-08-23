@@ -252,6 +252,189 @@ class MediaPipe3DPoseEstimator(BasePose3DEstimator):
         return joints, confs
 
 
+class VideoPose3DEstimator(BasePose3DEstimator):
+    """
+    基于 Keypoint R-CNN (2D 关键点检测) + VideoPose3D (3D 姿态提升) 的深度学习 3D 姿态估计器。
+    输出标准 Human3.6M 17 关节点 3D 骨架坐标。
+    """
+
+    def __init__(
+        self,
+        checkpoint_path: Optional[Union[str, Path]] = None,
+        device: Optional[str] = None,
+        skel_def: Optional[SkeletonDefinition] = None,
+    ):
+        skel_def = skel_def or get_skeleton_definition(backend="h36m_17")
+        super().__init__(skel_def=skel_def)
+
+        import sys
+        videopose_dir = str(Path(__file__).resolve().parent / "videopose3d")
+        if videopose_dir not in sys.path:
+            sys.path.insert(0, videopose_dir)
+
+        import torch
+        from torchvision.models.detection import keypointrcnn_resnet50_fpn, KeypointRCNN_ResNet50_FPN_Weights
+        from common.model import TemporalModel
+
+
+        if device is None:
+            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = torch.device(device)
+
+        logger.info("Initializing VideoPose3DEstimator on device: %s...", self.device)
+
+        # 1. 2D Pose Model (Keypoint R-CNN)
+        self.pose_2d_model = keypointrcnn_resnet50_fpn(weights=KeypointRCNN_ResNet50_FPN_Weights.DEFAULT).to(self.device)
+        self.pose_2d_model.eval()
+
+        # 2. 3D Pose Model (VideoPose3D)
+        if checkpoint_path is None:
+            possible_ckpts = [
+                Path(__file__).resolve().parent.parent.parent / "tools" / "pretrained_h36m_detectron_coco.bin",
+                Path(__file__).resolve().parent.parent / "tools" / "pretrained_h36m_detectron_coco.bin",
+                Path("tools/pretrained_h36m_detectron_coco.bin"),
+            ]
+            for p in possible_ckpts:
+                if p.exists():
+                    checkpoint_path = p
+                    break
+
+        self.videopose_model = TemporalModel(
+            num_joints_in=17,
+            in_features=2,
+            num_joints_out=17,
+            filter_widths=[3, 3, 3, 3, 3],
+            causal=False,
+            dropout=0.25,
+            channels=1024,
+        ).to(self.device)
+
+        if checkpoint_path and Path(checkpoint_path).exists():
+            ckpt = torch.load(str(checkpoint_path), map_location=self.device)
+            self.videopose_model.load_state_dict(ckpt["model_pos"])
+            logger.info("Loaded VideoPose3D checkpoint: %s", checkpoint_path)
+        else:
+            logger.warning("VideoPose3D checkpoint not found, using randomly initialized weights!")
+
+        self.videopose_model.eval()
+
+    def estimate_frame(self, rgb: Union[np.ndarray, Image.Image]) -> Pose3DEstimationResult:
+        import torch
+        import torchvision.transforms.functional as TF
+        from common.camera import normalize_screen_coordinates
+
+        if isinstance(rgb, Image.Image):
+            rgb_arr = np.array(rgb)
+        else:
+            rgb_arr = rgb
+
+        H, W, _ = rgb_arr.shape
+        img_t = TF.to_tensor(rgb_arr).to(self.device)
+
+        with torch.no_grad():
+            outputs = self.pose_2d_model([img_t])[0]
+
+        scores = outputs["scores"].cpu().numpy()
+        if len(scores) > 0:
+            kpts_2d_raw = outputs["keypoints"][0].cpu().numpy()
+            person_score = float(scores[0])
+            kpts_2d_coco = kpts_2d_raw[:, :2]
+            confs = kpts_2d_raw[:, 2]
+        else:
+            kpts_2d_raw = np.zeros((17, 3), dtype=np.float32)
+            kpts_2d_coco = np.zeros((17, 2), dtype=np.float32)
+            confs = np.zeros(17, dtype=np.float32)
+            person_score = 0.0
+
+        # VideoPose3D lifting
+        kpts_norm = normalize_screen_coordinates(kpts_2d_coco, w=W, h=H)
+        kpts_seq = np.repeat(kpts_norm[np.newaxis, np.newaxis, :, :], 243, axis=1)  # (1, 243, 17, 2)
+        kpts_seq_t = torch.from_numpy(kpts_seq).float().to(self.device)
+
+        with torch.no_grad():
+            out_3d_t = self.videopose_model(kpts_seq_t)
+
+        skel_3d = out_3d_t[0, 0].cpu().numpy()  # (17, 3)
+
+        return Pose3DEstimationResult(
+            joints=skel_3d,
+            joint_names=self.skel_def.joint_names,
+            confidence=confs,
+            coordinate_system=self.skel_def.coordinate_system.get("name", "camera_frame_right_hand"),
+            estimator="videopose3d_17",
+            metadata={"person_score": person_score, "raw_2d_keypoints": kpts_2d_raw.tolist()},
+        )
+
+    def estimate_sequence(
+        self,
+        rgb_frames: List[Union[np.ndarray, Image.Image]],
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """批量连续帧估计。"""
+        import torch
+        import torchvision.transforms.functional as TF
+        from common.camera import normalize_screen_coordinates
+
+        T = len(rgb_frames)
+        if T == 0:
+            return np.zeros((0, 17, 3), dtype=np.float32), np.zeros((0, 17), dtype=np.float32)
+
+        first_img = np.array(rgb_frames[0]) if isinstance(rgb_frames[0], Image.Image) else rgb_frames[0]
+        H, W, _ = first_img.shape
+
+        kpts_2d_seq = []
+        confs_seq = []
+
+        for fr in rgb_frames:
+            fr_arr = np.array(fr) if isinstance(fr, Image.Image) else fr
+            img_t = TF.to_tensor(fr_arr).to(self.device)
+            with torch.no_grad():
+                outputs = self.pose_2d_model([img_t])[0]
+
+            scores = outputs["scores"].cpu().numpy()
+            if len(scores) > 0:
+                kpts_raw = outputs["keypoints"][0].cpu().numpy()
+                kpts_2d_seq.append(kpts_raw[:, :2])
+                confs_seq.append(kpts_raw[:, 2])
+            else:
+                kpts_2d_seq.append(np.zeros((17, 2), dtype=np.float32))
+                confs_seq.append(np.zeros(17, dtype=np.float32))
+
+        kpts_2d_arr = np.array(kpts_2d_seq)  # (T, 17, 2)
+        confs_arr = np.array(confs_seq)      # (T, 17)
+
+        kpts_norm = normalize_screen_coordinates(kpts_2d_arr, w=W, h=H)  # (T, 17, 2)
+        # Pad to 243 for receptive field if needed
+        pad_left = (243 - 1) // 2
+        pad_right = (243 - 1) // 2
+
+        if T < 243:
+            # 重复边缘进行填充
+            front_pad = np.repeat(kpts_norm[:1], pad_left, axis=0)
+            back_pad = np.repeat(kpts_norm[-1:], pad_right, axis=0)
+            padded = np.concatenate([front_pad, kpts_norm, back_pad], axis=0)  # (T + 242, 17, 2)
+        else:
+            padded = kpts_norm
+
+        skeletons_3d = []
+        for t in range(T):
+            if T < 243:
+                window = padded[t : t + 243]
+            else:
+                idx_start = max(0, t - pad_left)
+                idx_end = min(T, t + pad_right + 1)
+                window = kpts_norm[idx_start:idx_end]
+                if len(window) < 243:
+                    window = np.pad(window, ((0, 243 - len(window)), (0, 0), (0, 0)), mode="edge")
+
+            window_t = torch.from_numpy(window[np.newaxis, ...]).float().to(self.device)  # (1, 243, 17, 2)
+            with torch.no_grad():
+                out_3d_t = self.videopose_model(window_t)  # (1, 1, 17, 3)
+            skeletons_3d.append(out_3d_t[0, 0].cpu().numpy())
+
+        return np.array(skeletons_3d, dtype=np.float32), confs_arr
+
+
 class Mock3DPoseEstimator(BasePose3DEstimator):
     """用于单元测试与轻量级无 GPU 环境的 Mock 3D 姿态估计器。"""
 
@@ -267,28 +450,20 @@ class Mock3DPoseEstimator(BasePose3DEstimator):
         num_joints = self.skel_def.joint_num
         joint_names = self.skel_def.joint_names
 
-        # 生成标准人体站姿坐标
         joints = np.zeros((num_joints, 3), dtype=np.float32)
-        # 头部与脊柱
-        joints[0] = [0.0, 0.70, 0.0]     # nose
-        # 双肩
-        joints[11] = [0.20, 0.45, 0.0]   # left_shoulder
-        joints[12] = [-0.20, 0.45, 0.0]  # right_shoulder
-        # 双肘
-        joints[13] = [0.25, 0.15, 0.0]   # left_elbow
-        joints[14] = [-0.25, 0.15, 0.0]  # right_elbow
-        # 双腕
-        joints[15] = [0.25, -0.15, 0.0]  # left_wrist
-        joints[16] = [-0.25, -0.15, 0.0] # right_wrist
-        # 双髋
-        joints[23] = [0.10, 0.00, 0.0]   # left_hip
-        joints[24] = [-0.10, 0.00, 0.0]  # right_hip
-        # 双膝
-        joints[25] = [0.10, -0.40, 0.0]  # left_knee
-        joints[26] = [-0.10, -0.40, 0.0] # right_knee
-        # 双踝
-        joints[27] = [0.10, -0.80, 0.0]  # left_ankle
-        joints[28] = [-0.10, -0.80, 0.0] # right_ankle
+        joints[0] = [0.0, 0.00, 0.0]
+        if num_joints >= 17:
+            joints[7] = [0.0, 0.30, 0.0]   # spine
+            joints[8] = [0.0, 0.45, 0.0]   # thorax
+            joints[10] = [0.0, 0.70, 0.0]  # head
+            joints[11] = [0.20, 0.45, 0.0] # left_shoulder
+            joints[14] = [-0.20, 0.45, 0.0] # right_shoulder
+            joints[4] = [0.10, 0.00, 0.0]  # left_hip
+            joints[1] = [-0.10, 0.00, 0.0] # right_hip
+            joints[5] = [0.10, -0.40, 0.0] # left_knee
+            joints[2] = [-0.10, -0.40, 0.0] # right_knee
+            joints[6] = [0.10, -0.80, 0.0] # left_ankle
+            joints[3] = [-0.10, -0.80, 0.0] # right_ankle
 
         confs = np.full(num_joints, self.default_confidence, dtype=np.float32)
 
@@ -297,21 +472,24 @@ class Mock3DPoseEstimator(BasePose3DEstimator):
             joint_names=joint_names,
             confidence=confs,
             coordinate_system=self.skel_def.coordinate_system.get("name", "camera_frame_right_hand"),
-            estimator="mock_33",
+            estimator=f"mock_{num_joints}",
             metadata={"mock": True},
         )
 
 
 def create_pose3d_estimator(
-    estimator_type: str = "mediapipe",
+    estimator_type: str = "videopose3d",
     skel_def: Optional[SkeletonDefinition] = None,
     **kwargs: Any,
 ) -> BasePose3DEstimator:
     """工厂方法：根据类型实例化统一 3D 姿态估计器。"""
     estimator_type = estimator_type.lower()
-    if estimator_type in ["mediapipe", "mediapipe_33", "blazepose"]:
+    if estimator_type in ["videopose3d", "videopose", "h36m", "vpose3d"]:
+        return VideoPose3DEstimator(skel_def=skel_def, **kwargs)
+    elif estimator_type in ["mediapipe", "mediapipe_33", "blazepose"]:
         return MediaPipe3DPoseEstimator(skel_def=skel_def, **kwargs)
     elif estimator_type in ["mock", "dummy"]:
         return Mock3DPoseEstimator(skel_def=skel_def, **kwargs)
     else:
         raise ValueError(f"Unknown 3D Pose Estimator type: {estimator_type}")
+

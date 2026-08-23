@@ -74,21 +74,29 @@ class SkeletonDefinition:
         }
 
 
-# 全局单例定义缓存
-_GLOBAL_SKELETON_DEF: Optional[SkeletonDefinition] = None
+# 全局单例定义缓存字典
+_SKELETON_DEF_CACHE: Dict[str, SkeletonDefinition] = {}
 
 
-def get_skeleton_definition(config_path: Optional[Path] = None) -> SkeletonDefinition:
-    """获取全局唯一的骨架定义对象。"""
-    global _GLOBAL_SKELETON_DEF
-    if _GLOBAL_SKELETON_DEF is not None and config_path is None:
-        return _GLOBAL_SKELETON_DEF
+def get_skeleton_definition(
+    config_path: Optional[Path] = None,
+    backend: str = "h36m_17",
+) -> SkeletonDefinition:
+    """获取指定拓扑后端的骨架定义对象 (默认为 h36m_17 17 关节标准定义)。"""
+    global _SKELETON_DEF_CACHE
+
+    cache_key = str(config_path) if config_path is not None else backend
+    if cache_key in _SKELETON_DEF_CACHE:
+        return _SKELETON_DEF_CACHE[cache_key]
 
     # 优先从文件加载
     if config_path is None:
+        target_file = "skeleton_definition_h36m.json" if backend.startswith("h36m") else "skeleton_definition.json"
         possible_paths = [
+            Path(__file__).resolve().parent.parent.parent / "configs" / target_file,
+            Path(__file__).resolve().parent.parent / "configs" / target_file,
+            Path("configs") / target_file,
             Path(__file__).resolve().parent.parent.parent / "configs" / "skeleton_definition.json",
-            Path("configs/skeleton_definition.json"),
         ]
         for p in possible_paths:
             if p.exists():
@@ -100,12 +108,12 @@ def get_skeleton_definition(config_path: Optional[Path] = None) -> SkeletonDefin
             data = json.load(f)
         joints = [JointDef(id=j["id"], name=j["name"], part=j["part"], parent=j.get("parent")) for j in data["joints"]]
         edges = [tuple(e) for e in data["edges"]]
-        _GLOBAL_SKELETON_DEF = SkeletonDefinition(
-            backend=data.get("backend", "mediapipe_33"),
+        skel_def = SkeletonDefinition(
+            backend=data.get("backend", backend),
             joint_num=data.get("joint_num", len(joints)),
-            root_joints=data.get("root_joints", [23, 24]),
-            root_name=data.get("root_name", "hip_center"),
-            torso_joints=data.get("torso_joints", [11, 12, 23, 24]),
+            root_joints=data.get("root_joints", [0] if backend.startswith("h36m") else [23, 24]),
+            root_name=data.get("root_name", "pelvis" if backend.startswith("h36m") else "hip_center"),
+            torso_joints=data.get("torso_joints", [0, 7, 8, 11, 14] if backend.startswith("h36m") else [11, 12, 23, 24]),
             coordinate_system=data.get("coordinate_system", {
                 "name": "camera_frame_right_hand",
                 "x_axis": "right (+X)",
@@ -118,6 +126,8 @@ def get_skeleton_definition(config_path: Optional[Path] = None) -> SkeletonDefin
             bone_symmetry_pairs=data.get("bone_symmetry_pairs", []),
             gt_joint_mapping=data.get("gt_joint_mapping", {}),
         )
-        return _GLOBAL_SKELETON_DEF
+        _SKELETON_DEF_CACHE[cache_key] = skel_def
+        return skel_def
 
-    raise FileNotFoundError("configs/skeleton_definition.json not found!")
+    raise FileNotFoundError(f"Skeleton definition config not found for backend {backend} / path {config_path}")
+
