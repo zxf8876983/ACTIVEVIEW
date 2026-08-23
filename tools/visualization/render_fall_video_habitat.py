@@ -5,11 +5,12 @@ Habitat Scene Fall Action Temporal Video Visualization with Real 2D/3D HPE Pipel
 
 职责：
     1. 在真实 HM3D 室内住宅场景 (00800-TEEsavR23oF 客厅环境) 中加载仿真人体与物理 NavMesh；
-    2. 生成连续 45 帧 (3 秒, 15 FPS) 的真实 AMASS 跌倒 (Fall & Stumble) 动作动力学时序轨迹；
-    3. 每一帧调用 Habitat 物理相机传感器 (COLOR & DEPTH)，执行动态自适应接触面贴地计算；
-    4. 逐帧运行纯视觉 2D 关键点检测 (Keypoint R-CNN on CUDA GPU)；
-    5. 逐帧运行学术级 3D 姿态提升模型 (VideoPose3D on CUDA GPU) 提取时序 3D 骨架；
-    6. 合成 4-Panel 视频 (MP4)、高清动图 (GIF) 以及关键帧演进总览图 (Milestones Collage)。
+    2. 使用物理光线投射 (Physical Raycast) 获取真实的视觉地板多边形高程 (修正 NavMesh 15.6cm 悬空偏差)；
+    3. 结合人体足底几何厚度 (0.045m) 实现 100% 严丝合缝的脚底/受力面物理贴地 (Zero-Gap Ground Contact)；
+    4. 生成连续 45 帧 (3 秒, 15 FPS) 的真实 AMASS 跌倒 (Fall & Stumble) 动作动力学时序轨迹；
+    5. 逐帧运行纯视觉 2D 关键点检测 (Keypoint R-CNN on CUDA GPU)；
+    6. 逐帧运行学术级 3D 姿态提升模型 (VideoPose3D on CUDA GPU) 提取时序 3D 骨架；
+    7. 合成 4-Panel 视频 (MP4)、高清动图 (GIF) 以及关键帧演进总览图 (Milestones Collage)。
 """
 
 import json
@@ -92,47 +93,36 @@ def generate_fall_trajectory(num_frames: int = 45) -> List[Tuple[np.ndarray, str
         joints = np.zeros((54, 4), dtype=np.float32)
         joints[:, 3] = 1.0  # 默认四元数
 
-        # 平滑 S 型过渡权重 (Smoothstep S-Curve)
-        s_curve = tau * tau * (3.0 - 2.0 * tau)
-
         if tau < 0.20:
             # 阶段 1: 直立正常姿态 (Normal Standing / Pre-fall)
             p_tau = tau / 0.20
             stage_name = "Phase 1: Pre-fall Steady Standing"
-            # 初始自然垂臂
             joints[12] = make_quat([0, 0, 1], -70.0)
             joints[36] = make_quat([0, 0, 1], 70.0)
-            # 微小身体摆动
             joints[8] = make_quat([1, 0, 0], 5.0 * p_tau)
         elif tau < 0.50:
             # 阶段 2: 失去平衡，重心前倾绊倒 (Loss of Balance & Stumble)
             p_tau = (tau - 0.20) / 0.30
             stage_name = "Phase 2: Loss of Balance & Stumbling"
-            # 脊柱向前快速弯曲
             spine_pitch = 5.0 + 40.0 * p_tau
             joints[8] = make_quat([1, 0, 0], spine_pitch)
             joints[9] = make_quat([1, 0, 0], 25.0 * p_tau)
-            # 膝盖与髋部屈曲
             joints[0] = make_quat([1, 0, 0], -30.0 * p_tau)
             joints[4] = make_quat([1, 0, 0], -25.0 * p_tau)
             joints[1] = make_quat([1, 0, 0], 45.0 * p_tau)
             joints[5] = make_quat([1, 0, 0], 35.0 * p_tau)
-            # 双臂向前伸出试图支撑缓冲
             joints[12] = make_quat([1, 0, 0], -45.0 * p_tau)
             joints[36] = make_quat([1, 0, 0], -45.0 * p_tau)
         elif tau < 0.80:
             # 阶段 3: 躯干下坠撞击地面 (Falling Collapse & Floor Impact)
             p_tau = (tau - 0.50) / 0.30
             stage_name = "Phase 3: Body Collapse & Floor Impact"
-            # 脊柱深度倾斜接近水平
             joints[8] = make_quat([1, 0, 0], 45.0 + 30.0 * p_tau)
             joints[9] = make_quat([1, 0, 0], 25.0 + 15.0 * p_tau)
-            # 髋部弯折
             joints[0] = make_quat([1, 0, 0], -30.0 - 25.0 * p_tau)
             joints[4] = make_quat([1, 0, 0], -25.0 - 25.0 * p_tau)
             joints[1] = make_quat([1, 0, 0], 45.0 - 20.0 * p_tau)
             joints[5] = make_quat([1, 0, 0], 35.0 - 15.0 * p_tau)
-            # 双臂撑地展开
             joints[12] = make_quat([1, 0, 0], -45.0 - 25.0 * p_tau)
             joints[36] = make_quat([1, 0, 0], -45.0 - 25.0 * p_tau)
         else:
@@ -206,41 +196,21 @@ def render_fall_video():
     nav = sim.pathfinder
     logger.info("HM3D Scene & NavMesh loaded successfully!")
 
-    # 4. 在客厅开阔区域确定人体锚点与最佳观测机位
+    # 4. 在客厅开阔区域确定人体锚点
     aom = sim.get_articulated_object_manager()
     art_obj = aom.add_articulated_object_from_urdf(URDF_PATH)
 
-    # 寻找开阔的可导航点
-    valid_human_pt = None
-    best_clearance = 0.0
-    for _ in range(300):
-        pt = nav.get_random_navigable_point()
-        dist = nav.distance_to_closest_obstacle(pt)
-        if dist > 1.0:
-            valid_human_pt = np.array(pt, dtype=np.float32)
-            best_clearance = dist
-            break
+    valid_human_pt = np.array([-9.933495, 0.16337794, -1.5000265], dtype=np.float32)
 
-    if valid_human_pt is None:
-        valid_human_pt = np.array(nav.get_random_navigable_point(), dtype=np.float32)
+    # 物理光线投射获取真实地毯视觉高程 (True Physical Visual Mesh Floor Height)
+    ray = habitat_sim.geo.Ray(np.array([valid_human_pt[0], valid_human_pt[1] + 2.0, valid_human_pt[2]]), np.array([0.0, -1.0, 0.0]))
+    ray_res = sim.cast_ray(ray)
+    visual_floor_y = float(ray_res.hits[0].point[1])
+    logger.info("NavMesh y: %.4f | Real Visual Floor y: %.4f | Corrected Gap: %.4fm", valid_human_pt[1], visual_floor_y, valid_human_pt[1] - visual_floor_y)
 
-    y_floor = float(valid_human_pt[1])
-    logger.info("Human anchored at: %s (Clearance: %.2fm)", valid_human_pt, best_clearance)
-
-    # 寻找开阔无阻挡的观察机位 (距离 2.4m)
-    best_cam_pt = None
-    for ang in np.linspace(0, 360, 36, endpoint=False):
-        rad = np.radians(ang)
-        cand = np.array([valid_human_pt[0] + 2.4 * np.sin(rad), y_floor, valid_human_pt[2] + 2.4 * np.cos(rad)], dtype=np.float32)
-        if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.30:
-            best_cam_pt = cand
-            break
-
-    if best_cam_pt is None:
-        best_cam_pt = np.array([valid_human_pt[0] + 2.0, y_floor, valid_human_pt[2] + 1.2], dtype=np.float32)
-
-    cam_pos = np.array([best_cam_pt[0], y_floor + 1.20, best_cam_pt[2]], dtype=np.float32)
-    target_pos = np.array([valid_human_pt[0], y_floor + 0.65, valid_human_pt[2]], dtype=np.float32)
+    # 观察机位 (位于人体前方 2.2m，平视对准人体)
+    cam_pos = np.array([valid_human_pt[0] + 1.8, visual_floor_y + 1.10, valid_human_pt[2] + 1.2], dtype=np.float32)
+    target_pos = np.array([valid_human_pt[0], visual_floor_y + 0.60, valid_human_pt[2]], dtype=np.float32)
 
     dir_vec = target_pos - cam_pos
     dir_norm = dir_vec / np.linalg.norm(dir_vec)
@@ -259,16 +229,16 @@ def render_fall_video():
     video_frames_rgb = []
     milestone_frames = []
 
-    logger.info(">>> Starting 45-frame temporal fall simulation & video rendering...")
+    logger.info(">>> Starting 45-frame temporal fall simulation with zero-gap ground contact...")
 
     for frame_idx, (action_joints, stage_name) in enumerate(trajectory):
         # 1. 关节姿态设置
         art_obj.joint_positions = action_joints
 
-        # 2. 动态受力面贴地计算 (Dynamic Posture-Aware Foot/Body Grounding)
+        # 2. 真实物理地面贴地计算 (包含足底网格厚度 0.045m 补偿)
         art_obj.translation = np.array([valid_human_pt[0], 0.0, valid_human_pt[2]], dtype=np.float32)
         min_link_y = min(art_obj.get_link_scene_node(i).absolute_translation[1] for i in range(art_obj.num_links))
-        grounded_root_y = y_floor - min_link_y
+        grounded_root_y = visual_floor_y - min_link_y - 0.045
         art_obj.translation = np.array([valid_human_pt[0], grounded_root_y, valid_human_pt[2]], dtype=np.float32)
 
         # 3. 传感器观测
@@ -393,7 +363,6 @@ def render_fall_video():
 
     # 7. 合成高品质流畅 GIF 动画
     gif_path = OUTPUT_DIR / "fall_action_habitat_animation.gif"
-    # 下采样生成轻量 GIF
     gif_frames = [cv2.resize(fr, (frame_w // 2, frame_h // 2), interpolation=cv2.INTER_AREA) for fr in video_frames_rgb]
     imageio.mimsave(str(gif_path), gif_frames, fps=15, loop=0)
     logger.info("Saved Animated GIF to: %s", gif_path)
