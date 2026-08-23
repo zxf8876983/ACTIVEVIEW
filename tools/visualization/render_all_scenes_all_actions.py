@@ -124,29 +124,54 @@ def get_action_joint_positions(action_name: str) -> np.ndarray:
     return joints.flatten()
 
 
+import sys
+VIDEOPOSE_DIR = str(Path(__file__).resolve().parent.parent / "videopose3d")
+if VIDEOPOSE_DIR not in sys.path:
+    sys.path.append(VIDEOPOSE_DIR)
+
 import torch
 import torchvision
 from torchvision.models.detection import keypointrcnn_resnet50_fpn, KeypointRCNN_ResNet50_FPN_Weights
 import torchvision.transforms.functional as F
 
-# 初始化纯视觉 2D 姿态估计模型 (TorchVision Keypoint R-CNN on CUDA GPU)
-_DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-_POSE_MODEL = keypointrcnn_resnet50_fpn(weights=KeypointRCNN_ResNet50_FPN_Weights.DEFAULT).to(_DEVICE)
-_POSE_MODEL.eval()
+from common.model import TemporalModel
+from common.camera import normalize_screen_coordinates
 
-# COCO-17 骨架解剖学骨骼连接对 (Parent -> Child)
+# 初始化纯视觉 2D 姿态检测模型 (TorchVision Keypoint R-CNN on CUDA GPU)
+_DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+_POSE_2D_MODEL = keypointrcnn_resnet50_fpn(weights=KeypointRCNN_ResNet50_FPN_Weights.DEFAULT).to(_DEVICE)
+_POSE_2D_MODEL.eval()
+
+# 初始化成熟 3D 人体姿态提取模型 (VideoPose3D on CUDA GPU)
+_VIDEOPOSE_CKPT_PATH = str(Path(__file__).resolve().parent.parent / "pretrained_h36m_detectron_coco.bin")
+_VIDEOPOSE_MODEL = TemporalModel(
+    num_joints_in=17,
+    in_features=2,
+    num_joints_out=17,
+    filter_widths=[3, 3, 3, 3, 3],
+    causal=False,
+    dropout=0.25,
+    channels=1024,
+).to(_DEVICE)
+_ckpt = torch.load(_VIDEOPOSE_CKPT_PATH, map_location=_DEVICE)
+_VIDEOPOSE_MODEL.load_state_dict(_ckpt["model_pos"])
+_VIDEOPOSE_MODEL.eval()
+
+# COCO-17 2D 骨架连接对
 COCO_BONES = [
-    # 头部与面部
     (0, 1), (0, 2), (1, 3), (2, 4),
-    # 上肢与躯干
-    (5, 6),             # Left shoulder -> Right shoulder
-    (5, 7), (7, 9),     # Left shoulder -> Left elbow -> Left wrist
-    (6, 8), (8, 10),    # Right shoulder -> Right elbow -> Right wrist
-    (5, 11), (6, 12),   # Shoulders to Hips
-    (11, 12),           # Left hip -> Right hip
-    # 下肢
-    (11, 13), (13, 15), # Left hip -> Left knee -> Left ankle
-    (12, 14), (14, 16), # Right hip -> Right knee -> Right ankle
+    (5, 6), (5, 7), (7, 9), (6, 8), (8, 10),
+    (5, 11), (6, 12), (11, 12),
+    (11, 13), (13, 15), (12, 14), (14, 16)
+]
+
+# Human3.6M 17 关节 3D 骨骼运动学树 (Parent -> Child)
+H36M_BONES = [
+    (0, 1), (1, 2), (2, 3),           # 右下肢 (Right Leg)
+    (0, 4), (4, 5), (5, 6),           # 左下肢 (Left Leg)
+    (0, 7), (7, 8), (8, 9), (9, 10),  # 躯干脊柱与头颈 (Spine & Head)
+    (8, 11), (11, 12), (12, 13),      # 左上肢 (Left Arm)
+    (8, 14), (14, 15), (15, 16)       # 右上肢 (Right Arm)
 ]
 
 
@@ -297,48 +322,33 @@ def render_single_scene_all_actions(
         depth = obs["depth_sensor"]
 
         # =========================================================================
-        # 纯视觉 2D 姿态估计与 3D Lifting (Pure RGB-D Estimation, No GT Simulator Leakage)
+        # 1. 纯视觉 2D 姿态估计 (Keypoint R-CNN on CUDA GPU)
         # =========================================================================
         img_t = F.to_tensor(rgb).to(_DEVICE)
         with torch.no_grad():
-            outputs = _POSE_MODEL([img_t])[0]
+            outputs = _POSE_2D_MODEL([img_t])[0]
 
         scores = outputs["scores"].cpu().numpy()
         if len(scores) > 0:
             kpts_2d_raw = outputs["keypoints"][0].cpu().numpy()  # (17, 3) [u, v, score]
             person_score = float(scores[0])
+            kpts_2d_coco = kpts_2d_raw[:, :2]
         else:
             kpts_2d_raw = np.zeros((17, 3), dtype=np.float32)
+            kpts_2d_coco = np.zeros((17, 2), dtype=np.float32)
             person_score = 0.0
 
-        # 相机内参 (HFOV = 90 deg)
-        fx = W / 2.0
-        fy = H / 2.0
-        cx = W / 2.0
-        cy = H / 2.0
+        # =========================================================================
+        # 2. 成熟 3D 人体姿态提取 (VideoPose3D End-to-End Neural 3D Lifting on GPU)
+        # =========================================================================
+        kpts_norm = normalize_screen_coordinates(kpts_2d_coco, w=W, h=H)
+        kpts_seq = np.repeat(kpts_norm[np.newaxis, np.newaxis, :, :], 243, axis=1) # (1, 243, 17, 2)
+        kpts_seq_t = torch.from_numpy(kpts_seq).float().to(_DEVICE)
 
-        joint_3d_cam = np.zeros((17, 3), dtype=np.float32)
-        joint_2d_proj = []
+        with torch.no_grad():
+            out_3d_t = _VIDEOPOSE_MODEL(kpts_seq_t) # (1, 1, 17, 3)
 
-        for j_idx in range(17):
-            u_f, v_f, conf = kpts_2d_raw[j_idx]
-            u = int(np.clip(round(u_f), 0, W - 1))
-            v = int(np.clip(round(v_f), 0, H - 1))
-            joint_2d_proj.append([u, v])
-
-            # 读取深度图对应的度量深度值
-            z = float(depth[v, u])
-            if z <= 0.05 or z > 10.0 or np.isnan(z):
-                z = 2.0  # 深度边界安全回退
-
-            # 针孔相机反向几何投影 (3D Lifting to Camera Frame)
-            x_c = (u - cx) * z / fx
-            y_c = -(v - cy) * z / fy
-            z_c = -z
-            joint_3d_cam[j_idx] = [x_c, y_c, z_c]
-
-        joint_3d_cam = np.array(joint_3d_cam)
-        joint_2d_proj = np.array(joint_2d_proj)
+        skel_3d_h36m = out_3d_t[0, 0].cpu().numpy() # (17, 3) [x, y, z]
 
         # 生成 4-Panel 图像
         fig = plt.figure(figsize=(18, 5), dpi=130)
@@ -358,7 +368,7 @@ def render_single_scene_all_actions(
         cbar = fig.colorbar(im2, ax=ax2, fraction=0.046, pad=0.04)
         cbar.set_label("Metric Depth (m)", fontsize=8)
 
-        # Panel 3: 2D Model Prediction Overlay (纯视觉模型预测，无 GT 泄露)
+        # Panel 3: 2D Model Prediction Overlay (Keypoint R-CNN 预测)
         ax3 = fig.add_subplot(1, 4, 3)
         ax3.imshow(rgb)
         for u_f, v_f, conf in kpts_2d_raw:
@@ -372,24 +382,24 @@ def render_single_scene_all_actions(
             if (u1 > 0 or v1 > 0) and (u2 > 0 or v2 > 0):
                 ax3.plot([u1, u2], [v1, v2], color="#00E5FF", linewidth=1.8, alpha=0.85, zorder=4)
 
-        ax3.set_title(f"3. Pure RGB Pose Model 2D Prediction\nPerson Confidence: {person_score:.2f}", fontsize=10, fontweight="bold")
+        ax3.set_title(f"3. Keypoint R-CNN (2D Keypoints)\nPerson Score: {person_score:.2f}", fontsize=10, fontweight="bold")
         ax3.axis("off")
 
-        # Panel 4: 3D Lifted Pose (1:1 真实人体度量空间比例与运动学连线)
+        # Panel 4: VideoPose3D 3D Pose (成熟深度学习端到端 3D 姿态模型)
         ax4 = fig.add_subplot(1, 4, 4, projection="3d")
-        xs = joint_3d_cam[:, 0]
-        ys = joint_3d_cam[:, 2] # 深度 Z
-        zs = joint_3d_cam[:, 1] # 高度 Y
+        xs = skel_3d_h36m[:, 0]
+        ys = skel_3d_h36m[:, 2]  # 深度 Z
+        zs = -skel_3d_h36m[:, 1] # 高度 Y (Human3.6M 坐标系 Y 轴向下，取负向上)
 
         for i in range(17):
             ax4.scatter(xs[i], ys[i], zs[i], s=26, c="#00E5FF", edgecolors="k", depthshade=True)
 
-        for p1, p2 in COCO_BONES:
+        for p1, p2 in H36M_BONES:
             ax4.plot([xs[p1], xs[p2]], [ys[p1], ys[p2]], [zs[p1], zs[p2]], color="#7C4DFF", linewidth=2.0)
 
-        # 严格保持 1:1:1 各向同性度量尺度 (1:1 Metric Scale)，防止人体视觉压扁或拉伸
+        # 严格保持 1:1:1 各向同性度量尺度 (1:1 Metric Scale)
         max_range = np.array([xs.max() - xs.min(), ys.max() - ys.min(), zs.max() - zs.min()]).max() / 2.0
-        max_range = max(max_range, 0.8)
+        max_range = max(max_range, 0.6)
         mid_x = (xs.max() + xs.min()) * 0.5
         mid_y = (ys.max() + ys.min()) * 0.5
         mid_z = (zs.max() + zs.min()) * 0.5
@@ -402,7 +412,7 @@ def render_single_scene_all_actions(
         ax4.set_xlabel("X (m)", fontsize=8)
         ax4.set_ylabel("Depth Z (m)", fontsize=8)
         ax4.set_zlabel("Height Y (m)", fontsize=8)
-        ax4.set_title(f"4. Estimated 3D Pose (RGB-D Lifting)\nAction: {act_name}", fontsize=10, fontweight="bold")
+        ax4.set_title(f"4. VideoPose3D (End-to-End 3D Pose)\nAction: {act_name}", fontsize=10, fontweight="bold")
         ax4.view_init(elev=12, azim=-70)
 
         plt.tight_layout()
