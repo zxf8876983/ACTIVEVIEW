@@ -124,6 +124,39 @@ def get_action_joint_positions(action_name: str) -> np.ndarray:
     return joints.flatten()
 
 
+# 55 关节解剖学生物力学运动学树骨骼连接对 (Parent -> Child)
+# 0..53 对应 ArticulatedObject links, 54 对应 Pelvis 骨盆根节点
+PELVIS_IDX = 54
+HUMAN_BONES = [
+    # 躯干与脊柱头颈 (Spine & Head)
+    (PELVIS_IDX, 8),    # pelvis -> spine1
+    (8, 9),             # spine1 -> spine2
+    (9, 10),            # spine2 -> spine3
+    (10, 30),           # spine3 -> neck
+    (30, 31),           # neck -> head
+    # 左上肢 (Left Arm)
+    (10, 11),           # spine3 -> left_collar
+    (11, 12),           # left_collar -> left_shoulder
+    (12, 13),           # left_shoulder -> left_elbow
+    (13, 14),           # left_elbow -> left_wrist
+    # 右上肢 (Right Arm)
+    (10, 35),           # spine3 -> right_collar
+    (35, 36),           # right_collar -> right_shoulder
+    (36, 37),           # right_shoulder -> right_elbow
+    (37, 38),           # right_elbow -> right_wrist
+    # 左下肢 (Left Leg)
+    (PELVIS_IDX, 0),    # pelvis -> left_hip
+    (0, 1),             # left_hip -> left_knee
+    (1, 2),             # left_knee -> left_ankle
+    (2, 3),             # left_ankle -> left_foot
+    # 右下肢 (Right Leg)
+    (PELVIS_IDX, 4),    # pelvis -> right_hip
+    (4, 5),             # right_hip -> right_knee
+    (5, 6),             # right_knee -> right_ankle
+    (6, 7),             # right_ankle -> right_foot
+]
+
+
 def render_single_scene_all_actions(
     scene_name: str,
     glb_path: str,
@@ -173,53 +206,62 @@ def render_single_scene_all_actions(
     aom = sim.get_articulated_object_manager()
     art_obj = aom.add_articulated_object_from_urdf(URDF_PATH)
 
-    # 3. 执行全身 54 关节 3D 碰撞检测与空间筛选
+    # 3. 执行全身 54 关节 3D 碰撞检测与多机位无遮挡开阔空间筛选
     valid_human_pt = None
-    best_min_link_dist = 0.0
+    best_num_views = 0
     root_clearance = 0.0
 
-    for attempt in range(800):
+    for attempt in range(1500):
         pt = nav.get_random_navigable_point()
         dist = nav.distance_to_closest_obstacle(pt)
-        if dist >= 0.70:
+        if dist >= 0.85:
             y_floor = float(pt[1])
             art_obj.translation = np.array([pt[0], y_floor + 0.90, pt[2]], dtype=np.float32)
 
             all_links_clear = True
-            curr_min_link_dist = 999.0
             for i in range(art_obj.num_links):
                 node = art_obj.get_link_scene_node(i)
                 link_pos = np.array(node.absolute_translation, dtype=np.float32)
-                l_dist = nav.distance_to_closest_obstacle(link_pos)
-                curr_min_link_dist = min(curr_min_link_dist, l_dist)
-                if l_dist < 0.15:
+                if nav.distance_to_closest_obstacle(link_pos) < 0.15:
                     all_links_clear = False
                     break
 
-            if all_links_clear and curr_min_link_dist > best_min_link_dist:
-                valid_human_pt = np.array(pt, dtype=np.float32)
-                best_min_link_dist = curr_min_link_dist
-                root_clearance = dist
-                if best_min_link_dist >= 0.40:
-                    break
+            if all_links_clear:
+                # 统计围绕人体 360度可导航机位数量
+                valid_cands = []
+                for ang in np.linspace(0, 360, 16, endpoint=False):
+                    rad = np.radians(ang)
+                    cand = np.array([pt[0] + 2.2 * np.sin(rad), y_floor, pt[2] + 2.2 * np.cos(rad)], dtype=np.float32)
+                    if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.25:
+                        valid_cands.append(cand)
+
+                if len(valid_cands) > best_num_views:
+                    best_num_views = len(valid_cands)
+                    valid_human_pt = np.array(pt, dtype=np.float32)
+                    root_clearance = dist
+                    if best_num_views >= 8:
+                        break
 
     if valid_human_pt is None:
         valid_human_pt = np.array(nav.get_random_navigable_point(), dtype=np.float32)
-        best_min_link_dist = 0.30
         root_clearance = 0.80
 
     y_floor = float(valid_human_pt[1])
     human_root_pos = np.array([valid_human_pt[0], y_floor + 0.90, valid_human_pt[2]], dtype=np.float32)
     art_obj.translation = human_root_pos
 
-    logger.info("[%s] Human placed at %s (Clearance: root=%.2fm, min_limb=%.2fm)", scene_name, human_root_pos, root_clearance, best_min_link_dist)
+    # 预先生成可行的环绕机位列表
+    candidate_viewpoints = []
+    for ang in np.linspace(0, 360, 32, endpoint=False):
+        rad = np.radians(ang)
+        cand = np.array([valid_human_pt[0] + 2.2 * np.sin(rad), y_floor, valid_human_pt[2] + 2.2 * np.cos(rad)], dtype=np.float32)
+        if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.20:
+            candidate_viewpoints.append(cand)
 
-    # 4. 相机内参与投影计算
-    hfov_rad = math.radians(hfov)
-    fx = W / (2.0 * math.tan(hfov_rad / 2.0))
-    fy = fx
-    cx = W / 2.0
-    cy = H / 2.0
+    if not candidate_viewpoints:
+        candidate_viewpoints = [np.array([valid_human_pt[0] + 1.8, y_floor, valid_human_pt[2] + 0.8], dtype=np.float32)]
+
+    logger.info("[%s] Human placed at %s (Clearance: %.2fm, Available 360-views: %d)", scene_name, human_root_pos, root_clearance, len(candidate_viewpoints))
 
     action_figure_paths = {}
 
@@ -230,7 +272,6 @@ def render_single_scene_all_actions(
         art_obj.joint_positions = action_joints
 
         # 动态脚部贴地计算 (Dynamic Posture-Aware Foot Grounding)
-        # 先将 root 临时放置在 y=0 测量该动作下最低关节（脚底/脚踝/臀部）相对于 root 的垂直偏移
         art_obj.translation = np.array([valid_human_pt[0], 0.0, valid_human_pt[2]], dtype=np.float32)
         min_link_y = min(art_obj.get_link_scene_node(i).absolute_translation[1] for i in range(art_obj.num_links))
 
@@ -244,34 +285,18 @@ def render_single_scene_all_actions(
         human_current_pos = np.array([valid_human_pt[0], grounded_root_y, valid_human_pt[2]], dtype=np.float32)
         art_obj.translation = human_current_pos
 
-        # 围绕人体选择不同观察视角
-        obs_angle_deg = (act_idx * 22.5) % 360.0
-        dist_m = 2.0
-
-        robot_pt = None
-        for r_cand_angle in [obs_angle_deg, obs_angle_deg + 30.0, obs_angle_deg - 30.0, obs_angle_deg + 60.0, obs_angle_deg - 60.0, 0.0, 90.0, 180.0, 270.0]:
-            r_rad = np.radians(r_cand_angle)
-            cand = np.array([
-                valid_human_pt[0] + dist_m * np.sin(r_rad),
-                y_floor,
-                valid_human_pt[2] + dist_m * np.cos(r_rad)
-            ], dtype=np.float32)
-            if nav.is_navigable(cand) and nav.distance_to_closest_obstacle(cand) >= 0.20:
-                robot_pt = cand
-                break
-
-        if robot_pt is None:
-            robot_pt = np.array([valid_human_pt[0] + 1.8, y_floor, valid_human_pt[2] + 0.8], dtype=np.float32)
+        # 从开阔环绕机位中选择
+        robot_pt = candidate_viewpoints[act_idx % len(candidate_viewpoints)]
 
         cam_height = 1.50  # 固定为 1.50m
         cam_pos = np.array([robot_pt[0], y_floor + cam_height, robot_pt[2]], dtype=np.float32)
-        target_pos = np.array([valid_human_pt[0], grounded_root_y, valid_human_pt[2]], dtype=np.float32)
+        target_pos = np.array([valid_human_pt[0], y_floor + 0.90, valid_human_pt[2]], dtype=np.float32)
 
         dir_vec = target_pos - cam_pos
         dir_norm = dir_vec / np.linalg.norm(dir_vec)
 
-        yaw = np.arctan2(-dir_norm[0], -dir_norm[2])
-        pitch = np.arcsin(dir_norm[1])
+        yaw = np.arctan2(dir_norm[0], -dir_norm[2])
+        pitch = np.arcsin(dir_norm[1])  # 负角俯视对准人体中心
 
         cam_rot = quaternion.from_rotation_vector([0, yaw, 0]) * quaternion.from_rotation_vector([pitch, 0, 0])
 
@@ -286,42 +311,51 @@ def render_single_scene_all_actions(
         rgb = obs["color_sensor"][:, :, :3]
         depth = obs["depth_sensor"]
 
-        # 3D 关节投影与遮挡分析
-        R_cam_world = quaternion.as_rotation_matrix(cam_rot)
-        R_world_cam = R_cam_world.T
+        # 直接获取 Habitat 原生渲染相机的 4x4 View Matrix 与 4x4 Projection Matrix
+        rc = sim._sensors["color_sensor"]._sensor_object.render_camera
+        cam_mat = np.array(rc.camera_matrix)     # 4x4 世界坐标 -> 相机坐标系
+        proj_mat = np.array(rc.projection_matrix) # 4x4 相机坐标 -> 裁剪空间
 
-        num_links = art_obj.num_links
         joint_3d_cam = []
         joint_2d_proj = []
         joint_visibilities = []
 
-        for i in range(num_links):
+        # 54 个子关节 (Links 0..53)
+        for i in range(art_obj.num_links):
             node = art_obj.get_link_scene_node(i)
             w_pos = np.array(node.absolute_translation, dtype=np.float32)
-
-            p_rel = w_pos - cam_pos
-            p_cam = R_world_cam @ p_rel
-
-            c_x = float(p_cam[0])
-            c_y = float(p_cam[1])
-            c_z = float(-p_cam[2])
-
+            p_w4 = np.array([w_pos[0], w_pos[1], w_pos[2], 1.0])
+            p_c = cam_mat @ p_w4
+            c_x, c_y, c_z = float(p_c[0]), float(p_c[1]), float(-p_c[2])
             joint_3d_cam.append([c_x, c_y, c_z])
 
-            if c_z > 0.1:
-                u = int(cx + (fx * c_x) / c_z)
-                v = int(cy - (fy * c_y) / c_z)
-                joint_2d_proj.append([u, v])
+            p_clip = proj_mat @ p_c
+            p_ndc = p_clip[:3] / p_clip[3]
+            u = int(round((p_ndc[0] + 1.0) * 0.5 * W))
+            v = int(round((1.0 - (p_ndc[1] + 1.0) * 0.5) * H))
+            joint_2d_proj.append([u, v])
 
-                if 0 <= u < W and 0 <= v < H:
-                    sensor_depth = depth[v, u]
-                    is_visible = bool(sensor_depth >= (c_z - 0.25))
-                    joint_visibilities.append(is_visible)
-                else:
-                    joint_visibilities.append(False)
+            if 0 <= u < W and 0 <= v < H:
+                sensor_depth = depth[v, u]
+                is_visible = bool(sensor_depth >= (c_z - 0.25))
+                joint_visibilities.append(is_visible)
             else:
-                joint_2d_proj.append([-1, -1])
                 joint_visibilities.append(False)
+
+        # 骨盆根节点 (Pelvis, 索引 54)
+        p_w4 = np.array([art_obj.translation[0], art_obj.translation[1], art_obj.translation[2], 1.0])
+        p_c = cam_mat @ p_w4
+        c_x, c_y, c_z = float(p_c[0]), float(p_c[1]), float(-p_c[2])
+        joint_3d_cam.append([c_x, c_y, c_z])
+        p_clip = proj_mat @ p_c
+        p_ndc = p_clip[:3] / p_clip[3]
+        u = int(round((p_ndc[0] + 1.0) * 0.5 * W))
+        v = int(round((1.0 - (p_ndc[1] + 1.0) * 0.5) * H))
+        joint_2d_proj.append([u, v])
+        if 0 <= u < W and 0 <= v < H:
+            joint_visibilities.append(bool(depth[v, u] >= (c_z - 0.25)))
+        else:
+            joint_visibilities.append(False)
 
         joint_3d_cam = np.array(joint_3d_cam)
         joint_2d_proj = np.array(joint_2d_proj)
@@ -345,7 +379,7 @@ def render_single_scene_all_actions(
         cbar = fig.colorbar(im2, ax=ax2, fraction=0.046, pad=0.04)
         cbar.set_label("Metric Depth (m)", fontsize=8)
 
-        # Panel 3: 2D Overlay
+        # Panel 3: 2D Overlay (基于人体真实运动学树连线)
         ax3 = fig.add_subplot(1, 4, 3)
         ax3.imshow(rgb)
         for idx_j, (u, v) in enumerate(joint_2d_proj):
@@ -353,35 +387,47 @@ def render_single_scene_all_actions(
                 c = "#00FF66" if joint_visibilities[idx_j] else "#FF3333"
                 ax3.scatter(u, v, s=24, c=c, edgecolors="white", linewidth=0.5, zorder=5)
 
-        for i in range(min(num_links - 1, len(joint_2d_proj) - 1)):
-            u1, v1 = joint_2d_proj[i]
-            u2, v2 = joint_2d_proj[i + 1]
+        for p1, p2 in HUMAN_BONES:
+            u1, v1 = joint_2d_proj[p1]
+            u2, v2 = joint_2d_proj[p2]
             if 0 <= u1 < W and 0 <= v1 < H and 0 <= u2 < W and 0 <= v2 < H:
-                ax3.plot([u1, u2], [v1, v2], color="#00E5FF", linewidth=1.2, alpha=0.7, zorder=4)
+                ax3.plot([u1, u2], [v1, v2], color="#00E5FF", linewidth=1.8, alpha=0.85, zorder=4)
 
         vis_cnt = int(np.sum(joint_visibilities))
         vis_pct = vis_cnt / max(1, len(joint_visibilities)) * 100.0
         ax3.set_title(f"3. 2D Pose Estimation Overlay\nVisible: {vis_cnt}/{len(joint_visibilities)} ({vis_pct:.1f}%)", fontsize=10, fontweight="bold")
         ax3.axis("off")
 
-        # Panel 4: 3D Lifted Pose
+        # Panel 4: 3D Lifted Pose (1:1 真实人体度量空间比例与运动学连线)
         ax4 = fig.add_subplot(1, 4, 4, projection="3d")
         xs = joint_3d_cam[:, 0]
-        ys = joint_3d_cam[:, 2]
-        zs = joint_3d_cam[:, 1]
+        ys = joint_3d_cam[:, 2] # 深度 Z
+        zs = joint_3d_cam[:, 1] # 高度 Y
 
         for i in range(len(joint_3d_cam)):
             c = "#00E5FF" if joint_visibilities[i] else "#FF5252"
-            ax4.scatter(xs[i], ys[i], zs[i], s=28, c=c, edgecolors="k", depthshade=True)
+            ax4.scatter(xs[i], ys[i], zs[i], s=26, c=c, edgecolors="k", depthshade=True)
 
-        for i in range(min(num_links - 1, len(joint_3d_cam) - 1)):
-            ax4.plot([xs[i], xs[i+1]], [ys[i], ys[i+1]], [zs[i], zs[i+1]], color="#7C4DFF", linewidth=1.2)
+        for p1, p2 in HUMAN_BONES:
+            ax4.plot([xs[p1], xs[p2]], [ys[p1], ys[p2]], [zs[p1], zs[p2]], color="#7C4DFF", linewidth=2.0)
 
-        ax4.set_xlabel("X (m)", fontsize=7)
-        ax4.set_ylabel("Z (m)", fontsize=7)
-        ax4.set_zlabel("Y (m)", fontsize=7)
-        ax4.set_title(f"4. 3D Pose (Camera Height 1.5m)\nAction: {act_name}", fontsize=10, fontweight="bold")
-        ax4.view_init(elev=15, azim=-60)
+        # 严格保持 1:1:1 各向同性度量尺度 (1:1 Metric Scale)，防止人体视觉压扁或拉伸
+        max_range = np.array([xs.max() - xs.min(), ys.max() - ys.min(), zs.max() - zs.min()]).max() / 2.0
+        max_range = max(max_range, 0.9)
+        mid_x = (xs.max() + xs.min()) * 0.5
+        mid_y = (ys.max() + ys.min()) * 0.5
+        mid_z = (zs.max() + zs.min()) * 0.5
+
+        ax4.set_xlim(mid_x - max_range, mid_x + max_range)
+        ax4.set_ylim(mid_y - max_range, mid_y + max_range)
+        ax4.set_zlim(mid_z - max_range, mid_z + max_range)
+        ax4.set_box_aspect([1, 1, 1])
+
+        ax4.set_xlabel("X (m)", fontsize=8)
+        ax4.set_ylabel("Depth Z (m)", fontsize=8)
+        ax4.set_zlabel("Height Y (m)", fontsize=8)
+        ax4.set_title(f"4. 3D Pose (1:1 Metric Scale)\nAction: {act_name}", fontsize=10, fontweight="bold")
+        ax4.view_init(elev=12, azim=-70)
 
         plt.tight_layout()
         act_fig_p = scene_out_dir / f"{act_idx:02d}_{act_name}.png"
