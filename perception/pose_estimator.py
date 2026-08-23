@@ -1,12 +1,12 @@
 """
-3D 人体姿态估计器与接口封装 —— pose_estimator.py (v11.4.1)
+3D RGB-D 姿态估计器与接口封装 —— pose_estimator.py (v11.4.2)
 =========================================================
 
 职责：
-    1. 从输入的 RGB-D 传感器观测估计 3D 人体骨架 (T, 33, 3) 与置信度；
-    2. 严格遵循 MediaPipe-33 骨架拓扑标准；
-    3. 环境家具物理遮挡导致关键点无法检出 (Missing / Zeroed / Jitter) 与质量退化；
-    4. 严格输出 `skeleton_source = "estimated"`，坚决杜绝任何真值骨架直通。
+    1. 从真实 RGB 图像与 Depth 深度图估计 3D 人体骨架 (T, 33, 3)；
+    2. 基于 2D Pose 关键点检测 (MediaPipe 33 关键点) 与深度图几何反向投影 (Depth Lifting)；
+    3. 环境家具真实遮挡导致 2D 关键点不可见或深度图突变，产生自然的 Missing / 0 关键点；
+    4. 严格断言并标记 `skeleton_source = "estimated"`，杜绝任何 GT 骨架直通或人工规则删除。
 """
 
 import logging
@@ -17,6 +17,11 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from PIL import Image
+
+try:
+    import mediapipe as mp
+except ImportError:
+    mp = None
 
 from ea_avs_mvp_v11.perception.skeleton_definition import SkeletonDefinition, get_skeleton_definition
 
@@ -67,7 +72,6 @@ class Pose2DResult:
         )
 
 
-
 class BasePoseEstimator(ABC):
     """2D 姿态估计器基类 (向后兼容)。"""
     @abstractmethod
@@ -76,7 +80,7 @@ class BasePoseEstimator(ABC):
 
 
 class MockPoseEstimator(BasePoseEstimator):
-    """Mock 2D 姿态估计器。"""
+    """Mock 2D 姿态估计器 (仅供单元测试使用，严禁论文实验)。"""
     def __init__(self, default_confidence: float = 0.95, keypoint_count: int = 17):
         self.default_confidence = float(default_confidence)
         self.keypoint_count = int(keypoint_count)
@@ -89,7 +93,6 @@ class MockPoseEstimator(BasePoseEstimator):
         return Pose2DResult(keypoints=kpts, confidence=conf, bbox=np.array([80, 40, 170, 210], dtype=np.float32))
 
 
-
 class TorchvisionPoseEstimator(BasePoseEstimator):
     """Torchvision Keypoint R-CNN 姿态估计器。"""
     def estimate_pose2d(self, rgb_image: Union[np.ndarray, Image.Image]) -> Pose2DResult:
@@ -99,8 +102,6 @@ class TorchvisionPoseEstimator(BasePoseEstimator):
 
 @dataclass
 class PoseEstimationResult:
-
-
     """3D 姿态估计结果容器。"""
     skeleton_3d: np.ndarray        # (T, 33, 3) 估计骨架坐标 (米)
     confidence: float              # 整体姿态估计置信度 [0.0, 1.0]
@@ -115,6 +116,7 @@ class PoseEstimationResult:
             "confidence": float(self.confidence),
             "visible_ratio": float(self.visible_ratio),
             "missing_joints": [int(j) for j in self.missing_joints],
+            "missing_joint_count": len(self.missing_joints),
             "skeleton_source": self.skeleton_source,
             "metadata": self.metadata,
         }
@@ -131,122 +133,183 @@ class PoseEstimator(ABC):
         self,
         rgb: Union[np.ndarray, Image.Image],
         depth: Optional[np.ndarray] = None,
-        angle_deg: float = 0.0,
-        distance_m: float = 2.0,
-        occlusion_ratio: float = 0.0,
-        base_motion_seq: Optional[np.ndarray] = None,
+        intrinsics: Optional[Dict[str, float]] = None,
+        **kwargs: Any,
     ) -> Tuple[np.ndarray, float, Dict[str, Any]]:
         """
-        从 RGB-D 传感器数据估计 3D 骨架时序。
-
-        返回:
-            estimated_skeleton: (T, 33, 3) 骨架
-            confidence: float 整体置信度
-            metadata: 姿态质量元数据 (包含 skeleton_source="estimated")
+        从纯视觉 RGB 图像与 Depth 深度图估计 3D 人体骨架。
         """
         pass
 
 
 class RGBDPoseEstimator(PoseEstimator):
     """
-    结合 2D 视觉关键点检测与深度图几何投影的 3D 姿态估计器。
-    真实模拟复杂住宅环境中遮挡、视距衰减与视角偏转对骨架检出的影响。
+    真实 RGB-D 3D 人体姿态估计器 (v11.4.2)。
+    架构：
+        RGB 图像 -> 2D Pose 关键点检测 (MediaPipe 33 关键点)
+        + Depth 深度图 -> 针孔相机逆几何投影 (3D Lifting)
+        -> 3D 骨架时序 (T, 33, 3) 与关节可见性统计。
     """
 
     def __init__(
         self,
-        noise_std: float = 0.008,
         skel_def: Optional[SkeletonDefinition] = None,
+        min_detection_confidence: float = 0.45,
+        min_tracking_confidence: float = 0.45,
     ):
         super().__init__(skel_def=skel_def)
-        self.base_noise_std = float(noise_std)
+        self.min_detection_confidence = min_detection_confidence
+        self.min_tracking_confidence = min_tracking_confidence
+        self._mp_pose = None
+
+        if mp is not None:
+            self._mp_pose = mp.solutions.pose.Pose(
+                static_image_mode=True,
+                model_complexity=1,
+                enable_segmentation=False,
+                min_detection_confidence=self.min_detection_confidence,
+                min_tracking_confidence=self.min_tracking_confidence,
+            )
+
+    def _estimate_single_frame(
+        self,
+        rgb_frame: np.ndarray,
+        depth_frame: Optional[np.ndarray],
+        intrinsics: Dict[str, float],
+    ) -> Tuple[np.ndarray, float, float, List[int]]:
+        """单帧 RGB-D 3D 关键点检测与反向几何投影。"""
+        H, W = rgb_frame.shape[:2]
+        fx = intrinsics.get("fx", W / (2.0 * math.tan(math.radians(45.0))))
+        fy = intrinsics.get("fy", fx)
+        cx = intrinsics.get("cx", W / 2.0)
+        cy = intrinsics.get("cy", H / 2.0)
+
+        kpts_3d = np.zeros((33, 3), dtype=np.float32)
+        confs = []
+        missing_joints = []
+
+        if self._mp_pose is not None:
+            # 确保为 RGB 8位图
+            if rgb_frame.dtype != np.uint8:
+                rgb_u8 = np.clip(rgb_frame, 0, 255).astype(np.uint8)
+            else:
+                rgb_u8 = rgb_frame
+
+            results = self._mp_pose.process(rgb_u8)
+            if results.pose_landmarks:
+                for idx, lm in enumerate(results.pose_landmarks.landmark):
+                    if idx >= 33:
+                        break
+                    u = int(np.clip(lm.x * W, 0, W - 1))
+                    v = int(np.clip(lm.y * H, 0, H - 1))
+                    c = float(lm.visibility)
+                    confs.append(c)
+
+                    # 读取深度值
+                    z = 2.0
+                    if depth_frame is not None:
+                        z = float(depth_frame[v, u])
+                        if np.isnan(z) or np.isinf(z) or z <= 0.05 or z > 10.0:
+                            z = 0.0
+
+                    # 判断关节是否被遮挡或检出失败
+                    if c < 0.35 or z <= 0.05:
+                        missing_joints.append(idx)
+                        kpts_3d[idx] = [0.0, 0.0, 0.0]
+                    else:
+                        # 针孔相机反向投影 (相机坐标系: -Z 为前, +X 为右, +Y 为上)
+                        x_c = (u - cx) * z / fx
+                        y_c = -(v - cy) * z / fy
+                        z_c = -z
+                        kpts_3d[idx] = [x_c, y_c, z_c]
+            else:
+                # 图像中完全无检出 (例如完全移出视野或被整面墙完全阻挡)
+                missing_joints = list(range(33))
+                confs = [0.0] * 33
+        else:
+            # 纯几何备用估计 (若环境中缺少 mediapipe)
+            missing_joints = list(range(33))
+            confs = [0.1] * 33
+
+        vis_ratio = float((33 - len(missing_joints)) / 33.0)
+        mean_conf = float(np.mean(confs)) if confs else 0.0
+        return kpts_3d, mean_conf, vis_ratio, missing_joints
 
     def estimate(
         self,
         rgb: Union[np.ndarray, Image.Image],
         depth: Optional[np.ndarray] = None,
-        angle_deg: float = 0.0,
-        distance_m: float = 2.0,
-        occlusion_ratio: float = 0.0,
-        base_motion_seq: Optional[np.ndarray] = None,
+        intrinsics: Optional[Dict[str, float]] = None,
+        **kwargs: Any,
     ) -> Tuple[np.ndarray, float, Dict[str, Any]]:
-        T, V, C = 30, 33, 3
+        """
+        从输入 RGB 图像与 Depth 深度图估计 3D 骨架序列 (T=30, V=33, C=3)。
 
-        # 获取人体基准动作拓扑
-        if base_motion_seq is not None:
-            raw_seq = base_motion_seq.copy()
+        参数:
+            rgb: RGB 图像 (H, W, 3) 或时序图 (T, H, W, 3)
+            depth: Depth 深度图 (H, W) 或时序图 (T, H, W)
+            intrinsics: 相机内参字典 {"fx", "fy", "cx", "cy", "width", "height"}
+
+        返回:
+            estimated_skeleton: (30, 33, 3) 估计骨架
+            overall_confidence: float 姿态置信度
+            metadata: 姿态估计元数据 (包含 skeleton_source="estimated")
+        """
+        T = 30
+        if isinstance(rgb, Image.Image):
+            rgb_arr = np.array(rgb)
         else:
-            raw_seq = np.zeros((T, V, C), dtype=np.float32)
-            raw_seq[:, 0] = [0.0, 0.50, 0.0]
-            raw_seq[:, 11] = [0.20, 0.35, 0.0]
-            raw_seq[:, 12] = [-0.20, 0.35, 0.0]
-            raw_seq[:, 23] = [0.15, -0.10, 0.0]
-            raw_seq[:, 24] = [-0.15, -0.10, 0.0]
+            rgb_arr = np.asarray(rgb)
 
-        # 1. 模拟相机视角变换 (观测帧)
-        rad = math.radians(angle_deg)
-        cos_a, sin_a = math.cos(rad), math.sin(rad)
-        R_cam = np.array(
-            [
-                [cos_a, 0.0, -sin_a],
-                [0.0, 1.0, 0.0],
-                [sin_a, 0.0, cos_a],
-            ],
-            dtype=np.float32,
-        )
+        if intrinsics is None:
+            H, W = rgb_arr.shape[:2] if rgb_arr.ndim == 3 else rgb_arr.shape[1:3]
+            intrinsics = {
+                "fx": W / (2.0 * math.tan(math.radians(45.0))),
+                "fy": W / (2.0 * math.tan(math.radians(45.0))),
+                "cx": W / 2.0,
+                "cy": H / 2.0,
+                "width": float(W),
+                "height": float(H),
+            }
 
-        obs_skel = np.zeros_like(raw_seq)
-        for t in range(T):
-            obs_skel[t] = (R_cam @ raw_seq[t].T).T
+        # 判断是否为多帧序列
+        if rgb_arr.ndim == 4:
+            # (T_in, H, W, 3)
+            num_frames = rgb_arr.shape[0]
+            kpts_seq = np.zeros((T, 33, 3), dtype=np.float32)
+            all_confs = []
+            all_vis = []
+            all_missing = set()
 
-        # 2. 真实遮挡导致关键点丢失（Missingness & Dropouts）
-        # 常见下半身遮挡：家具（沙发/茶几）挡住髋、膝、踝关节 (joints 23~32)
-        # 侧向/背向自遮挡：手臂与背向关节缺失
-        missing_joints: List[int] = []
-        visible_ratio = float(np.clip(1.0 - occlusion_ratio, 0.05, 1.0))
+            for t_idx in range(T):
+                src_idx = min(t_idx, num_frames - 1)
+                d_frame = depth[src_idx] if (depth is not None and depth.ndim == 3) else depth
+                k3d, cf, vr, mj = self._estimate_single_frame(rgb_arr[src_idx], d_frame, intrinsics)
+                kpts_seq[t_idx] = k3d
+                all_confs.append(cf)
+                all_vis.append(vr)
+                all_missing.update(mj)
 
-        if occlusion_ratio >= 0.10:
-            # 根据遮挡深度逐级丢失关节
-            # 1. 下肢 (脚踝与足部 27~32)
-            if occlusion_ratio >= 0.20:
-                missing_joints.extend([27, 28, 29, 30, 31, 32])
-            # 2. 膝关节 (25, 26)
-            if occlusion_ratio >= 0.35:
-                missing_joints.extend([25, 26])
-            # 3. 髋关节与下躯干 (23, 24)
-            if occlusion_ratio >= 0.50:
-                missing_joints.extend([23, 24])
-            # 4. 手腕与手部 (15~22)
-            if occlusion_ratio >= 0.65:
-                missing_joints.extend([15, 16, 17, 18, 19, 20, 21, 22])
-            # 5. 肘部与肩部 (11~14)
-            if occlusion_ratio >= 0.80:
-                missing_joints.extend([11, 12, 13, 14])
+            mean_conf = float(np.mean(all_confs))
+            mean_vis = float(np.mean(all_vis))
+            missing_list = sorted(list(all_missing))
+        else:
+            # 单帧输入 (复制扩展至 T=30)
+            k3d, mean_conf, mean_vis, missing_list = self._estimate_single_frame(rgb_arr, depth, intrinsics)
+            kpts_seq = np.repeat(k3d[np.newaxis, :, :], T, axis=0)
 
-        missing_joints = list(sorted(set(missing_joints)))
-
-        # 3. 传感器观测噪声与退化
-        dist_factor = max(0.0, (distance_m - 1.5) / 1.5)
-        dist_noise = self.base_noise_std * (1.0 + 1.5 * dist_factor)
-        noise = np.random.normal(0, dist_noise, obs_skel.shape).astype(np.float32)
-        estimated_skel = obs_skel + noise
-
-        # 将丢失的关键点置为 0 (检测器无法定位)
-        for j in missing_joints:
-            estimated_skel[:, j, :] = 0.0
-
-        # 计算整体姿态置信度
-        pose_conf = max(0.10, float(visible_ratio * (1.0 - 0.25 * dist_factor)))
-
-        meta = {
+        # 构造并返回结果元数据
+        metadata = {
             "skeleton_source": "estimated",
-            "visible_ratio": round(visible_ratio, 4),
-            "missing_joints": missing_joints,
-            "pose_confidence": round(pose_conf, 4),
-            "distance_m": round(distance_m, 4),
-            "angle_deg": round(angle_deg, 2),
+            "visible_ratio": round(mean_vis, 4),
+            "missing_joints": missing_list,
+            "missing_joint_count": len(missing_list),
+            "pose_confidence": round(mean_conf, 4),
+            "input_type": "RGBD",
+            "is_occluded": bool(mean_vis < 0.80),
         }
-        return estimated_skel, pose_conf, meta
+
+        return kpts_seq, mean_conf, metadata
 
 
 # 全局单例

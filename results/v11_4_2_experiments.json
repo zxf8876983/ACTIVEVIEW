@@ -1,0 +1,261 @@
+{
+  "experiment_1_gt_vs_estimated": {
+    "title": "GT Skeleton vs Estimated Skeleton",
+    "overall_gt_accuracy": 100.0,
+    "overall_estimated_accuracy": 100.0,
+    "per_class_results": [
+      {
+        "action_id": 0,
+        "action_label": "standing",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9054,
+        "estimated_mean_confidence": 0.8663,
+        "gt_mean_entropy": 0.3858,
+        "estimated_mean_entropy": 0.4601
+      },
+      {
+        "action_id": 1,
+        "action_label": "sitting",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 1.0,
+        "estimated_mean_confidence": 0.9995,
+        "gt_mean_entropy": 0.0,
+        "estimated_mean_entropy": 0.0045
+      },
+      {
+        "action_id": 2,
+        "action_label": "sit_down",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9993,
+        "estimated_mean_confidence": 0.9949,
+        "gt_mean_entropy": 0.0071,
+        "estimated_mean_entropy": 0.0325
+      },
+      {
+        "action_id": 3,
+        "action_label": "stand_up",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9999,
+        "estimated_mean_confidence": 0.9998,
+        "gt_mean_entropy": 0.0011,
+        "estimated_mean_entropy": 0.0022
+      },
+      {
+        "action_id": 4,
+        "action_label": "bending",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9961,
+        "estimated_mean_confidence": 0.9849,
+        "gt_mean_entropy": 0.0307,
+        "estimated_mean_entropy": 0.0953
+      },
+      {
+        "action_id": 5,
+        "action_label": "reaching",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9929,
+        "estimated_mean_confidence": 0.9906,
+        "gt_mean_entropy": 0.0487,
+        "estimated_mean_entropy": 0.063
+      },
+      {
+        "action_id": 6,
+        "action_label": "picking_up",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9962,
+        "estimated_mean_confidence": 0.9944,
+        "gt_mean_entropy": 0.0281,
+        "estimated_mean_entropy": 0.0405
+      },
+      {
+        "action_id": 7,
+        "action_label": "squatting",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9995,
+        "estimated_mean_confidence": 0.9987,
+        "gt_mean_entropy": 0.0049,
+        "estimated_mean_entropy": 0.0108
+      },
+      {
+        "action_id": 8,
+        "action_label": "jumping",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9963,
+        "estimated_mean_confidence": 0.9996,
+        "gt_mean_entropy": 0.0279,
+        "estimated_mean_entropy": 0.0047
+      },
+      {
+        "action_id": 9,
+        "action_label": "turning",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9924,
+        "estimated_mean_confidence": 0.9903,
+        "gt_mean_entropy": 0.0499,
+        "estimated_mean_entropy": 0.0618
+      },
+      {
+        "action_id": 10,
+        "action_label": "stretching",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9998,
+        "estimated_mean_confidence": 0.9997,
+        "gt_mean_entropy": 0.0018,
+        "estimated_mean_entropy": 0.0032
+      },
+      {
+        "action_id": 11,
+        "action_label": "waving",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9998,
+        "estimated_mean_confidence": 0.9996,
+        "gt_mean_entropy": 0.0026,
+        "estimated_mean_entropy": 0.0038
+      },
+      {
+        "action_id": 12,
+        "action_label": "dancing",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9994,
+        "estimated_mean_confidence": 0.9991,
+        "gt_mean_entropy": 0.0059,
+        "estimated_mean_entropy": 0.0081
+      },
+      {
+        "action_id": 13,
+        "action_label": "kicking",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.999,
+        "estimated_mean_confidence": 0.9773,
+        "gt_mean_entropy": 0.0092,
+        "estimated_mean_entropy": 0.1143
+      },
+      {
+        "action_id": 14,
+        "action_label": "fall_stumble",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9996,
+        "estimated_mean_confidence": 0.9996,
+        "gt_mean_entropy": 0.0037,
+        "estimated_mean_entropy": 0.004
+      },
+      {
+        "action_id": 15,
+        "action_label": "placing",
+        "gt_accuracy": 100.0,
+        "estimated_accuracy": 100.0,
+        "gt_mean_confidence": 0.9978,
+        "estimated_mean_confidence": 0.9958,
+        "gt_mean_entropy": 0.0195,
+        "estimated_mean_entropy": 0.0322
+      }
+    ]
+  },
+  "experiment_2_viewpoint_robustness": {
+    "title": "Viewpoint Robustness across Angles",
+    "mean_acc_without_canonical": 1.56,
+    "mean_acc_with_canonical": 99.92,
+    "angle_results": [
+      {
+        "angle_deg": 0.0,
+        "accuracy_without_canonical": 6.25,
+        "accuracy_with_canonical": 100.0,
+        "mean_confidence": 0.991,
+        "mean_entropy": 0.0431
+      },
+      {
+        "angle_deg": 45.0,
+        "accuracy_without_canonical": 0.0,
+        "accuracy_with_canonical": 100.0,
+        "mean_confidence": 0.9898,
+        "mean_entropy": 0.0443
+      },
+      {
+        "angle_deg": 90.0,
+        "accuracy_without_canonical": 0.0,
+        "accuracy_with_canonical": 99.38,
+        "mean_confidence": 0.9898,
+        "mean_entropy": 0.0438
+      },
+      {
+        "angle_deg": 135.0,
+        "accuracy_without_canonical": 0.0,
+        "accuracy_with_canonical": 100.0,
+        "mean_confidence": 0.9892,
+        "mean_entropy": 0.0436
+      },
+      {
+        "angle_deg": 180.0,
+        "accuracy_without_canonical": 0.0,
+        "accuracy_with_canonical": 100.0,
+        "mean_confidence": 0.9916,
+        "mean_entropy": 0.0404
+      },
+      {
+        "angle_deg": 225.0,
+        "accuracy_without_canonical": 0.0,
+        "accuracy_with_canonical": 100.0,
+        "mean_confidence": 0.9919,
+        "mean_entropy": 0.0396
+      },
+      {
+        "angle_deg": 270.0,
+        "accuracy_without_canonical": 0.0,
+        "accuracy_with_canonical": 100.0,
+        "mean_confidence": 0.9918,
+        "mean_entropy": 0.0403
+      },
+      {
+        "angle_deg": 315.0,
+        "accuracy_without_canonical": 6.25,
+        "accuracy_with_canonical": 100.0,
+        "mean_confidence": 0.9911,
+        "mean_entropy": 0.0424
+      }
+    ]
+  },
+  "experiment_3_occlusion_robustness": {
+    "title": "Physical Occlusion Robustness",
+    "tier_results": [
+      {
+        "tier": "Easy (Vis > 0.80)",
+        "placement_difficulty": 0.1,
+        "mean_visible_ratio": 1.0,
+        "accuracy": 100.0,
+        "mean_confidence": 0.9921,
+        "mean_entropy": 0.0393
+      },
+      {
+        "tier": "Medium (Vis 0.50~0.80)",
+        "placement_difficulty": 0.45,
+        "mean_visible_ratio": 0.7576,
+        "accuracy": 100.0,
+        "mean_confidence": 0.9882,
+        "mean_entropy": 0.0567
+      },
+      {
+        "tier": "Hard (Vis < 0.50)",
+        "placement_difficulty": 0.85,
+        "mean_visible_ratio": 0.4545,
+        "accuracy": 12.5,
+        "mean_confidence": 0.8947,
+        "mean_entropy": 0.3318
+      }
+    ]
+  }
+}

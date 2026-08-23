@@ -152,10 +152,19 @@ class ActionClassifier:
         skeleton_sequence: np.ndarray,
         is_normalized: bool = False,
         apply_canonical: bool = True,
+        skeleton_source: str = "estimated",
     ) -> ActionPredictionResult:
         """
         对单段 (T, V, 3) 骨架时序进行动作分类与不确定度计算 (包含人体坐标系正规化)。
         """
+        if skeleton_source not in ("estimated", "gt_baseline"):
+            raise ValueError(
+                f"Scientific integrity violation: ST-GCN received illegal skeleton source '{skeleton_source}'. "
+                "Only 'estimated' (or 'gt_baseline' in explicit baseline experiments) is permitted!"
+            )
+        if skeleton_source == "estimated":
+            logger.debug("[PERCEPTION] source=estimated input=RGBD gt_access=False")
+
         if not is_normalized:
             norm_seq = self.normalizer.normalize_sequence(skeleton_sequence)
         else:
@@ -170,10 +179,10 @@ class ActionClassifier:
         tensor_data = np.transpose(norm_seq, (2, 0, 1)) # (3, T, V)
         tensor_input = torch.tensor(tensor_data, dtype=torch.float32).unsqueeze(0).unsqueeze(-1).to(self.device)
 
-
         with torch.no_grad():
             logits = self.model(tensor_input) # (1, num_classes)
             probs = F.softmax(logits, dim=-1).cpu().numpy().squeeze(0) # (num_classes,)
+
 
         pred_idx = int(np.argmax(probs))
         pred_label = self.action_classes[pred_idx] if pred_idx < len(self.action_classes) else f"class_{pred_idx}"

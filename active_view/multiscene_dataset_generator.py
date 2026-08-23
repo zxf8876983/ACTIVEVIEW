@@ -230,8 +230,9 @@ class MultiSceneViewpointDatasetGenerator:
                         "navigation_cost": round(float(vp.navigation_cost), 4),
                         "occlusion_ratio": round(float(cand_obs["occlusion_ratio"]), 4),
                         "visible_joint_ratio": round(float(cand_obs["visible_ratio"]), 4),
-                        "visible_joints_count": int(cand_obs["visible_joints"]),
+                        "visible_joints_count": int(cand_obs.get("visible_joints", int(cand_obs.get("visible_ratio", 1.0) * 33))),
                         "occlusion_level": str(cand_obs["occlusion_level"]),
+
                         "bounding_box_visibility": round(float(cand_obs["visible_ratio"]), 4),
                         "depth_occlusion_rate": round(float(cand_obs["occlusion_ratio"]), 4),
                         "entropy": round(entropy_val, 4),

@@ -142,10 +142,11 @@ def run_all_experiments() -> Dict[str, Any]:
     # =========================================================================
     logger.info("Running Experiment 3: Physical Occlusion Robustness...")
     occlusion_tiers = [
-        {"tier": "Easy (Vis > 0.80)", "occ_ratio": 0.05, "dist": 1.8},
-        {"tier": "Medium (Vis 0.50~0.80)", "occ_ratio": 0.35, "dist": 2.5},
-        {"tier": "Hard (Vis < 0.50)", "occ_ratio": 0.65, "dist": 3.2},
+        {"tier": "Easy (Vis > 0.80)", "placement_diff": 0.10, "dist": 1.8},
+        {"tier": "Medium (Vis 0.50~0.80)", "placement_diff": 0.45, "dist": 2.5},
+        {"tier": "Hard (Vis < 0.50)", "placement_diff": 0.85, "dist": 3.2},
     ]
+
     exp3_records = []
 
     for tier_cfg in occlusion_tiers:
@@ -155,27 +156,26 @@ def run_all_experiments() -> Dict[str, Any]:
         for act_id, act_name in enumerate(DEFAULT_ACTION_CATEGORIES):
             for i in range(15):
                 base_m = synthesize_canonical_motion(act_name, seed=act_id * 7000 + i + 123)
-                # 模拟不同遮挡强度的传感器图像与估计骨架
-                rgb = np.zeros((256, 256, 3), dtype=np.uint8)
-                est_skel, p_conf, meta = pipeline.pose_estimator.estimate(
-                    rgb=rgb,
-                    angle_deg=45.0,
-                    distance_m=tier_cfg["dist"],
-                    occlusion_ratio=tier_cfg["occ_ratio"],
+                human_st = {"position": [0, 0, 0], "placement_difficulty": tier_cfg["placement_diff"]}
+                robot_vp = {"angle": 45.0, "distance": tier_cfg["dist"], "position": [1.0, 1.2, tier_cfg["dist"]]}
+                obs = pipeline.observe(
+                    scene_id="apartment_1",
+                    human_state=human_st,
+                    robot_viewpoint=robot_vp,
                     base_motion_seq=base_m,
                 )
-                canon_skel = aligner.align(est_skel)
-                pred = classifier.predict_sequence(canon_skel, is_normalized=True, apply_canonical=False)
+                canon_skel = aligner.align(obs["skeleton"])
+                pred = classifier.predict_sequence(canon_skel, is_normalized=True, apply_canonical=False, skeleton_source="estimated")
                 if pred.predicted_class == act_id:
                     corr += 1
                 confs.append(pred.top1_confidence)
                 ents.append(pred.entropy)
-                vis_ratios.append(meta["visible_ratio"])
+                vis_ratios.append(obs["visible_ratio"])
                 tot += 1
 
         exp3_records.append({
             "tier": tier_cfg["tier"],
-            "occlusion_ratio": tier_cfg["occ_ratio"],
+            "placement_difficulty": tier_cfg["placement_diff"],
             "mean_visible_ratio": round(float(np.mean(vis_ratios)), 4),
             "accuracy": round(corr / tot * 100, 2),
             "mean_confidence": round(float(np.mean(confs)), 4),
@@ -202,12 +202,13 @@ def run_all_experiments() -> Dict[str, Any]:
         },
     }
 
-    out_file = results_dir / "v11_4_1_experiments.json"
+    out_file = results_dir / "v11_4_2_experiments.json"
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(all_experiments, f, indent=2)
 
     logger.info("Successfully executed all experiments and saved results to: %s", out_file)
     return all_experiments
+
 
 
 if __name__ == "__main__":

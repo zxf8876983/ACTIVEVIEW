@@ -1,0 +1,46 @@
+# Habitat Sensor Configuration for ACTIVEVIEW v11.4.2
+# ======================================================
+
+SIMULATOR:
+  TYPE: "Habitat-Sim-v0"
+  HABITAT_SIM_V0:
+    GPU_DEVICE_ID: 0
+    ENABLE_PHYSICS: true
+    PHYSICS_CONFIG_FILE: "data/default.physics_config.json"
+    ALLOW_SLIDING: false
+
+SENSORS:
+  RGB_SENSOR:
+    TYPE: "HabitatSimRGBDSensor"
+    UUID: "color_sensor"
+    WIDTH: 256
+    HEIGHT: 256
+    HFOV: 90.0
+    POSITION: [0.0, 1.2, 0.0]
+    ORIENTATION: [0.0, 0.0, 0.0]
+
+  DEPTH_SENSOR:
+    TYPE: "HabitatSimDepthSensor"
+    UUID: "depth_sensor"
+    WIDTH: 256
+    HEIGHT: 256
+    HFOV: 90.0
+    MIN_DEPTH: 0.01
+    MAX_DEPTH: 10.0
+    POSITION: [0.0, 1.2, 0.0]
+    ORIENTATION: [0.0, 0.0, 0.0]
+    NORMALIZE_DEPTH: false
+
+ROBOT:
+  RADIUS: 0.18
+  HEIGHT: 1.2
+  CAMERA_HEIGHT: 1.2
+  BASE_HEIGHT: 0.0
+  TURN_ANGLE: 15.0
+  FORWARD_STEP: 0.25
+
+HUMANOID:
+  AVATAR_NAME: "neutral_0"
+  ASSETS_ROOT: "assets/habitat_humanoids"
+  URDF_FILE: "neutral_0/neutral_0.urdf"
+  GROUND_OFFSET: 0.0
