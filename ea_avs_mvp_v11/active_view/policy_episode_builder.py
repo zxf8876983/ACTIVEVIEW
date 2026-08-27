@@ -7,7 +7,7 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
 
 import numpy as np
 
@@ -17,6 +17,14 @@ OFFLINE_VERSION = "semantic-region-offline-v2"
 CANDIDATE_VERSION = "semantic-region-v2"
 EXPECTED_SKELETON_SHAPE = (32, 3, 30, 17)
 PathCostFn = Callable[[Any, np.ndarray, np.ndarray], Optional[float]]
+_FINITE_CANDIDATE_FIELDS = ("euclidean_distance_m", "geodesic_distance_m", "relative_azimuth_deg")
+_FORBIDDEN_EPISODE_FIELDS = {
+    "prediction", "predicted_class", "entropy", "correctness", "q_pred",
+    "utility_label", "utility_target", "future_rgb", "future_depth",
+    "future_rgb_path", "future_depth_path", "rgb", "depth", "rgb_path",
+    "depth_path", "pose_2d", "pose_3d", "gt_skeleton", "gt_joints",
+    "smpl_joints", "valid_skeleton_ids",
+}
 
 
 @dataclass(frozen=True)
@@ -94,6 +102,243 @@ def materialize_candidate_pool(
             "pose_confidence_available": bool(pose_confidence_available),
         })
     return materialized
+
+
+def _finite_sequence(value: Any) -> bool:
+    try:
+        return bool(np.isfinite(np.asarray(value, dtype=np.float64)).all())
+    except (TypeError, ValueError):
+        return False
+
+
+def _finite_shape(value: Any, shape: Tuple[int, ...]) -> bool:
+    try:
+        array = np.asarray(value, dtype=np.float64)
+        return array.shape == shape and bool(np.isfinite(array).all())
+    except (TypeError, ValueError):
+        return False
+
+
+def _forbidden_keys(value: Any) -> Set[str]:
+    """Return forbidden schema keys found recursively in an Episode."""
+    found: Set[str] = set()
+    if isinstance(value, Mapping):
+        for key, child in value.items():
+            key_text = str(key)
+            if key_text in _FORBIDDEN_EPISODE_FIELDS:
+                found.add(key_text)
+            found.update(_forbidden_keys(child))
+    elif isinstance(value, list):
+        for child in value:
+            found.update(_forbidden_keys(child))
+    return found
+
+
+def _inspect_cached_skeleton(path: Path) -> Tuple[Set[int], Optional[str]]:
+    """Validate one cached skeleton archive and return finite viewpoint IDs."""
+    try:
+        with np.load(path, allow_pickle=False) as archive:
+            if "skeleton" not in archive or "viewpoint_ids" not in archive:
+                return set(), "missing_skeleton_fields"
+            skeleton = np.asarray(archive["skeleton"], dtype=np.float32)
+            viewpoint_ids = np.asarray(archive["viewpoint_ids"], dtype=np.int64)
+            if skeleton.shape != EXPECTED_SKELETON_SHAPE or viewpoint_ids.shape != (32,):
+                return set(), "invalid_skeleton_shape"
+            required = (
+                "viewpoint_positions", "viewpoint_snapped_positions",
+                "viewpoint_agent_positions", "viewpoint_rotations_wxyz",
+            )
+            if any(key not in archive for key in required):
+                return set(), "missing_navigation_fields"
+            if len(set(viewpoint_ids.tolist())) != 32:
+                return set(), "duplicate_viewpoint_ids"
+            expected_shapes = {
+                "viewpoint_positions": (32, 3),
+                "viewpoint_snapped_positions": (32, 3),
+                "viewpoint_agent_positions": (32, 3),
+                "viewpoint_rotations_wxyz": (32, 4),
+            }
+            for key, shape in expected_shapes.items():
+                values = np.asarray(archive[key], dtype=np.float32)
+                if values.shape != shape:
+                    return set(), "invalid_navigation_shapes"
+                if not np.isfinite(values).all():
+                    return set(), "invalid_navigation_finiteness"
+            if not np.isin(viewpoint_ids, np.arange(32, dtype=np.int64)).all():
+                return set(), "invalid_viewpoint_ids"
+            finite = np.isfinite(skeleton).all(axis=(1, 2, 3))
+            if finite.shape != (32,):
+                return set(), "invalid_skeleton_finiteness"
+            finite_ids = {
+                int(viewpoint_id)
+                for viewpoint_id, is_finite in zip(viewpoint_ids.tolist(), finite.tolist())
+                if is_finite
+            }
+            if not bool(finite.all()):
+                return finite_ids, "invalid_skeleton_finiteness"
+            return {
+                int(viewpoint_id)
+                for viewpoint_id, is_finite in zip(viewpoint_ids.tolist(), finite.tolist())
+                if is_finite
+            }, None
+    except (OSError, ValueError, TypeError):
+        return set(), "unreadable_skeleton_archive"
+
+
+def audit_episode_files(
+    episode_files: Mapping[str, Path], *,
+    expected_record_splits: Optional[Mapping[str, str]] = None,
+    valid_viewpoint_ids: Optional[Set[int]] = None,
+    validate_cached_skeletons: bool = False,
+) -> Dict[str, Any]:
+    """Audit serialized Episode manifests and derive integrity booleans.
+
+    ``validate_cached_skeletons`` performs an archive-level shape, navigation
+    field, and finite-view check. It is disabled by default for fast schema
+    checks and can be enabled by the Stage A acceptance command.
+    """
+    valid_ids = set(range(32)) if valid_viewpoint_ids is None else {int(item) for item in valid_viewpoint_ids}
+    counters = {
+        "episodes": 0,
+        "malformed_records": 0,
+        "current_in_pool_violations": 0,
+        "duplicate_candidate_ids": 0,
+        "invalid_candidate_ids": 0,
+        "candidate_count_mismatch": 0,
+        "nonfinite_candidate_costs": 0,
+        "nonfinite_candidate_geometry": 0,
+        "dynamic_reachability_failures": 0,
+        "split_mismatch": 0,
+        "same_record_split_violations": 0,
+        "candidate_path_mismatch": 0,
+        "missing_skeleton_paths": 0,
+        "cached_skeleton_file_errors": 0,
+        "cached_skeleton_shape_violations": 0,
+        "cached_skeleton_finiteness_violations": 0,
+        "current_view_data_violations": 0,
+        "candidate_skeleton_data_violations": 0,
+        "empty_candidate_pool": 0,
+        "forbidden_information_violations": 0,
+    }
+    record_splits: Dict[str, str] = {}
+    records_by_split: Dict[str, Set[str]] = {str(split): set() for split in episode_files}
+    archive_cache: Dict[str, Tuple[Set[int], Optional[str]]] = {}
+
+    for split, path in episode_files.items():
+        with Path(path).open(encoding="utf-8") as handle:
+            for line in handle:
+                try:
+                    episode = json.loads(line)
+                except json.JSONDecodeError:
+                    counters["malformed_records"] += 1
+                    continue
+                counters["episodes"] += 1
+                if not isinstance(episode, Mapping):
+                    counters["malformed_records"] += 1
+                    continue
+                record_id = str(episode.get("record_id", ""))
+                declared_split = str(episode.get("policy_split", ""))
+                records_by_split.setdefault(str(split), set()).add(record_id)
+                if declared_split != str(split):
+                    counters["split_mismatch"] += 1
+                if expected_record_splits is not None and declared_split != expected_record_splits.get(record_id):
+                    counters["split_mismatch"] += 1
+                previous_split = record_splits.setdefault(record_id, declared_split)
+                if previous_split != declared_split:
+                    counters["same_record_split_violations"] += 1
+
+                if _forbidden_keys(episode):
+                    counters["forbidden_information_violations"] += 1
+                current = episode.get("current_view", {})
+                if not isinstance(current, Mapping):
+                    counters["current_view_data_violations"] += 1
+                    current = {}
+                current_id = current.get("viewpoint_id")
+                current_path = current.get("skeleton_source_path")
+                for field, shape in (
+                    ("position", (3,)), ("snapped_position", (3,)),
+                    ("agent_position", (3,)), ("rotation_wxyz", (4,)),
+                ):
+                    if not _finite_shape(current.get(field), shape):
+                        counters["current_view_data_violations"] += 1
+                if not isinstance(current_id, int) or current_id not in valid_ids:
+                    counters["invalid_candidate_ids"] += 1
+                if not isinstance(current_path, str) or not Path(current_path).exists():
+                    counters["missing_skeleton_paths"] += 1
+                cached_valid_ids: Set[int] = set()
+                if validate_cached_skeletons and isinstance(current_path, str):
+                    if current_path not in archive_cache:
+                        archive_cache[current_path] = _inspect_cached_skeleton(Path(current_path))
+                    cached_valid_ids, cache_error = archive_cache[current_path]
+                    if cache_error is not None:
+                        counters["cached_skeleton_file_errors"] += 1
+                        if cache_error in {
+                            "invalid_skeleton_shape", "missing_skeleton_fields",
+                            "missing_navigation_fields", "duplicate_viewpoint_ids",
+                            "invalid_navigation_shapes", "invalid_viewpoint_ids",
+                        }:
+                            counters["cached_skeleton_shape_violations"] += 1
+                        if cache_error == "invalid_skeleton_finiteness":
+                            counters["cached_skeleton_finiteness_violations"] += 1
+                    if not isinstance(current_id, int) or current_id not in cached_valid_ids:
+                        counters["current_view_data_violations"] += 1
+
+                candidates = episode.get("candidate_pool", [])
+                if not isinstance(candidates, list) or not candidates:
+                    counters["empty_candidate_pool"] += 1
+                    continue
+                if episode.get("candidate_count") != len(candidates):
+                    counters["candidate_count_mismatch"] += 1
+                candidate_ids = []
+                for candidate in candidates:
+                    viewpoint_id = candidate.get("viewpoint_id")
+                    candidate_ids.append(viewpoint_id)
+                    if not isinstance(viewpoint_id, int) or viewpoint_id not in valid_ids:
+                        counters["invalid_candidate_ids"] += 1
+                    if validate_cached_skeletons and viewpoint_id not in cached_valid_ids:
+                        counters["candidate_skeleton_data_violations"] += 1
+                    if viewpoint_id == current_id:
+                        counters["current_in_pool_violations"] += 1
+                    if not all(_finite_sequence(candidate.get(field)) for field in _FINITE_CANDIDATE_FIELDS):
+                        counters["nonfinite_candidate_costs"] += 1
+                        counters["dynamic_reachability_failures"] += 1
+                    if not all(_finite_shape(candidate.get(field), shape) for field, shape in (
+                        ("position", (3,)), ("snapped_position", (3,)),
+                        ("relative_position", (3,)), ("rotation_wxyz", (4,)),
+                    )):
+                        counters["nonfinite_candidate_geometry"] += 1
+                    if candidate.get("skeleton_source_path") != current_path:
+                        counters["candidate_path_mismatch"] += 1
+                    if not isinstance(candidate.get("skeleton_source_path"), str) or not Path(candidate["skeleton_source_path"]).exists():
+                        counters["missing_skeleton_paths"] += 1
+                if len(candidate_ids) != len(set(candidate_ids)):
+                    counters["duplicate_candidate_ids"] += 1
+
+    split_sets = list(records_by_split.values())
+    overlap = any(split_sets[i].intersection(split_sets[j]) for i in range(len(split_sets)) for j in range(i + 1, len(split_sets)))
+    counters["split_overlap"] = bool(overlap)
+    return {
+        "counts": counters,
+        "integrity_checks": {
+            # Preserve the historical meaning: ``false`` means no overlap.
+            "split_overlap": bool(counters["split_overlap"]),
+            "same_record_same_split_across_scenes": counters["same_record_split_violations"] == 0,
+            "current_not_in_candidate_pool": counters["current_in_pool_violations"] == 0,
+            "all_candidate_ids_valid": counters["invalid_candidate_ids"] == 0,
+            "all_candidate_costs_finite": counters["nonfinite_candidate_costs"] == 0,
+            "all_candidates_dynamic_reachable": counters["dynamic_reachability_failures"] == 0,
+            "all_candidate_paths_match_record": counters["candidate_path_mismatch"] == 0,
+            "all_current_views_cached": counters["missing_skeleton_paths"] == 0,
+            "all_cached_skeletons_complete": (
+                counters["cached_skeleton_file_errors"] == 0
+                and counters["cached_skeleton_shape_violations"] == 0
+                and counters["cached_skeleton_finiteness_violations"] == 0
+            ),
+            "all_current_view_data_valid": counters["current_view_data_violations"] == 0,
+            "all_candidate_skeleton_data_valid": counters["candidate_skeleton_data_violations"] == 0,
+            "no_forbidden_information": counters["forbidden_information_violations"] == 0,
+        },
+    }
 
 
 def build_dynamic_candidate_pool(

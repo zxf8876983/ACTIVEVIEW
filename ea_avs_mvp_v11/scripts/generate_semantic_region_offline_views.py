@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate RGB-free per-view skeleton data for four semantic HM3D regions."""
 from __future__ import annotations
-import argparse, json, math, os, subprocess, sys
+import argparse, json, os, subprocess, sys
 from pathlib import Path
 from typing import Any, Dict, Mapping
 import habitat_sim, magnum as mn, numpy as np, quaternion, torch
@@ -9,6 +9,7 @@ import habitat_sim, magnum as mn, numpy as np, quaternion, torch
 ROOT=Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
 from ea_avs_mvp_v11.core.paths import get_data_root, get_habitat_data_root, get_humanoid_urdf_path
+from ea_avs_mvp_v11.active_view.camera_pose import camera_rotation_wxyz
 from ea_avs_mvp_v11.dataset.babel_clean_dataset_generator import BabelCleanDatasetGenerator,_load_resampled_motion,apply_humanoid_pose,precompute_grounding_offsets,transform_camera_sequence_to_gravity
 from ea_avs_mvp_v11.perception.skeleton_definition import get_skeleton_definition
 from ea_avs_mvp_v11.perception.skeleton_normalizer import SkeletonNormalizer
@@ -26,7 +27,7 @@ def _agent_position(view: Mapping[str, Any], base: np.ndarray) -> np.ndarray:
  p=np.asarray(view.get('snapped_position',view['position']),np.float32).copy(); p[1]=float(base[1]); return p
 
 def _state(view,base):
- p=_agent_position(view,np.asarray(base,np.float32)); t=np.asarray([base[0],float(base[1])+.85,base[2]],np.float32); d=t-(p+np.array([0,1.1,0],np.float32)); d/=max(float(np.linalg.norm(d)),1e-8); yaw=math.atan2(-float(d[0]),-float(d[2])); pitch=math.asin(float(d[1])); q=quaternion.from_rotation_vector([0,yaw,0])*quaternion.from_rotation_vector([pitch,0,0]); st=habitat_sim.AgentState(); st.position=p; st.rotation=q; c=np.eye(4,dtype=np.float32); c[:3,:3]=quaternion.as_rotation_matrix(q).astype(np.float32); c[:3,3]=p+np.array([0,1.1,0],np.float32); return st,c
+ p=_agent_position(view,np.asarray(base,np.float32)); q=quaternion.from_float_array(camera_rotation_wxyz(p,base)); st=habitat_sim.AgentState(); st.position=p; st.rotation=q; c=np.eye(4,dtype=np.float32); c[:3,:3]=quaternion.as_rotation_matrix(q).astype(np.float32); c[:3,3]=p+np.array([0,1.1,0],np.float32); return st,c
 
 def _navigation_arrays(placement: Mapping[str, Any]) -> Dict[str, np.ndarray]:
     """Extract per-view geometry and static navigation metadata for persistence."""
@@ -47,7 +48,7 @@ def _navigation_arrays(placement: Mapping[str, Any]) -> Dict[str, np.ndarray]:
             dtype=np.float32,
         ),
         "viewpoint_rotations_wxyz": np.asarray(
-            [view["camera_rotation_wxyz"] for view in views], dtype=np.float32
+            [camera_rotation_wxyz(_agent_position(view, np.asarray(placement["position"], dtype=np.float32)), placement["position"]) for view in views], dtype=np.float32
         ),
         "viewpoint_is_navigable": np.asarray(
             [bool(view.get("navigation", {}).get("is_navigable", False)) for view in views],

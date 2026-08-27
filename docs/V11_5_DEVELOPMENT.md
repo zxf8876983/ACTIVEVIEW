@@ -202,6 +202,24 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 
 这些数字是基线/上界诊断，不能解释为 learned active-view policy 的性能。
 
+### 5.4 Stage A 科研级验收
+
+仅运行 unit tests 不足以证明 Stage A 的最终 Episode 合法。当前验收分为三层：
+
+1. `audit_episode_files()` 重新读取最终的 `train/val/test_episodes.jsonl`，检查跨 split record、一致的 `candidate_count`、current 不进入候选池、候选 ID/几何/代价、record-level skeleton path 一致性，以及递归 schema 中是否混入未来 RGB、Depth、pose、prediction 或 entropy 等信息。
+2. 开启 `validate_cached_skeletons=True` 时，对所有被最终 Episode 引用的 NPZ 做缓存级检查：skeleton 必须为 `(32,3,30,17)`，导航数组必须存在且形状为 `(32,3)/(32,4)`，viewpoint ID 唯一有效，骨架和导航字段必须有限，current/candidate viewpoint 必须对应有效骨架帧。
+3. `validate_stage_a.py --verify-habitat` 在真实 HM3D NavMesh 上重新调用 Habitat `ShortestPath`，验证最终 Episode 的 current→candidate geodesic 与序列化代价一致。场景只加载一次，支持 `--max-habitat-episodes` 做快速 smoke；论文级验收应运行全量模式。
+
+验收入口：
+
+```bash
+python ea_avs_mvp_v11/scripts/validate_stage_a.py
+conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_stage_a.py \
+  --verify-habitat
+```
+
+`stage_a_summary.json` 中的 `episode_audit` 是最终 JSONL 的实际统计，`integrity_checks` 由这些统计推导而来，不再使用硬编码 `True`。其中 `split_overlap=false` 表示 split 之间没有重叠；其余验收布尔值为 `true` 才表示通过。真实 Habitat 集成测试和全量缓存审计应与 unit tests 分开记录，不能将被跳过的集成测试视为通过。
+
 ## 6. v11.5 代码清理与科学修正记录
 
 相对于 v10/v11.3，当前工作区做了以下有意修改：

@@ -54,3 +54,20 @@ scripts/evaluate_hm3d_train_grid_initializations.py
 4. Keep `fall` excluded and `lie`/`stumble` included unless the user changes the protocol.
 5. Do not scan `/home/zxf/MG08/` or any undeclared scene root.
 6. Do not let future candidate RGB, labels or post-hoc ST-GCN predictions enter an executable policy decision.
+
+## Stage A acceptance
+
+The final Episode JSONL is audited after serialization with
+`ea_avs_mvp_v11/scripts/validate_stage_a.py`. The audit checks split isolation,
+current/candidate validity, record-local cached skeleton paths, finite geometry
+and costs, and recursive future-perception leakage fields. The default command
+also validates every referenced cached NPZ archive. Real Habitat NavMesh
+ShortestPath verification is an explicit second step:
+
+```bash
+conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_stage_a.py --verify-habitat
+```
+
+Unit tests do not replace this Habitat integration check. If the Habitat
+dependency or scene assets are unavailable, the result must be reported as
+`NOT RUN`, not as a passed Stage A acceptance.

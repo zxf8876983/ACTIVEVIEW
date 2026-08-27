@@ -41,3 +41,17 @@ As of this handoff, the 21-scene HM3D-train orchestration has 12 complete scene 
 ## Validation and next step
 
 The ST-GCN trainer now uses full-Train loss for scheduling and early stopping, saves the final stopped-epoch weights, and evaluates Val once post-training. The old Val-Macro-F1 checkpoint was removed; v10 historical ST-GCN modules remain read-only reference code. Before future code changes, run a lightweight `compileall`/focused test set, then update this handoff with the new commit and process state.
+
+## Stage A audit hardening (2026-08-28)
+
+`policy_episode_builder.audit_episode_files()` now derives integrity flags
+from serialized Episode JSONL rather than hard-coded values. It checks split
+isolation, current/candidate IDs and geometry, record-local skeleton paths,
+candidate costs, and recursive future-perception leakage fields. With
+`validate_cached_skeletons=True`, it validates every referenced NPZ shape,
+navigation arrays, viewpoint IDs, and finite skeleton frames. The read-only
+acceptance entry point is `ea_avs_mvp_v11/scripts/validate_stage_a.py`;
+`--verify-habitat` recomputes real HM3D `ShortestPath` for final Episodes.
+The current full JSONL + cached NPZ audit passes, and one real Habitat Episode
+smoke check passes. A full all-Episode Habitat path replay remains an explicit,
+potentially expensive acceptance run and has not been executed.
