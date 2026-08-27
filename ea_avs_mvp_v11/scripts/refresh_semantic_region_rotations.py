@@ -9,7 +9,7 @@ import logging
 import os
 from pathlib import Path
 import sys
-from typing import Dict, Iterable, Mapping, Sequence, Tuple
+from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple
 
 import numpy as np
 
@@ -26,12 +26,19 @@ OFFLINE_VERSION = "semantic-region-offline-v2"
 CANDIDATE_VERSION = "semantic-region-v2"
 
 
-def _scene_dirs(offline_root: Path, scene_sets: Sequence[str]) -> Iterable[Tuple[str, Path]]:
+def _scene_dirs(
+    offline_root: Path,
+    scene_sets: Sequence[str],
+    scene_ids: Sequence[str] | None = None,
+) -> Iterable[Tuple[str, Path]]:
+    selected = None if scene_ids is None else {str(scene_id) for scene_id in scene_ids}
     for scene_set in scene_sets:
         root = offline_root / scene_set
         if not root.exists():
             continue
         for scene_dir in sorted(path for path in root.iterdir() if path.is_dir()):
+            if selected is not None and scene_dir.name not in selected:
+                continue
             yield scene_set, scene_dir
 
 
@@ -118,10 +125,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--offline-root", type=Path, default=data_root / "datasets/offline")
     parser.add_argument("--scene-sets", nargs="+", default=["hm3d-minival", "hm3d-train"])
+    parser.add_argument("--scene-ids", nargs="+", default=None)
     args = parser.parse_args()
 
     totals: Dict[str, int] = {"scenes_scanned": 0, "scenes_complete": 0, "scenes_skipped": 0, "records": 0, "npz_changed": 0}
-    for scene_set, scene_dir in _scene_dirs(args.offline_root, args.scene_sets):
+    for scene_set, scene_dir in _scene_dirs(args.offline_root, args.scene_sets, args.scene_ids):
         totals["scenes_scanned"] += 1
         result = _refresh_scene(scene_dir)
         if result.get("status_complete"):

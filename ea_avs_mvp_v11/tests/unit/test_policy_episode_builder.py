@@ -186,4 +186,77 @@ def test_audit_validates_cached_skeleton_and_nested_leakage_schema(tmp_path):
     assert audit["integrity_checks"]["all_cached_skeletons_complete"]
     assert audit["integrity_checks"]["all_current_view_data_valid"]
     assert audit["integrity_checks"]["all_candidate_skeleton_data_valid"]
-    assert not audit["integrity_checks"]["no_forbidden_information"]
+    assert not audit["integrity_checks"]["no_forbidden_future_perception_fields"]
+
+
+def _write_archive(path, *, nonfinite_viewpoint=None):
+    skeleton = np.zeros((32, 3, 30, 17), dtype=np.float32)
+    if nonfinite_viewpoint is not None:
+        skeleton[int(nonfinite_viewpoint), 0, 0, 0] = np.nan
+    np.savez(
+        path,
+        skeleton=skeleton,
+        viewpoint_ids=np.arange(32, dtype=np.int64),
+        viewpoint_positions=np.stack([np.array([float(i), 0.0, 0.0], dtype=np.float32) for i in range(32)]),
+        viewpoint_snapped_positions=np.stack([np.array([float(i), 0.0, 0.0], dtype=np.float32) for i in range(32)]),
+        viewpoint_agent_positions=np.stack([np.array([float(i), 0.0, 0.0], dtype=np.float32) for i in range(32)]),
+        viewpoint_rotations_wxyz=np.tile(np.array([[1.0, 0.0, 0.0, 0.0]], dtype=np.float32), (32, 1)),
+    )
+
+
+def _episode_for_archive(archive, *, episode_id="episode", current_id=0, candidate_id=1):
+    def view(viewpoint_id):
+        return {
+            "viewpoint_id": viewpoint_id,
+            "position": [float(viewpoint_id), 0.0, 0.0],
+            "snapped_position": [float(viewpoint_id), 0.0, 0.0],
+            "agent_position": [float(viewpoint_id), 0.0, 0.0],
+            "rotation_wxyz": [1.0, 0.0, 0.0, 0.0],
+            "skeleton_source_path": str(archive),
+        }
+    candidate = view(candidate_id)
+    candidate.update({
+        "relative_position": [float(candidate_id - current_id), 0.0, 0.0],
+        "euclidean_distance_m": 1.0,
+        "geodesic_distance_m": 1.0,
+        "relative_azimuth_deg": 0.0,
+    })
+    return {
+        "episode_id": episode_id,
+        "policy_split": "train",
+        "record_id": "record",
+        "scene_id": "scene",
+        "region": "bedroom",
+        "current_view": view(current_id),
+        "candidate_pool": [candidate],
+        "candidate_count": 1,
+    }
+
+
+def test_partial_nonfinite_archive_is_allowed_when_unused_view_is_filtered(tmp_path):
+    archive = tmp_path / "partial.npz"
+    _write_archive(archive, nonfinite_viewpoint=31)
+    path = tmp_path / "train.jsonl"
+    path.write_text(json.dumps(_episode_for_archive(archive)) + "\n", encoding="utf-8")
+    audit = audit_episode_files({"train": path}, validate_cached_skeletons=True)
+    assert audit["counts"]["nonfinite_cached_skeleton_viewpoints"] == 1
+    assert audit["counts"]["current_view_data_violations"] == 0
+    assert audit["counts"]["candidate_skeleton_data_violations"] == 0
+    assert audit["integrity_checks"]["all_cached_skeletons_complete"]
+
+
+def test_audit_checks_episode_uniqueness_and_npz_geometry(tmp_path):
+    archive = tmp_path / "geometry.npz"
+    _write_archive(archive)
+    first = _episode_for_archive(archive, episode_id="duplicate")
+    second = _episode_for_archive(archive, episode_id="duplicate")
+    second["current_view"]["position"] = [99.0, 0.0, 0.0]
+    path = tmp_path / "train.jsonl"
+    path.write_text("\n".join(json.dumps(item) for item in (first, second)) + "\n", encoding="utf-8")
+    audit = audit_episode_files({"train": path}, validate_cached_skeletons=True)
+    assert audit["counts"]["duplicate_episode_keys"] == 1
+    assert audit["counts"]["duplicate_episode_ids"] == 1
+    assert audit["counts"]["npz_geometry_mismatches"] == 1
+    assert not audit["integrity_checks"]["unique_record_scene_region"]
+    assert not audit["integrity_checks"]["unique_episode_ids"]
+    assert not audit["integrity_checks"]["episode_geometry_matches_npz"]

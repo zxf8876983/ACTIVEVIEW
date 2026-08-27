@@ -57,6 +57,7 @@ def _verify_habitat(
         grouped[str(episode["scene_id"])].append(episode)
     checked = 0
     failures = []
+    path_cache: Dict[tuple[str, str, int, int], float | None] = {}
     for scene_id, episodes in sorted(grouped.items()):
         if max_episodes is not None and checked >= max_episodes:
             break
@@ -75,11 +76,19 @@ def _verify_habitat(
                     break
                 current = episode["current_view"]
                 for candidate in episode["candidate_pool"]:
-                    actual = _path_cost(
-                        sim.pathfinder,
-                        np.asarray(current["agent_position"], dtype=np.float32),
-                        np.asarray(candidate["snapped_position"], dtype=np.float32),
+                    cache_key = (
+                        scene_id,
+                        str(episode.get("region", "")),
+                        int(current["viewpoint_id"]),
+                        int(candidate["viewpoint_id"]),
                     )
+                    if cache_key not in path_cache:
+                        path_cache[cache_key] = _path_cost(
+                            sim.pathfinder,
+                            np.asarray(current["agent_position"], dtype=np.float32),
+                            np.asarray(candidate["snapped_position"], dtype=np.float32),
+                        )
+                    actual = path_cache[cache_key]
                     expected = float(candidate["geodesic_distance_m"])
                     if actual is None or abs(float(actual) - expected) > 1e-5 * max(1.0, abs(expected)):
                         failures.append({

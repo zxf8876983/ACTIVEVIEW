@@ -207,8 +207,9 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 仅运行 unit tests 不足以证明 Stage A 的最终 Episode 合法。当前验收分为三层：
 
 1. `audit_episode_files()` 重新读取最终的 `train/val/test_episodes.jsonl`，检查跨 split record、一致的 `candidate_count`、current 不进入候选池、候选 ID/几何/代价、record-level skeleton path 一致性，以及递归 schema 中是否混入未来 RGB、Depth、pose、prediction 或 entropy 等信息。
-2. 开启 `validate_cached_skeletons=True` 时，对所有被最终 Episode 引用的 NPZ 做缓存级检查：skeleton 必须为 `(32,3,30,17)`，导航数组必须存在且形状为 `(32,3)/(32,4)`，viewpoint ID 唯一有效，骨架和导航字段必须有限，current/candidate viewpoint 必须对应有效骨架帧。
-3. `validate_stage_a.py --verify-habitat` 在真实 HM3D NavMesh 上重新调用 Habitat `ShortestPath`，验证最终 Episode 的 current→candidate geodesic 与序列化代价一致。场景只加载一次，支持 `--max-habitat-episodes` 做快速 smoke；论文级验收应运行全量模式。
+2. 开启 `validate_cached_skeletons=True` 时，对所有被最终 Episode 引用的 NPZ 做缓存级检查：skeleton 必须为 `(32,3,30,17)`，导航数组必须存在且形状为 `(32,3)/(32,4)`，viewpoint ID 唯一有效，导航字段必须有限，current/candidate viewpoint 必须对应有效骨架帧。单个 viewpoint 的骨架失败不会使整个 archive 作废；失败 viewpoint 只进入信息性计数 `nonfinite_cached_skeleton_viewpoints`，并由 Episode 级有效集合过滤。
+3. 审计还要求每个 `record_id × scene_id × region` 只有一个 Episode、`episode_id` 全局唯一，并将 Episode 中的 current/candidate 几何按 viewpoint ID 与 NPZ 中的 position、snapped position、agent position 和 rotation 做 `1e-5` 容差交叉核对。
+4. `validate_stage_a.py --verify-habitat` 在真实 HM3D NavMesh 上重新调用 Habitat `ShortestPath`，验证最终 Episode 的 current→candidate geodesic 与序列化代价一致。场景只加载一次，并缓存 `(scene, region, current_id, candidate_id)` 路径结果；支持 `--max-habitat-episodes` 做快速 smoke；论文级验收应运行全量模式。
 
 验收入口：
 
@@ -218,7 +219,7 @@ conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_
   --verify-habitat
 ```
 
-`stage_a_summary.json` 中的 `episode_audit` 是最终 JSONL 的实际统计，`integrity_checks` 由这些统计推导而来，不再使用硬编码 `True`。其中 `split_overlap=false` 表示 split 之间没有重叠；其余验收布尔值为 `true` 才表示通过。真实 Habitat 集成测试和全量缓存审计应与 unit tests 分开记录，不能将被跳过的集成测试视为通过。
+`stage_a_summary.json` 中的 `episode_audit` 是最终 JSONL 的实际统计，`integrity_checks` 由这些统计推导而来，不再使用硬编码 `True`。其中 `split_overlap=false` 表示 split 之间没有重叠；`nonfinite_cached_skeleton_viewpoints` 是允许部分失败视点时的信息性计数，不作为失败条件；其余验收布尔值为 `true` 才表示通过。`no_forbidden_future_perception_fields` 只表示 Episode schema 没有混入未来感知字段，不代表 Episode 可原封不动提供给在线策略。真实 Habitat 集成测试和全量缓存审计应与 unit tests 分开记录，不能将被跳过的集成测试视为通过。
 
 ## 6. v11.5 代码清理与科学修正记录
 

@@ -23,7 +23,10 @@ _FORBIDDEN_EPISODE_FIELDS = {
     "utility_label", "utility_target", "future_rgb", "future_depth",
     "future_rgb_path", "future_depth_path", "rgb", "depth", "rgb_path",
     "depth_path", "pose_2d", "pose_3d", "gt_skeleton", "gt_joints",
-    "smpl_joints", "valid_skeleton_ids",
+    "smpl_joints", "valid_skeleton_ids", "candidate_entropy",
+    "candidate_prediction", "candidate_stgcn_probabilities",
+    "candidate_pose_confidence", "candidate_skeleton", "candidate_correct",
+    "future_skeleton", "stgcn_probabilities", "pose_confidence",
 }
 
 
@@ -34,6 +37,16 @@ class SceneIndex:
     manifest: Mapping[str, Any]
     placements: Mapping[str, Mapping[str, Any]]
     items: Mapping[Tuple[str, str], Mapping[str, Any]]
+
+
+@dataclass(frozen=True)
+class CachedSkeletonInfo:
+    """Archive schema and per-view validity/geometry information."""
+
+    valid_skeleton_ids: Set[int]
+    nonfinite_skeleton_ids: Set[int]
+    error: Optional[str]
+    geometry: Mapping[int, Mapping[str, Any]]
 
 
 def stable_episode_seed(global_seed: int, record_id: str, scene_id: str, region: str) -> int:
@@ -119,6 +132,21 @@ def _finite_shape(value: Any, shape: Tuple[int, ...]) -> bool:
         return False
 
 
+def _same_geometry(left: Any, right: Any, shape: Tuple[int, ...], atol: float = 1e-5) -> bool:
+    """Compare serialized Episode geometry with its cached NPZ counterpart."""
+    if not _finite_shape(left, shape):
+        return False
+    try:
+        return bool(np.allclose(
+            np.asarray(left, dtype=np.float64),
+            np.asarray(right, dtype=np.float64),
+            rtol=0.0,
+            atol=atol,
+        ))
+    except (TypeError, ValueError):
+        return False
+
+
 def _forbidden_keys(value: Any) -> Set[str]:
     """Return forbidden schema keys found recursively in an Episode."""
     found: Set[str] = set()
@@ -134,24 +162,24 @@ def _forbidden_keys(value: Any) -> Set[str]:
     return found
 
 
-def _inspect_cached_skeleton(path: Path) -> Tuple[Set[int], Optional[str]]:
-    """Validate one cached skeleton archive and return finite viewpoint IDs."""
+def _inspect_cached_skeleton(path: Path) -> CachedSkeletonInfo:
+    """Validate archive schema while allowing individual failed viewpoints."""
     try:
         with np.load(path, allow_pickle=False) as archive:
             if "skeleton" not in archive or "viewpoint_ids" not in archive:
-                return set(), "missing_skeleton_fields"
+                return CachedSkeletonInfo(set(), set(), "missing_skeleton_fields", {})
             skeleton = np.asarray(archive["skeleton"], dtype=np.float32)
             viewpoint_ids = np.asarray(archive["viewpoint_ids"], dtype=np.int64)
             if skeleton.shape != EXPECTED_SKELETON_SHAPE or viewpoint_ids.shape != (32,):
-                return set(), "invalid_skeleton_shape"
+                return CachedSkeletonInfo(set(), set(), "invalid_skeleton_shape", {})
             required = (
                 "viewpoint_positions", "viewpoint_snapped_positions",
                 "viewpoint_agent_positions", "viewpoint_rotations_wxyz",
             )
             if any(key not in archive for key in required):
-                return set(), "missing_navigation_fields"
+                return CachedSkeletonInfo(set(), set(), "missing_navigation_fields", {})
             if len(set(viewpoint_ids.tolist())) != 32:
-                return set(), "duplicate_viewpoint_ids"
+                return CachedSkeletonInfo(set(), set(), "duplicate_viewpoint_ids", {})
             expected_shapes = {
                 "viewpoint_positions": (32, 3),
                 "viewpoint_snapped_positions": (32, 3),
@@ -161,28 +189,36 @@ def _inspect_cached_skeleton(path: Path) -> Tuple[Set[int], Optional[str]]:
             for key, shape in expected_shapes.items():
                 values = np.asarray(archive[key], dtype=np.float32)
                 if values.shape != shape:
-                    return set(), "invalid_navigation_shapes"
+                    return CachedSkeletonInfo(set(), set(), "invalid_navigation_shapes", {})
                 if not np.isfinite(values).all():
-                    return set(), "invalid_navigation_finiteness"
+                    return CachedSkeletonInfo(set(), set(), "invalid_navigation_finiteness", {})
             if not np.isin(viewpoint_ids, np.arange(32, dtype=np.int64)).all():
-                return set(), "invalid_viewpoint_ids"
+                return CachedSkeletonInfo(set(), set(), "invalid_viewpoint_ids", {})
             finite = np.isfinite(skeleton).all(axis=(1, 2, 3))
             if finite.shape != (32,):
-                return set(), "invalid_skeleton_finiteness"
+                return CachedSkeletonInfo(set(), set(), "invalid_skeleton_finiteness", {})
             finite_ids = {
                 int(viewpoint_id)
                 for viewpoint_id, is_finite in zip(viewpoint_ids.tolist(), finite.tolist())
                 if is_finite
             }
-            if not bool(finite.all()):
-                return finite_ids, "invalid_skeleton_finiteness"
-            return {
+            nonfinite_ids = {
                 int(viewpoint_id)
                 for viewpoint_id, is_finite in zip(viewpoint_ids.tolist(), finite.tolist())
-                if is_finite
-            }, None
+                if not is_finite
+            }
+            geometry = {
+                int(viewpoint_id): {
+                    "position": np.asarray(archive["viewpoint_positions"][index], dtype=np.float32),
+                    "snapped_position": np.asarray(archive["viewpoint_snapped_positions"][index], dtype=np.float32),
+                    "agent_position": np.asarray(archive["viewpoint_agent_positions"][index], dtype=np.float32),
+                    "rotation_wxyz": np.asarray(archive["viewpoint_rotations_wxyz"][index], dtype=np.float32),
+                }
+                for index, viewpoint_id in enumerate(viewpoint_ids.tolist())
+            }
+            return CachedSkeletonInfo(finite_ids, nonfinite_ids, None, geometry)
     except (OSError, ValueError, TypeError):
-        return set(), "unreadable_skeleton_archive"
+        return CachedSkeletonInfo(set(), set(), "unreadable_skeleton_archive", {})
 
 
 def audit_episode_files(
@@ -214,15 +250,22 @@ def audit_episode_files(
         "missing_skeleton_paths": 0,
         "cached_skeleton_file_errors": 0,
         "cached_skeleton_shape_violations": 0,
-        "cached_skeleton_finiteness_violations": 0,
+        # Informational only: individual failed viewpoint archives are allowed
+        # as long as the Episode never references them.
+        "nonfinite_cached_skeleton_viewpoints": 0,
         "current_view_data_violations": 0,
         "candidate_skeleton_data_violations": 0,
+        "npz_geometry_mismatches": 0,
+        "duplicate_episode_keys": 0,
+        "duplicate_episode_ids": 0,
         "empty_candidate_pool": 0,
         "forbidden_information_violations": 0,
     }
     record_splits: Dict[str, str] = {}
     records_by_split: Dict[str, Set[str]] = {str(split): set() for split in episode_files}
-    archive_cache: Dict[str, Tuple[Set[int], Optional[str]]] = {}
+    archive_cache: Dict[str, CachedSkeletonInfo] = {}
+    seen_episode_keys: Set[Tuple[str, str, str]] = set()
+    seen_episode_ids: Set[str] = set()
 
     for split, path in episode_files.items():
         with Path(path).open(encoding="utf-8") as handle:
@@ -238,6 +281,18 @@ def audit_episode_files(
                     continue
                 record_id = str(episode.get("record_id", ""))
                 declared_split = str(episode.get("policy_split", ""))
+                episode_id = str(episode.get("episode_id", ""))
+                episode_key = (
+                    record_id,
+                    str(episode.get("scene_id", "")),
+                    str(episode.get("region", "")),
+                )
+                if episode_key in seen_episode_keys:
+                    counters["duplicate_episode_keys"] += 1
+                seen_episode_keys.add(episode_key)
+                if episode_id in seen_episode_ids:
+                    counters["duplicate_episode_ids"] += 1
+                seen_episode_ids.add(episode_id)
                 records_by_split.setdefault(str(split), set()).add(record_id)
                 if declared_split != str(split):
                     counters["split_mismatch"] += 1
@@ -266,10 +321,12 @@ def audit_episode_files(
                 if not isinstance(current_path, str) or not Path(current_path).exists():
                     counters["missing_skeleton_paths"] += 1
                 cached_valid_ids: Set[int] = set()
+                cache_error: Optional[str] = "not_checked"
                 if validate_cached_skeletons and isinstance(current_path, str):
                     if current_path not in archive_cache:
                         archive_cache[current_path] = _inspect_cached_skeleton(Path(current_path))
-                    cached_valid_ids, cache_error = archive_cache[current_path]
+                    cached = archive_cache[current_path]
+                    cached_valid_ids, cache_error = cached.valid_skeleton_ids, cached.error
                     if cache_error is not None:
                         counters["cached_skeleton_file_errors"] += 1
                         if cache_error in {
@@ -278,10 +335,19 @@ def audit_episode_files(
                             "invalid_navigation_shapes", "invalid_viewpoint_ids",
                         }:
                             counters["cached_skeleton_shape_violations"] += 1
-                        if cache_error == "invalid_skeleton_finiteness":
-                            counters["cached_skeleton_finiteness_violations"] += 1
+                    counters["nonfinite_cached_skeleton_viewpoints"] += len(cached.nonfinite_skeleton_ids)
                     if not isinstance(current_id, int) or current_id not in cached_valid_ids:
                         counters["current_view_data_violations"] += 1
+                    elif cache_error is None:
+                        cached_geometry = cached.geometry.get(current_id)
+                        if cached_geometry is None or any(
+                            not _same_geometry(current.get(field), cached_geometry[field], shape)
+                            for field, shape in (
+                                ("position", (3,)), ("snapped_position", (3,)),
+                                ("agent_position", (3,)), ("rotation_wxyz", (4,)),
+                            )
+                        ):
+                            counters["npz_geometry_mismatches"] += 1
 
                 candidates = episode.get("candidate_pool", [])
                 if not isinstance(candidates, list) or not candidates:
@@ -291,12 +357,25 @@ def audit_episode_files(
                     counters["candidate_count_mismatch"] += 1
                 candidate_ids = []
                 for candidate in candidates:
+                    if not isinstance(candidate, Mapping):
+                        counters["malformed_records"] += 1
+                        continue
                     viewpoint_id = candidate.get("viewpoint_id")
                     candidate_ids.append(viewpoint_id)
                     if not isinstance(viewpoint_id, int) or viewpoint_id not in valid_ids:
                         counters["invalid_candidate_ids"] += 1
                     if validate_cached_skeletons and viewpoint_id not in cached_valid_ids:
                         counters["candidate_skeleton_data_violations"] += 1
+                    if validate_cached_skeletons and cache_error is None:
+                        cached_geometry = cached.geometry.get(viewpoint_id)
+                        if cached_geometry is None or any(
+                            not _same_geometry(candidate.get(field), cached_geometry[field], shape)
+                            for field, shape in (
+                                ("position", (3,)), ("snapped_position", (3,)),
+                                ("rotation_wxyz", (4,)),
+                            )
+                        ):
+                            counters["npz_geometry_mismatches"] += 1
                     if viewpoint_id == current_id:
                         counters["current_in_pool_violations"] += 1
                     if not all(_finite_sequence(candidate.get(field)) for field in _FINITE_CANDIDATE_FIELDS):
@@ -332,11 +411,13 @@ def audit_episode_files(
             "all_cached_skeletons_complete": (
                 counters["cached_skeleton_file_errors"] == 0
                 and counters["cached_skeleton_shape_violations"] == 0
-                and counters["cached_skeleton_finiteness_violations"] == 0
             ),
             "all_current_view_data_valid": counters["current_view_data_violations"] == 0,
             "all_candidate_skeleton_data_valid": counters["candidate_skeleton_data_violations"] == 0,
-            "no_forbidden_information": counters["forbidden_information_violations"] == 0,
+            "unique_record_scene_region": counters["duplicate_episode_keys"] == 0,
+            "unique_episode_ids": counters["duplicate_episode_ids"] == 0,
+            "episode_geometry_matches_npz": counters["npz_geometry_mismatches"] == 0,
+            "no_forbidden_future_perception_fields": counters["forbidden_information_violations"] == 0,
         },
     }
 
@@ -383,6 +464,13 @@ def load_scene_index(scene_dir: Path) -> SceneIndex:
         raise ValueError(f"Unsupported offline manifest version in {scene_dir}")
     if candidate_manifest.get("version") != CANDIDATE_VERSION:
         raise ValueError(f"Unsupported candidate manifest version in {scene_dir}")
+    for name, payload in (("offline", manifest), ("candidate", candidate_manifest)):
+        if payload.get("rotation_reference") != "exact_offline_render_state":
+            raise ValueError(f"{name} rotation metadata is not tied to the offline render state in {scene_dir}")
+        if not math.isclose(float(payload.get("sensor_height_m", -1.0)), 1.1, abs_tol=1e-6):
+            raise ValueError(f"Unexpected sensor height in {name} manifest: {scene_dir}")
+        if not math.isclose(float(payload.get("target_height_m", -1.0)), 0.85, abs_tol=1e-6):
+            raise ValueError(f"Unexpected target height in {name} manifest: {scene_dir}")
     if int(manifest.get("records", 0)) != 980 or int(manifest.get("regions", 0)) != 4:
         raise ValueError(f"Unexpected scene record/region count in {scene_dir}")
     if int(manifest.get("views_per_record", 0)) != 32:

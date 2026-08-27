@@ -42,7 +42,7 @@ def test_final_jsonl_integrity_audit_passes():
     assert all(
         value == 0
         for key, value in audit["counts"].items()
-        if key not in {"episodes", "split_overlap"}
+        if key not in {"episodes", "split_overlap", "nonfinite_cached_skeleton_viewpoints"}
     )
     assert audit["counts"]["split_overlap"] is False
     assert all(
@@ -64,10 +64,13 @@ def test_cached_skeleton_archives_are_complete_when_full_audit_requested():
     )
     assert audit["counts"]["cached_skeleton_file_errors"] == 0
     assert audit["counts"]["cached_skeleton_shape_violations"] == 0
-    assert audit["counts"]["cached_skeleton_finiteness_violations"] == 0
     assert audit["counts"]["current_view_data_violations"] == 0
     assert audit["counts"]["candidate_skeleton_data_violations"] == 0
+    assert audit["counts"]["duplicate_episode_keys"] == 0
+    assert audit["counts"]["duplicate_episode_ids"] == 0
+    assert audit["counts"]["npz_geometry_mismatches"] == 0
     assert audit["integrity_checks"]["all_cached_skeletons_complete"]
+    assert audit["integrity_checks"]["episode_geometry_matches_npz"]
 
 
 def test_real_habitat_shortest_path_for_final_episode():

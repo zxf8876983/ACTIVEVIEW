@@ -2,7 +2,7 @@
 
 ## Status
 
-**DOCUMENTED / READY FOR NEXT COMMAND** — v11.5 canonical selected16 data, frozen ST-GCN, semantic-region offline schema v2 and dynamic-reachability evaluators are documented below. No generation or evaluation process is currently running.
+**DOCUMENTED / READY FOR NEXT COMMAND** — v11.5 canonical selected16 data, frozen ST-GCN, semantic-region offline schema v2 and dynamic-reachability evaluators are documented below. The corrected HM3D-train scene generator is currently running under `conda habitat` with four workers; no evaluation process is running.
 
 ## Current truth
 
@@ -27,7 +27,7 @@ The placement reachability flag is static metadata only. During sequential evalu
 ## Current data status
 
 - HM3D-minival: `offline/hm3d-minival/00800-TEEsavR23oF/` is the canonical minival scene.
-- HM3D-train: 21-scene selection is recorded in `offline/hm3d-train/dataset_summary.json`; 12 scene folders have complete 980×4×32 manifests, and the next folder is incomplete. Resume with the scene-level orchestrator; do not mix v1 files with v2 records.
+- HM3D-train: 21-scene selection is recorded in `offline/hm3d-train/dataset_summary.json`; all 21 scene folders have complete 980×4×32 manifests. `00592-CthA7sQNTPK` and `00643-ggNAcMh8JPT` have been rotation-audited against the exact offline render state. `00643` required metadata refresh only (`npz_changed=0`); no generation process remains active.
 - Dynamic, random-start and grid-start evaluation outputs remain under `results/` with their corresponding caches under `datasets/strategy_eval_cache/`.
 
 ## Canonical entry points
@@ -60,8 +60,11 @@ scripts/evaluate_hm3d_train_grid_initializations.py
 The final Episode JSONL is audited after serialization with
 `ea_avs_mvp_v11/scripts/validate_stage_a.py`. The audit checks split isolation,
 current/candidate validity, record-local cached skeleton paths, finite geometry
-and costs, and recursive future-perception leakage fields. The default command
-also validates every referenced cached NPZ archive. Real Habitat NavMesh
+and costs, episode uniqueness, NPZ/Episode geometry correspondence, and
+recursive future-perception leakage fields. Individual non-finite skeleton
+viewpoints are allowed when they are not selected; only the final
+current/candidate IDs must be finite. The default command also validates every
+referenced cached NPZ archive. Real Habitat NavMesh
 ShortestPath verification is an explicit second step:
 
 ```bash

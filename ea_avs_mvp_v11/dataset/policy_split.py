@@ -45,8 +45,11 @@ def build_policy_splits(
         if not record_id or not label:
             raise ValueError("Every record needs record_id and action_label")
         previous = unique.get(record_id)
-        if previous is not None and str(previous.get("action_label")) != label:
-            raise ValueError(f"record_id has conflicting labels: {record_id}")
+        if previous is not None:
+            if str(previous.get("action_label")) != label:
+                raise ValueError(f"record_id has conflicting labels: {record_id}")
+            if int(previous.get("label_id", -1)) != int(record.get("label_id", -1)):
+                raise ValueError(f"record_id has conflicting label IDs: {record_id}")
         unique[record_id] = record
 
     grouped: MutableMapping[str, List[Mapping[str, Any]]] = defaultdict(list)
@@ -84,18 +87,28 @@ def audit_policy_splits(splits: Mapping[str, Sequence[Mapping[str, Any]]]) -> Di
         for right in SPLITS[index + 1:]
     }
     assignments: Dict[str, str] = {}
+    labels: Dict[str, Tuple[str, int]] = {}
     consistent = True
+    label_consistent = True
+    label_id_consistent = True
     for split in SPLITS:
         for item in splits.get(split, []):
             record_id = str(item["record_id"])
             previous = assignments.setdefault(record_id, split)
             consistent = consistent and previous == split
+            current_label = str(item.get("action_label", ""))
+            current_label_id = int(item.get("label_id", -1))
+            previous_label = labels.setdefault(record_id, (current_label, current_label_id))
+            label_consistent = label_consistent and previous_label[0] == current_label
+            label_id_consistent = label_id_consistent and previous_label[1] == current_label_id
     return {
         "train_val_overlap": overlaps["train_val"],
         "train_test_overlap": overlaps["train_test"],
         "val_test_overlap": overlaps["val_test"],
         "split_overlap": any(overlaps.values()),
         "same_record_same_split": consistent,
+        "same_record_same_label": label_consistent,
+        "same_record_same_label_id": label_id_consistent,
         "unique_record_count": len(assignments),
     }
 
@@ -145,6 +158,11 @@ def load_policy_splits(split_dir: Path) -> Dict[str, List[Dict[str, Any]]]:
             raise ValueError(f"Expected a list in {path}")
         splits[split] = [dict(item) for item in payload]
     audit = audit_policy_splits(splits)
-    if audit["split_overlap"] or not audit["same_record_same_split"]:
+    if (
+        audit["split_overlap"]
+        or not audit["same_record_same_split"]
+        or not audit["same_record_same_label"]
+        or not audit["same_record_same_label_id"]
+    ):
         raise ValueError(f"Invalid policy split overlap: {audit}")
     return splits

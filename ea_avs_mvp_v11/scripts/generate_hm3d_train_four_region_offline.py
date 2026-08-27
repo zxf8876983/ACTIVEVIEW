@@ -212,7 +212,13 @@ def _run_candidate_metadata(
     manifest_path = candidate_dir / "manifest.json"
     if manifest_path.exists():
         try:
-            if json.loads(manifest_path.read_text(encoding="utf-8")).get("version") == "semantic-region-v2":
+            existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if (
+                existing.get("version") == "semantic-region-v2"
+                and existing.get("rotation_reference") == "exact_offline_render_state"
+                and float(existing.get("sensor_height_m", -1.0)) == 1.1
+                and float(existing.get("target_height_m", -1.0)) == 0.85
+            ):
                 return
         except (OSError, TypeError, ValueError, json.JSONDecodeError):
             pass

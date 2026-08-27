@@ -1,7 +1,7 @@
 # ACTIVEVIEW Handoff
 
 Status: DOCUMENTED / READY FOR NEXT COMMAND
-Updated: 2026-08-27
+Updated: 2026-08-28
 
 ## Canonical v11.5
 
@@ -32,7 +32,11 @@ Data is under `datasets/offline/<scene-set>/<original-scene-folder>/`. Four furn
 
 Static placement reachability is not sufficient for a trajectory. Evaluation recomputes `ShortestPath(P_current, P_candidate)` from the robot's actual current position before choosing a next view. Current evaluators report `NoMove`, `Fixed`, `Random`, `Nearest` and hindsight candidate-pool `Oracle`; v11.3 Utility Predictor code/checkpoints are not active.
 
-As of this handoff, the 21-scene HM3D-train orchestration has 12 complete scene manifests and one incomplete scene directory. No generation/evaluation process is running. Resume only with the scene-level orchestrator and v2 schema checks.
+All 21 requested HM3D-train scene manifests are complete. Each scene contains
+980 records × 4 regions × 32 viewpoints. `00592-CthA7sQNTPK` and
+`00643-ggNAcMh8JPT` were rotation-audited and matched the exact offline render
+state; `00643` required only metadata refresh (`npz_changed=0`). No scene
+generation process remains active.
 
 ## Historical boundary
 
@@ -52,6 +56,16 @@ candidate costs, and recursive future-perception leakage fields. With
 navigation arrays, viewpoint IDs, and finite skeleton frames. The read-only
 acceptance entry point is `ea_avs_mvp_v11/scripts/validate_stage_a.py`;
 `--verify-habitat` recomputes real HM3D `ShortestPath` for final Episodes.
-The current full JSONL + cached NPZ audit passes, and one real Habitat Episode
-smoke check passes. A full all-Episode Habitat path replay remains an explicit,
-potentially expensive acceptance run and has not been executed.
+The lightweight JSONL audit passes for 59,780 Episodes (no duplicate episode
+keys/IDs and no integrity failures). The cached-NPZ audit now additionally
+cross-checks Episode geometry against the archive; a new full run after this
+change was not completed because it is I/O-heavy. One real Habitat Episode
+smoke check previously passed. A full all-Episode Habitat path replay remains
+an explicit, potentially expensive acceptance run and has not been executed.
+
+The Stage A audit now allows partial non-finite skeleton viewpoints. It records
+`nonfinite_cached_skeleton_viewpoints` for diagnosis, while current/candidate
+validity is checked against the per-archive finite ID set. It also checks
+`record_id × scene_id × region` and `episode_id` uniqueness, NPZ/Episode
+geometry correspondence, expanded future-perception field leakage, and
+label/label_id consistency in policy splits.
