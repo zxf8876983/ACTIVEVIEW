@@ -1,52 +1,56 @@
 # ACTIVEVIEW Current Task
 
-## 1. Task Definition
-- **Task ID**: `V11.5-PERCEPTION-AWARE-ACTIVE-VIEW-BENCHMARK`
-- **Active Directory**: `ea_avs_mvp_v11/`
-- **Goal**: Reconstruct a perception-aware, zero-ground-truth-leakage Active View Benchmark based on optical sensor rendering, Keypoint R-CNN 2D detection, VideoPose3D 3D lifting, unified skeleton normalization, frozen ST-GCN classification, and Habitat HM3D multi-baseline evaluation.
-- **Phase Status**: `COMPLETED & SCIENTIFICALLY VALIDATED`
+## Status
 
----
+**DOCUMENTED / READY FOR NEXT COMMAND** — v11.5 canonical selected16 data, frozen ST-GCN, semantic-region offline schema v2 and dynamic-reachability evaluators are documented below. No generation or evaluation process is currently running.
 
-## 2. Work Completed in v11.5 Benchmark Reconstruction
-1. **Code Reorganization & Merge (Phase 0)**:
-   - Migrated VideoPose3D model definitions from `tools/videopose3d/` into `ea_avs_mvp_v11/perception/videopose3d/`.
-   - Merged tools (`motion_assets`, `dataset_generation`, `experiments`, `visualization`) into `ea_avs_mvp_v11/`.
-   - Purged obsolete v10/11.4 test directories (`active_view/`, `perception/`, `scripts/`, `tests/`, `tools/`, `run_v11.py`).
-2. **AMASS Motion Instance-Level Disjoint Split (Phase 1)**:
-   - Created `ea_avs_mvp_v11/dataset/dataset_split.py`.
-   - Partitioned converted motions into Train (70%, 8 instances), Val (15%, 6 instances), Test (15%, 6 instances).
-   - Strictly verified $\text{Train} \cap \text{Val} = \emptyset, \text{Train} \cap \text{Test} = \emptyset, \text{Val} \cap \text{Test} = \emptyset$.
-3. **Unified Skeleton Normalization (Phase 2)**:
-   - `ea_avs_mvp_v11/perception/skeleton_normalizer.py`: Pelvis root centering, torso scale normalization, and canonical coronal/sagittal coordinate alignment.
-4. **Clean Perception Studio Dataset Generation (Phase 3)**:
-   - Created `ea_avs_mvp_v11/dataset/clean_dataset_generator.py`.
-   - Rendered human motions in 100% solid background Studio environment (`scene_id='NONE'`).
-   - Processed via Keypoint R-CNN $\to$ VideoPose3D $\to$ Normalizer, generating $(160, 3, 30, 17, 1)$ train and $(60, 3, 30, 17, 1)$ val datasets.
-5. **ST-GCN Training & Model Freezing (Phase 4)**:
-   - Created `ea_avs_mvp_v11/action_recognition/train_st_gcn_v11_5.py`.
-   - Trained on estimated skeletons achieving 55.00% validation accuracy.
-   - Saved and froze best model at `data/ActiveView/checkpoints/v11_5/stgcn_v11_5_best.pth`.
-6. **Habitat Active View Multi-Baseline Benchmark (Phase 5 & 6)**:
-   - Created `ea_avs_mvp_v11/active_view/habitat_active_view_benchmark.py`.
-   - Evaluated 18 test episodes in HM3D `00800-TEEsavR23oF` across 5 baselines:
-     - `Fixed`: Acc 33.33%, Entropy 0.6782
-     - `Random`: Acc 44.44%, Entropy 0.5582 ($\Delta H = +0.1200$)
-     - `Nearest`: Acc 44.44%, Entropy 0.5599 ($\Delta H = +0.1183$)
-     - `Utility_Ours`: Acc 33.33%, Entropy 0.6782
-     - `Oracle Upper Bound`: **Acc 55.56%, Entropy 0.0133 ($\Delta H = +0.6649$, Conf 0.9980)**.
-7. **Pose Quality Stratification Analysis (Phase 7)**:
-   - Created `ea_avs_mvp_v11/evaluation/pose_quality_analysis.py`.
-   - Correlated viewpoint occlusion/angle with 2D keypoint confidence and ST-GCN classification entropy/accuracy.
-8. **Anti-Leakage Static Code Audit**:
-   - `grep -rn "gt_skeleton"` and `grep -rn "smpl.*joint"`: 0 leakage into ST-GCN decision paths.
-9. **Scientific Report**:
-   - `V11.5_PERCEPTION_AWARE_ACTIVE_VIEW_REPORT.md`.
+## Current truth
 
----
+- Active source: `ea_avs_mvp_v11/`.
+- Train/Val data: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/` (3,240/980, `(N,3,30,17,1)`).
+- Frozen checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/`.
+- Active pose chain: RGB-only 256×256 → Ultralytics YOLO26n-Pose → VideoPose3D → camera-to-gravity/YZ conversion → root/scale/yaw-only → ST-GCN.
+- Habitat/semantic root: `/home/zxf/WorkSpace/code/code/robot/DATA/` only.
+- Humanoid: `/home/zxf/WorkSpace/code/data/ActiveView/assets/habitat_humanoids/male_0/`.
+- Offline data root: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/offline/` with `hm3d-minival/` and `hm3d-train/` scene-set folders.
 
-## 3. Validation Summary
-- `python -m compileall ea_avs_mvp_v11`: **100% PASS (0 syntax or import errors)**.
-- AMASS Disjoint Partitioning: **100% PASS**.
-- ST-GCN Clean Perception Convergence: **55.00% Val Acc**.
-- Habitat Active View Benchmark: **18 / 18 Episodes Completed**.
+## ST-GCN protocol
+
+The fixed 16-class mapping is official-150 audited 14 classes plus `lie` and `stumble`; `fall` is not active. BABEL `train.json`/`val.json` are split directly, with single-label filtering, strict `num_frames > 30`, conflicting source-interval removal, official caps 400/100, auxiliary classes uncapped, and seed 42. ST-GCN receives only estimated H36M-17 skeletons. Training uses tempered oversampling, class-weighted cross entropy, ReduceLROnPlateau and Val Macro-F1 early stopping; Val selects the frozen checkpoint and is not used to train a view policy.
+
+## Offline strategy protocol
+
+Each semantic scene/region has one furniture-based human placement and 32 candidate viewpoints (radii 1.5/2.0/2.5/3.0 m × eight azimuths). Offline generation uses four COLOR cameras per worker, RGB-to-skeleton inference, and stores skeleton/confidence plus scene ID, navmesh path, placement, raw/snapped/actual agent positions, rotations, navigability, placement-referenced reachability and costs. No RGB/Depth is saved. The schema is `semantic-region-offline-v2`; candidate metadata is `semantic-region-v2`.
+
+The placement reachability flag is static metadata only. During sequential evaluation, Habitat reloads the navmesh and recomputes paths from the robot's current position to every pending candidate before selecting. Current policies are `NoMove`, `Fixed`, `Random`, `Nearest`, and hindsight candidate-pool `Oracle`; no learned Utility Predictor is implemented or evaluated.
+
+## Current data status
+
+- HM3D-minival: `offline/hm3d-minival/00800-TEEsavR23oF/` is the canonical minival scene.
+- HM3D-train: 21-scene selection is recorded in `offline/hm3d-train/dataset_summary.json`; 12 scene folders have complete 980×4×32 manifests, and the next folder is incomplete. Resume with the scene-level orchestrator; do not mix v1 files with v2 records.
+- Dynamic, random-start and grid-start evaluation outputs remain under `results/` with their corresponding caches under `datasets/strategy_eval_cache/`.
+
+## Canonical entry points
+
+```text
+scripts/prepare_selected16_manifests.py
+scripts/generate_selected16_habitat_dataset.py
+scripts/generate_selected16_habitat_parallel.py
+scripts/train_selected16_habitat_stgcn.py
+scripts/generate_semantic_region_candidate_metadata.py
+scripts/generate_semantic_region_offline_views.py
+scripts/generate_hm3d_train_four_region_offline.py
+scripts/evaluate_semantic_region_offline.py
+scripts/evaluate_hm3d_train_dynamic_reachability.py
+scripts/evaluate_hm3d_train_random_initializations.py
+scripts/evaluate_hm3d_train_grid_initializations.py
+```
+
+## Invariants
+
+1. Never use historical datasets/checkpoints as current defaults.
+2. Never feed AMASS/SMPL GT joints into ST-GCN.
+3. Keep RGB-only, YOLO26n-Pose, VideoPose3D, 30 frames, H36M-17 and yaw-only alignment.
+4. Keep `fall` excluded and `lie`/`stumble` included unless the user changes the protocol.
+5. Do not scan `/home/zxf/MG08/` or any undeclared scene root.
+6. Do not let future candidate RGB, labels or post-hoc ST-GCN predictions enter an executable policy decision.

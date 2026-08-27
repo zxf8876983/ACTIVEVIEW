@@ -17,7 +17,7 @@ class TestSTGCNGraph(unittest.TestCase):
         graph = Graph(strategy="spatial", max_hop=1, skel_def=self.skel_def)
 
         # 空间划分生成 3 个子图矩阵 (K=3, V=33, V=33)
-        self.assertEqual(graph.A.shape, (3, 33, 33))
+        self.assertEqual(graph.A.shape, (3, 17, 17))
         # 矩阵元素非负且有限
         self.assertTrue(np.all(graph.A >= 0.0))
         self.assertTrue(np.all(np.isfinite(graph.A)))
@@ -26,10 +26,10 @@ class TestSTGCNGraph(unittest.TestCase):
 
     def test_uniform_and_distance_graph(self):
         g_uni = Graph(strategy="uniform", max_hop=1, skel_def=self.skel_def)
-        self.assertEqual(g_uni.A.shape, (1, 33, 33))
+        self.assertEqual(g_uni.A.shape, (1, 17, 17))
 
         g_dist = Graph(strategy="distance", max_hop=1, skel_def=self.skel_def)
-        self.assertEqual(g_dist.A.shape, (2, 33, 33))
+        self.assertEqual(g_dist.A.shape, (2, 17, 17))
 
 
 if __name__ == "__main__":

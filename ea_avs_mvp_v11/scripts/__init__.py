@@ -1,3 +1,1 @@
-"""
-Scripts package for v10.0.
-"""
+"""Command-line entry points for the v11 selected16 benchmark."""

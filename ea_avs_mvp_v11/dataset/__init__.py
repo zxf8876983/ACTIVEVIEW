@@ -1,9 +1,6 @@
-"""
-Dataset generation and builder module for v10.0.
-"""
+"""Manifest and RGB-estimated skeleton builders for v11 selected16."""
 
-from .perception_dataset import V10PerceptionPipeline
-from .sample_builder import V10SampleBuilder
-from .v10_dataset_generator import V10DatasetGenerator
+from .babel_clean_dataset_generator import BabelCleanDatasetGenerator
+from .babel_selected16_manifest import SELECTED_LABELS, build_selected16_manifests
 
-__all__ = ["V10SampleBuilder", "V10DatasetGenerator", "V10PerceptionPipeline"]
+__all__ = ["SELECTED_LABELS", "build_selected16_manifests", "BabelCleanDatasetGenerator"]

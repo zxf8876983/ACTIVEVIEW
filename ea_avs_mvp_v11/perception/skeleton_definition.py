@@ -3,7 +3,7 @@
 ===================================================
 
 职责：
-    1. 作为 ACTIVEVIEW v10.0 全局唯一的人体骨架拓扑、关节定义与坐标系规范标准；
+    1. 作为 ACTIVEVIEW v11.5 全局唯一的人体骨架拓扑、关节定义与坐标系规范标准；
     2. 加载并维护 `configs/skeleton_definition.json`；
     3. 提供所有关节索引、名称、父子关系与官方骨骼连接边；
     4. 提供 GT 关节与估计关节之间的动态映射标准；
@@ -130,4 +130,3 @@ def get_skeleton_definition(
         return skel_def
 
     raise FileNotFoundError(f"Skeleton definition config not found for backend {backend} / path {config_path}")
-

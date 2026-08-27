@@ -1,20 +1,12 @@
-"""
-v10 运行时路径管理与数据边界 —— paths.py
-======================================
+"""Canonical source and runtime paths for the v11 selected16 pipeline.
 
 职责：
     1. 解析 ACTIVEVIEW Git 源码仓库根目录；
     2. 解析默认运行时数据目录 (/home/zxf/WorkSpace/code/data/ActiveView/ 或 ACTIVEVIEW_DATA_ROOT 覆盖)；
-    3. 规范定义 v10.0 数据集目录结构：
-       datasets/v10/
-       ├── raw/ (rgb, depth, camera_pose, scene_meta)
-       ├── ground_truth/ (skeleton, action)
-       └── metadata/ (samples.json, dataset_manifest.json)
 """
 
 import os
 from pathlib import Path
-from typing import Dict, Union
 
 
 def get_repo_root() -> Path:
@@ -39,45 +31,27 @@ def get_data_root() -> Path:
     return default_p
 
 
-def get_v10_dataset_root() -> Path:
-    """获取 v10.0 数据集根目录 (datasets/v10)。"""
-    root = get_data_root() / "datasets" / "v10"
-    root.mkdir(parents=True, exist_ok=True)
-    return root
+def get_habitat_data_root() -> Path:
+    """Return the fixed local Habitat asset root without scanning other disks.
 
-
-def init_v10_dataset_dirs(base_dir: Union[str, Path, None] = None) -> Dict[str, Path]:
+    ``ACTIVEVIEW_HABITAT_DATA_ROOT`` can override the default sibling path
+    ``../robot/DATA`` for another machine.  The default is resolved relative
+    to this repository, so it does not embed a developer-specific absolute
+    path in the v11 code.
     """
-    初始化并返回 v10.0 数据集标准子目录字典。
-    
-    结构：
-        datasets/v10/
-        ├── raw/
-        │   ├── rgb/
-        │   ├── depth/
-        │   ├── camera_pose/
-        │   └── scene_meta/
-        ├── ground_truth/
-        │   ├── skeleton/
-        │   └── action/
-        └── metadata/
-    """
-    root = Path(base_dir) if base_dir else get_v10_dataset_root()
+    env_root = os.environ.get("ACTIVEVIEW_HABITAT_DATA_ROOT")
+    if env_root:
+        return Path(env_root).expanduser().resolve()
+    return (get_repo_root().parent / "robot" / "DATA").resolve()
 
-    dirs = {
-        "root": root,
-        "raw": root / "raw",
-        "raw_rgb": root / "raw" / "rgb",
-        "raw_depth": root / "raw" / "depth",
-        "raw_camera_pose": root / "raw" / "camera_pose",
-        "raw_scene_meta": root / "raw" / "scene_meta",
-        "gt": root / "ground_truth",
-        "gt_skeleton": root / "ground_truth" / "skeleton",
-        "gt_action": root / "ground_truth" / "action",
-        "metadata": root / "metadata",
-    }
 
-    for d in dirs.values():
-        d.mkdir(parents=True, exist_ok=True)
+def get_humanoid_asset_root(model_name: str = "male_0") -> Path:
+    """Return the project-local copy of a Habitat humanoid model."""
+    if not model_name or Path(model_name).name != model_name:
+        raise ValueError("model_name must be a non-empty directory name")
+    return get_data_root() / "assets" / "habitat_humanoids" / model_name
 
-    return dirs
+
+def get_humanoid_urdf_path(model_name: str = "male_0") -> Path:
+    """Return the URDF path for a project-local Habitat humanoid model."""
+    return get_humanoid_asset_root(model_name) / f"{model_name}.urdf"

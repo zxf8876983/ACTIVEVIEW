@@ -9,7 +9,7 @@
     2. 躯干尺度归一化 (Scale Normalization)：
        基于躯干长度 (torso_length = ||shoulder_center - hip_center||) 消除不同个体身高与体型差异：
        p_i'' = p_i' / (scale + eps)
-    3. 严格禁止相机朝向旋转归一化 (No Camera-Facing Rotation Normalization)；
+    3. 可选的人体偏航角归一化仅消除 Yaw，严格保留相对重力的 Roll/Pitch；
     4. 统一从 `configs/skeleton_definition.json` 获取根节点与躯干关键点索引；
     5. 支持单帧骨架对象归一化与批量时序矩阵序列 (T, V, C) / (N, C, T, V, M) 归一化。
 """
@@ -19,7 +19,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 
-from .skeleton_converter import EstimatedSkeleton3D
 from .skeleton_definition import SkeletonDefinition, get_skeleton_definition
 
 logger = logging.getLogger(__name__)
@@ -40,9 +39,9 @@ class SkeletonNormalizer:
 
     def normalize(
         self,
-        skeleton: EstimatedSkeleton3D,
+        skeleton: Any,
         use_world_coords: bool = False,
-    ) -> EstimatedSkeleton3D:
+    ) -> Any:
         """
         对骨架 3D 关节执行根节点平移与尺度归一化。
         """
@@ -88,45 +87,49 @@ class SkeletonNormalizer:
 
     def align_to_canonical_frame(self, skeleton_seq: np.ndarray) -> np.ndarray:
         """
-        根据双髋轴 (Hip Axis) 与躯干轴 (Spine Axis) 将 (T, V, 3) 骨架序列对齐至人体标准正向坐标系 (+Z 朝前, +Y 向上)。
+        将 (T, V, 3) 骨架序列对齐至标准偏航角，同时保留重力姿态。
+
+        Only rotation around the vertical Y axis is removed. Full 3D body-frame
+        alignment would rotate a falling or lying torso upright and erase the
+        signal required by household safety-action recognition.
         """
-        T, V, C = skeleton_seq.shape
+        T, _, _ = skeleton_seq.shape
         aligned_seq = np.zeros_like(skeleton_seq, dtype=np.float32)
 
-        # 确定左右髋与脊柱索引
-        if self.skel_def.joint_num == 17:
-            r_hip, l_hip = 1, 4
-            spine_or_neck = 8
-        else:
-            r_hip, l_hip = 24, 23
-            spine_or_neck = 11
+        name_to_id = self.skel_def.name_to_id
+        left_hip = name_to_id["left_hip"]
+        right_hip = name_to_id["right_hip"]
+        left_shoulder = name_to_id["left_shoulder"]
+        right_shoulder = name_to_id["right_shoulder"]
+        raw_yaws = np.zeros(T, dtype=np.float32)
+        for t, frame in enumerate(skeleton_seq):
+            hip_axis = frame[right_hip] - frame[left_hip]
+            shoulder_axis = frame[right_shoulder] - frame[left_shoulder]
+            lateral_axis = hip_axis + shoulder_axis
+            dx, dz = float(lateral_axis[0]), float(lateral_axis[2])
+            if np.hypot(dx, dz) > self.eps:
+                raw_yaws[t] = np.arctan2(-dz, -dx)
 
-        for t in range(T):
-            frame = skeleton_seq[t]
-            # 1. 估算左右髋向量 (横轴 X)
-            hip_vec = frame[l_hip] - frame[r_hip]
-            hip_dist = np.linalg.norm(hip_vec)
-            if hip_dist > 1e-4:
-                u_x = hip_vec / hip_dist
-            else:
-                u_x = np.array([1.0, 0.0, 0.0], dtype=np.float32)
+        yaws = np.unwrap(raw_yaws)
+        smooth_window = 5
+        if T >= smooth_window:
+            pad_size = smooth_window // 2
+            padded = np.pad(yaws, (pad_size, pad_size), mode="edge")
+            kernel = np.ones(smooth_window, dtype=np.float32) / smooth_window
+            yaws = np.convolve(padded, kernel, mode="valid")[:T]
 
-            # 2. 估算躯干向量 (纵轴 Y)
-            torso_vec = frame[spine_or_neck] - np.mean([frame[l_hip], frame[r_hip]], axis=0)
-            # 正交化
-            torso_vec = torso_vec - np.dot(torso_vec, u_x) * u_x
-            torso_dist = np.linalg.norm(torso_vec)
-            if torso_dist > 1e-4:
-                u_y = torso_vec / torso_dist
-            else:
-                u_y = np.array([0.0, 1.0, 0.0], dtype=np.float32)
-
-            # 3. 矢状面前向轴 (Z = X x Y)
-            u_z = np.cross(u_x, u_y)
-            u_z = u_z / (np.linalg.norm(u_z) + 1e-8)
-
-            R_canonical = np.stack([u_x, u_y, u_z], axis=0) # (3, 3)
-            aligned_seq[t] = np.dot(frame, R_canonical.T)
+        for t, frame in enumerate(skeleton_seq):
+            cos_yaw = np.cos(-float(yaws[t]))
+            sin_yaw = np.sin(-float(yaws[t]))
+            rotation = np.array(
+                [
+                    [cos_yaw, 0.0, -sin_yaw],
+                    [0.0, 1.0, 0.0],
+                    [sin_yaw, 0.0, cos_yaw],
+                ],
+                dtype=np.float32,
+            )
+            aligned_seq[t] = np.matmul(frame, rotation.T)
 
         return aligned_seq
 
@@ -178,4 +181,3 @@ class SkeletonNormalizer:
                 norm_seq = self.normalize_sequence(seq_t_v_c, align_canonical=align_canonical)
                 out[n, :, :, :, m] = np.transpose(norm_seq, (2, 0, 1))
         return out
-
