@@ -252,7 +252,7 @@ def write_manifests(
         "selected_samples": {"train": len(train_records), "val": len(val_records)},
         "split_definition": {
             "train": "BABEL official train.json",
-            "val": "BABEL official val.json; used for early stopping and class screening",
+        "val": "BABEL official val.json; used only for class screening and post-hoc diagnosis",
             "test": "BABEL test.json is empty; no independent official test score is claimed",
         },
         "source_group_overlap_train_val": len(

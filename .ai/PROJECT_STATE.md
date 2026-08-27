@@ -32,7 +32,7 @@ Humanoid: `/home/zxf/WorkSpace/code/data/ActiveView/assets/habitat_humanoids/mal
 - Pose and normalization: `perception/ultralytics_pose3d_estimator.py`, `perception/skeleton_normalizer.py`.
 - ST-GCN training: `scripts/train_selected16_habitat_stgcn.py`.
 
-Generation defaults are RGB-only, COLOR sensor, 256×256, uniform 30-frame sampling, YOLO26n-Pose and VideoPose3D. Grounding uses URDF visual geometry and supporting-floor raycast; offsets are precomputed once per action and reused for all views. Training uses tempered `count^-0.5` `WeightedRandomSampler`, normalized `sqrt(N/count)` class weights, Adam, ReduceLROnPlateau, and Val Macro-F1 early stopping (`max_epochs=200`, `patience=20`).
+Generation defaults are RGB-only, COLOR sensor, 256×256, uniform 30-frame sampling, YOLO26n-Pose and VideoPose3D. Grounding uses URDF visual geometry and supporting-floor raycast; offsets are precomputed once per action and reused for all views. Training uses tempered `count^-0.5` `WeightedRandomSampler`, normalized `sqrt(N/count)` class weights, Adam, and `ReduceLROnPlateau` on deterministic full-Train loss. Early stopping is Train-loss-only (`max_epochs=200`, `patience=20`, `min_delta=1e-4`); Val is read only once after training for post-hoc upper-bound diagnosis and never selects a checkpoint.
 
 ## Offline active-view data and evaluation
 
@@ -56,8 +56,9 @@ As of this update, 12 HM3D-train scene folders have complete manifests (980 acti
 
 - Static minival baseline: `results/semantic_region_offline_baselines.json`.
 - Dynamic ten-scene result: `results/hm3d_train_dynamic_reachability_10scenes.json` (NoMove 39,200 records; movement policies 38,220; Fixed 39.00%, Random 34.84%, Nearest 40.33%, Oracle 88.91%).
-- 500-start cache/result: `datasets/strategy_eval_cache/hm3d-train_random_init_500_v1/`, `results/hm3d_train_random_initializations_500.json` (17,150,000 records; 187.4 s after cache construction).
-- 32-grid cache/result: `datasets/strategy_eval_cache/hm3d-train_grid_init_32_v1/`, `results/hm3d_train_grid_initializations_32.json` (253,820 records; 131.9 s including cache construction; NoMove 39.22%, Fixed 39.44%, Random 34.05%, Nearest 41.16%, Oracle 93.75%).
+- Current Train-only 500-start cache/result: `datasets/strategy_eval_cache/hm3d-train_random_init_500_train_only_v2/`, `results/hm3d_train_random_initializations_500_train_only.json` (17,150,000 records; NoMove 39.49%, Fixed 40.10%, Random 34.95%, Nearest 39.61%, Oracle 92.44%; 187.1 s).
+- Current Train-only 32-grid cache/result: `datasets/strategy_eval_cache/hm3d-train_grid_init_32_train_only_v2/`, `results/hm3d_train_grid_initializations_32_train_only.json` (253,820 records; NoMove 39.76%, Fixed 40.54%, Random 34.63%, Nearest 41.68%, Oracle 93.95%; 130.8 s).
+- The unsuffixed random/grid result files are retained as historical pre-Train-only comparisons and are not canonical.
 
 ## Historical code boundary
 

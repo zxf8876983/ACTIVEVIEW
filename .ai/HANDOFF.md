@@ -21,7 +21,7 @@ ST-GCN never receives AMASS/SMPL GT joints. Grounding uses URDF visual geometry 
 ## Canonical data and model
 
 - Train/Val: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/` (3,240/980, `(N,3,30,17,1)`).
-- Frozen ST-GCN: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/`.
+- Frozen ST-GCN: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/`. The canonical checkpoint is the final stopped-epoch model from Train-only convergence; the former Val-Macro-F1 legacy weight was removed.
 - YOLO: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/ultralytics/yolo26n-pose.pt`.
 - Habitat/semantic root: `/home/zxf/WorkSpace/code/code/robot/DATA/` only.
 - Humanoid: `/home/zxf/WorkSpace/code/data/ActiveView/assets/habitat_humanoids/male_0/`.
@@ -40,4 +40,4 @@ As of this handoff, the 21-scene HM3D-train orchestration has 12 complete scene 
 
 ## Validation and next step
 
-Documentation and state files were updated to match the current scripts and runtime metadata. No experiment was run in this documentation task. Before future code changes, run a lightweight `compileall`/focused test set, then update this handoff with the new commit and process state.
+The ST-GCN trainer now uses full-Train loss for scheduling and early stopping, saves the final stopped-epoch weights, and evaluates Val once post-training. The old Val-Macro-F1 checkpoint was removed; v10 historical ST-GCN modules remain read-only reference code. Before future code changes, run a lightweight `compileall`/focused test set, then update this handoff with the new commit and process state.

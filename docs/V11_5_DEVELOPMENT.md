@@ -109,9 +109,9 @@ python ea_avs_mvp_v11/scripts/generate_selected16_habitat_parallel.py --split tr
 - 输入：H36M-17、3 通道、30 帧、单人 `(N,3,30,17,1)`。
 - 模型：spatial ST-GCN，启用 edge-importance weighting。
 - 类别不平衡：`WeightedRandomSampler` 使用 `count^(-0.5)` tempered oversampling；交叉熵同时使用归一化的 `sqrt(N/count)` class weights。
-- 优化：Adam、ReduceLROnPlateau。
-- 收敛：最多 200 epochs，按 Val Macro-F1 选择 checkpoint，`patience=20`、`min_delta=1e-4` 早停。
-- checkpoint 保存类别、样本计数、采样参数、数据 SHA-256、预处理协议和 `frozen=true`。
+- 优化：Adam、`ReduceLROnPlateau`，调度器监控确定性的全量 Train loss（`mode=min`）。
+- 收敛：最多 200 epochs，仅按 Train loss 早停（`patience=20`、`min_delta=1e-4`）；Val 在训练完成后只做一次 post-hoc 性能上限诊断，不参与训练、学习率调整或 checkpoint 选择。
+- checkpoint 保存停止 epoch 的最后模型，而不是最低 Train loss epoch 的模型；同时记录最低 Train loss epoch、Train/Val 数据 SHA-256、类别计数、采样参数、预处理协议和 `frozen=true`。文件名保留 `_best.pth` 仅用于兼容现有评估入口。
 
 当前冻结权重：
 
@@ -120,7 +120,7 @@ python ea_avs_mvp_v11/scripts/generate_selected16_habitat_parallel.py --split tr
 stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 ```
 
-Val 只用于模型选择和上限诊断；它不参与 Habitat 主动视角策略的训练。
+本次 canonical 训练实际在第 165 epoch 因 Train loss 连续 20 个 epoch 未改善而停止；第 145 epoch 的最低 Train loss 为 `0.006555`，最终保存第 165 epoch 权重。Train 指标为 Accuracy `99.81%`、Macro-F1 `99.90%`；独立纯色 Habitat Val（980 条）post-hoc 上限为 Accuracy `76.33%`、Macro-F1 `73.58%`、Balanced Accuracy `73.57%`。Val 不参与 ST-GCN 训练或 checkpoint 选择，也不参与 Habitat 主动视角策略训练。
 
 ## 4. 主动视角离线数据集
 
@@ -196,8 +196,9 @@ Val 只用于模型选择和上限诊断；它不参与 Habitat 主动视角策�
 
 - `semantic_region_offline_baselines.json`：单场景离线基线。
 - `hm3d_train_dynamic_reachability_10scenes.json`：前 10 个完整场景动态评估，NoMove 39,200 条，移动策略 38,220 条；Fixed 39.00%、Random 34.84%、Nearest 40.33%、Oracle 88.91%。
-- `hm3d_train_random_initializations_500.json`：35 个可行场景/区域放置点 × 500 起点 × 980 动作，共 17,150,000 条，缓存后墙钟时间 187.4 s。
-- `hm3d_train_grid_initializations_32.json`：259 个有效网格起点，共 253,820 条，包含缓存构建墙钟时间 131.9 s；NoMove 39.22%、Fixed 39.44%、Random 34.05%、Nearest 41.16%、Oracle 93.75%。
+- `hm3d_train_random_initializations_500_train_only.json`：使用 Train-only 收敛 checkpoint；35 个可行场景/区域放置点 × 500 起点 × 980 动作，共 17,150,000 条；NoMove 39.49%、Fixed 40.10%、Random 34.95%、Nearest 39.61%、Oracle 92.44%，墙钟时间 187.1 s。
+- `hm3d_train_grid_initializations_32_train_only.json`：使用 Train-only 收敛 checkpoint；259 个有效网格起点，共 253,820 条；NoMove 39.76%、Fixed 40.54%、Random 34.63%、Nearest 41.68%、Oracle 93.95%，墙钟时间 130.8 s。
+- 不带 `_train_only` 后缀的随机/网格结果是旧 checkpoint 的历史对照，不作为当前 canonical 结果。
 
 这些数字是基线/上界诊断，不能解释为 learned active-view policy 的性能。
 

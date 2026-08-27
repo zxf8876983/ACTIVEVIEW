@@ -16,7 +16,7 @@
 
 ## ST-GCN protocol
 
-The fixed 16-class mapping is official-150 audited 14 classes plus `lie` and `stumble`; `fall` is not active. BABEL `train.json`/`val.json` are split directly, with single-label filtering, strict `num_frames > 30`, conflicting source-interval removal, official caps 400/100, auxiliary classes uncapped, and seed 42. ST-GCN receives only estimated H36M-17 skeletons. Training uses tempered oversampling, class-weighted cross entropy, ReduceLROnPlateau and Val Macro-F1 early stopping; Val selects the frozen checkpoint and is not used to train a view policy.
+The fixed 16-class mapping is official-150 audited 14 classes plus `lie` and `stumble`; `fall` is not active. BABEL `train.json`/`val.json` are split directly, with single-label filtering, strict `num_frames > 30`, conflicting source-interval removal, official caps 400/100, auxiliary classes uncapped, and seed 42. ST-GCN receives only estimated H36M-17 skeletons. Training uses tempered oversampling and class-weighted cross entropy; `ReduceLROnPlateau` and early stopping monitor deterministic full-Train loss only. The frozen checkpoint is the final stopped-epoch model; Val is evaluated once post-training for upper-bound diagnosis and is never used for checkpoint selection or policy training.
 
 ## Offline strategy protocol
 

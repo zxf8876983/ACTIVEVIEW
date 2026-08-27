@@ -120,17 +120,23 @@ def train(
         generator=torch.Generator().manual_seed(seed),
     )
     train_loader = DataLoader(train_ds, batch_size=batch_size, sampler=sampler, pin_memory=device.type == "cuda")
+    # The deterministic full-train loader is used only to measure convergence.
+    # The validation split is intentionally kept out of the training loop.
+    train_eval_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=False, pin_memory=device.type == "cuda")
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, pin_memory=device.type == "cuda")
     criterion = nn.CrossEntropyLoss(weight=torch.from_numpy(class_weights).to(device))
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="max", factor=0.5, patience=max(2, patience // 4), min_lr=1e-5)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=max(2, patience // 4), min_lr=1e-5)
     checkpoint.parent.mkdir(parents=True, exist_ok=True)
     history: List[Dict[str, float]] = []
-    best_score = -float("inf")
-    best_epoch = 0
+    best_train_loss = float("inf")
+    best_train_loss_epoch = 0
     stale_epochs = 0
     stopped_epoch = max_epochs
-    LOGGER.info("Training selected16 estimated skeletons: train=%d val=%d device=%s", len(train_ds), len(val_ds), device)
+    LOGGER.info(
+        "Training selected16 estimated skeletons with train-only convergence: train=%d val=%d device=%s",
+        len(train_ds), len(val_ds), device,
+    )
     LOGGER.info("Categories=%s; counts=%s", categories, counts.astype(int).tolist())
     LOGGER.info("Oversampling enabled: sampling_power=%.3f, sampling_weights=%s", oversample_power, sampling_weights.tolist())
     for epoch in range(1, max_epochs + 1):
@@ -148,47 +154,79 @@ def train(
             loss_sum += float(loss.item()) * len(batch_labels)
             correct += int((logits.argmax(dim=-1) == batch_labels).sum().item())
             seen += len(batch_labels)
-        val_metrics = _evaluate(model, val_loader, criterion, device, len(categories))
-        scheduler.step(val_metrics["macro_f1"])
+
+        # Convergence, scheduling and early stopping are all determined from
+        # the training split.  Val is not inspected until training finishes.
+        train_metrics = _evaluate(model, train_eval_loader, criterion, device, len(categories))
+        scheduler.step(train_metrics["loss"])
         epoch_metrics = {
-            "epoch": float(epoch), "train_loss": loss_sum / max(seen, 1),
-            "train_accuracy": correct / max(seen, 1), "val_loss": val_metrics["loss"],
-            "val_accuracy": val_metrics["accuracy"], "val_macro_f1": val_metrics["macro_f1"],
-            "val_balanced_accuracy": val_metrics["balanced_accuracy"],
+            "epoch": float(epoch),
+            "optimization_loss": loss_sum / max(seen, 1),
+            "train_loss": train_metrics["loss"],
+            "train_accuracy": train_metrics["accuracy"],
+            "train_macro_f1": train_metrics["macro_f1"],
+            "train_balanced_accuracy": train_metrics["balanced_accuracy"],
             "learning_rate": float(optimizer.param_groups[0]["lr"]),
         }
         history.append(epoch_metrics)
-        score = val_metrics["macro_f1"]
-        if score > best_score + min_delta:
-            best_score, best_epoch, stale_epochs = score, epoch, 0
-            torch.save({
-                "model_state_dict": {key: value.detach().cpu() for key, value in model.state_dict().items()},
-                "categories": categories, "label_mapping": mapping, "num_classes": len(categories),
-                "skeleton_backend": "h36m_17", "input_shape": list(shape[1:]), "frozen": True,
-                "best_epoch": best_epoch, "best_val_macro_f1": best_score,
-                "train_samples": len(train_ds), "val_samples": len(val_ds),
-                "train_class_counts": counts.astype(int).tolist(), "class_weights": class_weights.tolist(),
-                "oversampling": {
-                    "enabled": True,
-                    "power": oversample_power,
-                    "replacement": True,
-                    "samples_per_epoch": len(train_ds),
-                    "class_sampling_weights": sampling_weights.tolist(),
-                },
-                "seed": seed, "train_data_sha256": file_sha256(data_root / "train_data.npy"),
-                "val_data_sha256": file_sha256(data_root / "val_data.npy"),
-                "skeleton_preprocessing": "RGB -> Ultralytics/VideoPose3D -> camera_to_gravity + root_center + torso_scale + yaw_only",
-                "protocol": "selected16 pure-color Habitat Train/Val; validation selects frozen ST-GCN; Habitat active-view evaluation is separate",
-            }, checkpoint)
+        if train_metrics["loss"] < best_train_loss - min_delta:
+            best_train_loss = train_metrics["loss"]
+            best_train_loss_epoch = epoch
+            stale_epochs = 0
         else:
             stale_epochs += 1
         if epoch == 1 or epoch % 5 == 0:
-            LOGGER.info("Epoch %d/%d train_loss=%.4f train_acc=%.4f val_acc=%.4f val_macro_f1=%.4f stale=%d/%d", epoch, max_epochs, epoch_metrics["train_loss"], epoch_metrics["train_accuracy"], epoch_metrics["val_accuracy"], epoch_metrics["val_macro_f1"], stale_epochs, patience)
+            LOGGER.info(
+                "Epoch %d/%d train_loss=%.4f train_acc=%.4f train_macro_f1=%.4f stale=%d/%d",
+                epoch, max_epochs, epoch_metrics["train_loss"], epoch_metrics["train_accuracy"],
+                epoch_metrics["train_macro_f1"], stale_epochs, patience,
+            )
         if stale_epochs >= patience:
             stopped_epoch = epoch
-            LOGGER.info("Early stopping at epoch %d; best epoch=%d val_macro_f1=%.4f", epoch, best_epoch, best_score)
+            LOGGER.info(
+                "Early stopping at epoch %d; best train-loss epoch=%d loss=%.6f; saving final epoch weights",
+                epoch, best_train_loss_epoch, best_train_loss,
+            )
             break
-    result = {"checkpoint": str(checkpoint), "categories": categories, "train_samples": len(train_ds), "val_samples": len(val_ds), "best_epoch": best_epoch, "stopped_epoch": stopped_epoch, "best_val_macro_f1": best_score, "history": history}
+
+    # The frozen checkpoint is the final model at the train-only stopping
+    # epoch, not the model from the best validation epoch.
+    final_train_metrics = _evaluate(model, train_eval_loader, criterion, device, len(categories))
+    posthoc_val_metrics = _evaluate(model, val_loader, criterion, device, len(categories))
+    torch.save({
+        "model_state_dict": {key: value.detach().cpu() for key, value in model.state_dict().items()},
+        "categories": categories, "label_mapping": mapping, "num_classes": len(categories),
+        "skeleton_backend": "h36m_17", "input_shape": list(shape[1:]), "frozen": True,
+        "selection_metric": "train_loss", "selection_protocol": "train-only convergence; final stopped-epoch weights",
+        "best_train_loss": best_train_loss, "best_train_loss_epoch": best_train_loss_epoch,
+        "final_epoch": stopped_epoch, "posthoc_val_metrics": posthoc_val_metrics,
+        "train_samples": len(train_ds), "val_samples": len(val_ds),
+        "train_class_counts": counts.astype(int).tolist(), "class_weights": class_weights.tolist(),
+        "oversampling": {
+            "enabled": True,
+            "power": oversample_power,
+            "replacement": True,
+            "samples_per_epoch": len(train_ds),
+            "class_sampling_weights": sampling_weights.tolist(),
+        },
+        "seed": seed, "train_data_sha256": file_sha256(data_root / "train_data.npy"),
+        "val_data_sha256": file_sha256(data_root / "val_data.npy"),
+        "skeleton_preprocessing": "RGB -> Ultralytics/VideoPose3D -> camera_to_gravity + root_center + torso_scale + yaw_only",
+        "protocol": "selected16 pure-color Habitat Train/Val; train-only convergence; Val is posthoc upper-bound diagnosis; Habitat active-view evaluation is separate",
+    }, checkpoint)
+    LOGGER.info(
+        "Final train-only checkpoint saved at epoch %d: train_acc=%.4f train_macro_f1=%.4f | posthoc val_acc=%.4f val_macro_f1=%.4f",
+        stopped_epoch, final_train_metrics["accuracy"], final_train_metrics["macro_f1"],
+        posthoc_val_metrics["accuracy"], posthoc_val_metrics["macro_f1"],
+    )
+    result = {
+        "checkpoint": str(checkpoint), "categories": categories,
+        "train_samples": len(train_ds), "val_samples": len(val_ds),
+        "best_train_loss_epoch": best_train_loss_epoch,
+        "best_train_loss": best_train_loss, "final_epoch": stopped_epoch,
+        "final_train_metrics": final_train_metrics,
+        "posthoc_val_metrics": posthoc_val_metrics, "history": history,
+    }
     (checkpoint.parent / "training_summary.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     return result
 

@@ -60,7 +60,7 @@ python ea_avs_mvp_v11/scripts/generate_selected16_habitat_dataset.py --split val
 python ea_avs_mvp_v11/scripts/train_selected16_habitat_stgcn.py --device cuda:0
 ```
 
-训练使用 `WeightedRandomSampler(count^-0.5)`、归一化 `sqrt(N/count)` class weights、Adam、ReduceLROnPlateau 和 Val Macro-F1 早停。Val 仅用于 checkpoint 选择；冻结 checkpoint 后才进入主动视角评估。
+训练使用 `WeightedRandomSampler(count^-0.5)`、归一化 `sqrt(N/count)` class weights、Adam 和监控全量 Train loss 的 `ReduceLROnPlateau(mode=min)`。early stopping 只使用 Train loss（最多 200 epochs、`patience=20`、`min_delta=1e-4`），保存停止 epoch 的最后模型。Val 不进入训练循环；训练结束后仅对 Val 做一次 post-hoc 性能上限诊断，之后才进入冻结 checkpoint 的主动视角评估。
 
 ## 4. 主动视角离线数据
 
