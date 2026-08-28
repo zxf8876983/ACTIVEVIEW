@@ -12,10 +12,13 @@
 ```text
 1. AGENTS.md (本文件: 总体入口与科研约束)
 2. .ai/PROJECT_STATE.md (项目短期状态记忆: 当前阶段、活跃版本、已实现能力与未决问题)
-3. .ai/CURRENT_TASK.md (当前任务定义: 检查是否有待执行或持久化的具体任务)
-4. .ai/HANDOFF.md (跨模型交接记录: 检查是否有前任 Agent 留下的未完成交接)
-5. 当前活跃版本对应的 Version Specification MD (由 .ai/PROJECT_STATE.md 指定)
-6. 与当前任务直接相关的局部代码文件
+3. .ai/RESEARCH_PLAN.md (长期科研路线与冻结基础)
+4. .ai/RESEARCH_LOG.md (append-only 科研历史)
+5. .ai/REJECTED_IDEAS.md (deferred/rejected 方向)
+6. .ai/CURRENT_TASK.md (当前任务定义: 检查是否有待执行或持久化的具体任务)
+7. .ai/HANDOFF.md (跨模型交接记录: 检查是否有前任 Agent 留下的未完成交接)
+8. 当前活跃版本对应的 Version Specification MD (由 .ai/PROJECT_STATE.md 指定)
+9. 与当前任务直接相关的局部代码文件
 ```
 
 > **Token 节约原则**：仅在需要明确追溯某项算法或历史设计演进缘由时，才按需查阅旧版本文档与历史目录。
@@ -93,6 +96,14 @@ ACTIVEVIEW 是主动视角选择研究：
 * **评估时（Evaluation-time）**：选中位姿渲染后的真实观测（`*_true`）仅供后验评估与指标记录，绝不能反向影响决策。
 * 若任务需求存在破坏该边界的风险，必须立即终止并向用户报告。
 
+### 4.4 Research Experiments
+
+研究实验遵循 `experiments/stage_c_v1/` 中的 controlled-experiment
+基础设施：一个实验只能有一个主要科学改动，每个 `EXPxxx` 目录不可覆盖或
+复用，失败和负结果必须保留。Train/Val 可用于开发，Test 在明确的
+`FINAL_FROZEN` authorization 之前始终 locked。实验完成后停止，不得自动
+创建或启动下一个实验；`activeview/` 仍是唯一源码包。
+
 ---
 
 ## 5. 修改后的验证要求 (Validation Requirements)
@@ -112,6 +123,10 @@ Agent 每次必须根据以下优先级确定当前任务的验证命令：
 2. **纯 Python 逻辑与策略单元测试**（无需 Habitat 物理引擎）：
    ```bash
    pytest -q tests/unit tests/integration
+   ```
+   Research infrastructure-only tests may be run separately with:
+   ```bash
+   pytest -q tests/unit/test_research_*.py tests/integration/test_research_experiment_lifecycle.py
    ```
 3. **功能脚本 / Smoke Test / Debug 脚本**（在具备完整仿真环境时按需运行）：
    ```bash

@@ -55,3 +55,22 @@ def get_humanoid_asset_root(model_name: str = "male_0") -> Path:
 def get_humanoid_urdf_path(model_name: str = "male_0") -> Path:
     """Return the URDF path for a project-local Habitat humanoid model."""
     return get_humanoid_asset_root(model_name) / f"{model_name}.urdf"
+
+
+def get_experiments_root() -> Path:
+    """Return the Git-tracked root for experiment source records."""
+    return get_repo_root() / "experiments"
+
+
+def get_stage_experiments_root(stage: str) -> Path:
+    """Return a stage-specific source experiment directory."""
+    if not stage or Path(stage).name != stage:
+        raise ValueError("stage must be a non-empty directory name")
+    return get_experiments_root() / stage
+
+
+def get_stage_experiment_runtime_root(stage: str, experiment_name: str) -> Path:
+    """Return the external runtime directory for one experiment."""
+    if not experiment_name or Path(experiment_name).name != experiment_name:
+        raise ValueError("experiment_name must be a non-empty directory name")
+    return get_data_root() / "experiments" / stage / experiment_name

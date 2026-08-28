@@ -45,6 +45,23 @@ python -m activeview.scripts.evaluate_semantic_region_offline
 
 `activeview/` 是唯一正式源码包；v1–v10 目录已从当前工作树移除，历史报告仅作只读科研记录。
 
+## Controlled research experiments
+
+Phase 0 infrastructure is under `activeview/research/` and
+`experiments/stage_c_v1/`. Each scientific hypothesis gets one immutable
+`EXPxxx` directory and one primary change. The standard lifecycle is:
+
+```text
+create (PLANNED) → human review → start (RUNNING) → Train/Val → validate
+→ finalize (COMPLETED) → optional human FINAL_FROZEN authorization
+```
+
+The registry is intentionally empty until the next experiment is approved;
+Phase 0 does not create `EXP001`. Test evaluation is fail-closed until a
+completed accepted experiment has an explicit authorization artifact matching
+its frozen Git commit and configuration hash. Failed and negative results are
+retained, and the next experiment is never started automatically.
+
 ## Repository layout
 
 - `activeview/`: 唯一正式 Python 源码和 CLI。

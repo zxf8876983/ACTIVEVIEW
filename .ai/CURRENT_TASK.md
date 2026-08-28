@@ -1,5 +1,16 @@
 # ACTIVEVIEW Current Task
 
+## Phase 0 — Controlled Research Agent Infrastructure (2026-08-29) — completed
+
+Research infrastructure is implemented under `activeview/research/` with
+immutable `EXPxxx` source directories, external runtime directories, a
+monotonic CSV registry, frozen-foundation provenance, lifecycle validation,
+and a fail-closed final-Test authorization gate. The registry is initialized
+and empty; no real `EXP001` exists. No Stage C-v1 scientific experiment,
+training, data regeneration, or new Test evaluation has started.
+
+Next human decision: design and explicitly authorize `EXP001`.
+
 ## Repository consolidation (2026-08-29) — completed
 
 Repository consolidation completed from pre-consolidation commit

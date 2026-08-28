@@ -2,6 +2,19 @@
 
 Last Updated: 2026-08-29
 Active Version: v11.5 consolidated mainline (`activeview/`)
+Research Infrastructure: Phase 0 completed; registry empty; no Stage C-v1 experiment started
+Test: locked until explicit FINAL_FROZEN authorization
+Stage D: not started
+
+## Controlled research infrastructure
+
+Phase 0 is complete. `activeview/research/` provides immutable experiment
+directories, a monotonic CSV registry, frozen Stage A/B/C provenance capture,
+and lifecycle/Test-gate CLIs. The source registry
+`experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` is initialized with a header
+only; no real `EXP001` exists. Test remains locked until explicit
+`FINAL_FROZEN` authorization. The research queue in
+`.ai/RESEARCH_PLAN.md` is not execution authorization.
 
 ## Canonical scientific protocol
 

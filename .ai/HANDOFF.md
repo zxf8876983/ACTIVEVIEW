@@ -1,7 +1,20 @@
 # ACTIVEVIEW Handoff
 
-Status: STAGE C IMPLEMENTED / READY FOR SCIENTIFIC REVIEW
-Updated: 2026-08-28
+Status: CLEAN
+Updated: 2026-08-29
+
+## Phase 0 research infrastructure — completed
+
+Implemented `activeview/research/` and the lifecycle CLIs:
+`create_experiment`, `start_experiment`, `validate_experiment`,
+`finalize_experiment`, `authorize_final_test`, and
+`validate_research_infrastructure`. The Stage C-v1 registry at
+`experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` is empty and no real EXP001
+was created. Test is fail-closed until a COMPLETED+ACCEPT experiment is
+explicitly FINAL_FROZEN with authorization, frozen Git commit, and config
+hash. Runtime artifacts belong under `ACTIVEVIEW_DATA_ROOT/experiments/`.
+No Stage C-v1 training, data regeneration, Test evaluation, or Stage D work
+was performed. The next step requires human authorization.
 
 ## Repository consolidation (2026-08-29) — completed
 
@@ -9,8 +22,7 @@ The repository-only consolidation completed on top of pre-consolidation
 commit `a2935fd177bee15eca4a40b896db5907d0e937d1`, protected by tag
 `pre-activeview-consolidation`. `activeview/` is the sole production package;
 v1–v10 source trees are removed from the working tree and recoverable from Git
-history. The required `.ai/RESEARCH_PLAN.md`, `.ai/RESEARCH_LOG.md`, and
-`.ai/REJECTED_IDEAS.md` files are absent. No accepted runtime artifact is being
+history. The Phase 0 research-state files are now present under `.ai/`. No accepted runtime artifact is being
 rewritten, and no training, data regeneration, or Test evaluation was part of
 this task. The audit and validation record is
 `docs/repository_consolidation_audit.md`.
@@ -200,5 +212,3 @@ symmetric pairs by candidate radius, reports an explicit enrichment ratio
 and per-region high-regret rates. No Stage A/B/C accepted artifact, model, or
 evaluation protocol was changed, no Test-based tuning was performed, and Stage
 D was not started.
-
-Status: Stage C-v0 failure analysis completed; results ready for scientific review.
