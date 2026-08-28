@@ -71,6 +71,15 @@ def _validate_independent_decision(row: Mapping[str, Any], stage_b: Mapping[str,
         errors.append(f"decision_action_mismatch:{model_type}:{split}:{episode_id}")
     candidates = {int(item["viewpoint_id"]): item for item in stage_b["candidates"]}
     current = stage_b["current"]
+    if int(row.get("current_predicted_label_id", -1)) != int(current["predicted_label_id"]):
+        errors.append(f"current_prediction_mismatch:{model_type}:{split}:{episode_id}")
+    if not math.isclose(
+        float(row.get("current_entropy", float("nan"))),
+        float(current["entropy"]),
+        rel_tol=0.0,
+        abs_tol=1e-6,
+    ):
+        errors.append(f"current_entropy_mismatch:{model_type}:{split}:{episode_id}")
     selected = current if expected_stays else candidates[expected_candidate_id]
     expected_selected_utility = 0.0 if expected_stays else float(selected["utility"])
     if not math.isclose(float(row.get("selected_true_utility", float("nan"))), expected_selected_utility, rel_tol=0.0, abs_tol=1e-6):

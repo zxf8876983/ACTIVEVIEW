@@ -26,6 +26,7 @@ def test_validator_recomputes_stage_c_decision_from_utilities_and_stage_b():
     row = {
         "episode_id": "e", "candidate_viewpoint_ids": [1, 2], "predicted_utilities": [0.5, 0.5],
         "predicted_candidate_viewpoint_id": 1, "predicted_stays": False, "predicted_action": "candidate:1",
+        "current_predicted_label_id": 99, "current_entropy": 0.1,
         "selected_true_utility": 0.2, "selected_predicted_label_id": 2, "selected_entropy": 0.4,
         "candidate_oracle_viewpoint_id": 1, "candidate_oracle_predicted_label_id": 2,
         "candidate_oracle_entropy": 0.4, "safe_oracle_viewpoint_id": 1, "safe_oracle_stays": False,
@@ -36,3 +37,5 @@ def test_validator_recomputes_stage_c_decision_from_utilities_and_stage_b():
     _validate_independent_decision(row, stage_b, contract, "unit", "val", errors)
     assert "decision_candidate_id_mismatch:unit:val:e" in errors
     assert "selected_true_utility_mismatch:unit:val:e" in errors
+    assert "current_prediction_mismatch:unit:val:e" in errors
+    assert "current_entropy_mismatch:unit:val:e" in errors
