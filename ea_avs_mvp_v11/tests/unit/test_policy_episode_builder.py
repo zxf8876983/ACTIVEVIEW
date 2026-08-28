@@ -5,6 +5,7 @@ import numpy as np
 from ea_avs_mvp_v11.active_view.policy_episode_builder import (
     audit_episode_coverage,
     audit_episode_files,
+    audit_scene_coverage,
     build_dynamic_candidate_pool,
     build_navigation_geometry_pool,
     choose_current_view,
@@ -313,3 +314,11 @@ def test_episode_coverage_requires_each_expected_tuple_once(tmp_path):
     )
     assert duplicate["counts"]["episode_and_exclusion_overlap"] == 1
     assert not duplicate["integrity_checks"]["complete_tuple_coverage"]
+
+
+def test_scene_coverage_rejects_silent_scene_drop():
+    audit = audit_scene_coverage(["scene_a", "scene_b"], ["scene_a"])
+    assert audit["counts"]["target_scene_count"] == 2
+    assert audit["counts"]["failed_scene_count"] == 1
+    assert audit["counts"]["missing_scene_ids"] == ["scene_b"]
+    assert not audit["integrity_checks"]["all_target_scenes_used"]

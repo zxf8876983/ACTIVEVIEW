@@ -74,3 +74,10 @@ validity is checked against the per-archive finite ID set. It also checks
 `record_id × scene_id × region` and `episode_id` uniqueness, NPZ/Episode
 geometry correspondence, expanded future-perception field leakage, and
 label/label_id consistency in policy splits.
+
+The latest audit hardening also validates split summary metadata against the
+actual `train.json`/`val.json`/`test.json` files (counts, unique IDs,
+per-class counts, and canonical 6:2:2 ratios). Coverage now uses the target
+scene list before generation, separately audits scene-level failures, and
+requires `all_target_scenes_used=true`; a failed scene cannot be silently
+removed from the expected tuple set.

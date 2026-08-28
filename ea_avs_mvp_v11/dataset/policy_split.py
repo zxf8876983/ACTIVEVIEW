@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import random
 from collections import defaultdict
 from pathlib import Path
@@ -162,8 +163,69 @@ def load_policy_split_summary(split_dir: Path) -> Dict[str, Any]:
     return payload
 
 
+def validate_split_summary_against_files(
+    summary: Mapping[str, Any],
+    splits: Mapping[str, Sequence[Mapping[str, Any]]],
+) -> None:
+    """Reject split metadata that disagrees with the serialized split files."""
+    actual_counts = {split: len(splits.get(split, [])) for split in SPLITS}
+    declared_counts = summary.get("split_counts")
+    if not isinstance(declared_counts, Mapping):
+        raise ValueError("split summary is missing split_counts")
+    normalized_declared = {split: int(declared_counts.get(split, -1)) for split in SPLITS}
+    if normalized_declared != actual_counts:
+        raise ValueError(
+            f"split_counts do not match files: declared={normalized_declared}, actual={actual_counts}"
+        )
+
+    record_ids = {
+        str(item["record_id"])
+        for split in SPLITS
+        for item in splits.get(split, [])
+    }
+    declared_input_count = int(summary.get("input_sample_count", -1))
+    if declared_input_count != len(record_ids):
+        raise ValueError(
+            "input_sample_count does not match unique record IDs: "
+            f"declared={declared_input_count}, actual={len(record_ids)}"
+        )
+
+    declared_ratios = summary.get("split_ratios")
+    if not isinstance(declared_ratios, Mapping):
+        raise ValueError("split summary is missing split_ratios")
+    normalized_ratios = {split: float(declared_ratios.get(split, float("nan"))) for split in SPLITS}
+    if any(not math.isclose(normalized_ratios[split], float(RATIOS[split]), rel_tol=0.0, abs_tol=1e-12) for split in SPLITS):
+        raise ValueError(
+            f"split_ratios do not match canonical RATIOS: declared={normalized_ratios}, canonical={dict(RATIOS)}"
+        )
+
+    actual_per_class: Dict[str, Dict[str, int]] = defaultdict(dict)
+    for split in SPLITS:
+        for item in splits.get(split, []):
+            label = str(item["action_label"])
+            actual_per_class[label][split] = actual_per_class[label].get(split, 0) + 1
+    for counts in actual_per_class.values():
+        for split in SPLITS:
+            counts.setdefault(split, 0)
+    declared_per_class = summary.get("per_class_split_counts")
+    normalized_per_class: Dict[str, Dict[str, int]] = {}
+    if isinstance(declared_per_class, Mapping):
+        for label, counts in declared_per_class.items():
+            if not isinstance(counts, Mapping):
+                raise ValueError(f"Invalid per_class_split_counts entry for {label}")
+            normalized_per_class[str(label)] = {
+                split: int(counts.get(split, 0)) for split in SPLITS
+            }
+    if normalized_per_class != dict(sorted(actual_per_class.items())):
+        raise ValueError(
+            "per_class_split_counts do not match files: "
+            f"declared={normalized_per_class}, actual={dict(sorted(actual_per_class.items()))}"
+        )
+
+
 def load_policy_splits(split_dir: Path) -> Dict[str, List[Dict[str, Any]]]:
     """Load and validate persisted policy split files."""
+    summary = load_policy_split_summary(split_dir)
     splits: Dict[str, List[Dict[str, Any]]] = {}
     for split in SPLITS:
         path = split_dir / f"{split}.json"
@@ -179,4 +241,5 @@ def load_policy_splits(split_dir: Path) -> Dict[str, List[Dict[str, Any]]]:
         or not audit["same_record_same_label_id"]
     ):
         raise ValueError(f"Invalid policy split overlap: {audit}")
+    validate_split_summary_against_files(summary, splits)
     return splits

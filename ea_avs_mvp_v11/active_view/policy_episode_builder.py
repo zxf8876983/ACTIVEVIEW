@@ -524,6 +524,38 @@ def audit_episode_coverage(
     }
 
 
+def audit_scene_coverage(
+    target_scene_ids: Sequence[str], used_scene_ids: Sequence[str],
+) -> Dict[str, Any]:
+    """Ensure every requested scene entered Episode generation exactly once."""
+    target = [str(scene_id) for scene_id in target_scene_ids]
+    used = [str(scene_id) for scene_id in used_scene_ids]
+    target_set = set(target)
+    used_set = set(used)
+    missing = sorted(target_set - used_set)
+    unexpected = sorted(used_set - target_set)
+    counts = {
+        "target_scene_count": len(target_set),
+        "used_scene_count": len(used_set),
+        "failed_scene_count": len(missing),
+        "missing_scene_ids": missing,
+        "unexpected_scene_ids": unexpected,
+        "duplicate_target_scene_count": len(target) - len(target_set),
+        "duplicate_used_scene_count": len(used) - len(used_set),
+    }
+    return {
+        "counts": counts,
+        "integrity_checks": {
+            "all_target_scenes_used": (
+                not missing
+                and not unexpected
+                and counts["duplicate_target_scene_count"] == 0
+                and counts["duplicate_used_scene_count"] == 0
+            ),
+        },
+    }
+
+
 def build_dynamic_candidate_pool(
     *, current_viewpoint_id: int, views: Mapping[int, Mapping[str, Any]],
     valid_skeleton_ids: Sequence[int], pathfinder: Any, path_cost_fn: PathCostFn,

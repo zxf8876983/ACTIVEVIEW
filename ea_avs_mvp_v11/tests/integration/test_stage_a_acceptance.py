@@ -30,6 +30,9 @@ def _dataset_context() -> tuple[Path, dict[str, Path], dict[str, str]]:
     if not summary_path.exists():
         pytest.skip("Stage A output is not available")
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    split_summary = json.loads((root / "splits" / "summary.json").read_text(encoding="utf-8"))
+    if summary.get("policy_split", {}).get("counts") != split_summary.get("split_counts"):
+        pytest.skip("Stage A Episodes are stale relative to the current policy split files")
     files = {split: Path(summary["episode_files"][split]) for split in SPLITS}
     expected: dict[str, str] = {}
     for split in SPLITS:

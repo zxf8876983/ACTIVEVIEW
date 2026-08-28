@@ -126,7 +126,7 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 
 ### 4.1 两阶段设计
 
-离线阶段不提前保存 32 张 RGB，也不保存深度；它保存候选视点的几何、导航元数据和从该视点得到的估计骨架。评估阶段使用冻结 ST-GCN 的每视点预测，按策略选择一个可达的下一视点。Stage A policy records 使用 canonical `train/val/test = 6:2:2`；实际比例唯一读取 split 目录的 `summary.json -> split_ratios`。当前 980 条 policy records 已重新划分为 589/197/194；旧的 Stage A Episode JSONL 不会自动随 split 文件更新，必须重新运行 `build_policy_episodes.py`。
+离线阶段不提前保存 32 张 RGB，也不保存深度；它保存候选视点的几何、导航元数据和从该视点得到的估计骨架。评估阶段使用冻结 ST-GCN 的每视点预测，按策略选择一个可达的下一视点。Stage A policy records 使用 canonical `train/val/test = 6:2:2`；实际比例唯一读取 split 目录的 `summary.json -> split_ratios`。当前 980 条 policy records 已重新划分为 589/197/194；旧的 Stage A Episode JSONL 不会自动随 split 文件更新，必须重新运行 `build_policy_episodes.py`。加载 split 时会同时核对 summary 中的 split counts、unique record count、各类别计数和 canonical ratios 与实际 JSON 文件；任何不一致都会在 Episode 构建入口直接失败。
 
 场景目录规范：
 
@@ -209,7 +209,8 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 1. `audit_episode_files()` 重新读取最终的 `train/val/test_episodes.jsonl`，检查跨 split record、一致的 `candidate_count`、current 不进入候选池、候选 ID/几何/代价、record-level skeleton path 一致性，以及递归 schema 中是否混入未来 RGB、Depth、pose、prediction 或 entropy 等信息。
 2. 开启 `validate_cached_skeletons=True` 时，对所有被最终 Episode 引用的 NPZ 做缓存级检查：skeleton 必须为 `(32,3,30,17)`，导航数组必须存在且形状为 `(32,3)/(32,4)`，viewpoint ID 唯一有效，导航字段必须有限，current/candidate viewpoint 必须对应有效骨架帧。单个 viewpoint 的骨架失败不会使整个 archive 作废；失败 viewpoint 只进入信息性计数 `nonfinite_cached_skeleton_viewpoints`，并由 Episode 级有效集合过滤。
 3. 审计还要求每个 `record_id × scene_id × region` 只有一个 Episode、`episode_id` 全局唯一，并将 Episode 中的 current/candidate 几何按 viewpoint ID 与 NPZ 中的 position、snapped position、agent position 和 rotation 做 `1e-5` 容差交叉核对。
-4. `validate_stage_a.py --verify-habitat` 在真实 HM3D NavMesh 上重新调用 Habitat `ShortestPath`，验证最终 Episode 的 current→candidate geodesic 与序列化代价一致。场景只加载一次，并缓存 `(scene, region, current_id, candidate_id)` 路径结果；支持 `--max-habitat-episodes` 做快速 smoke；论文级验收应运行全量模式。
+4. Coverage audit 同时比较目标场景集合与实际成功进入生成的场景集合，检查 `target_scene_count`、`used_scene_count`、`failed_scene_count` 和 `missing_scene_ids`；`all_target_scenes_used` 必须为 `true`，不允许场景级失败被静默移出 expected set。
+5. `validate_stage_a.py --verify-habitat` 在真实 HM3D NavMesh 上重新调用 Habitat `ShortestPath`，验证最终 Episode 的 current→candidate geodesic 与序列化代价一致。场景只加载一次，并缓存 `(scene, region, current_id, candidate_id)` 路径结果；支持 `--max-habitat-episodes` 做快速 smoke；论文级验收应运行全量模式。
 
 验收入口：
 

@@ -23,6 +23,7 @@ from ea_avs_mvp_v11.active_view.policy_episode_builder import (
     REGIONS,
     audit_episode_coverage,
     audit_episode_files,
+    audit_scene_coverage,
     load_scene_index,
     iter_scene_region_episodes,
 )
@@ -95,6 +96,7 @@ def main() -> None:
         scene_dirs = _scene_dirs(args.offline_root, args.scene_sets)
         if args.max_scenes is not None:
             scene_dirs = scene_dirs[:args.max_scenes]
+        target_scene_ids = [scene_dir.name for _scene_set, scene_dir in scene_dirs]
         for scene_set, scene_dir in scene_dirs:
             scanned += 1
             try:
@@ -145,6 +147,7 @@ def main() -> None:
         validate_cached_skeletons=True,
     )
     policy_records = [item for split in SPLITS for item in splits[split]]
+    scene_audit = audit_scene_coverage(target_scene_ids, used_scenes)
     coverage_audit = audit_episode_coverage(
         episode_files,
         args.output_dir / "exclusions.jsonl",
@@ -155,6 +158,7 @@ def main() -> None:
     integrity_checks = {
         **episode_audit["integrity_checks"],
         "complete_tuple_coverage": coverage_audit["integrity_checks"]["complete_tuple_coverage"],
+        "all_target_scenes_used": scene_audit["integrity_checks"]["all_target_scenes_used"],
     }
 
     summary = {
@@ -170,6 +174,8 @@ def main() -> None:
         "scenes_scanned": scanned,
         "complete_scenes_used": len(used_scenes),
         "scene_ids_used": used_scenes,
+        "target_scene_ids": target_scene_ids,
+        "scene_audit": scene_audit,
         "episodes": {**{split: episode_counts[split] for split in SPLITS}, "total": sum(episode_counts.values())},
         "candidate_pool": {
             "min": min(candidate_counts) if candidate_counts else 0,

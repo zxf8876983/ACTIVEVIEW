@@ -2,7 +2,7 @@
 
 ## Status
 
-**DOCUMENTED / READY FOR NEXT COMMAND** — v11.5 canonical selected16 data, frozen ST-GCN, semantic-region offline schema v2 and dynamic-reachability evaluators are documented below. The corrected HM3D-train scene generator is currently running under `conda habitat` with four workers; no evaluation process is running.
+**DOCUMENTED / READY FOR NEXT COMMAND** — v11.5 canonical selected16 data, frozen ST-GCN, semantic-region offline schema v2 and dynamic-reachability evaluators are documented below. No generation or evaluation process is currently running.
 
 ## Current truth
 
@@ -21,6 +21,11 @@ The fixed 16-class mapping is official-150 audited 14 classes plus `lie` and `st
 Stage A policy records use canonical `train/val/test = 6:2:2`; the persisted
 split `summary.json -> split_ratios` is the single source consumed by the
 Episode builder.
+
+The split loader validates summary counts, unique record count, per-class
+counts, and canonical ratios against the actual split JSON files. Stage A also
+audits target scene IDs versus successfully used scene IDs, so a failed scene
+cannot silently disappear from the expected coverage set.
 
 ## Offline strategy protocol
 

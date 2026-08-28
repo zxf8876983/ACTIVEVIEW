@@ -24,6 +24,7 @@ from ea_avs_mvp_v11.active_view.policy_episode_builder import (
     REGIONS,
     audit_episode_coverage,
     audit_episode_files,
+    audit_scene_coverage,
 )
 from ea_avs_mvp_v11.core.paths import get_data_root, get_habitat_data_root
 
@@ -133,7 +134,15 @@ def main() -> int:
         complete_scene_ids=[str(item) for item in summary.get("scene_ids_used", [])],
         regions=[str(item) for item in summary.get("regions", REGIONS)],
     )
-    report: Dict[str, Any] = {"episode_audit": audit, "coverage_audit": coverage}
+    scene_audit = audit_scene_coverage(
+        [str(item) for item in summary.get("target_scene_ids", [])],
+        [str(item) for item in summary.get("scene_ids_used", [])],
+    )
+    report: Dict[str, Any] = {
+        "episode_audit": audit,
+        "coverage_audit": coverage,
+        "scene_audit": scene_audit,
+    }
     if args.verify_habitat:
         report["habitat_shortest_path"] = _verify_habitat(
             files, args.habitat_root, args.max_habitat_episodes,
@@ -145,6 +154,7 @@ def main() -> int:
         if key != "split_overlap"
     ) and not bool(audit["integrity_checks"].get("split_overlap", False))
     passed = passed and coverage["integrity_checks"]["complete_tuple_coverage"]
+    passed = passed and scene_audit["integrity_checks"]["all_target_scenes_used"]
     if args.verify_habitat:
         passed = passed and not report["habitat_shortest_path"]["path_failures"]
     return 0 if passed else 1

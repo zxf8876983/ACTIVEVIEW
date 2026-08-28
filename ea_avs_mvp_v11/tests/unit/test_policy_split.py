@@ -7,6 +7,7 @@ from ea_avs_mvp_v11.dataset.policy_split import (
     audit_policy_splits,
     build_policy_splits,
     load_policy_split_summary,
+    validate_split_summary_against_files,
 )
 
 
@@ -63,3 +64,19 @@ def test_episode_builder_source_summary_ratios_are_preserved(tmp_path):
     }), encoding="utf-8")
     summary = load_policy_split_summary(tmp_path)
     assert summary["split_ratios"] == RATIOS
+
+
+def test_split_summary_validation_rejects_count_mismatch():
+    splits = {
+        "train": [{"record_id": "a", "action_label": "sit", "label_id": 0}],
+        "val": [],
+        "test": [],
+    }
+    summary = {
+        "split_ratios": dict(RATIOS),
+        "split_counts": {"train": 0, "val": 0, "test": 1},
+        "input_sample_count": 1,
+        "per_class_split_counts": {"sit": {"train": 1, "val": 0, "test": 0}},
+    }
+    with pytest.raises(ValueError, match="split_counts"):
+        validate_split_summary_against_files(summary, splits)
