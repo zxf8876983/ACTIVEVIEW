@@ -28,10 +28,10 @@
 
 | 目录 / 文件 | 状态 | 说明 |
 |---|---|---|
-| **`ea_avs_mvp_v11/`** | **当前活跃实现 (Active)** | v11.5 RGB-only、YOLO26n-Pose、VideoPose3D、ST-GCN 与语义区域主动视角评估 |
+| **`activeview/`** | **当前活跃实现 (Active)** | v11.5 RGB-only、YOLO26n-Pose、VideoPose3D、ST-GCN 与语义区域主动视角评估 |
 | **`docs/V11_5_SELECTED16_DATASET_PROTOCOL.md`** | **当前规范文档 (Active Spec)** | v11.5 16 类数据划分、姿态链路和评估协议 |
 | **`docs/V11_5_DEVELOPMENT.md`** | **当前开发文档 (Active Development Log)** | v11.5 代码模块、数据生成、离线视点 schema、策略评估和变更记录 |
-| `ea_avs_mvp/` ~ `ea_avs_mvp_v5/` | 历史版本 (Historical) | **只读 (Read-Only)**。历史科研原型快照，默认严禁修改 |
+| 历史 v1–v10 源码树 | 历史版本 (Historical) | 已从当前工作树移除；仅通过 Git 历史恢复 |
 | `EA_AVS_MVP01` ~ `MVP50_Document.md` | 历史规范文档 | 只读历史参考 |
 | `.ai/` | 上下文基础设施 | `PROJECT_STATE.md`, `CURRENT_TASK.md`, `HANDOFF.md` |
 
@@ -51,13 +51,19 @@
   `/home/zxf/WorkSpace/code/code/robot/DATA/`（可用 `ACTIVEVIEW_HABITAT_DATA_ROOT` 覆盖）。v11 的场景和语义文件只允许从该目录读取，禁止为寻找场景扫描其它磁盘；当前 `male_0` 模型副本位于运行时根目录的 `assets/habitat_humanoids/male_0/`。
 - **统一环境变量覆盖 (Optional Override)**：
   可通过 `ACTIVEVIEW_DATA_ROOT` 显式指定绝对路径覆盖默认相对位置。
-  v11 代码与工具统一通过 `ea_avs_mvp_v11/core/paths.py`、`ACTIVEVIEW_DATA_ROOT` 和 `ACTIVEVIEW_HABITAT_DATA_ROOT` 解析路径，严禁扫描未声明的外部目录。
+  当前代码与工具统一通过 `activeview/core/paths.py`、`ACTIVEVIEW_DATA_ROOT` 和 `ACTIVEVIEW_HABITAT_DATA_ROOT` 解析路径，严禁扫描未声明的外部目录。
+
+### 唯一生产源码包
+
+`activeview/` 是唯一正式的生产与科研源码包。禁止再创建
+`ea_avs_mvp_v12/`、`activeview_v2/` 等版本复制目录；算法迭代必须通过
+Git commit/branch、experiment ID、配置和运行时 checkpoint provenance 管理。
 
 ### 长期数据边界规则：
 1. **禁止大文件入库**：Coding Agent 严禁将大型 runtime artifacts（RGB/Depth/Semantic 大图、视频、npy/npz 中间数组、pt/pth/ckpt 权重等）写入 Git 仓库；
 2. **外部数据目录归属**：所有大规模实验产物必须写入数据根目录；
 3. **禁止软链接混淆**：不要在 Git 仓库内部创建指向外部数据目录的符号链接；
-4. **统一相对/环境变量解析**：未来新开发版本（v7+）涉及数据集、缓存、输出路径时，统一通过 `data_paths.py` 与 `ACTIVEVIEW_DATA_ROOT` 环境变量解析，严禁依赖固定机器路径；
+4. **统一相对/环境变量解析**：涉及数据集、缓存、输出路径时，统一通过 `activeview/core/paths.py` 与 `ACTIVEVIEW_DATA_ROOT` 环境变量解析，严禁依赖固定机器路径；
 5. **历史版本保护**：历史版本实现只读；当前清理和开发以 v11.5 为准。
 
 ---

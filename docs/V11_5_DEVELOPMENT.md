@@ -1,7 +1,11 @@
 # ACTIVEVIEW v11.5 开发与实验状态
 
-更新时间：2026-08-28
-当前源码目录：`ea_avs_mvp_v11/`
+更新时间：2026-08-29
+当前唯一源码目录：`activeview/`
+
+> 2026-08-29 repository consolidation：v1–v10 源码树已从当前工作树移除，
+> `activeview/` 是唯一正式源码包。历史报告中的旧路径只表示当时的事实，
+> 不再作为可执行入口。
 
 本文记录 v11.5 当前实际代码、数据链路、离线数据结构、评估协议和相对于历史版本的清理/修正。它与 [`V11_5_SELECTED16_DATASET_PROTOCOL.md`](V11_5_SELECTED16_DATASET_PROTOCOL.md) 一起构成 v11.5 的开发文档；若历史 README、脚本或结果与本文冲突，以本文和实际 canonical entry points 为准。
 
@@ -14,7 +18,7 @@ ACTIVEVIEW 的研究对象是主动视角选择，而不是重新设计动作识
 ## 2. Canonical 运行时边界
 
 - 源码：`/home/zxf/WorkSpace/code/code/ActiveView/`。
-- 运行时数据：`/home/zxf/WorkSpace/code/data/ActiveView/`，由 `ea_avs_mvp_v11/core/paths.py` 解析，也可用 `ACTIVEVIEW_DATA_ROOT` 覆盖。
+- 运行时数据：`/home/zxf/WorkSpace/code/data/ActiveView/`，由 `activeview/core/paths.py` 解析，也可用 `ACTIVEVIEW_DATA_ROOT` 覆盖。
 - Habitat 场景和语义文件只从 `/home/zxf/WorkSpace/code/code/robot/DATA/` 读取，也可用 `ACTIVEVIEW_HABITAT_DATA_ROOT` 覆盖；禁止扫描其它磁盘。
 - 人体资产使用项目内副本 `/home/zxf/WorkSpace/code/data/ActiveView/assets/habitat_humanoids/male_0/`，不再从 Habitat-Lab 源目录搜索。
 - 大型数据集、RGB、视频、NPY/NPZ、权重和缓存不进入 Git。
@@ -51,12 +55,12 @@ ACTIVEVIEW 的研究对象是主动视角选择，而不是重新设计动作识
 唯一入口：
 
 ```bash
-python ea_avs_mvp_v11/scripts/prepare_selected16_manifests.py
+python -m activeview.scripts.prepare_selected16_manifests
 ```
 
 实现分工：
 
-- `ea_avs_mvp_v11/dataset/babel_selected16_manifest.py`：类别、过滤、采样上限和 label mapping。
+- `activeview/dataset/babel_selected16_manifest.py`：类别、过滤、采样上限和 label mapping。
 - `babel_official150_true_skeleton.py`：读取已审计的官方 150 类映射和记录。
 - `babel_segment_utils.py`：去重、短区间过滤、冲突区间剔除及辅助标签读取。
 - `babel_source_utils.py`：BABEL 记录到本地 AMASS 源文件的解析。
@@ -80,10 +84,10 @@ BABEL interval
 
 关键实现位于：
 
-- `ea_avs_mvp_v11/dataset/babel_clean_dataset_generator.py`
-- `ea_avs_mvp_v11/perception/ultralytics_pose3d_estimator.py`
-- `ea_avs_mvp_v11/perception/skeleton_normalizer.py`
-- `ea_avs_mvp_v11/dataset/humanoid_grounding.py`
+- `activeview/dataset/babel_clean_dataset_generator.py`
+- `activeview/perception/ultralytics_pose3d_estimator.py`
+- `activeview/perception/skeleton_normalizer.py`
+- `activeview/dataset/humanoid_grounding.py`
 
 人体根姿态保留 AMASS 的 roll/pitch/yaw；归一化阶段只消除水平 yaw，不把躺倒/跌倒人体旋转回站立。VideoPose3D 的 Human3.6M `+Y down, +Z depth` 先翻转 Y/Z，再使用逐帧 Habitat 相机旋转；平移由 root centering 消除。贴地偏移由 URDF visual geometry 的包围盒和场景支持面计算，并缓存到同一动作的所有视点。
 
@@ -92,19 +96,19 @@ BABEL interval
 单进程入口：
 
 ```bash
-python ea_avs_mvp_v11/scripts/generate_selected16_habitat_dataset.py --split train --device cuda:0
-python ea_avs_mvp_v11/scripts/generate_selected16_habitat_dataset.py --split val --device cuda:0
+python -m activeview.scripts.generate_selected16_habitat_dataset --split train --device cuda:0
+python -m activeview.scripts.generate_selected16_habitat_dataset --split val --device cuda:0
 ```
 
 多进程入口 `generate_selected16_habitat_parallel.py` 将 manifest 分片，每个 worker 独立 Habitat simulator 和 CUDA pose estimator，成功后合并元数据与张量：
 
 ```bash
-python ea_avs_mvp_v11/scripts/generate_selected16_habitat_parallel.py --split train --workers 2 --device cuda:0
+python -m activeview.scripts.generate_selected16_habitat_parallel --split train --workers 2 --device cuda:0
 ```
 
 ### 3.4 ST-GCN 训练与冻结
 
-入口：`ea_avs_mvp_v11/scripts/train_selected16_habitat_stgcn.py`。
+入口：`activeview/scripts/train_selected16_habitat_stgcn.py`。
 
 - 输入：H36M-17、3 通道、30 帧、单人 `(N,3,30,17,1)`。
 - 模型：spatial ST-GCN，启用 edge-importance weighting。
@@ -215,8 +219,8 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 验收入口：
 
 ```bash
-python ea_avs_mvp_v11/scripts/validate_stage_a.py
-conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_stage_a.py \
+python -m activeview.scripts.validate_stage_a
+conda run --no-capture-output -n habitat python -m activeview.scripts.validate_stage_a \
   --verify-habitat
 ```
 
@@ -280,5 +284,5 @@ Stage C 已显示 current-conditioned view selection 明显优于 NoMove，Set R
 - 当前 Stage C learned active-view strategy 仅完成离线训练与诊断；Stage D 的真实 Habitat 在线 learned-policy 闭环尚未实现。
 - `lie`/`stumble` 等安全动作样本仍少，纯 skeleton 对物体交互动作的语义区分有限。
 - 纯色 Habitat 预训练域与真实 HM3D 家具遮挡域存在 domain gap。
-- HM3D-train 四区域离线数据仍需完成剩余场景；恢复生成前必须检查场景 manifest 是否为 v2，不能混用早期 v1 产物。
+- HM3D-train 四区域离线数据的 21 个目标场景均已完成；恢复任何任务前仍必须检查场景 manifest 是否为 v2，不能混用早期 v1 产物。
 - 任何新策略都必须只使用决策时可见状态，并在同一动态可达候选池、同一 ST-GCN checkpoint 和同一随机种子协议下与基线比较。

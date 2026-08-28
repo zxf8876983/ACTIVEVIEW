@@ -3,9 +3,21 @@
 Status: STAGE C IMPLEMENTED / READY FOR SCIENTIFIC REVIEW
 Updated: 2026-08-28
 
+## Repository consolidation (2026-08-29) — completed
+
+The repository-only consolidation completed on top of pre-consolidation
+commit `a2935fd177bee15eca4a40b896db5907d0e937d1`, protected by tag
+`pre-activeview-consolidation`. `activeview/` is the sole production package;
+v1–v10 source trees are removed from the working tree and recoverable from Git
+history. The required `.ai/RESEARCH_PLAN.md`, `.ai/RESEARCH_LOG.md`, and
+`.ai/REJECTED_IDEAS.md` files are absent. No accepted runtime artifact is being
+rewritten, and no training, data regeneration, or Test evaluation was part of
+this task. The audit and validation record is
+`docs/repository_consolidation_audit.md`.
+
 ## Canonical v11.5
 
-The active implementation is `ea_avs_mvp_v11/`. The protocol is selected16: audited official-150 14 classes plus `lie` and `stumble`; `fall` is excluded. BABEL `train.json` and `val.json` are used directly after single-label filtering, strict `num_frames > 30`, conflict removal, official Train/Val caps 400/100, and seed 42. Stage A policy records use `train/val/test = 6:2:2`, read from persisted split `summary.json`.
+The active implementation is `activeview/`. The protocol is selected16: audited official-150 14 classes plus `lie` and `stumble`; `fall` is excluded. BABEL `train.json` and `val.json` are used directly after single-label filtering, strict `num_frames > 30`, conflict removal, official Train/Val caps 400/100, and seed 42. Stage A policy records use `train/val/test = 6:2:2`, read from persisted split `summary.json`.
 
 The perception chain is:
 
@@ -46,7 +58,10 @@ total) for the 21 current HM3D-train scenes. The historical minival scene
 
 ## Historical boundary
 
-`ea_avs_mvp_v10/` is read-only reference. It contains candidate generation and per-view entropy analysis, not a learned active-view selector. The old v11.3 `active_view`/Utility Predictor modules are deleted from the working tree but remain recoverable from Git history until deletion is committed.
+The historical v10 tree contained candidate generation and per-view entropy
+analysis, not a learned active-view selector. The old v11.3 Utility Predictor
+modules are deleted from the working tree but remain recoverable from Git
+history.
 
 ## Validation and next step
 
@@ -60,7 +75,7 @@ isolation, current/candidate IDs and geometry, record-local skeleton paths,
 candidate costs, and recursive future-perception leakage fields. With
 `validate_cached_skeletons=True`, it validates every referenced NPZ shape,
 navigation arrays, viewpoint IDs, and finite skeleton frames. The read-only
-acceptance entry point is `ea_avs_mvp_v11/scripts/validate_stage_a.py`;
+acceptance entry point is `activeview/scripts/validate_stage_a.py`;
 `--verify-habitat` recomputes real HM3D `ShortestPath` for final Episodes.
 The 6:2:2 static + cached-NPZ audit passes for 69,580 Episodes (no duplicate
 episode keys/IDs and no integrity failures). The full all-Episode Habitat path
@@ -159,7 +174,7 @@ Stage D Habitat learned-policy evaluation remains pending.
 ## Stage C-v0 failure analysis (2026-08-28)
 
 Failure analysis was completed read-only from the frozen Test artifacts. The
-entry point is `ea_avs_mvp_v11/scripts/analyze_stage_c_failures.py`; unit tests
+entry point is `activeview/scripts/analyze_stage_c_failures.py`; unit tests
 are in `tests/unit/test_stage_c_failure_analysis.py` and the frozen-artifact
 coverage check is in `tests/integration/test_stage_c_failure_analysis.py`.
 The external runtime output is

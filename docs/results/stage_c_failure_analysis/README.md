@@ -20,7 +20,7 @@ generation was run.
 - `figures/`: five diagnostic plots used by the report.
 
 The reproducible entry point is
-`ea_avs_mvp_v11/scripts/analyze_stage_c_failures.py`. Its default output is the
+`activeview/scripts/analyze_stage_c_failures.py`. Its default output is the
 runtime directory `stage_c/failure_analysis/`; this directory contains the
 versioned review copy only. Thresholds such as p75/p90/p95/p99 regret are
 computed from the frozen Test distribution at runtime and are recorded in the

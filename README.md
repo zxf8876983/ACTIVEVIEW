@@ -11,7 +11,7 @@ ACTIVEVIEW 研究机器人在 HM3D 室内环境中主动选择观察视角，以
   `AMASS/SMPL → male_0 Habitat 纯色场景 → RGB → Ultralytics YOLO26n-Pose → VideoPose3D → root/scale/yaw-only normalization → ST-GCN`
 
 - 输入：RGB-only，`256×256`，均匀采样 30 帧；ST-GCN 冻结后用于主动视角评估。
-- 主动视角离线评估：HM3D 场景 `00800-TEEsavR23oF`，卧室/厨房/客厅/卫生间四个语义区域，每个动作 32 个候选视点；只保存骨架和元数据，不保存 RGB/Depth。
+- 主动视角离线评估：HM3D-train 目标场景中的卧室、客厅、厨房和 dining area 四个家具语义区域，每个动作 32 个候选视点；只保存骨架和元数据，不保存 RGB/Depth。旧场景 `00800-TEEsavR23oF` 仅作历史兼容，不属于当前评估集。
 - 策略对比包含 Fixed、Random、Nearest；`Oracle` 为同一候选视点池上的事后 GT-correctness 理论上限，不参与实际决策。
 
 完整协议见 [`docs/V11_5_SELECTED16_DATASET_PROTOCOL.md`](docs/V11_5_SELECTED16_DATASET_PROTOCOL.md)，代码变更、数据字段和评估流程见 [`docs/V11_5_DEVELOPMENT.md`](docs/V11_5_DEVELOPMENT.md)。
@@ -32,13 +32,26 @@ Habitat 场景和语义文件只从 `/home/zxf/WorkSpace/code/code/robot/DATA/` 
 ## 主要入口
 
 ```bash
-python ea_avs_mvp_v11/scripts/prepare_selected16_manifests.py
-python ea_avs_mvp_v11/scripts/generate_selected16_habitat_dataset.py --split train
-python ea_avs_mvp_v11/scripts/generate_selected16_habitat_dataset.py --split val
-python ea_avs_mvp_v11/scripts/train_selected16_habitat_stgcn.py
-python ea_avs_mvp_v11/scripts/generate_semantic_region_candidate_metadata.py
-python ea_avs_mvp_v11/scripts/generate_semantic_region_offline_views.py --workers 4
-python ea_avs_mvp_v11/scripts/evaluate_semantic_region_offline.py
+python -m activeview.scripts.prepare_selected16_manifests
+python -m activeview.scripts.generate_selected16_habitat_dataset --split train
+python -m activeview.scripts.generate_selected16_habitat_dataset --split val
+python -m activeview.scripts.train_selected16_habitat_stgcn
+python -m activeview.scripts.generate_semantic_region_candidate_metadata
+python -m activeview.scripts.generate_semantic_region_offline_views --workers 4
+python -m activeview.scripts.evaluate_semantic_region_offline
 ```
 
-所有 v11 代码位于 `ea_avs_mvp_v11/`；旧版本目录和历史报告仅作只读科研记录。
+`activeview/` 是唯一正式源码包；v1–v10 目录已从当前工作树移除，历史报告仅作只读科研记录。
+
+## Repository layout
+
+- `activeview/`: 唯一正式 Python 源码和 CLI。
+- `tests/`: 仓库级 unit/integration tests。
+- `docs/`: 协议、开发记录和精选科研结果。
+- `experiments/`: 后续实验定义与小型结果（大型运行时产物不入库）。
+- `.ai/`: AI/人类研究状态与交接记录。
+- `ACTIVEVIEW_DATA_ROOT`: 外部 datasets、checkpoints、缓存和运行时结果根目录。
+
+Directory-versioned source development has ended. Future model iterations are
+tracked with Git commits/branches, experiment IDs, configs and provenance
+manifests rather than copied source trees.

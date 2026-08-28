@@ -1,12 +1,25 @@
 # ACTIVEVIEW Current Task
 
+## Repository consolidation (2026-08-29) — completed
+
+Repository consolidation completed from pre-consolidation commit
+`a2935fd177bee15eca4a40b896db5907d0e937d1`, protected by tag
+`pre-activeview-consolidation`. The sole active package is `activeview/`;
+v1–v10 source trees have been removed from the working tree and remain
+recoverable from Git history. The required controlled-research files
+`.ai/RESEARCH_PLAN.md`, `.ai/RESEARCH_LOG.md`, and `.ai/REJECTED_IDEAS.md`
+were absent and were not fabricated. This task does not retrain, regenerate
+data, alter accepted Stage A/B/C artifacts, or run Test evaluation. The
+post-consolidation validation results are recorded in
+`docs/repository_consolidation_audit.md`.
+
 ## Status
 
 **STAGE C IMPLEMENTED / READY FOR SCIENTIFIC REVIEW** — v11.5 canonical selected16 data, frozen ST-GCN, accepted Stage A/B artifacts, and Stage C current-conditioned utility predictors are documented below. No generation or evaluation process is currently running.
 
 ## Current truth
 
-- Active source: `ea_avs_mvp_v11/`.
+- Active source: `activeview/`.
 - Train/Val data: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/` (3,240/980, `(N,3,30,17,1)`).
 - Frozen checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/`.
 - Active pose chain: RGB-only 256×256 → Ultralytics YOLO26n-Pose → VideoPose3D → camera-to-gravity/YZ conversion → root/scale/yaw-only → ST-GCN.
@@ -68,7 +81,7 @@ scripts/evaluate_hm3d_train_grid_initializations.py
 ## Stage A acceptance
 
 The final Episode JSONL is audited after serialization with
-`ea_avs_mvp_v11/scripts/validate_stage_a.py`. The audit checks split isolation,
+`activeview/scripts/validate_stage_a.py`. The audit checks split isolation,
 current/candidate validity, record-local cached skeleton paths, finite geometry
 and costs, episode uniqueness, NPZ/Episode geometry correspondence, and
 recursive future-perception leakage fields. Individual non-finite skeleton
@@ -78,7 +91,7 @@ referenced cached NPZ archive. Real Habitat NavMesh
 ShortestPath verification is an explicit second step:
 
 ```bash
-conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_stage_a.py --verify-habitat
+conda run --no-capture-output -n habitat python -m activeview.scripts.validate_stage_a --verify-habitat
 ```
 
 Unit tests do not replace this Habitat integration check. If the Habitat
@@ -173,7 +186,7 @@ confidence interval is available.
 ## Stage C-v0 failure analysis (2026-08-28)
 
 The frozen Stage C-v0 Test artifacts were analyzed read-only with
-`ea_avs_mvp_v11/scripts/analyze_stage_c_failures.py`. The analysis consumed the
+`activeview/scripts/analyze_stage_c_failures.py`. The analysis consumed the
 accepted Stage A/B JSONL, Stage C feature cache, Set Ranker and Pairwise
 prediction JSONL, evaluation summaries, and the passed Stage C validator
 report. It did not regenerate observations, rerun pose estimation, retrain a

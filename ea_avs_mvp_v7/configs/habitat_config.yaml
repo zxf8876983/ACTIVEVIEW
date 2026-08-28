@@ -1,5 +1,0 @@
-# Habitat 仿真环境配置
-scene_path: "robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.glb"
-navmesh_path: "robot/habitat-sim/data/versioned_data/habitat_test_scenes/apartment_1.navmesh"
-enable_physics: true
-seed: 42

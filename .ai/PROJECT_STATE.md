@@ -1,7 +1,7 @@
 # ACTIVEVIEW Project State
 
-Last Updated: 2026-08-28
-Active Version: v11.5 (`ea_avs_mvp_v11/`)
+Last Updated: 2026-08-29
+Active Version: v11.5 consolidated mainline (`activeview/`)
 
 ## Canonical scientific protocol
 
@@ -91,4 +91,7 @@ and multi-seed statistical testing have not started.
 
 ## Historical code boundary
 
-The v11 working tree intentionally removes old v10 RGB-D/legacy pose entry points, old household/official150 training entry points, and v11.3 Utility Predictor/closed-loop modules. `ea_avs_mvp_v10/` remains read-only historical reference; it has candidate generation and per-view entropy analysis, but no learned active-view selector.
+The consolidated working tree contains only the selected16 v11.5 mainline.
+Old v1–v10 source trees were removed from the working tree and remain
+recoverable from Git history (tag `pre-activeview-consolidation`); historical
+reports retain their original version names but are not active code.
