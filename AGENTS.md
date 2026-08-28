@@ -73,7 +73,7 @@ Git commit/branch、experiment ID、配置和运行时 checkpoint provenance 管
 ### 4.1 最小修改原则 (Minimal Modification Principle)
 1. **理解先行**：先阅读相关代码与规范，再进行最小范围修改。
 2. **拒绝顺手重构**：不做未经明确要求的目录移动、架构重写或“代码整洁度”整理。
-3. **过渡期架构尊重**：项目处于科研原型探索期，在核心闭环跑通前保持独立版本目录模式，**严禁私自将多版本合并为单一 `src/`**。
+3. **唯一主线约束**：当前仓库已经完成唯一主线收束。所有正式科研与算法开发必须在 `activeview/` 唯一源码包内进行，禁止复制源码树创建新的版本目录。任何跨模块架构重构仍必须获得显式科研授权，不得以“代码整理”为由自行重构。
 
 ### 4.2 科研边界与实验协议保护 (Research Boundary Protection)
 未经明确科研授权，**严禁自行变更以下任何科学定义与实验协议**：
@@ -107,15 +107,17 @@ Agent 每次必须根据以下优先级确定当前任务的验证命令：
 当前活跃版本下的默认验证命令示例：
 1. **轻量语法与导入检查**：
    ```bash
-   python -m compileall <active_version_dir>
+   python -m compileall -q activeview tests
    ```
 2. **纯 Python 逻辑与策略单元测试**（无需 Habitat 物理引擎）：
    ```bash
-   python <active_version_dir>/scripts/test_*_pure_python.py
+   pytest -q tests/unit tests/integration
    ```
 3. **功能脚本 / Smoke Test / Debug 脚本**（在具备完整仿真环境时按需运行）：
    ```bash
-   python <active_version_dir>/scripts/run_*.py --config <active_version_dir>/configs/*.yaml --episodes 1
+   python -m activeview.scripts.validate_stage_a
+   python -m activeview.scripts.validate_stage_b
+   python -m activeview.scripts.validate_stage_c
    ```
 
 ### 诚实报告原则 (Honest Validation Reporting)

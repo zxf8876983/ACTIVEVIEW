@@ -26,7 +26,9 @@ Habitat 场景和语义文件只从 `/home/zxf/WorkSpace/code/code/robot/DATA/` 
 
 - 训练/验证估计骨架：[stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed](../../data/ActiveView/datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed)
 - 冻结 ST-GCN：[stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled](../../data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled)
-- 离线策略数据：[offline/hm3d-minival/00800-TEEsavR23oF](../../data/ActiveView/datasets/offline/hm3d-minival/00800-TEEsavR23oF)；后续 `hm3d-train` 和其它 Habitat 原场景使用同级目录。
+- 正式离线策略数据（HM3D-train）：[`offline/hm3d-train/`](../../data/ActiveView/datasets/offline/hm3d-train)，包含当前 21 个正式评估场景。
+- Stage A/B/C runtime artifacts：[`datasets/policy_v11_5/`](../../data/ActiveView/datasets/policy_v11_5)，包括 Episodes、utility labels、features 和验证报告。
+- 历史 reference-only 离线数据（不属于当前评估集）：[`offline/hm3d-minival/00800-TEEsavR23oF`](../../data/ActiveView/datasets/offline/hm3d-minival/00800-TEEsavR23oF)。
 - 基线结果：[semantic_region_offline_baselines.json](../../data/ActiveView/results/semantic_region_offline_baselines.json)
 
 ## 主要入口
