@@ -82,3 +82,28 @@ per-class counts, and canonical 6:2:2 ratios). Coverage now uses the target
 scene list before generation, separately audits scene-level failures, and
 requires `all_target_scenes_used=true`; a failed scene cannot be silently
 removed from the expected tuple set.
+
+## Stage B completion (2026-08-28)
+
+Implemented and executed the v11.5 Stage B offline utility-label pipeline.
+`build_stage_b_utility_labels.py` consumes only accepted Stage A Episode JSONL
+and cached estimated-skeleton NPZs, runs the frozen ST-GCN with direct
+`log_softmax`, and caches predictions by archive path. It emits compact
+current/candidate diagnostics, utility values, CandidateOracle and SafeOracle
+labels, aggregate metrics and headroom statistics without future RGB/depth,
+skeleton, logits or probability arrays. `validate_stage_b.py` is an
+independent read-only integrity and leakage validator.
+
+Artifacts:
+
+- Stage B root: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_b/`
+- Summary: `stage_b_summary.json`
+- Validator report: `validation_report.json` (`passed=true`)
+- Validator log: `/home/zxf/WorkSpace/code/data/ActiveView/results/stage_b_validate.log`
+
+Full build counts: 41,819/13,987/13,774 Episodes and
+306,869/102,637/101,074 candidate pairs (train/val/test). The validator
+reported zero duplicate IDs/pairs, zero missing/unexpected Episodes and zero
+record errors. Focused tests pass (`18 passed`). Stage C has not been started;
+the next action is user review/acceptance of `stage_b_summary.json` and the
+validator report.

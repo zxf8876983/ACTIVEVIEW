@@ -94,3 +94,32 @@ Latest 6:2:2 acceptance outputs:
   The raw summary still lists the legacy minival directory in its historical
   target list, so its scene audit reports `all_target_scenes_used=false`; this
   is not a missing scene in the current 21-scene protocol.
+
+## Stage B offline utility labels (completed; awaiting user acceptance)
+
+Stage B was implemented from the accepted Stage A Episodes and existing
+estimated-skeleton NPZ archives. The builder uses a frozen ST-GCN in
+`eval()`/inference mode, computes utilities with direct `log_softmax`, caches
+predictions by archive path, and writes only compact diagnostics and oracle
+labels (no RGB, skeleton, logits or probability arrays). Output is isolated
+under:
+
+`/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_b/`
+
+Generated counts are 41,819 / 13,987 / 13,774 Episodes and 306,869 /
+102,637 / 101,074 candidate pairs for train/val/test respectively (69,580
+Episodes and 510,580 pairs total). The canonical policy split is 589/197/194
+and all 21 HM3D-train scenes are recorded; the legacy `00800-TEEsavR23oF`
+scene is excluded.
+
+`stage_b_summary.json` contains NoMove, CandidateOracle and SafeOracle metrics,
+headroom distributions, source hashes and protocol definitions. The
+independent validator passed with zero duplicate IDs/pairs, zero missing or
+unexpected Episodes, and zero record errors:
+
+`/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_b/validation_report.json`
+
+The validator log is saved at
+`/home/zxf/WorkSpace/code/data/ActiveView/results/stage_b_validate.log`.
+Stage C is intentionally not implemented or started; pause here for scientific
+review of the Stage B artifacts.
