@@ -24,3 +24,7 @@ single core change, Val result, decision, important observation, and Git commit.
   integration/rollback regressions are covered by the research test suite.
 - Status: awaiting final human review. No training, data regeneration, or new
   Test evaluation was performed.
+- Final-test authorization is separated from tracked final-candidate freezing:
+  freeze, commit, then authorize externally under the runtime root.
+- Experiment source/runtime references are portable relative paths; validators
+  also re-hash the locked hypothesis and command files after start.

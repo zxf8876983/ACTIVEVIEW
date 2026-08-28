@@ -17,7 +17,10 @@ validator, and the final Test gate accepts only the canonical nested manifest.
 The source registry
 `experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` is initialized with a header
 only; no real `EXP001` exists. Test remains locked until explicit
-`FINAL_FROZEN` authorization. The research queue in
+`FINAL_FROZEN` candidate freeze, a clean-tree commit, and external runtime
+authorization. Final authorization never mutates tracked manifest or registry
+files. Experiment source/runtime paths are repository/data-root-relative. The
+research queue in
 `.ai/RESEARCH_PLAN.md` is not execution authorization.
 
 ## Canonical scientific protocol

@@ -6,8 +6,10 @@ import pytest
 from activeview.research.manifest import load_manifest, save_manifest
 from activeview.scripts.create_experiment import create_experiment
 from activeview.scripts.finalize_experiment import finalize_experiment
+from activeview.scripts.freeze_final_candidate import freeze_final_candidate
 from activeview.scripts.start_experiment import start_experiment
 from activeview.research.test_gate import TestGateError, assert_test_allowed
+from activeview.research.validator import validate_experiment
 
 
 def _complete_provenance(tmp_path):
@@ -30,6 +32,8 @@ def test_create_start_validate_finalize_and_authorize_lifecycle(tmp_path, monkey
     assert result["experiment_id"] == "EXP001"
     source = tmp_path / "experiments/stage_c_v1/EXP001_demo"
     manifest = load_manifest(source)
+    assert manifest["experiment"]["source_dir"] == "experiments/stage_c_v1/EXP001_demo"
+    assert manifest["experiment"]["runtime_dir"] == "experiments/stage_c_v1/EXP001_demo"
     manifest["provenance"] = _complete_provenance(tmp_path)
     save_manifest(source, manifest)
     config_path = source / "config.yaml"
@@ -44,19 +48,31 @@ def test_create_start_validate_finalize_and_authorize_lifecycle(tmp_path, monkey
     (source / "val_metrics.json").write_text(json.dumps({"split": "val", "recognition": {"accuracy": 0.5, "macro_f1": 0.4}, "regret": {"mean": 1.0, "median": 0.1, "p90": 2.0}, "positive_headroom_capture": 0.7}), encoding="utf-8")
     (source / "analysis.json").write_text("{}", encoding="utf-8")
     (source / "conclusion.md").write_text("# Experiment Conclusion\n\n## Observation\nMeasured.\n\n## Interpretation\nInference.\n\n## Decision\nACCEPT\n\n## Next\nNone.\n", encoding="utf-8")
-    result = finalize_experiment("EXP001", decision="ACCEPT", repo_root=tmp_path)
+    result = finalize_experiment("EXP001", decision="ACCEPT", repo_root=tmp_path, data_root=tmp_path / "data")
     assert result["status"] == "COMPLETED"
     assert load_manifest(source)["experiment"]["decision"] == "ACCEPT"
+    freeze_final_candidate("EXP001", repo_root=tmp_path, data_root=tmp_path / "data")
+    frozen_manifest = load_manifest(source)
+    assert frozen_manifest["experiment"]["status"] == "FINAL_FROZEN"
+    assert frozen_manifest["protocol"]["test_authorized"] is False
+    registry = tmp_path / "experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv"
+    assert validate_experiment(source, registry_path=registry, data_root=tmp_path / "data")["passed"]
+    tracked_manifest_before_authorize = file_sha256(source / "run_manifest.json")
+    registry_before_authorize = registry.read_text(encoding="utf-8")
     monkeypatch.setattr("activeview.scripts.authorize_final_test.git_dirty", lambda: False)
-    monkeypatch.setattr("activeview.scripts.authorize_final_test.git_value", lambda *args, **kwargs: "abc")
-    monkeypatch.setattr("activeview.research.test_gate.git_value", lambda *args, **kwargs: "abc")
+    monkeypatch.setattr("activeview.scripts.authorize_final_test.git_value", lambda *args, **kwargs: "def")
     from activeview.scripts.authorize_final_test import authorize_final_test
-    authorize_final_test("EXP001", repo_root=tmp_path, confirm_final_model_frozen=True, require_clean=False)
+    authorize_final_test("EXP001", repo_root=tmp_path, data_root=tmp_path / "data", confirm_final_model_frozen=True, require_clean=False)
     manifest = load_manifest(source)
-    assert_test_allowed(manifest, authorization_path=source / "final_test_authorization.json", config_path=source / "config.yaml", current_commit="abc")
+    authorization_path = tmp_path / "data/experiments/stage_c_v1/EXP001_demo/final_test_authorization.json"
+    assert_test_allowed(manifest, authorization_path=authorization_path, config_path=source / "config.yaml", current_commit="def")
+    assert file_sha256(source / "run_manifest.json") == tracked_manifest_before_authorize
+    assert registry.read_text(encoding="utf-8") == registry_before_authorize
+    with pytest.raises(TestGateError, match="frozen_commit_mismatch"):
+        assert_test_allowed(manifest, authorization_path=authorization_path, config_path=source / "config.yaml", current_commit="abc")
     (source / "config.yaml").write_text((source / "config.yaml").read_text(encoding="utf-8") + "# mutation\n", encoding="utf-8")
     with pytest.raises(TestGateError, match="config_hash_mismatch"):
-        assert_test_allowed(manifest, authorization_path=source / "final_test_authorization.json", config_path=source / "config.yaml", current_commit="abc")
+        assert_test_allowed(manifest, authorization_path=authorization_path, config_path=source / "config.yaml", current_commit="def")
 
 
 def test_no_real_experiment_is_created_in_repository():

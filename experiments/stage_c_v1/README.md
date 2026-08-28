@@ -11,7 +11,8 @@ experiment requires explicit human authorization.
 python -m activeview.scripts.create_experiment \
   --stage stage_c_v1 \
   --name <name> \
-  --hypothesis "<one falsifiable hypothesis>"
+  --hypothesis "<one falsifiable hypothesis>" \
+  --core-change "<one approved core change>"
 
 # 2. Human review of hypothesis.md and config.yaml
 
@@ -26,20 +27,26 @@ python -m activeview.scripts.start_experiment --experiment EXPxxx
 python -m activeview.scripts.validate_experiment --experiment EXPxxx
 python -m activeview.scripts.finalize_experiment \
   --experiment EXPxxx --decision ACCEPT
+
+# 7. Freeze the accepted candidate, then commit this tracked transition
+python -m activeview.scripts.freeze_final_candidate --experiment EXPxxx
+git add experiments/stage_c_v1/EXPxxx_* && git commit
 ```
 
-Normal Stage C-v1 work must not run Test. Test remains locked until a
-completed, accepted experiment is explicitly final-frozen by a human:
+Normal Stage C-v1 work must not run Test. Test remains locked until the
+accepted candidate is frozen and committed, then explicitly authorized by a
+human from a clean tree:
 
 ```bash
 python -m activeview.scripts.authorize_final_test \
   --experiment EXPxxx --confirm-final-model-frozen
 ```
 
-Authorization requires `COMPLETED + ACCEPT`, a passing validator, a clean
-working tree, and a commit/configuration lock. The authorization artifact is
-then checked fail-closed by `activeview.research.test_gate`; `--allow-test`
-alone cannot bypass it.
+Authorization requires `FINAL_FROZEN + ACCEPT`, a passing validator, a clean
+working tree, and a commit/configuration lock. It writes only an external
+runtime authorization artifact; tracked manifest and registry files are not
+modified. The artifact is then checked fail-closed by
+`activeview.research.test_gate`; `--allow-test` alone cannot bypass it.
 
 Failed and negative experiments remain in their immutable directories and in
 the registry. Never delete or reuse an `EXPxxx` directory. Do not start the

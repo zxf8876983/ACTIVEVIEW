@@ -54,6 +54,45 @@ def manifest_sha256(source_dir: Path) -> str:
     return file_sha256(source_dir / "run_manifest.json")
 
 
+def _portable_path(path: Path, root: Path) -> str:
+    """Encode a path relative to its owning root for portable manifests."""
+    return path.expanduser().resolve().relative_to(root.expanduser().resolve()).as_posix()
+
+
+def source_path_value(path: Path, repo_root: Path) -> str:
+    """Return the canonical repository-relative source path."""
+    return _portable_path(path, repo_root)
+
+
+def runtime_path_value(path: Path, data_root: Path) -> str:
+    """Return the canonical data-root-relative runtime path."""
+    return _portable_path(path, data_root)
+
+
+def resolve_source_path(value: str, repo_root: Path) -> Path:
+    """Resolve a source path, accepting legacy absolute values read-only."""
+    path = Path(str(value)).expanduser()
+    if path.is_absolute():
+        return path.resolve()
+    root = repo_root.expanduser().resolve()
+    resolved = (root / path).resolve()
+    if root not in resolved.parents and resolved != root:
+        raise ValueError(f"source path escapes repository root: {value}")
+    return resolved
+
+
+def resolve_runtime_path(value: str, data_root: Path) -> Path:
+    """Resolve a runtime path, accepting legacy absolute values read-only."""
+    path = Path(str(value)).expanduser()
+    if path.is_absolute():
+        return path.resolve()
+    root = data_root.expanduser().resolve()
+    resolved = (root / path).resolve()
+    if root not in resolved.parents and resolved != root:
+        raise ValueError(f"runtime path escapes data root: {value}")
+    return resolved
+
+
 def parse_controlled_config(path: Path) -> Dict[str, Dict[str, Any]]:
     """Parse only the small nested subset needed by lifecycle guards."""
     if not path.is_file():

@@ -10,7 +10,7 @@ def _final_manifest(tmp_path, commit="abc"):
     config = tmp_path / "config.yaml"; config.write_text("experiment:\n  id: EXP001\n", encoding="utf-8")
     auth = tmp_path / "final_test_authorization.json"
     auth.write_text(json.dumps({"experiment_id": "EXP001", "authorized": True, "frozen_git_commit": commit, "config_sha256": file_sha256(config)}), encoding="utf-8")
-    manifest = {"experiment": {"experiment_id": "EXP001", "status": "FINAL_FROZEN", "decision": "ACCEPT"}, "protocol": {"test_locked": True, "final_model_frozen": True, "test_authorized": True}}
+    manifest = {"experiment": {"experiment_id": "EXP001", "status": "FINAL_FROZEN", "decision": "ACCEPT"}, "protocol": {"test_locked": True, "final_model_frozen": True, "test_authorized": False}}
     return manifest, auth, config
 
 
@@ -37,6 +37,6 @@ def test_non_accepted_or_unauthorized_manifest_fails_closed(tmp_path):
     with pytest.raises(TestGateError, match="experiment_not_accepted"):
         assert_test_allowed(manifest, authorization_path=auth, config_path=config, current_commit="abc")
     manifest["experiment"]["decision"] = "ACCEPT"
-    manifest["protocol"]["test_authorized"] = False
-    with pytest.raises(TestGateError, match="test_not_authorized"):
+    auth.write_text(json.dumps({"experiment_id": "EXP001", "authorized": False, "frozen_git_commit": "abc", "config_sha256": file_sha256(config)}), encoding="utf-8")
+    with pytest.raises(TestGateError, match="authorization_not_confirmed"):
         assert_test_allowed(manifest, authorization_path=auth, config_path=config, current_commit="abc")

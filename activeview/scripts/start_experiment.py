@@ -14,7 +14,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from activeview.research.experiment import ExperimentStatus
 from activeview.active_view.utility_label_builder import file_sha256
-from activeview.research.manifest import experiment_from_manifest, git_dirty, git_value, load_manifest, save_manifest, utc_now, validate_controlled_config, write_status
+from activeview.research.manifest import experiment_from_manifest, git_dirty, git_value, load_manifest, resolve_source_path, save_manifest, utc_now, validate_controlled_config, write_status
 from activeview.research.provenance import provenance_complete, verify_frozen_provenance
 from activeview.research.registry import get_experiment, update_experiment
 
@@ -22,7 +22,7 @@ from activeview.research.registry import get_experiment, update_experiment
 def _source_dir(experiment_id: str, repo_root: Path) -> Path:
     registry = repo_root / "experiments" / "stage_c_v1" / "EXPERIMENT_REGISTRY.csv"
     row = get_experiment(registry, experiment_id)
-    return Path(row["source_dir"])
+    return resolve_source_path(row["source_dir"], repo_root)
 
 
 def start_experiment(experiment_id: str, *, repo_root: Path = REPO_ROOT, require_clean: bool = True) -> dict[str, str]:

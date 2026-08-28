@@ -100,9 +100,10 @@ ACTIVEVIEW 是主动视角选择研究：
 
 研究实验遵循 `experiments/stage_c_v1/` 中的 controlled-experiment
 基础设施：一个实验只能有一个主要科学改动，每个 `EXPxxx` 目录不可覆盖或
-复用，失败和负结果必须保留。Train/Val 可用于开发，Test 在明确的
-`FINAL_FROZEN` authorization 之前始终 locked。实验完成后停止，不得自动
-创建或启动下一个实验；`activeview/` 仍是唯一源码包。
+复用，失败和负结果必须保留。Train/Val 可用于开发，Test 在明确冻结
+`FINAL_FROZEN` candidate、提交最终冻结变更并生成外部 authorization 之前
+始终 locked。实验完成后停止，不得自动创建或启动下一个实验；
+`activeview/` 仍是唯一源码包。
 
 ---
 

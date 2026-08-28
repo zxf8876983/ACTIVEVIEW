@@ -8,9 +8,10 @@ import re
 from typing import Any, Dict, Mapping
 
 from activeview.active_view.utility_label_builder import file_sha256
+from activeview.core.paths import get_data_root, get_repo_root
 
 from .experiment import ExperimentStatus
-from .manifest import load_manifest, validate_controlled_config
+from .manifest import load_manifest, resolve_runtime_path, resolve_source_path, validate_controlled_config
 from .provenance import provenance_complete, verify_frozen_provenance
 from .registry import get_experiment
 from .test_gate import validate_final_test_authorization
@@ -24,7 +25,8 @@ def _config_id(path: Path) -> str | None:
 
 
 def validate_experiment(
-    source_dir: Path, *, registry_path: Path | None = None, require_complete_provenance: bool = True,
+    source_dir: Path, *, registry_path: Path | None = None, data_root: Path | None = None,
+    require_complete_provenance: bool = True,
 ) -> Dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -51,9 +53,24 @@ def validate_experiment(
         errors.append("status_invalid")
     if decision not in {"NA", "ACCEPT", "REJECT", "INCONCLUSIVE"}:
         errors.append("decision_invalid")
-    if str(source_dir.resolve()) != str(experiment.get("source_dir", "")):
+    repo_root = (
+        registry_path.expanduser().resolve().parents[2]
+        if registry_path is not None
+        else get_repo_root()
+    )
+    runtime_root = (data_root or get_data_root()).expanduser().resolve()
+    try:
+        manifest_source_dir = resolve_source_path(str(experiment.get("source_dir", "")), repo_root)
+    except ValueError:
+        manifest_source_dir = Path("/")
+        errors.append("source_dir_invalid")
+    try:
+        runtime_dir = resolve_runtime_path(str(experiment.get("runtime_dir", "")), runtime_root)
+    except ValueError:
+        runtime_dir = Path("/")
+        errors.append("runtime_dir_invalid")
+    if source_dir.resolve() != manifest_source_dir:
         errors.append("source_dir_mismatch")
-    runtime_dir = Path(str(experiment.get("runtime_dir", "")))
     if not source_dir.is_dir():
         errors.append("source_dir_missing")
     if not runtime_dir.is_dir():
@@ -78,6 +95,18 @@ def validate_experiment(
         errors.extend(verify_frozen_provenance(provenance if isinstance(provenance, Mapping) else {}))
         if not git_metadata.get("run_commit"):
             errors.append("run_commit_missing")
+        for filename, hash_key in (
+            ("hypothesis.md", "hypothesis_sha256"),
+            ("command.sh", "command_sha256_at_start"),
+        ):
+            artifact_path = source_dir / filename
+            recorded_hash = paths.get(hash_key)
+            if not artifact_path.is_file():
+                errors.append(f"locked_artifact_missing:{filename}")
+            elif not recorded_hash:
+                errors.append(f"locked_artifact_hash_missing:{hash_key}")
+            elif file_sha256(artifact_path) != recorded_hash:
+                errors.append(f"locked_artifact_hash_mismatch:{filename}")
     protocol = manifest.get("protocol", {})
     if not isinstance(protocol, Mapping):
         errors.append("protocol_missing")
@@ -89,13 +118,17 @@ def validate_experiment(
     if status not in {"FINAL_FROZEN"} and protocol.get("test_authorized") is not False:
         errors.append("test_authorization_invalid")
     if status == "FINAL_FROZEN":
-        errors.extend(validate_final_test_authorization(
-            manifest,
-            authorization_path=source_dir / "final_test_authorization.json",
-            config_path=config_path,
-        ))
-        authorization_path = source_dir / "final_test_authorization.json"
+        if decision != "ACCEPT":
+            errors.append("final_frozen_requires_accept")
+        if protocol.get("final_model_frozen") is not True:
+            errors.append("final_model_not_frozen")
+        authorization_path = runtime_dir / "final_test_authorization.json"
         if authorization_path.is_file():
+            errors.extend(validate_final_test_authorization(
+                manifest,
+                authorization_path=authorization_path,
+                config_path=config_path,
+            ))
             try:
                 payload = json.loads(authorization_path.read_text(encoding="utf-8"))
                 authorization = payload if isinstance(payload, Mapping) else {}
@@ -128,9 +161,19 @@ def validate_experiment(
                 errors.append("registry_status_mismatch")
             if row.get("decision", "NA") != decision:
                 errors.append("registry_decision_mismatch")
-            if row.get("source_dir") != str(source_dir.resolve()):
+            try:
+                registry_source = resolve_source_path(row.get("source_dir", ""), repo_root)
+            except ValueError:
+                registry_source = Path("/")
+                errors.append("registry_source_dir_invalid")
+            try:
+                registry_runtime = resolve_runtime_path(row.get("runtime_dir", ""), runtime_root)
+            except ValueError:
+                registry_runtime = Path("/")
+                errors.append("registry_runtime_dir_invalid")
+            if registry_source != source_dir.resolve():
                 errors.append("registry_source_dir_mismatch")
-            if row.get("runtime_dir") != str(runtime_dir.resolve()):
+            if registry_runtime != runtime_dir.resolve():
                 errors.append("registry_runtime_dir_mismatch")
         except (KeyError, ValueError) as error:
             errors.append(f"registry_identity_invalid:{error}")

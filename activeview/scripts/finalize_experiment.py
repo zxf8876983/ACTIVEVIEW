@@ -12,16 +12,20 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from activeview.research.experiment import Decision, ExperimentStatus
-from activeview.research.manifest import git_value, load_manifest, save_manifest, utc_now, write_status
+from activeview.core.paths import get_data_root
+from activeview.research.manifest import git_value, load_manifest, resolve_source_path, save_manifest, utc_now, write_status
 from activeview.research.registry import get_experiment, update_experiment
 from activeview.research.validator import validate_experiment
 
 
-def finalize_experiment(experiment_id: str, *, decision: str, repo_root: Path = REPO_ROOT) -> dict:
+def finalize_experiment(
+    experiment_id: str, *, decision: str, repo_root: Path = REPO_ROOT,
+    data_root: Path | None = None,
+) -> dict:
     if decision not in {item.value for item in Decision if item is not Decision.NA}:
         raise ValueError("decision must be ACCEPT, REJECT or INCONCLUSIVE")
     registry = repo_root / "experiments" / "stage_c_v1" / "EXPERIMENT_REGISTRY.csv"
-    source_dir = Path(get_experiment(registry, experiment_id)["source_dir"])
+    source_dir = resolve_source_path(get_experiment(registry, experiment_id)["source_dir"], repo_root)
     manifest = load_manifest(source_dir)
     if str(manifest.get("experiment", {}).get("status")) != ExperimentStatus.RUNNING.value:
         raise ValueError("Only RUNNING experiments can be finalized")
@@ -29,7 +33,7 @@ def finalize_experiment(experiment_id: str, *, decision: str, repo_root: Path = 
     missing = [str(path.name) for path in required if not path.is_file()]
     if missing:
         raise FileNotFoundError(f"Missing completion files: {missing}")
-    preflight = validate_experiment(source_dir, registry_path=registry)
+    preflight = validate_experiment(source_dir, registry_path=registry, data_root=data_root or get_data_root())
     if not preflight["passed"]:
         raise ValueError(f"Pre-finalization validation failed: {preflight['errors']}")
     manifest["experiment"]["status"] = ExperimentStatus.COMPLETED.value
@@ -54,8 +58,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--experiment", required=True)
     parser.add_argument("--decision", required=True, choices=("ACCEPT", "REJECT", "INCONCLUSIVE"))
+    parser.add_argument("--data-root", type=Path, default=None)
     args = parser.parse_args()
-    print(json.dumps(finalize_experiment(args.experiment, decision=args.decision), ensure_ascii=False, indent=2))
+    print(json.dumps(finalize_experiment(args.experiment, decision=args.decision, data_root=args.data_root), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

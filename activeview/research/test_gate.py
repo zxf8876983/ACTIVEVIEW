@@ -36,8 +36,8 @@ def validate_final_test_authorization(
         errors.append("test_lock_missing")
     if protocol.get("final_model_frozen") is not True:
         errors.append("final_model_not_frozen")
-    if protocol.get("test_authorized") is not True:
-        errors.append("test_not_authorized")
+    # Authorization is deliberately external to the tracked manifest. The
+    # runtime authorization artifact below is the sole Test unlock signal.
     if authorization_path is None or not authorization_path.is_file():
         errors.append("authorization_artifact_missing")
         authorization: Mapping[str, Any] = {}

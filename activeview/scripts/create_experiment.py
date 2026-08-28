@@ -15,9 +15,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from activeview.active_view.utility_label_builder import file_sha256
-from activeview.core.paths import get_data_root, get_stage_experiment_runtime_root, get_stage_experiments_root
+from activeview.core.paths import get_data_root, get_stage_experiments_root
 from activeview.research.experiment import Experiment
-from activeview.research.manifest import git_dirty, git_value, utc_now, write_json_atomic, write_status
+from activeview.research.manifest import git_dirty, git_value, runtime_path_value, source_path_value, utc_now, write_json_atomic, write_status
 from activeview.research.provenance import collect_stage_c_research_provenance
 from activeview.research.registry import next_experiment_id, register_experiment
 
@@ -91,7 +91,10 @@ def create_experiment(
     source_dir = stage_root / directory_name
     if source_dir.exists():
         raise FileExistsError(f"Experiment directory already exists: {source_dir}")
-    runtime_dir = get_stage_experiment_runtime_root(stage, directory_name) if repo == REPO_ROOT else ((data_root or get_data_root()) / "experiments" / stage / directory_name)
+    runtime_root = (data_root or get_data_root()).expanduser().resolve()
+    runtime_dir = runtime_root / "experiments" / stage / directory_name
+    source_value = source_path_value(source_dir, repo)
+    runtime_value = runtime_path_value(runtime_dir, runtime_root)
     source_created = False
     runtime_created = False
     registered = False
@@ -107,8 +110,8 @@ def create_experiment(
             motivation=motivation, baseline=baseline, core_change=core_change,
             frozen_items=["Stage A", "Stage B", "Stage C features", "frozen ST-GCN", "record split"],
             metrics=["Accuracy", "Macro-F1", "mean/median/p90 regret", "positive headroom capture"],
-            acceptance_criteria=[], rejection_criteria=[], source_dir=str(source_dir.resolve()),
-            runtime_dir=str(runtime_dir.resolve()), created_at=utc_now(),
+            acceptance_criteria=[], rejection_criteria=[], source_dir=source_value,
+            runtime_dir=runtime_value, created_at=utc_now(),
         )
         config_path = source_dir / "config.yaml"
         config_path.write_text("\n".join([
@@ -127,7 +130,7 @@ def create_experiment(
             "provenance": collect_stage_c_research_provenance(data_root),
             "protocol": {"test_locked": True, "test_used": False, "final_model_frozen": False, "test_authorized": False},
             "training": {"seed": None}, "model": {}, "loss": {}, "sampler": {}, "optimizer": {},
-            "paths": {"source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "draft_config_sha256": file_sha256(config_path), "run_config_sha256": None},
+            "paths": {"source_dir": source_value, "runtime_dir": runtime_value, "draft_config_sha256": file_sha256(config_path), "run_config_sha256": None},
         }
         write_json_atomic(source_dir / "run_manifest.json", manifest)
         write_status(source_dir, manifest)
@@ -137,7 +140,7 @@ def create_experiment(
         command_path = source_dir / "command.sh"
         command_path.write_text(command, encoding="utf-8")
         command_path.chmod(0o755)
-        registry_row = {"experiment_id": experiment_id, "name": name, "stage": stage, "status": "PLANNED", "hypothesis": hypothesis, "core_change": core_change, "baseline": baseline, "created_at": experiment.created_at, "completed_at": "", "git_commit_start": "", "git_commit_end": "", "decision": "NA", "test_used": "false", "source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "notes": "Research experiment created; human review required before start."}
+        registry_row = {"experiment_id": experiment_id, "name": name, "stage": stage, "status": "PLANNED", "hypothesis": hypothesis, "core_change": core_change, "baseline": baseline, "created_at": experiment.created_at, "completed_at": "", "git_commit_start": "", "git_commit_end": "", "decision": "NA", "test_used": "false", "source_dir": source_value, "runtime_dir": runtime_value, "notes": "Research experiment created; human review required before start."}
         register_experiment(registry_path, registry_row)
         registered = True
         return {"experiment_id": experiment_id, "source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "dirty_at_creation": manifest["git"]["dirty_at_creation"], "registry": str(registry_path.resolve())}

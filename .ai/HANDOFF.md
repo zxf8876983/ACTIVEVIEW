@@ -11,11 +11,15 @@ Implemented and hardened `activeview/research/` and the lifecycle CLIs:
 `validate_research_infrastructure`. Start now freezes the actual run commit,
 run config, hypothesis and command hashes; validators re-hash every frozen
 artifact; and the final Test gate accepts only canonical nested manifests. The
-Stage C-v1 registry at
+Final candidate freezing is a tracked `COMPLETED → FINAL_FROZEN` transition;
+after committing that transition, final authorization writes only an external
+runtime artifact and never mutates tracked manifest/registry files. Experiment
+paths are portable repository/data-root-relative values. The Stage C-v1 registry at
 `experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` is empty and no real EXP001
 was created. Test is fail-closed until a COMPLETED+ACCEPT experiment is
-explicitly FINAL_FROZEN with authorization, frozen Git commit, and config
-hash. Runtime artifacts belong under `ACTIVEVIEW_DATA_ROOT/experiments/`.
+explicitly FINAL_FROZEN, committed, and given an external authorization with
+matching frozen Git commit and config hash. Runtime artifacts belong under
+`ACTIVEVIEW_DATA_ROOT/experiments/`.
 No Stage C-v1 training, data regeneration, Test evaluation, or Stage D work
 was performed. The next step requires human authorization.
 

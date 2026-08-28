@@ -36,6 +36,10 @@ def test_validator_rehashes_frozen_artifacts(tmp_path):
         "protocol:\n  test_locked: true\n  test_authorized: false\n",
         encoding="utf-8",
     )
+    hypothesis = source / "hypothesis.md"
+    hypothesis.write_text("hypothesis", encoding="utf-8")
+    command = source / "command.sh"
+    command.write_text("#!/usr/bin/env bash\n", encoding="utf-8")
     artifact = tmp_path / "artifact.bin"
     artifact.write_bytes(b"stable")
     recorded = {"path": str(artifact), "exists": True, "sha256": file_sha256(artifact)}
@@ -49,7 +53,11 @@ def test_validator_rehashes_frozen_artifacts(tmp_path):
     }
     manifest = _manifest(source, runtime, "RUNNING", "NA")
     manifest["git"] = {"run_commit": "abc"}
-    manifest["paths"] = {"run_config_sha256": file_sha256(config)}
+    manifest["paths"] = {
+        "run_config_sha256": file_sha256(config),
+        "hypothesis_sha256": file_sha256(hypothesis),
+        "command_sha256_at_start": file_sha256(command),
+    }
     manifest["provenance"] = provenance
     (source / "run_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     assert validate_experiment(source)["passed"]
@@ -57,3 +65,35 @@ def test_validator_rehashes_frozen_artifacts(tmp_path):
     report = validate_experiment(source)
     assert not report["passed"]
     assert "frozen_artifact_hash_mismatch:stage_a.summary" in report["errors"]
+
+
+def test_validator_rejects_locked_command_or_hypothesis_mutation(tmp_path):
+    source, runtime = tmp_path / "EXP001_demo", tmp_path / "runtime"
+    source.mkdir(); runtime.mkdir()
+    config = source / "config.yaml"
+    config.write_text(
+        "experiment:\n  id: EXP001\n"
+        "evaluation:\n  test: false\n"
+        "protocol:\n  test_locked: true\n  test_authorized: false\n",
+        encoding="utf-8",
+    )
+    hypothesis = source / "hypothesis.md"; hypothesis.write_text("h", encoding="utf-8")
+    command = source / "command.sh"; command.write_text("c", encoding="utf-8")
+    manifest = _manifest(source, runtime, "RUNNING", "NA")
+    manifest["git"] = {"run_commit": "abc"}
+    manifest["paths"] = {
+        "run_config_sha256": file_sha256(config),
+        "hypothesis_sha256": file_sha256(hypothesis),
+        "command_sha256_at_start": file_sha256(command),
+    }
+    artifact = tmp_path / "artifact.bin"; artifact.write_bytes(b"x")
+    recorded = {"path": str(artifact), "exists": True, "sha256": file_sha256(artifact)}
+    manifest["provenance"] = {
+        "stage_a": {"summary": recorded}, "stage_b": {"summary": recorded},
+        "stage_c_features": {"summary": recorded}, "stgcn_checkpoint": recorded,
+        "label_mapping": recorded, "record_split": {"summary": recorded},
+    }
+    (source / "run_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    command.write_text("changed", encoding="utf-8")
+    report = validate_experiment(source)
+    assert "locked_artifact_hash_mismatch:command.sh" in report["errors"]

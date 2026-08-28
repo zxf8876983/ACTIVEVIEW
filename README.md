@@ -57,9 +57,13 @@ create (PLANNED) → human review → start (RUNNING) → Train/Val → validate
 ```
 
 The registry is intentionally empty until the next experiment is approved;
-Phase 0 does not create `EXP001`. Test evaluation is fail-closed until a
-completed accepted experiment has an explicit authorization artifact matching
-its frozen Git commit and configuration hash. Failed and negative results are
+Phase 0 does not create `EXP001`. The lifecycle is
+`create (PLANNED) → start (RUNNING) → finalize (COMPLETED) →
+freeze_final_candidate (FINAL_FROZEN) → commit → authorize_final_test`.
+The final authorization is written only under the external runtime directory,
+after a clean working tree check, and records the post-freeze Git commit and
+configuration hash. Test evaluation is fail-closed until that artifact
+matches the canonical nested manifest. Failed and negative results are
 retained, and the next experiment is never started automatically.
 
 ## Repository layout

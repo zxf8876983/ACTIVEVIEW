@@ -12,8 +12,12 @@ training, data regeneration, or new Test evaluation has started.
 The latest hardening adds start-time run/config/hypothesis/command locks,
 recursive frozen-artifact re-hashing, controlled config Test-lock validation,
 canonical nested-manifest Test-gate validation, and rollback/integration
-regressions. Next human decision: review the infrastructure and, separately,
-design and explicitly authorize `EXP001`.
+regressions. Final-test state is now split into tracked
+`freeze_final_candidate` followed by a clean-tree commit and external runtime
+`authorize_final_test`; authorization never mutates the tracked manifest or
+registry. Experiment source/runtime paths are stored relative to the
+repository/data roots. Next human decision: review the infrastructure and,
+separately, design and explicitly authorize `EXP001`.
 
 ## Repository consolidation (2026-08-29) — completed
 
