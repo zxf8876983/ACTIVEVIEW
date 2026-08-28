@@ -17,6 +17,7 @@ from ea_avs_mvp_v11.active_view.policy_episode_builder import (
     REGIONS,
     audit_episode_coverage,
     audit_episode_files,
+    audit_scene_coverage,
 )
 from ea_avs_mvp_v11.core.paths import get_data_root, get_habitat_data_root
 
@@ -32,7 +33,7 @@ def _dataset_context() -> tuple[Path, dict[str, Path], dict[str, str]]:
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     split_summary = json.loads((root / "splits" / "summary.json").read_text(encoding="utf-8"))
     if summary.get("policy_split", {}).get("counts") != split_summary.get("split_counts"):
-        pytest.skip("Stage A Episodes are stale relative to the current policy split files")
+        pytest.fail("Stage A Episodes are stale relative to the current policy split files")
     files = {split: Path(summary["episode_files"][split]) for split in SPLITS}
     expected: dict[str, str] = {}
     for split in SPLITS:
@@ -74,6 +75,11 @@ def test_final_jsonl_integrity_audit_passes():
     assert coverage["counts"]["duplicate_accounted_tuple_count"] == 0
     assert coverage["counts"]["episode_and_exclusion_overlap"] == 0
     assert coverage["integrity_checks"]["complete_tuple_coverage"]
+    scene_audit = audit_scene_coverage(
+        summary["target_scene_ids"],
+        summary["scene_ids_used"],
+    )
+    assert scene_audit["integrity_checks"]["all_target_scenes_used"]
 
 
 def test_cached_skeleton_archives_are_complete_when_full_audit_requested():

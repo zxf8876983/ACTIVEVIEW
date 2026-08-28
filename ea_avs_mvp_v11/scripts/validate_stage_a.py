@@ -27,18 +27,35 @@ from ea_avs_mvp_v11.active_view.policy_episode_builder import (
     audit_scene_coverage,
 )
 from ea_avs_mvp_v11.core.paths import get_data_root, get_habitat_data_root
+from ea_avs_mvp_v11.dataset.policy_split import (
+    load_policy_split_summary,
+    load_policy_splits,
+)
 
 SPLITS = ("train", "val", "test")
 
 
-def _load_context(root: Path) -> tuple[Dict[str, Path], Dict[str, str], Dict[str, Any]]:
+def _load_context(
+    root: Path,
+) -> tuple[
+    Dict[str, Path],
+    Dict[str, str],
+    Dict[str, Any],
+    list[Dict[str, Any]],
+]:
     summary = json.loads((root / "stage_a_summary.json").read_text(encoding="utf-8"))
+    split_dir = root / "splits"
+    # Use the canonical loader here so the standalone acceptance command
+    # validates split metadata against every serialized split file itself.
+    load_policy_split_summary(split_dir)
+    splits = load_policy_splits(split_dir)
     files = {split: Path(summary["episode_files"][split]) for split in SPLITS}
     expected: Dict[str, str] = {}
+    policy_records: list[Dict[str, Any]] = []
     for split in SPLITS:
-        records = json.loads((root / "splits" / f"{split}.json").read_text(encoding="utf-8"))
-        expected.update({str(item["record_id"]): split for item in records})
-    return files, expected, summary
+        policy_records.extend(splits[split])
+        expected.update({str(item["record_id"]): split for item in splits[split]})
+    return files, expected, summary, policy_records
 
 
 def _iter_episodes(files: Mapping[str, Path]) -> Iterable[Mapping[str, Any]]:
@@ -118,7 +135,15 @@ def main() -> int:
     parser.add_argument("--max-habitat-episodes", type=int, default=None)
     args = parser.parse_args()
 
-    files, expected, summary = _load_context(args.dataset_root)
+    try:
+        files, expected, summary, policy_records = _load_context(args.dataset_root)
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+        report = {
+            "split_metadata_valid": False,
+            "split_metadata_error": str(error),
+        }
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+        return 1
     audit = audit_episode_files(
         files,
         expected_record_splits=expected,
@@ -128,9 +153,7 @@ def main() -> int:
     coverage = audit_episode_coverage(
         files,
         exclusions_file,
-        policy_records=[item for split in SPLITS for item in json.loads(
-            (args.dataset_root / "splits" / f"{split}.json").read_text(encoding="utf-8")
-        )],
+        policy_records=policy_records,
         complete_scene_ids=[str(item) for item in summary.get("scene_ids_used", [])],
         regions=[str(item) for item in summary.get("regions", REGIONS)],
     )
@@ -139,6 +162,7 @@ def main() -> int:
         [str(item) for item in summary.get("scene_ids_used", [])],
     )
     report: Dict[str, Any] = {
+        "split_metadata_valid": True,
         "episode_audit": audit,
         "coverage_audit": coverage,
         "scene_audit": scene_audit,
@@ -148,7 +172,7 @@ def main() -> int:
             files, args.habitat_root, args.max_habitat_episodes,
         )
     print(json.dumps(report, indent=2, ensure_ascii=False))
-    passed = all(
+    passed = bool(report["split_metadata_valid"]) and all(
         bool(value)
         for key, value in audit["integrity_checks"].items()
         if key != "split_overlap"
