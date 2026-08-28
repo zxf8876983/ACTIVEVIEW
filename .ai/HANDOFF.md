@@ -28,7 +28,7 @@ ST-GCN never receives AMASS/SMPL GT joints. Grounding uses URDF visual geometry 
 
 ## Offline active-view data
 
-Data is under `datasets/offline/<scene-set>/<original-scene-folder>/`. Four furniture-based regions are used: `bedroom`, `living_room`, `kitchen`, `dining_area`. Each placement has 32 views (1.5/2.0/2.5/3.0 m × 8 azimuths). `semantic-region-v2` candidate manifests and `semantic-region-offline-v2` records persist all geometry, camera, static navigation and 32 skeleton/confidence fields; RGB/Depth are not saved.
+Data is under `datasets/offline/<scene-set>/<original-scene-folder>/`. Four furniture-based regions are used: `bedroom`, `living_room`, `kitchen`, `dining_area`. Each placement has 32 views (1.5/2.0/2.5/3.0 m × 8 azimuths). `semantic-region-v2` candidate manifests and `semantic-region-offline-v2` records persist all geometry, camera, static navigation and 32 skeleton/confidence fields; RGB/Depth are not saved. The old minival scene `00800-TEEsavR23oF` is retained only for historical compatibility and is excluded from the current 21-scene HM3D-train evaluation protocol.
 
 Static placement reachability is not sufficient for a trajectory. Evaluation recomputes `ShortestPath(P_current, P_candidate)` from the robot's actual current position before choosing a next view. Current evaluators report `NoMove`, `Fixed`, `Random`, `Nearest` and hindsight candidate-pool `Oracle`; v11.3 Utility Predictor code/checkpoints are not active.
 
@@ -39,9 +39,10 @@ state; `00643` required only metadata refresh (`npz_changed=0`). No scene
 generation process remains active.
 
 The Stage A policy split was regenerated with canonical 6:2:2 ratio
-(589/197/194 records; 980 unique records). Existing serialized Episode JSONL
-from the previous 70/15/15 split was intentionally not regenerated in this
-step; rebuild Stage A Episodes before evaluation.
+(589/197/194 records; 980 unique records). Episodes were rebuilt from
+existing offline caches: 41,819/13,987/13,774 train/val/test Episodes (69,580
+total) for the 21 current HM3D-train scenes. The historical minival scene
+`00800-TEEsavR23oF` is intentionally not part of this protocol.
 
 ## Historical boundary
 
@@ -61,12 +62,12 @@ candidate costs, and recursive future-perception leakage fields. With
 navigation arrays, viewpoint IDs, and finite skeleton frames. The read-only
 acceptance entry point is `ea_avs_mvp_v11/scripts/validate_stage_a.py`;
 `--verify-habitat` recomputes real HM3D `ShortestPath` for final Episodes.
-The lightweight JSONL audit passes for 59,780 Episodes (no duplicate episode
-keys/IDs and no integrity failures). The cached-NPZ audit now additionally
-cross-checks Episode geometry against the archive; a new full run after this
-change was not completed because it is I/O-heavy. One real Habitat Episode
-smoke check previously passed. A full all-Episode Habitat path replay remains
-an explicit, potentially expensive acceptance run and has not been executed.
+The 6:2:2 static + cached-NPZ audit passes for 69,580 Episodes (no duplicate
+episode keys/IDs and no integrity failures). The full all-Episode Habitat path
+replay was executed and reported `path_failures=[]` across 21 current scenes.
+The historical summary target list still contains the excluded legacy-v1
+minival directory, so the raw scene audit reports it as missing; this does
+not affect the current 21-scene evaluation set.
 
 The Stage A audit now allows partial non-finite skeleton viewpoints. It records
 `nonfinite_cached_skeleton_viewpoints` for diagnosis, while current/candidate

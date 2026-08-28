@@ -35,9 +35,9 @@ The placement reachability flag is static metadata only. During sequential evalu
 
 ## Current data status
 
-- HM3D-minival: `offline/hm3d-minival/00800-TEEsavR23oF/` is the canonical minival scene.
+- HM3D-minival: `offline/hm3d-minival/00800-TEEsavR23oF/` is a legacy v11 scene and is excluded from the current strategy-evaluation scene set.
 - HM3D-train: 21-scene selection is recorded in `offline/hm3d-train/dataset_summary.json`; all 21 scene folders have complete 980×4×32 manifests. `00592-CthA7sQNTPK` and `00643-ggNAcMh8JPT` have been rotation-audited against the exact offline render state. `00643` required metadata refresh only (`npz_changed=0`); no generation process remains active.
-- Stage A policy split has been regenerated with canonical `train/val/test = 6:2:2`: 589/197/194 records, 980 unique records total. Existing serialized Stage A Episodes still reflect the former split and must be rebuilt before policy evaluation.
+- Stage A policy split has been regenerated with canonical `train/val/test = 6:2:2`: 589/197/194 records, 980 unique records total. Episodes were rebuilt from existing offline caches: 41,819/13,987/13,774 train/val/test Episodes (69,580 total) for the 21 current HM3D-train scenes. The legacy minival scene `00800-TEEsavR23oF` is intentionally outside the current evaluation protocol.
 - Dynamic, random-start and grid-start evaluation outputs remain under `results/` with their corresponding caches under `datasets/strategy_eval_cache/`.
 
 ## Canonical entry points
@@ -84,3 +84,13 @@ conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_
 Unit tests do not replace this Habitat integration check. If the Habitat
 dependency or scene assets are unavailable, the result must be reported as
 `NOT RUN`, not as a passed Stage A acceptance.
+
+Latest 6:2:2 acceptance outputs:
+
+- Static + NPZ: `/home/zxf/WorkSpace/code/data/ActiveView/results/stage_a_validate_static_622_clean.json`
+- Real Habitat ShortestPath: `/home/zxf/WorkSpace/code/data/ActiveView/results/stage_a_validate_habitat_622_clean.json`
+- Both reports pass split, Episode, NPZ and tuple coverage checks. Habitat
+  reports `path_failures=[]` for 69,580 Episodes across 21 current scenes.
+  The raw summary still lists the legacy minival directory in its historical
+  target list, so its scene audit reports `all_target_scenes_used=false`; this
+  is not a missing scene in the current 21-scene protocol.
