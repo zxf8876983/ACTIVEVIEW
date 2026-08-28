@@ -48,10 +48,37 @@ def _make_fixture(tmp_path: Path) -> tuple[Path, Path, dict]:
             (json.dumps(record) + "\n") if split == "train" else "",
             encoding="utf-8",
         )
+    split_dir = dataset_root / "splits"
+    split_dir.mkdir()
+    split_sizes = {"train": 589, "val": 197, "test": 194}
+    split_offsets = {"train": 0, "val": 589, "test": 786}
+    for split, size in split_sizes.items():
+        start = split_offsets[split]
+        rows = [
+            {
+                "record_id": f"split-record-{start + index}",
+                "action_label": "class0",
+                "label_id": 0,
+                "policy_split": split,
+            }
+            for index in range(size)
+        ]
+        (split_dir / f"{split}.json").write_text(json.dumps(rows), encoding="utf-8")
+    (split_dir / "summary.json").write_text(
+        json.dumps(
+            {
+                "split_ratios": {"train": 0.6, "val": 0.2, "test": 0.2},
+                "input_sample_count": 980,
+                "split_counts": split_sizes,
+                "per_class_split_counts": {"class0": split_sizes},
+            }
+        ),
+        encoding="utf-8",
+    )
     stage_a_summary = {
         "scene_ids_used": scene_ids,
         "episode_files": episode_files,
-        "policy_split": {"counts": {"train": 1, "val": 0, "test": 0}},
+        "policy_split": {"counts": split_sizes},
     }
     stage_a_summary_path = dataset_root / "stage_a_summary.json"
     stage_a_summary_path.write_text(json.dumps(stage_a_summary), encoding="utf-8")
@@ -64,7 +91,7 @@ def _make_fixture(tmp_path: Path) -> tuple[Path, Path, dict]:
         "supervision_only": True,
         "source_stage_a_summary_sha256": file_sha256(stage_a_summary_path),
         "source_episode_file_sha256": {split: file_sha256(Path(path)) for split, path in episode_files.items()},
-        "split_counts": {"train": 1, "val": 0, "test": 0},
+        "split_counts": split_sizes,
         "episode_counts": {"train": 1, "val": 0, "test": 0},
         "candidate_pair_counts": {"train": 2, "val": 0, "test": 0},
         "official_scene_count": 21,
@@ -111,3 +138,19 @@ def test_validator_rejects_metric_corruption_and_stale_source_hash(tmp_path):
     report = validate(dataset_root, stage_b_root)
     assert not report["passed"]
     assert any(error.get("reason") == "source_stage_a_summary_hash_mismatch" for error in report["errors"])
+
+
+def test_validator_rejects_consistent_but_noncanonical_split_counts(tmp_path):
+    dataset_root, stage_b_root, summary = _make_fixture(tmp_path)
+    stage_a_path = dataset_root / "stage_a_summary.json"
+    stage_a = json.loads(stage_a_path.read_text(encoding="utf-8"))
+    stage_a["policy_split"]["counts"] = {"train": 600, "val": 190, "test": 190}
+    stage_a_path.write_text(json.dumps(stage_a), encoding="utf-8")
+    summary["source_stage_a_summary_sha256"] = file_sha256(stage_a_path)
+    summary["split_counts"] = {"train": 600, "val": 190, "test": 190}
+    (stage_b_root / "stage_b_summary.json").write_text(json.dumps(summary), encoding="utf-8")
+    report = validate(dataset_root, stage_b_root)
+    assert not report["passed"]
+    reasons = {error.get("reason") for error in report["errors"]}
+    assert "stage_a_policy_split_not_canonical" in reasons
+    assert "stage_b_policy_split_not_canonical" in reasons

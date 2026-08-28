@@ -117,4 +117,9 @@ utility bins are mutually exclusive from positive/negative bins; degradation
 also reports its conditional rate among current-correct Episodes. The full
 Stage B labels were regenerated with these rules and the validator again
 passed. Additional regression tests cover metrics corruption, geodesic
-mismatch, stale provenance and the real saved artifact.
+mismatch, stale provenance and the real saved artifact. The validator also
+independently loads `datasets/policy_v11_5/splits/` through the canonical
+policy-split loader and requires frozen 589/197/194 counts in the split JSON,
+Stage A summary, and Stage B summary. A regression test confirms that
+consistently altered counts such as 600/190/190 still fail; the canonical full
+Stage B artifact was revalidated successfully.

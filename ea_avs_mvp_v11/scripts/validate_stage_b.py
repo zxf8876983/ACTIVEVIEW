@@ -21,10 +21,12 @@ from ea_avs_mvp_v11.active_view.utility_label_builder import (
     file_sha256,
     summarize_utility_records,
 )
+from ea_avs_mvp_v11.dataset.policy_split import load_policy_splits
 
 
 SPLITS = ("train", "val", "test")
 LEGACY_MINIVAL_SCENE = "00800-TEEsavR23oF"
+CANONICAL_SPLIT_COUNTS = {"train": 589, "val": 197, "test": 194}
 FORBIDDEN_TOKENS = (
     "skeleton", "rgb", "depth", "logits", "probabilities", "pose_3d",
     "future_skeleton", "candidate_pose", "candidate_entropy_map",
@@ -266,8 +268,20 @@ def validate(
             if not source_path.exists() or expected_source_episode_hashes.get(split) != file_sha256(source_path):
                 errors.append({"split": split, "reason": "source_episode_file_hash_mismatch"})
     expected_policy_counts = stage_a_summary.get("policy_split", {}).get("counts", {})
+    canonical_counts: Dict[str, int] | None = None
+    try:
+        canonical_splits = load_policy_splits(dataset_root / "splits")
+        canonical_counts = {split: len(canonical_splits[split]) for split in SPLITS}
+        if canonical_counts != CANONICAL_SPLIT_COUNTS:
+            errors.append({"reason": "canonical_split_counts_mismatch"})
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+        errors.append({"reason": f"invalid_canonical_policy_split:{error}"})
+    if canonical_counts is not None and expected_policy_counts != canonical_counts:
+        errors.append({"reason": "stage_a_policy_split_not_canonical"})
     if stage_b_summary.get("split_counts") != expected_policy_counts:
         errors.append({"reason": "summary_policy_split_counts_mismatch"})
+    if canonical_counts is not None and stage_b_summary.get("split_counts") != canonical_counts:
+        errors.append({"reason": "stage_b_policy_split_not_canonical"})
     mapping_path = Path(stage_b_summary.get("label_mapping", ""))
     if mapping_path.exists():
         mapping = json.loads(mapping_path.read_text(encoding="utf-8"))

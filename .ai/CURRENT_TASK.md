@@ -128,4 +128,8 @@ The validator additionally recomputes the complete metrics tree with a
 `1e-7` absolute tolerance, cross-checks every candidate geodesic against Stage
 A, verifies Stage A summary and all three Episode-file SHA-256 hashes, and
 uses mutually exclusive near-zero/positive/negative utility bins. Rescue and
-degradation now include both overall and conditional rates.
+degradation now include both overall and conditional rates. The validator also
+independently loads `datasets/policy_v11_5/splits/` through the canonical
+policy-split loader and requires frozen 589/197/194 counts in the split JSON,
+Stage A summary, and Stage B summary; mutually consistent but non-canonical
+counts are rejected.
