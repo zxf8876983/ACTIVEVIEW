@@ -18,6 +18,15 @@ YOLO/VideoPose3D processing, Test evaluation, or EXP002 creation occurred.
 Test remains locked and `test_used=false`. The next action requires explicit
 human authorization; do not run `command.sh` automatically.
 
+The frozen Stage C-v0 Set Ranker Val baseline was computed read-only before any
+EXP001 start. `baseline_val_metrics.json` and `baseline_val_analysis.json`
+cover 13,987 Val Episodes / 197 motion records, use the same utility-gap
+definitions as the planned experiment, and are SHA-256 recorded in the
+EXP001 manifest. `evaluate_research_experiment.py` provides the fixed future
+Train→Val-only prediction, analysis and baseline comparison path; it cannot
+run Test. The method note explicitly records global normalization across all
+valid ordered pairs in each training batch.
+
 ## Phase 0 research infrastructure — completed, review pending
 
 Implemented and hardened `activeview/research/` and the lifecycle CLIs:

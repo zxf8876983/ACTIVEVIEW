@@ -48,6 +48,11 @@ L_total = L_existing + lambda_gap * L_gap
 
 Padding candidates are excluded by the existing candidate mask. The planned
 parameters are `lambda_gap=1.0`, `tau_gap=1.0`, and `max_weight=10.0`.
+The implementation normalizes over all valid ordered pairs in a training
+batch (global pair normalization), rather than averaging independently
+normalized losses per Episode. This intentionally gives batches with larger
+total utility-gap mass more influence; per-Episode normalization is deferred to
+a separate ablation and is not part of EXP001.
 
 ## Frozen Components
 

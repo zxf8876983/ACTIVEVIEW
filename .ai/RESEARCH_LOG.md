@@ -25,6 +25,11 @@ single core change, Val result, decision, important observation, and Git commit.
 - The accepted Stage A/B/C-v0 artifacts, features, ST-GCN checkpoint, split,
   architecture and sampler remain frozen.
 
+- Frozen Stage C-v0 Set Ranker Val baseline metrics and analysis were generated
+  read-only before start and hashed in the EXP001 manifest. This preparation
+  does not constitute an experiment result; no model training or Test
+  evaluation occurred.
+
 ## 2026-08-29 — Phase 0 lifecycle hardening
 
 - No scientific experiment was created; the registry remains header-only.

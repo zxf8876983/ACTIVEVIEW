@@ -429,8 +429,14 @@ def _representative(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     return cases
 
 
-def analyze_rows(rows: List[Dict[str, Any]], categories: Sequence[str]) -> Dict[str, Any]:
-    """Annotate and summarize aligned Set Ranker Test rows."""
+def analyze_rows(
+    rows: List[Dict[str, Any]],
+    categories: Sequence[str],
+    *,
+    split: str = "test",
+    model: str = "set_ranker",
+) -> Dict[str, Any]:
+    """Annotate and summarize aligned Set Ranker rows for one split."""
     if not rows:
         raise ValueError("No prediction rows available")
     for row in rows:
@@ -491,7 +497,7 @@ def analyze_rows(rows: List[Dict[str, Any]], categories: Sequence[str]) -> Dict[
             else None
         )
     summary = {
-        "analysis_protocol": {"model": "set_ranker", "split": "test", "near_zero_tolerance": NEAR_ZERO, "small_regret_threshold": SMALL_REGRET, "episode_iid_warning": "13,774 episodes are repeated scene/region views; independent motion records are 194."},
+        "analysis_protocol": {"model": model, "split": split, "near_zero_tolerance": NEAR_ZERO, "small_regret_threshold": SMALL_REGRET, "episode_iid_warning": "Episode rows are repeated scene/region views; independent motion records must be reported separately."},
         "episode_count": len(rows), "record_count": len({str(row["record_id"]) for row in rows}), "categories": list(categories),
         "regret": regret_info, "failure_taxonomy": taxonomy, "candidate_miss": _miss_analysis(rows),
         "action_class": action_stats, "region": region_stats, "current_state": _state_analysis(rows),
@@ -506,7 +512,14 @@ def analyze_rows(rows: List[Dict[str, Any]], categories: Sequence[str]) -> Dict[
     return summary
 
 
-def prepare_aligned_rows(stage_a: Sequence[Mapping[str, Any]], stage_b: Sequence[Mapping[str, Any]], features: Sequence[Mapping[str, Any]], predictions: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
+def prepare_aligned_rows(
+    stage_a: Sequence[Mapping[str, Any]],
+    stage_b: Sequence[Mapping[str, Any]],
+    features: Sequence[Mapping[str, Any]],
+    predictions: Sequence[Mapping[str, Any]],
+    *,
+    expected_split: str = "test",
+) -> List[Dict[str, Any]]:
     lengths = {len(stage_a), len(stage_b), len(features), len(predictions)}
     if len(lengths) != 1:
         raise ValueError(f"Stage A/B/feature/prediction lengths disagree: {sorted(lengths)}")
@@ -519,7 +532,7 @@ def prepare_aligned_rows(stage_a: Sequence[Mapping[str, Any]], stage_b: Sequence
         ids = [str(item.get("episode_id")) for item in (episode, utility, feature, prediction)]
         if len(set(ids)) != 1:
             raise ValueError(f"Episode alignment mismatch at line {index + 1}: {ids}")
-        if str(prediction.get("policy_split")) != "test":
+        if str(prediction.get("policy_split")) != expected_split:
             raise ValueError(f"Unexpected prediction split at {prediction['episode_id']}")
         row = dict(prediction)
         row["action_label"] = str(episode.get("action_label", episode.get("label_id")))

@@ -255,3 +255,20 @@ statistics distinguish CandidateOracle from SafeOracle move geometry, and the
 symmetric-geometry diagnostic reports an explicit enrichment ratio (1.21x).
 
 Status: Stage C-v0 failure analysis completed; results ready for scientific review.
+
+## EXP001 preparation additions (2026-08-29)
+
+- Frozen Stage C-v0 Set Ranker Val predictions were analyzed read-only before
+  any EXP001 start (13,987 Episodes; 197 independent motion records).
+- `baseline_val_metrics.json` and `baseline_val_analysis.json` in the EXP001
+  source directory freeze the baseline definitions and metrics; both SHA-256
+  values are recorded in `run_manifest.json`.
+- `activeview/scripts/evaluate_research_experiment.py` is the fixed future
+  Train→Val evaluation/analysis entry point. It writes Val predictions,
+  `val_metrics.json` and `analysis.json` only to the EXP001 runtime directory,
+  compares against the frozen baseline, and never evaluates Test.
+- The gap-loss method note records global normalization over all valid ordered
+  pairs in a training batch; per-Episode normalization is not part of EXP001.
+
+**Current status:** EXP001 remains `PLANNED`; no training or Test evaluation has
+started.

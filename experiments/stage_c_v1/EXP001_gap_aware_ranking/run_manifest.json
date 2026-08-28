@@ -146,6 +146,15 @@
       }
     }
   },
+  "baseline_val": {
+    "metrics_path": "experiments/stage_c_v1/EXP001_gap_aware_ranking/baseline_val_metrics.json",
+    "metrics_sha256": "113c6e102a370a0354e7b1dcee81cc875eb5f2d3264290a545c1ca234ecfdfe6",
+    "analysis_path": "experiments/stage_c_v1/EXP001_gap_aware_ranking/baseline_val_analysis.json",
+    "analysis_sha256": "011fc45dabbb3af597a565a9a78ec8de482233cf556ac41a858332259b185595",
+    "source": "frozen Stage C-v0 Set Ranker Val predictions",
+    "split": "val",
+    "test_used": false
+  },
   "protocol": {
     "test_locked": true,
     "test_used": false,
@@ -180,7 +189,7 @@
   "paths": {
     "source_dir": "experiments/stage_c_v1/EXP001_gap_aware_ranking",
     "runtime_dir": "experiments/stage_c_v1/EXP001_gap_aware_ranking",
-    "draft_config_sha256": "4e21fec26cd01e944d3d37bc28d564d90cdfcd5bee02484cd76b7c5725ba9b05",
+    "draft_config_sha256": "0e501e4967778148e9a84289e76620a7c13678bb5036e8c123d0558f754f91d1",
     "run_config_sha256": null
   }
 }
