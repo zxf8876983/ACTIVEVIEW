@@ -238,12 +238,17 @@ def _state_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
 
 
 def _geometry_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    oracle_rows: List[Dict[str, float]] = []
+    candidate_oracle_rows: List[Dict[str, float]] = []
+    safe_oracle_move_rows: List[Dict[str, float]] = []
     selected_rows: List[Dict[str, float]] = []
     for row in rows:
-        oracle = _candidate_geometry(row, int(row["candidate_oracle_viewpoint_id"]))
-        if oracle is not None:
-            oracle_rows.append(oracle)
+        candidate_oracle = _candidate_geometry(row, int(row["candidate_oracle_viewpoint_id"]))
+        if candidate_oracle is not None:
+            candidate_oracle_rows.append(candidate_oracle)
+        if not bool(row["safe_oracle_stays"]):
+            safe_oracle = _candidate_geometry(row, int(row["safe_oracle_viewpoint_id"]))
+            if safe_oracle is not None:
+                safe_oracle_move_rows.append(safe_oracle)
         if not bool(row["predicted_stays"]):
             selected = _candidate_geometry(row, int(row["predicted_candidate_viewpoint_id"]))
             if selected is not None:
@@ -260,7 +265,7 @@ def _geometry_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
             counts[f"{azimuth_bins[index]:g}-{azimuth_bins[index + 1]:g}"] += 1
         return dict(counts)
 
-    oracle_geodesics = [item["geodesic"] for item in oracle_rows]
+    oracle_geodesics = [item["geodesic"] for item in safe_oracle_move_rows]
     geo_edges = [
         min(oracle_geodesics) if oracle_geodesics else 0.0,
         _percentile(oracle_geodesics, 25),
@@ -271,20 +276,56 @@ def _geometry_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     geo_bins: Dict[str, Dict[str, Any]] = {}
     for index, label in enumerate(("q0_q25", "q25_q50", "q50_q75", "q75_q100")):
         low, high = geo_edges[index], geo_edges[index + 1]
-        members = [row for row in rows if (low <= float(_candidate_geometry(row, int(row["candidate_oracle_viewpoint_id"]))["geodesic"]) <= high if index == 3 else low <= float(_candidate_geometry(row, int(row["candidate_oracle_viewpoint_id"]))["geodesic"]) < high)]
+        members = []
+        for row in rows:
+            if bool(row["safe_oracle_stays"]):
+                continue
+            geometry = _candidate_geometry(row, int(row["safe_oracle_viewpoint_id"]))
+            if geometry is None:
+                continue
+            value = geometry["geodesic"]
+            if (low <= value <= high) if index == 3 else (low <= value < high):
+                members.append(row)
         geo_bins[label] = {"lower": low, "upper": high, "count": len(members), "regret": _distribution([float(row["regret"]) for row in members]), "headroom": _headroom(members)}
 
     def radius_direction(values: Sequence[Dict[str, float]]) -> Dict[str, int]:
         return {"closer": sum(item["delta_radius"] < -0.25 for item in values), "same": sum(abs(item["delta_radius"]) <= 0.25 for item in values), "farther": sum(item["delta_radius"] > 0.25 for item in values)}
 
-    high = [row for row in rows if row["regret_group"] == "G3_high_regret"]
+    high = [row for row in rows if row["regret_group"] == "G3_high_regret" and not bool(row["safe_oracle_stays"])]
     high_oracle = []
     for row in high:
-        item = _candidate_geometry(row, int(row["candidate_oracle_viewpoint_id"]))
+        if bool(row["safe_oracle_stays"]):
+            continue
+        item = _candidate_geometry(row, int(row["safe_oracle_viewpoint_id"]))
         if item is not None:
             high_oracle.append(item)
-    geodesic_values = [item["geodesic"] for item in oracle_rows]
-    return {"oracle_selected_geometry": {"oracle": summarize(oracle_rows), "model_selected_move": summarize(selected_rows)}, "azimuth_bins": {"oracle_all": bins(oracle_rows), "model_selected": bins(selected_rows), "high_regret_oracle": bins(high_oracle)}, "geodesic_bins_by_oracle": geo_bins, "radius_direction": {"oracle": radius_direction(oracle_rows), "model_selected_move": radius_direction(selected_rows)}, "oracle_geometry_count": len(oracle_rows), "model_selected_move_count": len(selected_rows), "high_regret_oracle_count": len(high_oracle), "oracle_geodesic_quantiles": {"q25": _percentile(geodesic_values, 25), "q50": _percentile(geodesic_values, 50), "q75": _percentile(geodesic_values, 75)} }
+    geodesic_values = [item["geodesic"] for item in safe_oracle_move_rows]
+    return {
+        "candidate_oracle_geometry": summarize(candidate_oracle_rows),
+        "safe_oracle_move_geometry": summarize(safe_oracle_move_rows),
+        "model_selected_move_geometry": summarize(selected_rows),
+        "azimuth_bins": {
+            "candidate_oracle_all": bins(candidate_oracle_rows),
+            "safe_oracle_move": bins(safe_oracle_move_rows),
+            "model_selected_move": bins(selected_rows),
+            "high_regret_safe_oracle_move": bins(high_oracle),
+        },
+        "geodesic_bins_by_safe_oracle_move": geo_bins,
+        "radius_direction": {
+            "candidate_oracle_all": radius_direction(candidate_oracle_rows),
+            "safe_oracle_move": radius_direction(safe_oracle_move_rows),
+            "model_selected_move": radius_direction(selected_rows),
+        },
+        "candidate_oracle_geometry_count": len(candidate_oracle_rows),
+        "safe_oracle_move_geometry_count": len(safe_oracle_move_rows),
+        "model_selected_move_count": len(selected_rows),
+        "high_regret_safe_oracle_move_count": len(high_oracle),
+        "safe_oracle_move_geodesic_quantiles": {
+            "q25": _percentile(geodesic_values, 25),
+            "q50": _percentile(geodesic_values, 50),
+            "q75": _percentile(geodesic_values, 75),
+        },
+    }
 
 
 def _difficulty_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
@@ -298,10 +339,17 @@ def _difficulty_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
         records.append({"max_utility": float(utilities.max()), "min_utility": float(utilities.min()), "utility_range": float(utilities.max() - utilities.min()), "utility_std": float(utilities.std()), "top1_top2_gap": gap, "positive_candidate_count": int(np.sum(utilities > NEAR_ZERO)), "negative_candidate_count": int(np.sum(utilities < -NEAR_ZERO)), "near_zero_candidate_count": int(np.sum(np.abs(utilities) <= NEAR_ZERO)), "row": row})
     gap_thresholds = {"q25": _percentile(gaps, 25), "q50": _percentile(gaps, 50), "q75": _percentile(gaps, 75)}
     output: Dict[str, Any] = {"thresholds": gap_thresholds, "overall": {key: _distribution([item[key] for item in records]) for key in ("max_utility", "min_utility", "utility_range", "utility_std", "top1_top2_gap")}}
-    labels = (("very_small", lambda value: value <= gap_thresholds["q25"]), ("small", lambda value: value <= gap_thresholds["q50"]), ("medium", lambda value: value <= gap_thresholds["q75"]), ("large", lambda value: value > gap_thresholds["q75"]))
+    labels = (
+        ("very_small", lambda value: value <= gap_thresholds["q25"]),
+        ("small", lambda value: gap_thresholds["q25"] < value <= gap_thresholds["q50"]),
+        ("medium", lambda value: gap_thresholds["q50"] < value <= gap_thresholds["q75"]),
+        ("large", lambda value: value > gap_thresholds["q75"]),
+    )
     for name, condition in labels:
         members = [item["row"] for item in records if condition(float(item["top1_top2_gap"]))]
         output[name] = {"count": len(members), "candidate_hit_rate": _rate(sum(int(row["predicted_candidate_viewpoint_id"]) == int(row["candidate_oracle_viewpoint_id"]) for row in members), len(members)), "regret": _distribution([float(row["regret"]) for row in members]), "headroom": _headroom(members)}
+    output["bin_count_sum"] = sum(output[name]["count"] for name, _ in labels)
+    output["bins_partition"] = output["bin_count_sum"] == len(rows)
     return output
 
 
@@ -325,9 +373,24 @@ def _symmetric_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
                     candidates.append((row, difference, max(utils[left], utils[right])))
     threshold = _percentile(pair_diffs, 90)
     affected = [item for item in candidates if item[1] >= threshold and pair_diffs]
-    high_rows = {str(item[0]["episode_id"]) for item in affected}
+    ambiguity_ids = {str(item[0]["episode_id"]) for item in affected}
     high_regret_rows = {str(row["episode_id"]) for row in rows if row["regret_group"] == "G3_high_regret"}
-    return {"definition": {"radius_tolerance_m": 0.25, "geodesic_tolerance_m": 0.5, "absolute_azimuth_tolerance_deg": 10.0, "large_utility_difference_threshold": threshold}, "candidate_pair_count": len(candidates), "large_difference_pair_count": len(affected), "episode_count": len(high_rows), "episode_ratio": _rate(len(high_rows), len(rows)), "high_regret_episode_enrichment": _rate(len(high_rows & high_regret_rows), len(high_rows)) if high_rows else 0.0, "high_regret_overlap_count": len(high_rows & high_regret_rows), "overall_pair_utility_difference": _distribution(pair_diffs)}
+    high_regret_baseline = _rate(len(high_regret_rows), len(rows))
+    high_regret_given_ambiguity = _rate(len(ambiguity_ids & high_regret_rows), len(ambiguity_ids))
+    return {
+        "definition": {"radius_tolerance_m": 0.25, "geodesic_tolerance_m": 0.5, "absolute_azimuth_tolerance_deg": 10.0, "large_utility_difference_threshold": threshold},
+        "candidate_pair_count": len(candidates),
+        "large_difference_pair_count": len(affected),
+        "episode_count": len(ambiguity_ids),
+        "episode_ratio": _rate(len(ambiguity_ids), len(rows)),
+        "high_regret_overlap_count": len(ambiguity_ids & high_regret_rows),
+        "high_regret_baseline_rate": high_regret_baseline,
+        "high_regret_given_ambiguity_rate": high_regret_given_ambiguity,
+        "enrichment_ratio": _rate(high_regret_given_ambiguity, high_regret_baseline),
+        "ambiguity_given_high_regret_rate": _rate(len(ambiguity_ids & high_regret_rows), len(high_regret_rows)),
+        "ambiguity_baseline_rate": _rate(len(ambiguity_ids), len(rows)),
+        "overall_pair_utility_difference": _distribution(pair_diffs),
+    }
 
 
 def _record_level(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
@@ -342,7 +405,8 @@ def _record_level(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     top10_count = max(1, int(math.ceil(len(output) * 0.10)))
     top10 = output[:top10_count]
     top10_ids = {item["record_id"] for item in top10}
-    return {"record_count": len(output), "top10pct_record_count": top10_count, "top10pct_mean_regret_records": top10, "top20_worst": output[:20], "top20_best": list(reversed(output[-20:])), "catastrophic_episode_count": len(catastrophic), "catastrophic_episode_share_in_top10pct_records": _rate(sum(str(row["record_id"]) in top10_ids for row in catastrophic), len(catastrophic)), "all_records": output}
+    catastrophic_share = _rate(sum(str(row["record_id"]) in top10_ids for row in catastrophic), len(catastrophic))
+    return {"record_count": len(output), "top10pct_record_count": top10_count, "top10pct_mean_regret_records": top10, "top20_worst": output[:20], "top20_best": list(reversed(output[-20:])), "catastrophic_episode_count": len(catastrophic), "catastrophic_episode_share_in_top10pct_records": catastrophic_share, "catastrophic_concentration_ratio_vs_uniform": _rate(catastrophic_share, 0.10), "all_records": output}
 
 
 def _representative(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
@@ -400,11 +464,19 @@ def analyze_rows(rows: List[Dict[str, Any]], categories: Sequence[str]) -> Dict[
     action_stats = {key: _class_metrics(value) for key, value in sorted(action_groups.items())}
     for key, value in action_stats.items():
         value["oracle_gap_accuracy"] = value["SafeOracle_accuracy"] - value["Set_accuracy"]
+        value["G3_high_regret_count"] = sum(row["regret_group"] == "G3_high_regret" for row in action_groups[key])
+        value["G3_high_regret_rate"] = _rate(value["G3_high_regret_count"], value["n"])
+        value["catastrophic_top5_count"] = sum(bool(row["catastrophic_top5pct"]) for row in action_groups[key])
+        value["catastrophic_top5_rate"] = _rate(value["catastrophic_top5_count"], value["n"])
     region_stats: Dict[str, Any] = {}
     for key, value in sorted(region_groups.items()):
         region_stats[key] = _class_metrics(value)
         region_stats[key]["Set_stay_rate"] = _rate(sum(bool(row["predicted_stays"]) for row in value), len(value))
         region_stats[key]["SafeOracle_stay_rate"] = _rate(sum(bool(row["safe_oracle_stays"]) for row in value), len(value))
+        region_stats[key]["G3_high_regret_count"] = sum(row["regret_group"] == "G3_high_regret" for row in value)
+        region_stats[key]["G3_high_regret_rate"] = _rate(region_stats[key]["G3_high_regret_count"], region_stats[key]["n"])
+        region_stats[key]["catastrophic_top5_count"] = sum(bool(row["catastrophic_top5pct"]) for row in value)
+        region_stats[key]["catastrophic_top5_rate"] = _rate(region_stats[key]["catastrophic_top5_count"], region_stats[key]["n"])
     selected_dist = [float(row["selected_true_utility"]) for row in rows]
     true_dist = [float(row["safe_oracle_utility"]) for row in rows]
     high_rows = [row for row in rows if row["regret_group"] == "G3_high_regret"]
@@ -412,7 +484,12 @@ def analyze_rows(rows: List[Dict[str, Any]], categories: Sequence[str]) -> Dict[
     high_region_counts = Counter(str(row["region"]) for row in high_rows)
     for row in rows:
         row["selected_geometry"] = _candidate_geometry(row, int(row["predicted_candidate_viewpoint_id"])) if not bool(row["predicted_stays"]) else None
-        row["oracle_geometry"] = _candidate_geometry(row, int(row["candidate_oracle_viewpoint_id"]))
+        row["candidate_oracle_geometry"] = _candidate_geometry(row, int(row["candidate_oracle_viewpoint_id"]))
+        row["oracle_geometry"] = (
+            _candidate_geometry(row, int(row["safe_oracle_viewpoint_id"]))
+            if not bool(row["safe_oracle_stays"])
+            else None
+        )
     summary = {
         "analysis_protocol": {"model": "set_ranker", "split": "test", "near_zero_tolerance": NEAR_ZERO, "small_regret_threshold": SMALL_REGRET, "episode_iid_warning": "13,774 episodes are repeated scene/region views; independent motion records are 194."},
         "episode_count": len(rows), "record_count": len({str(row["record_id"]) for row in rows}), "categories": list(categories),
@@ -421,6 +498,8 @@ def analyze_rows(rows: List[Dict[str, Any]], categories: Sequence[str]) -> Dict[
         "geometry": _geometry_analysis(rows), "candidate_set_difficulty": _difficulty_analysis(rows),
         "symmetric_geometry_ambiguity": _symmetric_analysis(rows), "record_level": _record_level(rows),
         "high_regret_action_counts": dict(high_action_counts), "high_regret_region_counts": dict(high_region_counts),
+        "high_regret_action_rates": {name: value["G3_high_regret_rate"] for name, value in action_stats.items()},
+        "high_regret_region_rates": {name: value["G3_high_regret_rate"] for name, value in region_stats.items()},
         "representative_cases": _representative(rows),
         "overall": {"selected_true_utility": _distribution(selected_dist), "safe_oracle_utility": _distribution(true_dist), "headroom": _headroom(rows), "set_accuracy": _rate(sum(bool(row["selected_correct"]) for row in rows), len(rows)), "nomove_accuracy": _rate(sum(bool(row["current_correct"]) for row in rows), len(rows)), "safe_oracle_accuracy": _rate(sum(int(row["safe_oracle_predicted_label_id"]) == int(row["label_id"]) for row in rows), len(rows))},
     }

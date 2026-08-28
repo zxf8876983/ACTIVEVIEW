@@ -187,8 +187,8 @@ summary, episode/record CSV tables, and five diagnostic figures. Test coverage
 is 13,774 Episodes from 194 independent motion records. Regret is highly
 right-skewed (median 0.00746, p90 6.143, mean 1.614); 10.00% of Episodes are
 above p90 and the top 10% of motion records account for 40.20% of top-5%
-catastrophic Episodes, so failures are not exclusively concentrated in a few
-records.
+catastrophic Episodes (4.02x the uniform 10% baseline), so failures are
+substantially but not exclusively concentrated in difficult records.
 
 The dominant taxonomy is wrong-candidate high utility loss (32.44%), followed
 by correct SafeOracle action (29.85%) and missed move (21.95%). Exact candidate
@@ -201,6 +201,9 @@ rho=+0.184; margin=-0.180; pose confidence=+0.023). Symmetric-geometry
 ambiguity is only modestly enriched in high-regret Episodes, so evidence for
 perceived body orientation is weak/inconclusive. The report prioritizes
 long-tail hard-example handling and better current/candidate representation as
-hypotheses for later review; no Stage C-v1 or Stage D decision was made.
+hypotheses for later review; no Stage C-v1 or Stage D decision was made. The
+candidate-set gap bins are now a mutually exclusive partition, geometry
+statistics distinguish CandidateOracle from SafeOracle move geometry, and the
+symmetric-geometry diagnostic reports an explicit enrichment ratio (1.22x).
 
 Status: Stage C-v0 failure analysis completed; results ready for scientific review.

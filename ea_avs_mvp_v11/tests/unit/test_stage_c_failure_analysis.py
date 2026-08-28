@@ -74,6 +74,45 @@ def test_candidate_set_gap_and_safe_ratio_are_reported():
     assert summary["candidate_miss"]["ratio_thresholds"]["selected_at_least_50pct_oracle"] == pytest.approx(1.0)
 
 
+def test_candidate_set_gap_bins_are_a_partition():
+    rows = []
+    for index, gap in enumerate((0.1, 0.2, 0.3, 0.4)):
+        row = _row(
+            f"e{index}",
+            f"r{index}",
+            safe_stays=False,
+            predicted_stays=False,
+            predicted_id=2,
+            safe_id=2,
+            regret=0.0,
+        )
+        row["utility_targets"] = [0.0, gap]
+        rows.append(row)
+    difficulty = analyze_rows(rows, ["sit"])["candidate_set_difficulty"]
+    assert difficulty["bins_partition"] is True
+    assert difficulty["bin_count_sum"] == len(rows)
+    assert sum(difficulty[name]["count"] for name in ("very_small", "small", "medium", "large")) == len(rows)
+
+
+def test_symmetric_analysis_reports_baseline_and_enrichment_ratio():
+    rows = [
+        _row(
+            f"e{index}",
+            f"r{index}",
+            safe_stays=False,
+            predicted_stays=False,
+            predicted_id=1,
+            safe_id=2,
+            regret=10.0 if index == 0 else 0.0,
+        )
+        for index in range(10)
+    ]
+    symmetric = analyze_rows(rows, ["sit"])["symmetric_geometry_ambiguity"]
+    assert symmetric["high_regret_baseline_rate"] == pytest.approx(0.1)
+    assert symmetric["high_regret_given_ambiguity_rate"] == pytest.approx(0.1)
+    assert symmetric["enrichment_ratio"] == pytest.approx(1.0)
+
+
 def test_record_aggregation_does_not_treat_episodes_as_records():
     rows = [
         _row("e0", "r0", safe_stays=False, predicted_stays=False, predicted_id=2, safe_id=2, regret=0.1),
