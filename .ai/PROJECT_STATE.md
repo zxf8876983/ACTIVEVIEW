@@ -1,6 +1,6 @@
 # ACTIVEVIEW Project State
 
-Last Updated: 2026-08-27
+Last Updated: 2026-08-28
 Active Version: v11.5 (`ea_avs_mvp_v11/`)
 
 ## Canonical scientific protocol
@@ -9,6 +9,7 @@ ACTIVEVIEW 研究机器人在 HM3D 室内环境中选择下一个观察视点，
 
 - Labels: 16 classes = audited official-150 subset (`t pose`, `cartwheel`, `knock`, `play instrument`, `crawl`, `a pose`, `kick`, `sit`, `move up/down incline`, `jog`, `stand up`, `jump`, `walk`, `throw`) + `lie` + `stumble`; `fall` is not an active label.
 - Split: BABEL `train.json` → Train and `val.json` → Val. Only single-label intervals with `num_frames > 30` survive; conflicting identical source intervals are removed. Official classes are capped at Train 400 / Val 100; `lie` and `stumble` are uncapped.
+- Policy split: canonical `train/val/test = 6:2:2`; the persisted split `summary.json -> split_ratios` is the single source read by the Stage A Episode builder.
 - Perception: AMASS/SMPL → project-local `male_0` in pure-color Habitat → RGB-only 256×256 → Ultralytics YOLO26n-Pose → VideoPose3D → Y/Z camera conversion and camera-to-gravity → root center + torso scale + yaw-only normalization → H36M-17 ST-GCN.
 - ST-GCN never receives AMASS/SMPL GT joints. Yaw-only alignment preserves gravity-relative roll/pitch, so lying/fall-like posture is not rotated upright.
 
@@ -21,7 +22,7 @@ Humanoid: `/home/zxf/WorkSpace/code/data/ActiveView/assets/habitat_humanoids/mal
 - Train/Val estimated skeletons: `datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/` (3,240/980; `(N,3,30,17,1)`).
 - Frozen checkpoint: `checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/`.
 - YOLO weights: `checkpoints/ultralytics/yolo26n-pose.pt`.
-- Offline strategy data: `datasets/offline/hm3d-minival/00800-TEEsavR23oF/` and `datasets/offline/hm3d-train/<original-scene-folder>/`; RGB/Depth are not saved.
+- Offline strategy data: `datasets/offline/hm3d-minival/00800-TEEsavR23oF/` and `datasets/offline/hm3d-train/<original-scene-folder>/`; RGB/Depth are not saved. All 21 selected HM3D-train scenes are complete.
 - Offline schema: candidate manifest `semantic-region-v2`; record schema `semantic-region-offline-v2`.
 
 ## Dataset generation and training entry points
@@ -50,7 +51,10 @@ Entrypoints:
 - Cached 500 continuous starts: `scripts/evaluate_hm3d_train_random_initializations.py`.
 - Cached 32-grid starts: `scripts/evaluate_hm3d_train_grid_initializations.py`.
 
-As of this update, 12 HM3D-train scene folders have complete manifests (980 actions × 4 regions × 32 views); one subsequent scene folder is incomplete and no generation process is running. The 21-scene list and resumable status are recorded in `datasets/offline/hm3d-train/dataset_summary.json`.
+As of this update, all 21 HM3D-train scene folders have complete manifests
+(980 actions × 4 regions × 32 views), and no generation process is running.
+The scene list and status are recorded in
+`datasets/offline/hm3d-train/dataset_summary.json`.
 
 ## Evaluation records
 

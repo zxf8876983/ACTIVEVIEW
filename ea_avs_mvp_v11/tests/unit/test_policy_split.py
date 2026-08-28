@@ -1,6 +1,13 @@
+import json
+
 import pytest
 
-from ea_avs_mvp_v11.dataset.policy_split import audit_policy_splits, build_policy_splits
+from ea_avs_mvp_v11.dataset.policy_split import (
+    RATIOS,
+    audit_policy_splits,
+    build_policy_splits,
+    load_policy_split_summary,
+)
 
 
 def _records():
@@ -44,3 +51,15 @@ def test_split_audit_reports_label_id_conflict():
     }
     audit = audit_policy_splits(splits)
     assert not audit["same_record_same_label_id"]
+
+
+def test_canonical_policy_split_is_six_two_two():
+    assert RATIOS == {"train": 0.60, "val": 0.20, "test": 0.20}
+
+
+def test_episode_builder_source_summary_ratios_are_preserved(tmp_path):
+    (tmp_path / "summary.json").write_text(json.dumps({
+        "split_ratios": {"train": 0.60, "val": 0.20, "test": 0.20},
+    }), encoding="utf-8")
+    summary = load_policy_split_summary(tmp_path)
+    assert summary["split_ratios"] == RATIOS

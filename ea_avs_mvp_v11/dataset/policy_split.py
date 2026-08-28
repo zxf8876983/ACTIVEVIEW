@@ -10,7 +10,8 @@ from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Sequence,
 
 
 SPLITS: Tuple[str, ...] = ("train", "val", "test")
-RATIOS: Mapping[str, float] = {"train": 0.70, "val": 0.15, "test": 0.15}
+# Canonical v11.5 policy split: 60% train, 20% validation, 20% test.
+RATIOS: Mapping[str, float] = {"train": 0.60, "val": 0.20, "test": 0.20}
 
 
 def _allocate_counts(size: int, ratios: Mapping[str, float]) -> Dict[str, int]:
@@ -146,6 +147,19 @@ def write_policy_splits(
         json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
     )
     return summary
+
+
+def load_policy_split_summary(split_dir: Path) -> Dict[str, Any]:
+    """Load the persisted split metadata, including the actual ratios used."""
+    path = split_dir / "summary.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict) or not isinstance(payload.get("split_ratios"), Mapping):
+        raise ValueError(f"Missing split_ratios in {path}")
+    ratios = {str(name): float(value) for name, value in payload["split_ratios"].items()}
+    if set(ratios) != set(SPLITS) or abs(sum(ratios.values()) - 1.0) > 1e-8:
+        raise ValueError(f"Invalid split_ratios in {path}: {ratios}")
+    payload["split_ratios"] = ratios
+    return payload
 
 
 def load_policy_splits(split_dir: Path) -> Dict[str, List[Dict[str, Any]]]:

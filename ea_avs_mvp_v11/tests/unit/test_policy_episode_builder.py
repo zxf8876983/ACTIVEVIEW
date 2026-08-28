@@ -3,6 +3,7 @@ import json
 import numpy as np
 
 from ea_avs_mvp_v11.active_view.policy_episode_builder import (
+    audit_episode_coverage,
     audit_episode_files,
     build_dynamic_candidate_pool,
     build_navigation_geometry_pool,
@@ -260,3 +261,55 @@ def test_audit_checks_episode_uniqueness_and_npz_geometry(tmp_path):
     assert not audit["integrity_checks"]["unique_record_scene_region"]
     assert not audit["integrity_checks"]["unique_episode_ids"]
     assert not audit["integrity_checks"]["episode_geometry_matches_npz"]
+
+
+def test_episode_coverage_requires_each_expected_tuple_once(tmp_path):
+    archive = tmp_path / "coverage.npz"
+    first = _episode_for_archive(archive, episode_id="episode_a")
+    first["record_id"] = "record_a"
+    second = _episode_for_archive(archive, episode_id="episode_b")
+    second["record_id"] = "record_b"
+    episodes = tmp_path / "episodes.jsonl"
+    episodes.write_text(
+        json.dumps(first) + "\n" + json.dumps(second) + "\n", encoding="utf-8"
+    )
+    exclusions = tmp_path / "exclusions.jsonl"
+    exclusions.write_text(
+        json.dumps({
+            "record_id": "record_c", "scene_id": "scene", "region": "bedroom",
+            "excluded_reason": "no_valid_grid_start",
+        }) + "\n",
+        encoding="utf-8",
+    )
+    audit = audit_episode_coverage(
+        {"train": episodes}, exclusions,
+        policy_records=[
+            {"record_id": "record_a"},
+            {"record_id": "record_b"},
+            {"record_id": "record_c"},
+        ],
+        complete_scene_ids=["scene"], regions=["bedroom"],
+    )
+    assert audit["counts"]["expected_tuple_count"] == 3
+    assert audit["counts"]["missing_tuple_count"] == 0
+    assert audit["counts"]["duplicate_accounted_tuple_count"] == 0
+    assert audit["integrity_checks"]["complete_tuple_coverage"]
+
+    exclusions.write_text(
+        exclusions.read_text(encoding="utf-8") + json.dumps({
+            "record_id": "record_a", "scene_id": "scene", "region": "bedroom",
+            "excluded_reason": "duplicate",
+        }) + "\n",
+        encoding="utf-8",
+    )
+    duplicate = audit_episode_coverage(
+        {"train": episodes}, exclusions,
+        policy_records=[
+            {"record_id": "record_a"},
+            {"record_id": "record_b"},
+            {"record_id": "record_c"},
+        ],
+        complete_scene_ids=["scene"], regions=["bedroom"],
+    )
+    assert duplicate["counts"]["episode_and_exclusion_overlap"] == 1
+    assert not duplicate["integrity_checks"]["complete_tuple_coverage"]

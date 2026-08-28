@@ -13,7 +13,11 @@ from pathlib import Path
 
 import pytest
 
-from ea_avs_mvp_v11.active_view.policy_episode_builder import audit_episode_files
+from ea_avs_mvp_v11.active_view.policy_episode_builder import (
+    REGIONS,
+    audit_episode_coverage,
+    audit_episode_files,
+)
 from ea_avs_mvp_v11.core.paths import get_data_root, get_habitat_data_root
 
 
@@ -36,8 +40,21 @@ def _dataset_context() -> tuple[Path, dict[str, Path], dict[str, str]]:
 
 
 def test_final_jsonl_integrity_audit_passes():
-    _root, files, expected = _dataset_context()
+    root, files, expected = _dataset_context()
     audit = audit_episode_files(files, expected_record_splits=expected)
+    summary = json.loads((root / "stage_a_summary.json").read_text(encoding="utf-8"))
+    records = [
+        item
+        for split in SPLITS
+        for item in json.loads((root / "splits" / f"{split}.json").read_text(encoding="utf-8"))
+    ]
+    coverage = audit_episode_coverage(
+        files,
+        Path(summary["exclusions_file"]),
+        policy_records=records,
+        complete_scene_ids=summary["scene_ids_used"],
+        regions=summary.get("regions", REGIONS),
+    )
     assert audit["counts"]["episodes"] > 0
     assert all(
         value == 0
@@ -50,6 +67,10 @@ def test_final_jsonl_integrity_audit_passes():
         for key, value in audit["integrity_checks"].items()
         if key != "split_overlap"
     )
+    assert coverage["counts"]["missing_tuple_count"] == 0
+    assert coverage["counts"]["duplicate_accounted_tuple_count"] == 0
+    assert coverage["counts"]["episode_and_exclusion_overlap"] == 0
+    assert coverage["integrity_checks"]["complete_tuple_coverage"]
 
 
 def test_cached_skeleton_archives_are_complete_when_full_audit_requested():

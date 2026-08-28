@@ -19,9 +19,20 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ea_avs_mvp_v11.active_view.policy_episode_builder import REGIONS, audit_episode_files, load_scene_index, iter_scene_region_episodes
+from ea_avs_mvp_v11.active_view.policy_episode_builder import (
+    REGIONS,
+    audit_episode_coverage,
+    audit_episode_files,
+    load_scene_index,
+    iter_scene_region_episodes,
+)
 from ea_avs_mvp_v11.core.paths import get_data_root, get_habitat_data_root
-from ea_avs_mvp_v11.dataset.policy_split import SPLITS, audit_policy_splits, load_policy_splits
+from ea_avs_mvp_v11.dataset.policy_split import (
+    SPLITS,
+    audit_policy_splits,
+    load_policy_split_summary,
+    load_policy_splits,
+)
 from ea_avs_mvp_v11.scripts.evaluate_hm3d_train_dynamic_reachability import _make_sim, _path_cost
 
 
@@ -58,6 +69,7 @@ def main() -> None:
     parser.add_argument("--max-records", type=int, default=None, help="Optional smoke-test action-record limit")
     args = parser.parse_args()
 
+    split_summary = load_policy_split_summary(args.split_dir)
     splits = load_policy_splits(args.split_dir)
     if args.max_records is not None:
         selected_ids = {
@@ -132,16 +144,29 @@ def main() -> None:
         expected_record_splits=expected_record_splits,
         validate_cached_skeletons=True,
     )
+    policy_records = [item for split in SPLITS for item in splits[split]]
+    coverage_audit = audit_episode_coverage(
+        episode_files,
+        args.output_dir / "exclusions.jsonl",
+        policy_records=policy_records,
+        complete_scene_ids=used_scenes,
+        regions=args.regions,
+    )
+    integrity_checks = {
+        **episode_audit["integrity_checks"],
+        "complete_tuple_coverage": coverage_audit["integrity_checks"]["complete_tuple_coverage"],
+    }
 
     summary = {
         "protocol": "ACTIVEVIEW v11.5 Stage A",
         "seed": args.seed,
         "policy_split": {
-            "ratios": {"train": 0.70, "val": 0.15, "test": 0.15},
+            "ratios": split_summary["split_ratios"],
             "counts": {split: len(splits[split]) for split in SPLITS},
         },
         "policy_split_audit": split_audit,
-        "per_class_split_counts": json.loads((args.split_dir / "summary.json").read_text(encoding="utf-8")).get("per_class_split_counts", {}),
+        "per_class_split_counts": split_summary.get("per_class_split_counts", {}),
+        "regions": list(args.regions),
         "scenes_scanned": scanned,
         "complete_scenes_used": len(used_scenes),
         "scene_ids_used": used_scenes,
@@ -154,7 +179,8 @@ def main() -> None:
         },
         "excluded": {name: exclusions[name] for name in ("incomplete_scene", "no_valid_grid_start", "no_reachable_next_candidate", "missing_cached_skeleton")},
         "episode_audit": episode_audit["counts"],
-        "integrity_checks": episode_audit["integrity_checks"],
+        "integrity_checks": integrity_checks,
+        "coverage_audit": coverage_audit["counts"],
         "offline_root": str(args.offline_root.resolve()),
         "scene_sets": list(args.scene_sets),
         "episode_files": {split: str((args.output_dir / f"{split}_episodes.jsonl").resolve()) for split in SPLITS},

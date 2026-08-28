@@ -5,7 +5,7 @@ Updated: 2026-08-28
 
 ## Canonical v11.5
 
-The active implementation is `ea_avs_mvp_v11/`. The protocol is selected16: audited official-150 14 classes plus `lie` and `stumble`; `fall` is excluded. BABEL `train.json` and `val.json` are used directly after single-label filtering, strict `num_frames > 30`, conflict removal, official Train/Val caps 400/100, and seed 42.
+The active implementation is `ea_avs_mvp_v11/`. The protocol is selected16: audited official-150 14 classes plus `lie` and `stumble`; `fall` is excluded. BABEL `train.json` and `val.json` are used directly after single-label filtering, strict `num_frames > 30`, conflict removal, official Train/Val caps 400/100, and seed 42. Stage A policy records use `train/val/test = 6:2:2`, read from persisted split `summary.json`.
 
 The perception chain is:
 
@@ -37,6 +37,11 @@ All 21 requested HM3D-train scene manifests are complete. Each scene contains
 `00643-ggNAcMh8JPT` were rotation-audited and matched the exact offline render
 state; `00643` required only metadata refresh (`npz_changed=0`). No scene
 generation process remains active.
+
+The Stage A policy split was regenerated with canonical 6:2:2 ratio
+(589/197/194 records; 980 unique records). Existing serialized Episode JSONL
+from the previous 70/15/15 split was intentionally not regenerated in this
+step; rebuild Stage A Episodes before evaluation.
 
 ## Historical boundary
 

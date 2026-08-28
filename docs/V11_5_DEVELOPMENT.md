@@ -1,6 +1,6 @@
 # ACTIVEVIEW v11.5 开发与实验状态
 
-更新时间：2026-08-27
+更新时间：2026-08-28
 当前源码目录：`ea_avs_mvp_v11/`
 
 本文记录 v11.5 当前实际代码、数据链路、离线数据结构、评估协议和相对于历史版本的清理/修正。它与 [`V11_5_SELECTED16_DATASET_PROTOCOL.md`](V11_5_SELECTED16_DATASET_PROTOCOL.md) 一起构成 v11.5 的开发文档；若历史 README、脚本或结果与本文冲突，以本文和实际 canonical entry points 为准。
@@ -42,7 +42,7 @@ ACTIVEVIEW 的研究对象是主动视角选择，而不是重新设计动作识
 2. 要求源区间严格 `num_frames > 30`。
 3. 相同 AMASS 源区间若对应冲突标签，全部剔除。
 4. 官方 14 类分别限制为 Train 每类最多 400、Val 每类最多 100；`lie` 和 `stumble` 不设上限。
-5. 固定随机种子 42，并写出 `train.json`、`val.json`、`label_mapping.json`、`summary.json` 和 `excluded.json`。
+5. 固定随机种子 42，并写出 `train.json`、`val.json`、`label_mapping.json`、`summary.json` 和 `excluded.json`。ST-GCN 预训练仍只使用 BABEL train/val；Stage A policy split 的比例另行定义如下。
 
 当前实际 manifest 规模为 Train 3,240、Val 980，张量分别为 `(3240, 3, 30, 17, 1)` 和 `(980, 3, 30, 17, 1)`。实际类别计数写入 `train.json`/`val.json` 与 summary，不允许根据旧 10 类或旧 14 类数据推断。
 
@@ -126,7 +126,7 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 
 ### 4.1 两阶段设计
 
-离线阶段不提前保存 32 张 RGB，也不保存深度；它保存候选视点的几何、导航元数据和从该视点得到的估计骨架。评估阶段使用冻结 ST-GCN 的每视点预测，按策略选择一个可达的下一视点。
+离线阶段不提前保存 32 张 RGB，也不保存深度；它保存候选视点的几何、导航元数据和从该视点得到的估计骨架。评估阶段使用冻结 ST-GCN 的每视点预测，按策略选择一个可达的下一视点。Stage A policy records 使用 canonical `train/val/test = 6:2:2`；实际比例唯一读取 split 目录的 `summary.json -> split_ratios`。当前 980 条 policy records 已重新划分为 589/197/194；旧的 Stage A Episode JSONL 不会自动随 split 文件更新，必须重新运行 `build_policy_episodes.py`。
 
 场景目录规范：
 
@@ -165,7 +165,7 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 4. 对每个视点执行 YOLO26n → VideoPose3D → 坐标转换 → 归一化。
 5. 保存骨架、confidence、32 视点几何和导航字段，不保存 RGB/Depth。
 
-已批准的 HM3D-train 场景集合为 21 个语义场景，编排器按场景串行、每场景 4 个 Habitat worker，以控制显存并利用多相机。当前文件系统审计显示 12 个场景有完整 `manifest.json`（每场景 980×4×32=125,440 个视点样本），第 13 个场景目录尚不完整；没有检测到正在运行的生成进程，后续可从场景目录断点续跑。
+已批准的 HM3D-train 场景集合为 21 个语义场景，编排器按场景串行、每场景 4 个 Habitat worker，以控制显存并利用多相机。当前文件系统审计显示 21 个场景均有完整 `manifest.json`（每场景 980×4×32=125,440 个视点样本）；没有检测到正在运行的生成进程。
 
 ## 5. 策略评估流程
 
@@ -219,7 +219,7 @@ conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_
   --verify-habitat
 ```
 
-`stage_a_summary.json` 中的 `episode_audit` 是最终 JSONL 的实际统计，`integrity_checks` 由这些统计推导而来，不再使用硬编码 `True`。其中 `split_overlap=false` 表示 split 之间没有重叠；`nonfinite_cached_skeleton_viewpoints` 是允许部分失败视点时的信息性计数，不作为失败条件；其余验收布尔值为 `true` 才表示通过。`no_forbidden_future_perception_fields` 只表示 Episode schema 没有混入未来感知字段，不代表 Episode 可原封不动提供给在线策略。真实 Habitat 集成测试和全量缓存审计应与 unit tests 分开记录，不能将被跳过的集成测试视为通过。
+`stage_a_summary.json` 中的 `episode_audit` 是最终 JSONL 的实际统计，`coverage_audit` 进一步验证所有 `record × complete_scene × selected_region` 恰好由一个 Episode 或一个 record-level exclusion 覆盖；`missing_tuple_count`、`duplicate_accounted_tuple_count` 和 `episode_and_exclusion_overlap` 必须为 0。`integrity_checks` 由这些统计推导而来，不再使用硬编码 `True`。其中 `split_overlap=false` 表示 split 之间没有重叠；`nonfinite_cached_skeleton_viewpoints` 是允许部分失败视点时的信息性计数，不作为失败条件；其余验收布尔值为 `true` 才表示通过。`no_forbidden_future_perception_fields` 只表示 Episode schema 没有混入未来感知字段，不代表 Episode 可原封不动提供给在线策略。真实 Habitat 集成测试和全量缓存审计应与 unit tests 分开记录，不能将被跳过的集成测试视为通过。
 
 ## 6. v11.5 代码清理与科学修正记录
 

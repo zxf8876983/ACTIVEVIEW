@@ -20,20 +20,24 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ea_avs_mvp_v11.active_view.policy_episode_builder import audit_episode_files
+from ea_avs_mvp_v11.active_view.policy_episode_builder import (
+    REGIONS,
+    audit_episode_coverage,
+    audit_episode_files,
+)
 from ea_avs_mvp_v11.core.paths import get_data_root, get_habitat_data_root
 
 SPLITS = ("train", "val", "test")
 
 
-def _load_context(root: Path) -> tuple[Dict[str, Path], Dict[str, str]]:
+def _load_context(root: Path) -> tuple[Dict[str, Path], Dict[str, str], Dict[str, Any]]:
     summary = json.loads((root / "stage_a_summary.json").read_text(encoding="utf-8"))
     files = {split: Path(summary["episode_files"][split]) for split in SPLITS}
     expected: Dict[str, str] = {}
     for split in SPLITS:
         records = json.loads((root / "splits" / f"{split}.json").read_text(encoding="utf-8"))
         expected.update({str(item["record_id"]): split for item in records})
-    return files, expected
+    return files, expected, summary
 
 
 def _iter_episodes(files: Mapping[str, Path]) -> Iterable[Mapping[str, Any]]:
@@ -113,13 +117,23 @@ def main() -> int:
     parser.add_argument("--max-habitat-episodes", type=int, default=None)
     args = parser.parse_args()
 
-    files, expected = _load_context(args.dataset_root)
+    files, expected, summary = _load_context(args.dataset_root)
     audit = audit_episode_files(
         files,
         expected_record_splits=expected,
         validate_cached_skeletons=not args.skip_cached_skeletons,
     )
-    report: Dict[str, Any] = {"episode_audit": audit}
+    exclusions_file = Path(summary["exclusions_file"])
+    coverage = audit_episode_coverage(
+        files,
+        exclusions_file,
+        policy_records=[item for split in SPLITS for item in json.loads(
+            (args.dataset_root / "splits" / f"{split}.json").read_text(encoding="utf-8")
+        )],
+        complete_scene_ids=[str(item) for item in summary.get("scene_ids_used", [])],
+        regions=[str(item) for item in summary.get("regions", REGIONS)],
+    )
+    report: Dict[str, Any] = {"episode_audit": audit, "coverage_audit": coverage}
     if args.verify_habitat:
         report["habitat_shortest_path"] = _verify_habitat(
             files, args.habitat_root, args.max_habitat_episodes,
@@ -130,6 +144,7 @@ def main() -> int:
         for key, value in audit["integrity_checks"].items()
         if key != "split_overlap"
     ) and not bool(audit["integrity_checks"].get("split_overlap", False))
+    passed = passed and coverage["integrity_checks"]["complete_tuple_coverage"]
     if args.verify_habitat:
         passed = passed and not report["habitat_shortest_path"]["path_failures"]
     return 0 if passed else 1

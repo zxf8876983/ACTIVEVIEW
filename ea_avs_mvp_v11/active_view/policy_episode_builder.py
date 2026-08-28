@@ -422,6 +422,108 @@ def audit_episode_files(
     }
 
 
+def audit_episode_coverage(
+    episode_files: Mapping[str, Path], exclusions_file: Path,
+    *, policy_records: Sequence[Mapping[str, Any]],
+    complete_scene_ids: Sequence[str], regions: Sequence[str],
+) -> Dict[str, Any]:
+    """Verify that every expected record/scene/region tuple is accounted for.
+
+    A tuple is accounted for exactly once by either a serialized Episode or a
+    record-level exclusion. Scene-level exclusions (for example an incomplete
+    scene that is not in ``complete_scene_ids``) are intentionally ignored.
+    """
+    expected = {
+        (str(record["record_id"]), str(scene_id), str(region))
+        for record in policy_records
+        for scene_id in complete_scene_ids
+        for region in regions
+    }
+    episode_tuples: List[Tuple[str, str, str]] = []
+    malformed_episode_tuples = 0
+    for path in episode_files.values():
+        with Path(path).open(encoding="utf-8") as handle:
+            for line in handle:
+                try:
+                    episode = json.loads(line)
+                except json.JSONDecodeError:
+                    malformed_episode_tuples += 1
+                    continue
+                if not isinstance(episode, Mapping):
+                    malformed_episode_tuples += 1
+                    continue
+                key = (
+                    str(episode.get("record_id", "")),
+                    str(episode.get("scene_id", "")),
+                    str(episode.get("region", "")),
+                )
+                if not all(key):
+                    malformed_episode_tuples += 1
+                    continue
+                episode_tuples.append(key)
+
+    exclusion_tuples: List[Tuple[str, str, str]] = []
+    malformed_exclusion_tuples = 0
+    if Path(exclusions_file).exists():
+        with Path(exclusions_file).open(encoding="utf-8") as handle:
+            for line in handle:
+                try:
+                    exclusion = json.loads(line)
+                except json.JSONDecodeError:
+                    malformed_exclusion_tuples += 1
+                    continue
+                if not isinstance(exclusion, Mapping):
+                    malformed_exclusion_tuples += 1
+                    continue
+                key = (
+                    str(exclusion.get("record_id", "")),
+                    str(exclusion.get("scene_id", "")),
+                    str(exclusion.get("region", "")),
+                )
+                # Scene-level failures do not represent an expected
+                # record×scene×region tuple and are excluded from coverage.
+                if not all(key):
+                    continue
+                exclusion_tuples.append(key)
+    else:
+        malformed_exclusion_tuples += 1
+
+    episodes_set = set(episode_tuples)
+    exclusions_set = set(exclusion_tuples)
+    accounted = episodes_set | exclusions_set
+    duplicate_accounted = len(episode_tuples) + len(exclusion_tuples) - len(
+        set(episode_tuples + exclusion_tuples)
+    )
+    overlap = episodes_set & exclusions_set
+    missing = expected - accounted
+    unexpected = accounted - expected
+    counts = {
+        "expected_tuple_count": len(expected),
+        "episode_tuple_count": len(episode_tuples),
+        "exclusion_tuple_count": len(exclusion_tuples),
+        "observed_tuple_count": len(accounted),
+        "missing_tuple_count": len(missing),
+        "unexpected_tuple_count": len(unexpected),
+        "duplicate_accounted_tuple_count": duplicate_accounted,
+        "episode_and_exclusion_overlap": len(overlap),
+        "malformed_episode_tuple_count": malformed_episode_tuples,
+        "malformed_exclusion_tuple_count": malformed_exclusion_tuples,
+    }
+    return {
+        "counts": counts,
+        "integrity_checks": {
+            "complete_tuple_coverage": (
+                counts["missing_tuple_count"] == 0
+                and counts["unexpected_tuple_count"] == 0
+                and counts["duplicate_accounted_tuple_count"] == 0
+                and counts["episode_and_exclusion_overlap"] == 0
+                and malformed_episode_tuples == 0
+                and malformed_exclusion_tuples == 0
+            ),
+        },
+    }
+
+
 def build_dynamic_candidate_pool(
     *, current_viewpoint_id: int, views: Mapping[int, Mapping[str, Any]],
     valid_skeleton_ids: Sequence[int], pathfinder: Any, path_cost_fn: PathCostFn,

@@ -18,6 +18,10 @@
 
 The fixed 16-class mapping is official-150 audited 14 classes plus `lie` and `stumble`; `fall` is not active. BABEL `train.json`/`val.json` are split directly, with single-label filtering, strict `num_frames > 30`, conflicting source-interval removal, official caps 400/100, auxiliary classes uncapped, and seed 42. ST-GCN receives only estimated H36M-17 skeletons. Training uses tempered oversampling and class-weighted cross entropy; `ReduceLROnPlateau` and early stopping monitor deterministic full-Train loss only. The frozen checkpoint is the final stopped-epoch model; Val is evaluated once post-training for upper-bound diagnosis and is never used for checkpoint selection or policy training.
 
+Stage A policy records use canonical `train/val/test = 6:2:2`; the persisted
+split `summary.json -> split_ratios` is the single source consumed by the
+Episode builder.
+
 ## Offline strategy protocol
 
 Each semantic scene/region has one furniture-based human placement and 32 candidate viewpoints (radii 1.5/2.0/2.5/3.0 m × eight azimuths). Offline generation uses four COLOR cameras per worker, RGB-to-skeleton inference, and stores skeleton/confidence plus scene ID, navmesh path, placement, raw/snapped/actual agent positions, rotations, navigability, placement-referenced reachability and costs. No RGB/Depth is saved. The schema is `semantic-region-offline-v2`; candidate metadata is `semantic-region-v2`.
@@ -28,6 +32,7 @@ The placement reachability flag is static metadata only. During sequential evalu
 
 - HM3D-minival: `offline/hm3d-minival/00800-TEEsavR23oF/` is the canonical minival scene.
 - HM3D-train: 21-scene selection is recorded in `offline/hm3d-train/dataset_summary.json`; all 21 scene folders have complete 980×4×32 manifests. `00592-CthA7sQNTPK` and `00643-ggNAcMh8JPT` have been rotation-audited against the exact offline render state. `00643` required metadata refresh only (`npz_changed=0`); no generation process remains active.
+- Stage A policy split has been regenerated with canonical `train/val/test = 6:2:2`: 589/197/194 records, 980 unique records total. Existing serialized Stage A Episodes still reflect the former split and must be rebuilt before policy evaluation.
 - Dynamic, random-start and grid-start evaluation outputs remain under `results/` with their corresponding caches under `datasets/strategy_eval_cache/`.
 
 ## Canonical entry points

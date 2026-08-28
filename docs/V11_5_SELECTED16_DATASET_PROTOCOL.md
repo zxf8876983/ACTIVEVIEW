@@ -32,6 +32,10 @@ python ea_avs_mvp_v11/scripts/prepare_selected16_manifests.py
 
 当前实际结果：Train 3,240、Val 980；类别计数和排除原因分别保存在运行时数据根目录的 `train.json`、`val.json`、`summary.json`、`excluded.json`。
 
+Stage A policy records 使用 canonical `train/val/test = 6:2:2`。Episode
+builder 唯一读取 split 目录 `summary.json` 中的 `split_ratios`，不再重复
+硬编码比例；ST-GCN 预训练的 BABEL train/val 数据不因此增加独立 Test split。
+
 ## 3. ST-GCN 预训练数据
 
 ```text
