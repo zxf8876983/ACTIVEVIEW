@@ -161,7 +161,8 @@ class STGCN(nn.Module):
         # 全局分类头
         self.fc = nn.Linear(256, num_classes)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward_features(self, x: torch.Tensor) -> torch.Tensor:
+        """Extract the frozen 256-D representation before the classifier."""
         # 输入形状支持: (N, C, T, V, M) 或 (N, C, T, V)
         if x.dim() == 4:
             x = x.unsqueeze(-1) # (N, C, T, V, 1)
@@ -186,6 +187,8 @@ class STGCN(nn.Module):
         x = F.avg_pool2d(x, x.size()[2:]) # (N * M, 256, 1, 1)
         x = x.view(N, M, -1).mean(dim=1)  # (N, 256)
 
-        # 线性分类输出 logits
-        logits = self.fc(x) # (N, num_classes)
-        return logits
+        return x
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Return classification logits, preserving the original interface."""
+        return self.fc(self.forward_features(x))

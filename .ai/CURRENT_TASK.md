@@ -2,7 +2,7 @@
 
 ## Status
 
-**DOCUMENTED / READY FOR NEXT COMMAND** — v11.5 canonical selected16 data, frozen ST-GCN, semantic-region offline schema v2 and dynamic-reachability evaluators are documented below. No generation or evaluation process is currently running.
+**STAGE C IMPLEMENTED / READY FOR SCIENTIFIC REVIEW** — v11.5 canonical selected16 data, frozen ST-GCN, accepted Stage A/B artifacts, and Stage C current-conditioned utility predictors are documented below. No generation or evaluation process is currently running.
 
 ## Current truth
 
@@ -31,7 +31,7 @@ cannot silently disappear from the expected coverage set.
 
 Each semantic scene/region has one furniture-based human placement and 32 candidate viewpoints (radii 1.5/2.0/2.5/3.0 m × eight azimuths). Offline generation uses four COLOR cameras per worker, RGB-to-skeleton inference, and stores skeleton/confidence plus scene ID, navmesh path, placement, raw/snapped/actual agent positions, rotations, navigability, placement-referenced reachability and costs. No RGB/Depth is saved. The schema is `semantic-region-offline-v2`; candidate metadata is `semantic-region-v2`.
 
-The placement reachability flag is static metadata only. During sequential evaluation, Habitat reloads the navmesh and recomputes paths from the robot's current position to every pending candidate before selecting. Current policies are `NoMove`, `Fixed`, `Random`, `Nearest`, and hindsight candidate-pool `Oracle`; no learned Utility Predictor is implemented or evaluated.
+The placement reachability flag is static metadata only. During sequential evaluation, Habitat reloads the navmesh and recomputes paths from the robot's current position to every pending candidate before selecting. Current policies are `NoMove`, `Fixed`, `Random`, `Nearest`, and hindsight candidate-pool `Oracle`. Stage C adds learned `PairwiseUtilityMLP` and permutation-equivariant `SetUtilityRanker`; Stage D and Habitat online learned-policy evaluation remain out of scope.
 
 ## Current data status
 
@@ -95,7 +95,7 @@ Latest 6:2:2 acceptance outputs:
   target list, so its scene audit reports `all_target_scenes_used=false`; this
   is not a missing scene in the current 21-scene protocol.
 
-## Stage B offline utility labels (completed; awaiting user acceptance)
+## Stage B offline utility labels (completed and frozen)
 
 Stage B was implemented from the accepted Stage A Episodes and existing
 estimated-skeleton NPZ archives. The builder uses a frozen ST-GCN in
@@ -121,8 +121,30 @@ unexpected Episodes, and zero record errors:
 
 The validator log is saved at
 `/home/zxf/WorkSpace/code/data/ActiveView/results/stage_b_validate.log`.
-Stage C is intentionally not implemented or started; pause here for scientific
-review of the Stage B artifacts.
+
+## Stage C current-conditioned utility prediction (implemented; ready for scientific review)
+
+Stage C consumes only accepted Stage A/B artifacts. The current-only input is
+the frozen ST-GCN 256-D feature, 16-D current log-probabilities, entropy,
+top-1/top-2 margin and pose confidence (275-D). Candidate input is 11-D
+geometry only. Candidate perception, labels, skeletons, viewpoint IDs and
+utilities are excluded from model inputs; body yaw and movement penalties are
+not used. Training is record-balanced with SmoothL1 plus stay-inclusive
+listwise ranking, and checkpoints are selected by validation recognition
+Macro-F1. Test is reported once for final diagnosis only.
+
+Artifacts:
+
+- Feature cache and schema: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/`
+- Pairwise checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stage_c/pairwise_mlp_best.pth` (selected epoch 17, 142,785 parameters)
+- Set ranker checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stage_c/set_ranker_best.pth` (selected epoch 28, 407,745 parameters)
+- Combined summary: `stage_c/stage_c_summary.json`
+- Independent validator: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/validation_report.json` (`passed=true`)
+
+Validation re-computes all saved Val/Test metric trees from prediction JSONL,
+checks canonical 589/197/194 split counts, Stage A/B/feature provenance
+hashes, finite feature schemas and feature counts. Stage D, Habitat
+re-rendering and online learned-policy evaluation have not started.
 
 The validator additionally recomputes the complete metrics tree with a
 `1e-7` absolute tolerance, cross-checks every candidate geodesic against Stage

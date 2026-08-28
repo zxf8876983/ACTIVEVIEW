@@ -1,6 +1,6 @@
 # ACTIVEVIEW Handoff
 
-Status: DOCUMENTED / READY FOR NEXT COMMAND
+Status: STAGE C IMPLEMENTED / READY FOR SCIENTIFIC REVIEW
 Updated: 2026-08-28
 
 ## Canonical v11.5
@@ -104,9 +104,9 @@ Artifacts:
 Full build counts: 41,819/13,987/13,774 Episodes and
 306,869/102,637/101,074 candidate pairs (train/val/test). The validator
 reported zero duplicate IDs/pairs, zero missing/unexpected Episodes and zero
-record errors. Focused tests pass (`18 passed`). Stage C has not been started;
-the next action is user review/acceptance of `stage_b_summary.json` and the
-validator report.
+record errors. Focused tests pass (`18 passed`). Stage C was subsequently
+implemented from these frozen artifacts; see the Stage C completion section
+below.
 
 After the initial build, the Stage B audit was hardened. The validator now
 recomputes the complete metrics tree (including per-class, per-region,
@@ -123,3 +123,24 @@ policy-split loader and requires frozen 589/197/194 counts in the split JSON,
 Stage A summary, and Stage B summary. A regression test confirms that
 consistently altered counts such as 600/190/190 still fail; the canonical full
 Stage B artifact was revalidated successfully.
+
+## Stage C completion (2026-08-28)
+
+Implemented current-conditioned utility prediction without changing Stage A/B.
+The feature cache contains 41,819/13,987/13,774 Episodes for train/val/test;
+current input is 275-D frozen ST-GCN state and candidate input is 11-D geometry.
+Both models use record-balanced training, SmoothL1 plus stay-inclusive listwise
+ranking, and Val recognition Macro-F1 checkpoint selection; Test is final-only.
+
+Artifacts:
+
+- Feature root and diagnostics: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/`
+- Pairwise checkpoint: `checkpoints/stage_c/pairwise_mlp_best.pth`, epoch 17, 142,785 parameters.
+- Set ranker checkpoint: `checkpoints/stage_c/set_ranker_best.pth`, epoch 28, 407,745 parameters.
+- Combined summary: `stage_c/stage_c_summary.json`.
+- Independent validator result: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/validation_report.json`, `passed=true`.
+
+The Stage C validator re-computes all saved Val/Test metrics from prediction
+JSONL, verifies canonical split counts, Stage A/B/feature provenance hashes,
+finite feature schemas and counts, and confirms Stage D has not started.
+No Habitat re-rendering or learned-policy online evaluation was performed.
