@@ -186,10 +186,10 @@ def _split_metrics(records: Sequence[Mapping[str, Any]], num_classes: int) -> Di
         max_utility = max(utilities)
         max_utilities.append(max_utility)
         pair_utilities.extend(utilities)
-        if max_utility > 0.0:
-            positive_count += 1
-        elif abs(max_utility) <= NEAR_ZERO_TOLERANCE:
+        if abs(max_utility) <= NEAR_ZERO_TOLERANCE:
             near_zero_count += 1
+        elif max_utility > NEAR_ZERO_TOLERANCE:
+            positive_count += 1
         else:
             negative_count += 1
         if not bool(current["correct"]) and bool(safe_item["correct"]):
@@ -225,8 +225,8 @@ def _split_metrics(records: Sequence[Mapping[str, Any]], num_classes: int) -> Di
             "positive_headroom_episode_ratio": positive_count / len(records) if records else 0.0,
             "candidate_pair_utility": {
                 **_distribution(pair_utilities),
-                "positive_ratio": sum(value > 0.0 for value in pair_utilities) / len(pair_utilities) if pair_utilities else 0.0,
-                "negative_ratio": sum(value < 0.0 for value in pair_utilities) / len(pair_utilities) if pair_utilities else 0.0,
+                "positive_ratio": sum(value > NEAR_ZERO_TOLERANCE for value in pair_utilities) / len(pair_utilities) if pair_utilities else 0.0,
+                "negative_ratio": sum(value < -NEAR_ZERO_TOLERANCE for value in pair_utilities) / len(pair_utilities) if pair_utilities else 0.0,
                 "near_zero_ratio": sum(abs(value) <= NEAR_ZERO_TOLERANCE for value in pair_utilities) / len(pair_utilities) if pair_utilities else 0.0,
             },
         },
@@ -234,8 +234,10 @@ def _split_metrics(records: Sequence[Mapping[str, Any]], num_classes: int) -> Di
             "current_wrong_count": current_wrong,
             "rescue_count": rescue_count,
             "rescue_rate_among_current_wrong": rescue_count / current_wrong if current_wrong else 0.0,
+            "current_correct_count": len(records) - current_wrong,
             "degradation_count": degradation_count,
             "degradation_rate": degradation_count / len(records) if records else 0.0,
+            "degradation_rate_among_current_correct": degradation_count / (len(records) - current_wrong) if len(records) - current_wrong else 0.0,
             "current_correct_safe_correct_count": safe_preserved_count,
         },
     }

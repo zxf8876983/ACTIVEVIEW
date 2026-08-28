@@ -103,10 +103,14 @@ def build(
     archive_cache: Dict[str, Dict[int, np.ndarray]] = {}
     records_by_split: Dict[str, List[Dict[str, Any]]] = {split: [] for split in SPLITS}
     output_files: Dict[str, str] = {}
+    source_episode_files: Dict[str, str] = {}
+    source_episode_file_hashes: Dict[str, str] = {}
     for split in SPLITS:
         source_path = Path(stage_a_summary["episode_files"][split])
         if not source_path.exists():
             raise FileNotFoundError(source_path)
+        source_episode_files[split] = str(source_path.resolve())
+        source_episode_file_hashes[split] = file_sha256(source_path)
         output_path = output_dir / "utility_labels" / f"{split}.jsonl"
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_files[split] = str(output_path.resolve())
@@ -142,7 +146,8 @@ def build(
         "supervision_only": True,
         "source_stage_a_summary": str(stage_a_summary_path.resolve()),
         "source_stage_a_summary_sha256": file_sha256(stage_a_summary_path),
-        "source_episode_files": {split: str(Path(stage_a_summary["episode_files"][split]).resolve()) for split in SPLITS},
+        "source_episode_files": source_episode_files,
+        "source_episode_file_sha256": source_episode_file_hashes,
         "utility_label_files": output_files,
         "official_scene_count": len(stage_a_summary["scene_ids_used"]),
         "scene_ids": [str(item) for item in stage_a_summary["scene_ids_used"]],

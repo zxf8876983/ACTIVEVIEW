@@ -19,6 +19,7 @@ if str(REPO_ROOT) not in sys.path:
 from ea_avs_mvp_v11.active_view.utility_label_builder import (
     UTILITY_TOLERANCE,
     file_sha256,
+    summarize_utility_records,
 )
 
 
@@ -76,6 +77,57 @@ def _finite(value: Any) -> bool:
         return False
 
 
+def _compare_json_values(
+    expected: Any,
+    observed: Any,
+    path: str,
+    errors: List[str],
+    *,
+    abs_tol: float,
+    max_errors: int,
+) -> None:
+    """Recursively compare JSON-compatible metric values."""
+    if len(errors) >= max_errors:
+        return
+    if isinstance(expected, Mapping):
+        if not isinstance(observed, Mapping):
+            errors.append(f"metrics_type_mismatch:{path}")
+            return
+        if set(expected) != set(observed):
+            errors.append(f"metrics_keys_mismatch:{path}")
+            if len(errors) >= max_errors:
+                return
+        for key in expected:
+            if key in observed:
+                _compare_json_values(
+                    expected[key], observed[key], f"{path}.{key}", errors,
+                    abs_tol=abs_tol, max_errors=max_errors,
+                )
+                if len(errors) >= max_errors:
+                    return
+        return
+    if isinstance(expected, list):
+        if not isinstance(observed, list) or len(expected) != len(observed):
+            errors.append(f"metrics_list_mismatch:{path}")
+            return
+        for index, (left, right) in enumerate(zip(expected, observed)):
+            _compare_json_values(
+                left, right, f"{path}[{index}]", errors,
+                abs_tol=abs_tol, max_errors=max_errors,
+            )
+            if len(errors) >= max_errors:
+                return
+        return
+    if isinstance(expected, (int, float)) and not isinstance(expected, bool):
+        if not isinstance(observed, (int, float)) or isinstance(observed, bool):
+            errors.append(f"metrics_value_type_mismatch:{path}")
+        elif not math.isclose(float(expected), float(observed), rel_tol=0.0, abs_tol=abs_tol):
+            errors.append(f"metrics_value_mismatch:{path}")
+        return
+    if expected != observed:
+        errors.append(f"metrics_value_mismatch:{path}")
+
+
 def _validate_record(
     record: Mapping[str, Any], stage_a: Mapping[str, Any], tolerance: float,
 ) -> List[str]:
@@ -113,6 +165,17 @@ def _validate_record(
             continue
         viewpoint_id = int(item.get("viewpoint_id", -1))
         candidate_by_id[viewpoint_id] = item
+        expected_candidate = expected_candidates.get(viewpoint_id)
+        if expected_candidate is None:
+            errors.append(f"unexpected_candidate_viewpoint:{viewpoint_id}")
+        elif _finite(item.get("geodesic_distance_m")) and _finite(expected_candidate.get("geodesic_distance_m")):
+            if not math.isclose(
+                float(item["geodesic_distance_m"]),
+                float(expected_candidate["geodesic_distance_m"]),
+                rel_tol=0.0,
+                abs_tol=tolerance,
+            ):
+                errors.append(f"candidate_geodesic_mismatch:{viewpoint_id}")
         if not all(_finite(item.get(field)) for field in ("logp_true", "entropy", "utility", "geodesic_distance_m")):
             errors.append(f"nonfinite_candidate:{viewpoint_id}")
         if bool(item.get("correct")) != (int(item.get("predicted_label_id", -1)) == label_id):
@@ -149,7 +212,12 @@ def _validate_record(
     return errors
 
 
-def validate(dataset_root: Path, stage_b_root: Path, max_errors: int = 100) -> Dict[str, Any]:
+def validate(
+    dataset_root: Path,
+    stage_b_root: Path,
+    max_errors: int = 100,
+    report_path: Path | None = None,
+) -> Dict[str, Any]:
     errors: List[Dict[str, Any]] = []
     counts: Dict[str, Any] = {
         "stage_a_episode_counts": {}, "stage_b_episode_counts": {split: 0 for split in SPLITS},
@@ -158,13 +226,14 @@ def validate(dataset_root: Path, stage_b_root: Path, max_errors: int = 100) -> D
         "missing_stage_b_episodes": 0, "unexpected_stage_b_episodes": 0,
         "record_errors": 0,
     }
+    records_by_split: Dict[str, List[Mapping[str, Any]]] = {split: [] for split in SPLITS}
     try:
         stage_a_summary, stage_a_episodes, stage_a_counts = _load_stage_a(dataset_root)
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
         report = {"protocol": "ACTIVEVIEW v11.5 Stage B validator", "stage": "B", "passed": False, "errors": [{"reason": str(error)}], "counts": counts}
-        report_path = stage_b_root / "validation_report.json"
-        report_path.parent.mkdir(parents=True, exist_ok=True)
-        report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        output_report_path = report_path or stage_b_root / "validation_report.json"
+        output_report_path.parent.mkdir(parents=True, exist_ok=True)
+        output_report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         return report
 
     counts["stage_a_episode_counts"] = stage_a_counts
@@ -185,6 +254,17 @@ def validate(dataset_root: Path, stage_b_root: Path, max_errors: int = 100) -> D
         errors.append({"reason": "invalid_stage_b_stage_field"})
     if stage_b_summary.get("supervision_only") is not True:
         errors.append({"reason": "stage_b_not_marked_supervision_only"})
+    stage_a_summary_path = dataset_root / "stage_a_summary.json"
+    if stage_b_summary.get("source_stage_a_summary_sha256") != file_sha256(stage_a_summary_path):
+        errors.append({"reason": "source_stage_a_summary_hash_mismatch"})
+    expected_source_episode_hashes = stage_b_summary.get("source_episode_file_sha256")
+    if not isinstance(expected_source_episode_hashes, Mapping):
+        errors.append({"reason": "missing_source_episode_file_hashes"})
+    else:
+        for split in SPLITS:
+            source_path = Path(stage_a_summary["episode_files"][split])
+            if not source_path.exists() or expected_source_episode_hashes.get(split) != file_sha256(source_path):
+                errors.append({"split": split, "reason": "source_episode_file_hash_mismatch"})
     expected_policy_counts = stage_a_summary.get("policy_split", {}).get("counts", {})
     if stage_b_summary.get("split_counts") != expected_policy_counts:
         errors.append({"reason": "summary_policy_split_counts_mismatch"})
@@ -228,6 +308,7 @@ def validate(dataset_root: Path, stage_b_root: Path, max_errors: int = 100) -> D
                         errors.append({"split": split, "line": line_number, "reason": "unexpected_episode_id"})
                     continue
                 stage_a_episode = stage_a_episodes[episode_id]
+                records_by_split[split].append(record)
                 if str(record.get("policy_split")) != split:
                     errors.append({"split": split, "line": line_number, "reason": "split_mismatch"})
                 for field in ("record_id", "scene_id", "region", "label_id"):
@@ -263,6 +344,25 @@ def validate(dataset_root: Path, stage_b_root: Path, max_errors: int = 100) -> D
         or set(stage_b_summary.get("scene_ids", [])) != expected_scene_ids
     ):
         errors.append({"reason": "summary_scene_count_mismatch"})
+    if isinstance(stage_b_summary.get("metrics"), Mapping):
+        try:
+            categories = stage_b_summary.get("categories", [])
+            recomputed_metrics = summarize_utility_records(records_by_split, categories)
+            metric_errors: List[str] = []
+            _compare_json_values(
+                recomputed_metrics,
+                stage_b_summary["metrics"],
+                "metrics",
+                metric_errors,
+                abs_tol=1e-7,
+                max_errors=max_errors,
+            )
+            for reason in metric_errors:
+                errors.append({"reason": reason})
+        except (KeyError, TypeError, ValueError, ZeroDivisionError) as error:
+            errors.append({"reason": f"metrics_recompute_failed:{error}"})
+    else:
+        errors.append({"reason": "missing_metrics"})
     passed = not errors and counts["stage_b_episode_counts"] == expected_episode_counts and counts["stage_b_candidate_pair_counts"] == counts["stage_a_candidate_pair_counts"] and counts["missing_stage_b_episodes"] == 0 and counts["unexpected_stage_b_episodes"] == 0 and counts["duplicate_episode_ids"] == 0 and counts["duplicate_episode_candidate_pairs"] == 0 and counts["record_errors"] == 0
     report = {
         "protocol": "ACTIVEVIEW v11.5 Stage B validator",
@@ -273,9 +373,9 @@ def validate(dataset_root: Path, stage_b_root: Path, max_errors: int = 100) -> D
         "counts": counts,
         "errors": errors[:max_errors],
     }
-    report_path = stage_b_root / "validation_report.json"
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    output_report_path = report_path or stage_b_root / "validation_report.json"
+    output_report_path.parent.mkdir(parents=True, exist_ok=True)
+    output_report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     return report
 
 

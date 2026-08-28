@@ -123,3 +123,9 @@ The validator log is saved at
 `/home/zxf/WorkSpace/code/data/ActiveView/results/stage_b_validate.log`.
 Stage C is intentionally not implemented or started; pause here for scientific
 review of the Stage B artifacts.
+
+The validator additionally recomputes the complete metrics tree with a
+`1e-7` absolute tolerance, cross-checks every candidate geodesic against Stage
+A, verifies Stage A summary and all three Episode-file SHA-256 hashes, and
+uses mutually exclusive near-zero/positive/negative utility bins. Rescue and
+degradation now include both overall and conditional rates.

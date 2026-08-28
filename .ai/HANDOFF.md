@@ -107,3 +107,14 @@ reported zero duplicate IDs/pairs, zero missing/unexpected Episodes and zero
 record errors. Focused tests pass (`18 passed`). Stage C has not been started;
 the next action is user review/acceptance of `stage_b_summary.json` and the
 validator report.
+
+After the initial build, the Stage B audit was hardened. The validator now
+recomputes the complete metrics tree (including per-class, per-region,
+headroom and rescue/degradation fields), cross-checks candidate geodesic
+distances against Stage A, verifies the Stage A summary hash plus all three
+Episode-file hashes, and rejects metric/provenance corruption. Near-zero
+utility bins are mutually exclusive from positive/negative bins; degradation
+also reports its conditional rate among current-correct Episodes. The full
+Stage B labels were regenerated with these rules and the validator again
+passed. Additional regression tests cover metrics corruption, geodesic
+mismatch, stale provenance and the real saved artifact.

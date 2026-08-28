@@ -47,3 +47,22 @@ def test_summary_reports_rescue_and_positive_headroom():
     assert summary["train"]["headroom"]["positive_headroom_episode_count"] == 1
     assert summary["train"]["rescue"]["rescue_count"] == 1
     assert summary["train"]["policies"]["SafeOracle"]["accuracy"] == 1.0
+
+
+def test_near_zero_headroom_is_not_positive_and_degradation_is_conditional():
+    episode = _episode()
+    log_probs = {
+        0: np.log(np.asarray([0.1, 0.7, 0.2], dtype=np.float64)),
+        1: np.log(np.asarray([0.1, 0.7000002, 0.1999998], dtype=np.float64)),
+        2: np.log(np.asarray([0.1, 0.7000003, 0.1999997], dtype=np.float64)),
+    }
+    record = build_utility_record(episode, log_probs)
+    summary = summarize_utility_records({"train": [record], "val": [], "test": []}, ["a", "b", "c"])
+    headroom = summary["train"]["headroom"]
+    assert headroom["positive_headroom_episode_count"] == 0
+    assert headroom["near_zero_ratio"] == 1.0
+    assert headroom["candidate_pair_utility"]["positive_ratio"] == 0.0
+    assert headroom["candidate_pair_utility"]["near_zero_ratio"] == 1.0
+    rescue = summary["train"]["rescue"]
+    assert rescue["current_correct_count"] == 1
+    assert rescue["degradation_rate_among_current_correct"] == 0.0
