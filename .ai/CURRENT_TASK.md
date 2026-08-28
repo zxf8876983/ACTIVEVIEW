@@ -199,11 +199,13 @@ accuracy/regret. Region differences are descriptive and do not establish
 unseen-scene generalization. State correlations are weak (entropy Spearman
 rho=+0.184; margin=-0.180; pose confidence=+0.023). Symmetric-geometry
 ambiguity is only modestly enriched in high-regret Episodes, so evidence for
-perceived body orientation is weak/inconclusive. The report prioritizes
+perceived body orientation is weak/inconclusive. The corrected diagnostic
+matches pairs by candidate radius and reports an explicit 1.21x enrichment
+ratio. The report prioritizes
 long-tail hard-example handling and better current/candidate representation as
 hypotheses for later review; no Stage C-v1 or Stage D decision was made. The
 candidate-set gap bins are now a mutually exclusive partition, geometry
 statistics distinguish CandidateOracle from SafeOracle move geometry, and the
-symmetric-geometry diagnostic reports an explicit enrichment ratio (1.22x).
+symmetric-geometry diagnostic reports an explicit enrichment ratio (1.21x).
 
 Status: Stage C-v0 failure analysis completed; results ready for scientific review.

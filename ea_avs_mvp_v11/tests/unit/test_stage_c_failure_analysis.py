@@ -113,6 +113,36 @@ def test_symmetric_analysis_reports_baseline_and_enrichment_ratio():
     assert symmetric["enrichment_ratio"] == pytest.approx(1.0)
 
 
+def test_symmetric_geometry_uses_candidate_radius_not_current_radius():
+    different_candidate_radii = _row(
+        "e-radius-different",
+        "r-radius-different",
+        safe_stays=False,
+        predicted_stays=False,
+        predicted_id=1,
+        safe_id=2,
+        regret=0.0,
+    )
+    different_candidate_radii["candidate_geometry"][0][9] = 1.5
+    different_candidate_radii["candidate_geometry"][1][9] = 4.5
+    different = analyze_rows([different_candidate_radii], ["sit"])["symmetric_geometry_ambiguity"]
+    assert different["candidate_pair_count"] == 0
+
+    similar_candidate_radii = _row(
+        "e-radius-similar",
+        "r-radius-similar",
+        safe_stays=False,
+        predicted_stays=False,
+        predicted_id=1,
+        safe_id=2,
+        regret=0.0,
+    )
+    similar_candidate_radii["candidate_geometry"][0][9] = 2.0
+    similar_candidate_radii["candidate_geometry"][1][9] = 2.1
+    similar = analyze_rows([similar_candidate_radii], ["sit"])["symmetric_geometry_ambiguity"]
+    assert similar["candidate_pair_count"] == 1
+
+
 def test_record_aggregation_does_not_treat_episodes_as_records():
     rows = [
         _row("e0", "r0", safe_stays=False, predicted_stays=False, predicted_id=2, safe_id=2, regret=0.1),

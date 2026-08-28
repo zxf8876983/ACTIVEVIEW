@@ -161,7 +161,12 @@ def run(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, output_di
     summary["plots"] = plot_paths
     _write_json(output_dir / "stage_c_failure_summary.json", summary)
     references = [summary["artifact_validation"]["pairwise_reference"], _summary_reference(evaluation)]
-    paths = {"summary": str(output_dir / "stage_c_failure_summary.json"), "episode_table": str(output_dir / "episode_failure_table.csv"), "record_table": str(output_dir / "record_failure_table.csv"), "figures": str(output_dir / "figures")}
+    paths = {
+        "summary": "stage_c_failure_summary.json",
+        "episode_table": "episode_failure_table.csv",
+        "record_table": "record_failure_table.csv",
+        "figures": "figures/",
+    }
     _write_report(output_dir / "stage_c_failure_report.md", summary, references, paths)
     return summary
 

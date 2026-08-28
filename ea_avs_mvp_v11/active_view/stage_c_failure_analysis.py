@@ -367,7 +367,7 @@ def _symmetric_analysis(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
                 b = _candidate_geometry(row, ids[right])
                 if b is None:
                     continue
-                if abs(a["current_radius"] - b["current_radius"]) <= 0.25 and abs(a["geodesic"] - b["geodesic"]) <= 0.5 and abs(a["abs_azimuth_deg"] - b["abs_azimuth_deg"]) <= 10.0 and a["signed_azimuth_deg"] * b["signed_azimuth_deg"] <= 0:
+                if abs(a["candidate_radius"] - b["candidate_radius"]) <= 0.25 and abs(a["geodesic"] - b["geodesic"]) <= 0.5 and abs(a["abs_azimuth_deg"] - b["abs_azimuth_deg"]) <= 10.0 and a["signed_azimuth_deg"] * b["signed_azimuth_deg"] <= 0:
                     difference = abs(utils[left] - utils[right])
                     pair_diffs.append(difference)
                     candidates.append((row, difference, max(utils[left], utils[right])))

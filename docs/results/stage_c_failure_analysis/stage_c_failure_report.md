@@ -58,16 +58,16 @@ Region breakdown is in the machine-readable summary; it should not be treated as
 4. The hardest action classes by Set accuracy are stumble, play instrument, lie, knock, throw.
 5. The strongest state correlation by absolute Spearman magnitude is current_logp_true (-0.237); this is descriptive, not causal.
 6. Geometry and azimuth results are descriptive binned evidence; no single geometry variable is assumed causal.
-7. Symmetric-geometry ambiguity affects 1053 episodes under the stated tolerance, with 2350 large-difference pairs; explicit enrichment ratio=1.22x versus the overall high-regret baseline.
+7. Symmetric-geometry ambiguity affects 380 episodes under the stated tolerance, with 508 large-difference pairs; explicit enrichment ratio=1.21x versus the overall high-regret baseline.
 8. Evidence for adding perceived body orientation is **weak / inconclusive** unless symmetric ambiguity is clearly enriched among high-regret cases; no body yaw was added here.
 9. Current evidence most directly supports hard-example/long-tail analysis (E) and improved current-state/candidate-set representation (B/A) as hypotheses for later review. It does not justify changing Stage C-v0 in this task.
 
 ## Artifacts
 
-- `summary`: `/tmp/activeview_stage_c_failure_analysis_v2/stage_c_failure_summary.json`
-- `episode_table`: `/tmp/activeview_stage_c_failure_analysis_v2/episode_failure_table.csv`
-- `record_table`: `/tmp/activeview_stage_c_failure_analysis_v2/record_failure_table.csv`
-- `figures`: `/tmp/activeview_stage_c_failure_analysis_v2/figures`
+- `summary`: `stage_c_failure_summary.json`
+- `episode_table`: `episode_failure_table.csv`
+- `record_table`: `record_failure_table.csv`
+- `figures`: `figures/`
 
 ### Per-action detail
 

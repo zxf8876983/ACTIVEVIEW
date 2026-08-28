@@ -179,8 +179,9 @@ modestly enriched among high-regret cases, giving weak/inconclusive evidence
 for adding perceived body orientation. The report recommends that any future
 Stage C-v1 discussion start with hard-example/long-tail and representation
 diagnostics. The corrected report uses mutually exclusive candidate-set gap
-bins, separates CandidateOracle geometry from SafeOracle move geometry, reports
-an explicit symmetric-geometry enrichment ratio (1.22x), and reports per-class
+bins, separates CandidateOracle geometry from SafeOracle move geometry, matches
+symmetric pairs by candidate radius, reports an explicit enrichment ratio
+(1.21x), and reports per-class
 and per-region high-regret rates. No Stage A/B/C accepted artifact, model, or
 evaluation protocol was changed, no Test-based tuning was performed, and Stage
 D was not started.

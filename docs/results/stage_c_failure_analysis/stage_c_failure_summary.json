@@ -1823,28 +1823,28 @@
       "radius_tolerance_m": 0.25,
       "geodesic_tolerance_m": 0.5,
       "absolute_azimuth_tolerance_deg": 10.0,
-      "large_utility_difference_threshold": 11.834093904495239
+      "large_utility_difference_threshold": 13.203063249588013
     },
-    "candidate_pair_count": 23499,
-    "large_difference_pair_count": 2350,
-    "episode_count": 1053,
-    "episode_ratio": 0.07644838100769566,
-    "high_regret_overlap_count": 128,
+    "candidate_pair_count": 5076,
+    "large_difference_pair_count": 508,
+    "episode_count": 380,
+    "episode_ratio": 0.027588209670393497,
+    "high_regret_overlap_count": 46,
     "high_regret_baseline_rate": 0.10004356033105852,
-    "high_regret_given_ambiguity_rate": 0.12155745489078823,
-    "enrichment_ratio": 1.215045271165252,
-    "ambiguity_given_high_regret_rate": 0.09288824383164006,
-    "ambiguity_baseline_rate": 0.07644838100769566,
+    "high_regret_given_ambiguity_rate": 0.12105263157894737,
+    "enrichment_ratio": 1.2099992361164158,
+    "ambiguity_given_high_regret_rate": 0.033381712626995644,
+    "ambiguity_baseline_rate": 0.027588209670393497,
     "overall_pair_utility_difference": {
-      "n": 23499,
-      "mean": 4.392661804658246,
-      "median": 2.5352911949157715,
-      "p75": 6.969319585361518,
-      "p90": 11.834093904495239,
-      "p95": 15.130094432830797,
-      "p99": 19.57704061508179,
+      "n": 5076,
+      "mean": 5.071247886534008,
+      "median": 3.293160915374756,
+      "p75": 8.417675018310547,
+      "p90": 13.203063249588013,
+      "p95": 16.395028742454087,
+      "p99": 19.960343956947327,
       "min": 0.0,
-      "max": 29.994256542995572
+      "max": 28.671204686164856
     }
   },
   "record_level": {
@@ -5325,10 +5325,10 @@
     "stage_c_combined_status": "evaluated_ready_for_user_review"
   },
   "plots": [
-    "/tmp/activeview_stage_c_failure_analysis_v2/figures/regret_distribution.png",
-    "/tmp/activeview_stage_c_failure_analysis_v2/figures/per_action_accuracy.png",
-    "/tmp/activeview_stage_c_failure_analysis_v2/figures/regret_vs_entropy.png",
-    "/tmp/activeview_stage_c_failure_analysis_v2/figures/regret_vs_pose_confidence.png",
-    "/tmp/activeview_stage_c_failure_analysis_v2/figures/failure_taxonomy.png"
+    "docs/results/stage_c_failure_analysis/figures/regret_distribution.png",
+    "docs/results/stage_c_failure_analysis/figures/per_action_accuracy.png",
+    "docs/results/stage_c_failure_analysis/figures/regret_vs_entropy.png",
+    "docs/results/stage_c_failure_analysis/figures/regret_vs_pose_confidence.png",
+    "docs/results/stage_c_failure_analysis/figures/failure_taxonomy.png"
   ]
 }
