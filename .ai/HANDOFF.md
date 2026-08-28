@@ -155,3 +155,30 @@ Pairwise 61.45% / 55.33%, Set Ranker 62.54% / 56.37%, and SafeOracle
 6.143 p90) with 74.93% aggregate positive-headroom capture; Pairwise is
 1.802 (0.0108, 6.582) with 70.83% capture. These are offline results only;
 Stage D Habitat learned-policy evaluation remains pending.
+
+## Stage C-v0 failure analysis (2026-08-28)
+
+Failure analysis was completed read-only from the frozen Test artifacts. The
+entry point is `ea_avs_mvp_v11/scripts/analyze_stage_c_failures.py`; unit tests
+are in `tests/unit/test_stage_c_failure_analysis.py` and the frozen-artifact
+coverage check is in `tests/integration/test_stage_c_failure_analysis.py`.
+The external runtime output is
+`datasets/policy_v11_5/stage_c/failure_analysis/`; a review snapshot is under
+`docs/results/stage_c_failure_analysis/`.
+
+The analysis confirms 13,774 Test Episodes and 194 independent motion records.
+Set Ranker regret is right-skewed (mean 1.614, median 0.00746, p90 6.143).
+Decision failures are primarily wrong-candidate high-loss (32.44%), missed
+move (21.95%), and unnecessary move (5.34%); 29.85% match SafeOracle. Exact
+candidate hit is 33.93% versus 74.93% aggregate headroom capture. The most
+difficult classes are `lie`, `play instrument`, `stumble`, and `knock`; region
+effects are not strong enough to support a scene-generalization claim. Entropy
+and margin have weak correlations with regret and pose confidence is nearly
+uncorrelated. Mirror-like geometry with large utility asymmetry is only
+modestly enriched among high-regret cases, giving weak/inconclusive evidence
+for adding perceived body orientation. The report recommends that any future
+Stage C-v1 discussion start with hard-example/long-tail and representation
+diagnostics. No Stage A/B/C accepted artifact, model, or evaluation protocol
+was changed, no Test-based tuning was performed, and Stage D was not started.
+
+Status: Stage C-v0 failure analysis completed; results ready for scientific review.

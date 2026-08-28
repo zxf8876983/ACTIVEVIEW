@@ -169,3 +169,38 @@ aggregate positive-headroom capture is 74.93%; Pairwise is 1.802
 (0.0108, 6.582) and 70.83%. These are offline diagnostics only; Stage D
 Habitat online learned-policy evaluation has not started, and no multi-seed
 confidence interval is available.
+
+## Stage C-v0 failure analysis (2026-08-28)
+
+The frozen Stage C-v0 Test artifacts were analyzed read-only with
+`ea_avs_mvp_v11/scripts/analyze_stage_c_failures.py`. The analysis consumed the
+accepted Stage A/B JSONL, Stage C feature cache, Set Ranker and Pairwise
+prediction JSONL, evaluation summaries, and the passed Stage C validator
+report. It did not regenerate observations, rerun pose estimation, retrain a
+model, or modify any accepted upstream artifact.
+
+The output is stored outside the source tree at
+`/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/failure_analysis/`
+and the review snapshot is versioned under
+`docs/results/stage_c_failure_analysis/`. It contains the machine-readable
+summary, episode/record CSV tables, and five diagnostic figures. Test coverage
+is 13,774 Episodes from 194 independent motion records. Regret is highly
+right-skewed (median 0.00746, p90 6.143, mean 1.614); 10.00% of Episodes are
+above p90 and the top 10% of motion records account for 40.20% of top-5%
+catastrophic Episodes, so failures are not exclusively concentrated in a few
+records.
+
+The dominant taxonomy is wrong-candidate high utility loss (32.44%), followed
+by correct SafeOracle action (29.85%) and missed move (21.95%). Exact candidate
+hit is 33.93%, while aggregate positive-headroom capture is 74.93%; the miss
+gap analysis shows both near-equivalent misses and materially harmful misses.
+The hardest classes are `lie`, `play instrument`, `stumble`, and `knock` by Set
+accuracy/regret. Region differences are descriptive and do not establish
+unseen-scene generalization. State correlations are weak (entropy Spearman
+rho=+0.184; margin=-0.180; pose confidence=+0.023). Symmetric-geometry
+ambiguity is only modestly enriched in high-regret Episodes, so evidence for
+perceived body orientation is weak/inconclusive. The report prioritizes
+long-tail hard-example handling and better current/candidate representation as
+hypotheses for later review; no Stage C-v1 or Stage D decision was made.
+
+Status: Stage C-v0 failure analysis completed; results ready for scientific review.
