@@ -1,13 +1,25 @@
 # ACTIVEVIEW Current Task
 
-## Phase 0 — Controlled Research Agent Infrastructure (2026-08-29) — awaiting final human review
+## EXP001 — Utility-Gap-Aware Ranking Objective — PLANNED (2026-08-29)
 
-Research infrastructure is implemented and lifecycle-hardened under `activeview/research/` with
-immutable `EXPxxx` source directories, external runtime directories, a
-monotonic CSV registry, frozen-foundation provenance, lifecycle validation,
-and a fail-closed final-Test authorization gate. The registry is initialized
-and empty; no real `EXP001` exists. No Stage C-v1 scientific experiment,
-training, data regeneration, or new Test evaluation has started.
+EXP001 has been created as a controlled Stage C-v1 research record and remains
+`PLANNED`, awaiting explicit human start authorization. Its single planned
+change is a stay-inclusive utility-gap-weighted pairwise ranking term added to
+the existing Set Ranker objective (`lambda_gap=1.0`, `tau_gap=1.0`,
+`max_weight=10.0`). The source record is
+`experiments/stage_c_v1/EXP001_gap_aware_ranking/`; runtime outputs are under
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v1/EXP001_gap_aware_ranking/`.
+
+No `start_experiment` call has been made. No model training, data
+regeneration, Habitat/RGB/YOLO/VideoPose3D processing, Test evaluation, or
+EXP002 creation has occurred. Test remains locked (`test_used=false`). The
+planned command is recorded in the EXP001 `command.sh` and must not be run
+until separately authorized.
+
+Phase 0 research infrastructure remains implemented and lifecycle-hardened
+under `activeview/research/` with immutable `EXPxxx` source directories,
+external runtime directories, frozen-foundation provenance, lifecycle
+validation, and a fail-closed final-Test authorization gate.
 
 The latest hardening adds start-time run/config/hypothesis/command locks,
 recursive frozen-artifact re-hashing, controlled config Test-lock validation,
@@ -34,7 +46,9 @@ post-consolidation validation results are recorded in
 
 ## Status
 
-**STAGE C IMPLEMENTED / READY FOR SCIENTIFIC REVIEW** — v11.5 canonical selected16 data, frozen ST-GCN, accepted Stage A/B artifacts, and Stage C current-conditioned utility predictors are documented below. No generation or evaluation process is currently running.
+**EXP001 PLANNED / AWAITING EXPLICIT START AUTHORIZATION** — the accepted
+Stage A/B/C-v0 foundation remains frozen; no generation, training, or Test
+evaluation process is currently running.
 
 ## Current truth
 

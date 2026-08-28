@@ -1,0 +1,35 @@
+experiment:
+  id: EXP001
+  name: gap_aware_ranking
+  stage: stage_c_v1
+baseline:
+  model:
+  checkpoint:
+change:
+  category:
+  description:
+frozen:
+  stage_a: true
+  stage_b: true
+  stage_c_features: true
+  stgcn_checkpoint: true
+  record_split: true
+  candidate_protocol: true
+training:
+  seed:
+  epochs:
+  batch_size:
+  learning_rate:
+loss:
+  gap_aware:
+    enabled: true
+    lambda_gap: 1.0
+    tau_gap: 1.0
+    max_weight: 10.0
+evaluation:
+  train: true
+  val: true
+  test: false
+protocol:
+  test_locked: true
+  test_authorized: false

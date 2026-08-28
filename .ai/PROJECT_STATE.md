@@ -2,21 +2,22 @@
 
 Last Updated: 2026-08-29
 Active Version: v11.5 consolidated mainline (`activeview/`)
-Research Infrastructure: Phase 0 completed and hardened; awaiting final human review; registry empty; no Stage C-v1 experiment started
+Research Infrastructure: Phase 0 completed and hardened; EXP001 PLANNED awaiting explicit start authorization
 Test: locked until explicit FINAL_FROZEN authorization
 Stage D: not started
 
 ## Controlled research infrastructure
 
 Phase 0 infrastructure is complete and the lifecycle hardening increment is
-implemented; it is awaiting final human review. `activeview/research/` provides immutable experiment
+implemented. EXP001 is the only current Stage C-v1 record and remains PLANNED
+awaiting explicit start authorization. `activeview/research/` provides immutable experiment
 directories, a monotonic CSV registry, frozen Stage A/B/C provenance capture,
 and lifecycle/Test-gate CLIs. Start now locks the actual run commit, config,
 hypothesis and command hashes; frozen artifacts are re-hashed by the
 validator, and the final Test gate accepts only the canonical nested manifest.
 The source registry
-`experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` is initialized with a header
-only; no real `EXP001` exists. Test remains locked until explicit
+`experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` contains the single PLANNED
+`EXP001_gap_aware_ranking` record. Test remains locked until explicit
 `FINAL_FROZEN` candidate freeze, a clean-tree commit, and external runtime
 authorization. Final authorization never mutates tracked manifest or registry
 files. Experiment source/runtime paths are repository/data-root-relative. The

@@ -30,7 +30,7 @@ def _seed(seed: int) -> None:
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
 
 
-def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, model_type: str, device_name: str, batch_size: int, episodes_per_record: int, max_epochs: int, patience: int, lr: float, weight_decay: float, lambda_reg: float, lambda_rank: float, tau: float, seed: int) -> Dict[str, Any]:
+def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, model_type: str, device_name: str, batch_size: int, episodes_per_record: int, max_epochs: int, patience: int, lr: float, weight_decay: float, lambda_reg: float, lambda_rank: float, tau: float, lambda_gap: float = 0.0, tau_gap: float = 1.0, max_gap_weight: float = 10.0, seed: int) -> Dict[str, Any]:
     _seed(seed)
     device = torch.device(device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu")
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
@@ -53,18 +53,20 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
     best_metric = -float("inf"); best_epoch = 0; stale = 0; history: list[Dict[str, Any]] = []
     for epoch in range(1, max_epochs + 1):
         sampler.set_epoch(epoch)
-        model.train(); total_loss = 0.0; steps = 0
+        model.train(); loss_sums = {"total": 0.0, "regression": 0.0, "ranking": 0.0, "gap_ranking": 0.0}; steps = 0
         for batch in train_loader:
             optimizer.zero_grad(set_to_none=True)
             predicted = model(batch["current_feature"].to(device), batch["candidate_geometry"].to(device), batch["candidate_mask"].to(device))
-            losses = stage_c_loss(predicted, batch["utility_targets"].to(device), batch["candidate_mask"].to(device), lambda_reg=lambda_reg, lambda_rank=lambda_rank, tau=tau)
+            losses = stage_c_loss(predicted, batch["utility_targets"].to(device), batch["candidate_mask"].to(device), lambda_reg=lambda_reg, lambda_rank=lambda_rank, tau=tau, lambda_gap=lambda_gap, tau_gap=tau_gap, max_gap_weight=max_gap_weight)
             losses["total"].backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); optimizer.step()
-            total_loss += float(losses["total"].detach().cpu()); steps += 1
+            for key in loss_sums:
+                loss_sums[key] += float(losses[key].detach().cpu())
+            steps += 1
         val_rows = predict_dataset(model, val_loader, stage_b_lookup, device)
         val_metrics = evaluate_predictions(val_rows, categories)
         val_score = float(val_metrics["recognition"]["StageC"]["macro_f1"])
         scheduler.step(val_score)
-        history.append({"epoch": epoch, "train_loss": total_loss / max(steps, 1), "val_metrics": val_metrics, "lr": optimizer.param_groups[0]["lr"]})
+        history.append({"epoch": epoch, "train_loss": loss_sums["total"] / max(steps, 1), "train_regression_loss": loss_sums["regression"] / max(steps, 1), "train_ranking_loss": loss_sums["ranking"] / max(steps, 1), "train_gap_ranking_loss": loss_sums["gap_ranking"] / max(steps, 1), "val_metrics": val_metrics, "lr": optimizer.param_groups[0]["lr"]})
         improved = val_score > best_metric + 1e-12
         if improved:
             best_metric = val_score; best_epoch = epoch; stale = 0
@@ -72,13 +74,13 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
                 "model_state_dict": model.state_dict(), "model_type": model_type, "epoch": epoch,
                 "feature_summary_sha256": file_sha256(feature_summary_path),
                 "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256,
-                "config": {"batch_size": batch_size, "episodes_per_record": episodes_per_record, "lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "seed": seed},
+                "config": {"batch_size": batch_size, "episodes_per_record": episodes_per_record, "lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "lambda_gap": lambda_gap, "tau_gap": tau_gap, "max_gap_weight": max_gap_weight, "seed": seed},
             }, output_dir / f"{model_type}_best.pth")
         else:
             stale += 1
         if stale >= patience:
             break
-    summary = {"stage": "C", "model_type": model_type, "parameter_count": count_parameters(model), "device": str(device), "max_epochs": max_epochs, "selected_epoch": best_epoch, "checkpoint": str((output_dir / f"{model_type}_best.pth").resolve()), "checkpoint_sha256": file_sha256(output_dir / f"{model_type}_best.pth"), "checkpoint_selection_metric": "Val StageC recognition Macro-F1", "feature_summary": str(feature_summary_path.resolve()), "feature_summary_sha256": file_sha256(feature_summary_path), "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256, "sampler": {"mode": "record_balanced", "episodes_per_record_per_epoch": episodes_per_record}, "loss": {"lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "regression": "SmoothL1", "ranking": "stay-inclusive soft-target cross-entropy"}, "history": history}
+    summary = {"stage": "C", "model_type": model_type, "parameter_count": count_parameters(model), "device": str(device), "max_epochs": max_epochs, "selected_epoch": best_epoch, "checkpoint": str((output_dir / f"{model_type}_best.pth").resolve()), "checkpoint_sha256": file_sha256(output_dir / f"{model_type}_best.pth"), "checkpoint_selection_metric": "Val StageC recognition Macro-F1", "feature_summary": str(feature_summary_path.resolve()), "feature_summary_sha256": file_sha256(feature_summary_path), "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256, "sampler": {"mode": "record_balanced", "episodes_per_record_per_epoch": episodes_per_record}, "loss": {"lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "lambda_gap": lambda_gap, "tau_gap": tau_gap, "max_gap_weight": max_gap_weight, "regression": "SmoothL1", "ranking": "stay-inclusive soft-target cross-entropy", "gap_ranking": "gap-weighted soft pairwise ranking"}, "history": history}
     (output_dir / f"{model_type}_training_summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     return summary
 
@@ -92,9 +94,9 @@ def main() -> None:
     parser.add_argument("--model-type", choices=("pairwise_mlp", "set_ranker"), default="set_ranker")
     parser.add_argument("--device", default="cuda:0"); parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--episodes-per-record", type=int, default=16); parser.add_argument("--max-epochs", type=int, default=100); parser.add_argument("--patience", type=int, default=10)
-    parser.add_argument("--lr", type=float, default=1e-3); parser.add_argument("--weight-decay", type=float, default=1e-4); parser.add_argument("--lambda-reg", type=float, default=1.0); parser.add_argument("--lambda-rank", type=float, default=1.0); parser.add_argument("--tau", type=float, default=0.5); parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--lr", type=float, default=1e-3); parser.add_argument("--weight-decay", type=float, default=1e-4); parser.add_argument("--lambda-reg", type=float, default=1.0); parser.add_argument("--lambda-rank", type=float, default=1.0); parser.add_argument("--tau", type=float, default=0.5); parser.add_argument("--lambda-gap", type=float, default=0.0); parser.add_argument("--tau-gap", type=float, default=1.0); parser.add_argument("--max-gap-weight", type=float, default=10.0); parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
-    result = train_model(feature_root=args.feature_root, stage_b_root=args.stage_b_root, output_dir=args.output_dir, model_type=args.model_type, device_name=args.device, batch_size=args.batch_size, episodes_per_record=args.episodes_per_record, max_epochs=args.max_epochs, patience=args.patience, lr=args.lr, weight_decay=args.weight_decay, lambda_reg=args.lambda_reg, lambda_rank=args.lambda_rank, tau=args.tau, seed=args.seed)
+    result = train_model(feature_root=args.feature_root, stage_b_root=args.stage_b_root, output_dir=args.output_dir, model_type=args.model_type, device_name=args.device, batch_size=args.batch_size, episodes_per_record=args.episodes_per_record, max_epochs=args.max_epochs, patience=args.patience, lr=args.lr, weight_decay=args.weight_decay, lambda_reg=args.lambda_reg, lambda_rank=args.lambda_rank, tau=args.tau, lambda_gap=args.lambda_gap, tau_gap=args.tau_gap, max_gap_weight=args.max_gap_weight, seed=args.seed)
     print(json.dumps({key: value for key, value in result.items() if key != "history"}, ensure_ascii=False))
 
 

@@ -1,7 +1,22 @@
 # ACTIVEVIEW Handoff
 
-Status: CLEAN — Phase 0 hardening complete; awaiting final human review
+Status: EXP001 PLANNED — awaiting explicit start authorization
 Updated: 2026-08-29
+
+## EXP001 — Utility-Gap-Aware Ranking Objective
+
+Created `experiments/stage_c_v1/EXP001_gap_aware_ranking/` and its external
+runtime directory. The falsifiable hypothesis, single core change, planned
+parameters (`lambda_gap=1.0`, `tau_gap=1.0`, `max_weight=10.0`), frozen items,
+Val-only acceptance/rejection criteria, and non-executable planned command are
+recorded in that directory. The implementation adds an optional
+stay-inclusive, utility-gap-weighted pairwise ranking term while
+`lambda_gap=0` preserves Stage C-v0 behavior.
+
+No `start_experiment` call, model training, data regeneration, Habitat/RGB/
+YOLO/VideoPose3D processing, Test evaluation, or EXP002 creation occurred.
+Test remains locked and `test_used=false`. The next action requires explicit
+human authorization; do not run `command.sh` automatically.
 
 ## Phase 0 research infrastructure — completed, review pending
 
@@ -15,8 +30,8 @@ Final candidate freezing is a tracked `COMPLETED → FINAL_FROZEN` transition;
 after committing that transition, final authorization writes only an external
 runtime artifact and never mutates tracked manifest/registry files. Experiment
 paths are portable repository/data-root-relative values. The Stage C-v1 registry at
-`experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` is empty and no real EXP001
-was created. Test is fail-closed until a COMPLETED+ACCEPT experiment is
+`experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` contains the single PLANNED
+`EXP001_gap_aware_ranking` record. Test is fail-closed until a COMPLETED+ACCEPT experiment is
 explicitly FINAL_FROZEN, committed, and given an external authorization with
 matching frozen Git commit and config hash. Runtime artifacts belong under
 `ACTIVEVIEW_DATA_ROOT/experiments/`.

@@ -1,8 +1,9 @@
 # Stage C-v1 Controlled Experiments
 
 This directory contains immutable, human-reviewed experiment source records.
-Phase 0 initializes the registry but does not create `EXP001`; the first real
-experiment requires explicit human authorization.
+`EXP001_gap_aware_ranking` is the first controlled record and is currently
+`PLANNED`; creating the record does not authorize starting or running it.
+Every later experiment requires its own explicit human authorization.
 
 ## Standard lifecycle
 

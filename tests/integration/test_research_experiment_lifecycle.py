@@ -75,7 +75,14 @@ def test_create_start_validate_finalize_and_authorize_lifecycle(tmp_path, monkey
         assert_test_allowed(manifest, authorization_path=authorization_path, config_path=source / "config.yaml", current_commit="def")
 
 
-def test_no_real_experiment_is_created_in_repository():
+def test_exp001_research_record_is_planned_and_not_started():
+    """The checked-in research record must remain a non-running plan."""
     from pathlib import Path
     repo_root = Path(__file__).resolve().parents[2]
-    assert not [path for path in (repo_root / "experiments/stage_c_v1").glob("EXP*_*") if path.is_dir()]
+    source = repo_root / "experiments/stage_c_v1/EXP001_gap_aware_ranking"
+    assert source.is_dir()
+    manifest = load_manifest(source)
+    assert manifest["experiment"]["status"] == "PLANNED"
+    assert manifest["protocol"]["test_used"] is False
+    assert manifest["git"]["start_commit"] is None
+    assert manifest["git"]["run_commit"] is None

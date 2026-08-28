@@ -12,6 +12,19 @@
 Future entries are append-only and must record: Experiment ID, hypothesis,
 single core change, Val result, decision, important observation, and Git commit.
 
+## 2026-08-29 — EXP001 created / PLANNED
+
+- Experiment ID: `EXP001` (`gap_aware_ranking`).
+- Hypothesis: emphasizing larger ground-truth utility gaps in the Set Ranker
+  objective will reduce harmful viewpoint-selection regret on Val while
+  preserving recognition performance.
+- Single core change: add a stay-inclusive utility-gap-weighted pairwise
+  ranking term; `lambda_gap=1.0`, `tau_gap=1.0`, `max_weight=10.0`.
+- Status: `PLANNED`; no start authorization, Val result, decision, training,
+  data regeneration, or Test evaluation exists yet.
+- The accepted Stage A/B/C-v0 artifacts, features, ST-GCN checkpoint, split,
+  architecture and sampler remain frozen.
+
 ## 2026-08-29 — Phase 0 lifecycle hardening
 
 - No scientific experiment was created; the registry remains header-only.
