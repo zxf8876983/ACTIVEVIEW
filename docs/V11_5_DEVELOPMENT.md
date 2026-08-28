@@ -9,7 +9,7 @@
 
 ACTIVEVIEW 的研究对象是主动视角选择，而不是重新设计动作识别网络。ST-GCN 只是冻结的下游动作识别 backbone：机器人根据当前可用信息选择下一个可达观察点，候选点的真实观测只能在评估阶段产生，不能在决策阶段泄漏给策略。
 
-当前 v11.5 的工作区只实现并报告几何/随机基线：`NoMove`、`Fixed`、`Random`、`Nearest`，以及仅用于上界对比的候选池 `Oracle`。v11.3 的 `Utility Predictor`/`ActiveViewSelector` 已从当前 v11 工作区移除，没有对应的训练脚本、推理入口或 checkpoint，因此当前结果不能称为 learned Ours 结果。
+当前 v11.5 已实现并冻结几何/随机基线：`NoMove`、`Fixed`、`Random`、`Nearest`，以及仅用于上界对比的候选池 `Oracle`；同时已完成 Stage C current-conditioned Utility Predictor（Pairwise MLP 与 Set Ranker）的离线训练、评估和独立验收。Stage C 结果属于离线 learned policy 诊断，尚不能替代 Habitat 在线 learned-policy 评估。
 
 ## 2. Canonical 运行时边界
 
@@ -222,7 +222,45 @@ conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_
 
 `stage_a_summary.json` 中的 `episode_audit` 是最终 JSONL 的实际统计，`coverage_audit` 进一步验证所有 `record × complete_scene × selected_region` 恰好由一个 Episode 或一个 record-level exclusion 覆盖；`missing_tuple_count`、`duplicate_accounted_tuple_count` 和 `episode_and_exclusion_overlap` 必须为 0。`integrity_checks` 由这些统计推导而来，不再使用硬编码 `True`。其中 `split_overlap=false` 表示 split 之间没有重叠；`nonfinite_cached_skeleton_viewpoints` 是允许部分失败视点时的信息性计数，不作为失败条件；其余验收布尔值为 `true` 才表示通过。`no_forbidden_future_perception_fields` 只表示 Episode schema 没有混入未来感知字段，不代表 Episode 可原封不动提供给在线策略。真实 Habitat 集成测试和全量缓存审计应与 unit tests 分开记录，不能将被跳过的集成测试视为通过。
 
-## 6. v11.5 代码清理与科学修正记录
+## 6. Stage C current-conditioned Utility Predictor 结果
+
+Stage C 使用已验收的 Stage A/B 产物，不修改 Stage A/B 和冻结 ST-GCN。当前输入为 275-D current-only ST-GCN 状态，候选输入为 11-D 几何特征：使用 Stage A `relative_position` 转换到当前机器人 yaw 的 ego frame，并使用 snapped position 计算候选半径。候选未来 RGB、skeleton、label、entropy、confidence 和 utility 均未进入模型输入。
+
+训练设置为 record-balanced sampling、SmoothL1 utility regression 和 stay-inclusive listwise ranking。checkpoint 只依据 Val Stage C recognition Macro-F1 选择；Test 只在最终诊断时使用。当前特征和预测产物位于运行时目录：
+
+```text
+/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/
+```
+
+### 6.1 Recognition 结果
+
+| 方法 | Val Accuracy | Val Macro-F1 | Test Accuracy | Test Macro-F1 |
+|---|---:|---:|---:|---:|
+| NoMove | 41.25% | 37.13% | 41.27% | 38.18% |
+| Pairwise MLP | 63.27% | 57.75% | 61.45% | 55.33% |
+| Set Ranker | **64.91%** | **59.80%** | **62.54%** | **56.37%** |
+| CandidateOracle | 83.36% | 78.86% | 81.64% | 77.79% |
+| SafeOracle | 85.85% | 81.85% | 84.49% | 81.11% |
+
+`CandidateOracle` 和 `SafeOracle` 使用 Stage B 的后验信息，只是候选池理论上限，不是可执行策略。相对 NoMove，Set Ranker 在 Test 上提升 21.27 个百分点 Accuracy 和 18.19 个百分点 Macro-F1；Pairwise 分别提升 20.18 和 17.15 个百分点。
+
+### 6.2 Regret、动作匹配和 headroom
+
+| 方法 | Val regret mean / median / p90 | Test regret mean / median / p90 | Val headroom capture | Test headroom capture |
+|---|---:|---:|---:|---:|
+| Pairwise MLP | 1.674 / 0.0088 / 6.326 | 1.802 / 0.0108 / 6.582 | 72.88% | 70.83% |
+| Set Ranker | **1.450 / 0.0051 / 5.608** | **1.614 / 0.0075 / 6.143** | **77.80%** | **74.93%** |
+| SafeOracle | 0 / 0 / 0 | 0 / 0 / 0 | 100%（定义上限） | 100%（定义上限） |
+
+Set Ranker 相比 Pairwise 在 Test 上 candidate hit rate 为 33.93%（Pairwise 32.41%），safe-action match rate 为 29.85%（Pairwise 28.63%），mean regret 降低 0.188，aggregate headroom capture 提高 4.10 个百分点。Headroom capture 定义为正 SafeOracle utility episode 上的 `sum(max(0, selected utility)) / sum(SafeOracle utility)`；Val/Test 分别包含 11,879/11,644 个正 headroom episode。由极小 SafeOracle utility 导致的 `raw_mean` 不作为主统计量。
+
+### 6.3 科研解释与限制
+
+Stage C 已显示 current-conditioned view selection 明显优于 NoMove，Set Ranker 略优于 Pairwise；但 Set Ranker Test 仍比 SafeOracle 低 21.95 个百分点 Accuracy、24.74 个百分点 Macro-F1，说明 utility ranking 尚未接近候选池上限。Regret 的 median 接近 0 而 p90 较高，表明总体分布存在明显长尾。
+
+这些结果来自一次固定 split/训练运行（Val 13,987、Test 13,774 episodes），没有多 seed 置信区间或显著性检验。Train/Val/Test 按 motion record 划分且共享 HM3D 场景，因此不能解释为跨场景泛化结果。Stage D 真实 Habitat 在线 learned-policy 评估尚未开始。
+
+## 7. v11.5 代码清理与科学修正记录
 
 相对于 v10/v11.3，当前工作区做了以下有意修改：
 
@@ -237,9 +275,9 @@ conda run --no-capture-output -n habitat python ea_avs_mvp_v11/scripts/validate_
 9. 将场景路径和人体路径集中到 `core/paths.py`，禁止全盘扫描；加入断点续跑、预测缓存和场景级缓存。
 10. 增加归一化、相机重力变换、manifest 冲突过滤和 ST-GCN 输入形状测试，并把数据 SHA-256、训练参数和预处理协议写入 checkpoint。
 
-## 7. 当前限制与下一步
+## 8. 当前限制与下一步
 
-- 当前正式 learned active-view strategy 尚未实现；结果只能用于基线和 Oracle 上限比较。
+- 当前 Stage C learned active-view strategy 仅完成离线训练与诊断；Stage D 的真实 Habitat 在线 learned-policy 闭环尚未实现。
 - `lie`/`stumble` 等安全动作样本仍少，纯 skeleton 对物体交互动作的语义区分有限。
 - 纯色 Habitat 预训练域与真实 HM3D 家具遮挡域存在 domain gap。
 - HM3D-train 四区域离线数据仍需完成剩余场景；恢复生成前必须检查场景 manifest 是否为 v2，不能混用早期 v1 产物。

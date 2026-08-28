@@ -158,3 +158,14 @@ independently loads `datasets/policy_v11_5/splits/` through the canonical
 policy-split loader and requires frozen 589/197/194 counts in the split JSON,
 Stage A summary, and Stage B summary; mutually consistent but non-canonical
 counts are rejected.
+
+Final offline Stage C results are recorded in
+`datasets/policy_v11_5/stage_c/stage_c_summary.json`: NoMove is
+41.25%/37.13% and 41.27%/38.18% Accuracy/Macro-F1 on Val/Test; Pairwise is
+63.27%/57.75% and 61.45%/55.33%; Set Ranker is 64.91%/59.80% and
+62.54%/56.37%; SafeOracle is 85.85%/81.85% and 84.49%/81.11%.
+Set Ranker Test mean regret is 1.614 (median 0.0075, p90 6.143) and
+aggregate positive-headroom capture is 74.93%; Pairwise is 1.802
+(0.0108, 6.582) and 70.83%. These are offline diagnostics only; Stage D
+Habitat online learned-policy evaluation has not started, and no multi-seed
+confidence interval is available.

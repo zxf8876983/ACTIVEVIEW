@@ -81,6 +81,14 @@ decision and regret from predicted utilities plus Stage B diagnostics. Test
 metrics are final-only diagnostics; Stage D and Habitat online learned-policy
 evaluation have not started.
 
+Final Stage C offline diagnosis: on Test, NoMove is 41.27% Accuracy / 38.18%
+Macro-F1, Pairwise MLP is 61.45% / 55.33%, Set Ranker is 62.54% / 56.37%,
+and SafeOracle is 84.49% / 81.11%. Set Ranker Test mean regret is 1.614
+(median 0.0075, p90 6.143) with 74.93% aggregate positive-headroom capture;
+Pairwise is 1.802 (0.0108, 6.582) with 70.83% capture. Stage C remains an
+offline learned-policy diagnostic; Habitat online learned-policy evaluation
+and multi-seed statistical testing have not started.
+
 ## Historical code boundary
 
 The v11 working tree intentionally removes old v10 RGB-D/legacy pose entry points, old household/official150 training entry points, and v11.3 Utility Predictor/closed-loop modules. `ea_avs_mvp_v10/` remains read-only historical reference; it has candidate generation and per-view entropy analysis, but no learned active-view selector.

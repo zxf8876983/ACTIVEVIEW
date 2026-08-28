@@ -148,3 +148,10 @@ then recomputes all saved Val/Test metrics from prediction JSONL. It also
 verifies canonical split counts, Stage A/B/feature provenance hashes, finite
 feature schemas and counts, and confirms Stage D has not started.
 No Habitat re-rendering or learned-policy online evaluation was performed.
+
+Recorded Stage C metrics: Test NoMove 41.27% Accuracy / 38.18% Macro-F1,
+Pairwise 61.45% / 55.33%, Set Ranker 62.54% / 56.37%, and SafeOracle
+84.49% / 81.11%. Set Ranker Test regret is 1.614 mean (0.0075 median,
+6.143 p90) with 74.93% aggregate positive-headroom capture; Pairwise is
+1.802 (0.0108, 6.582) with 70.83% capture. These are offline results only;
+Stage D Habitat learned-policy evaluation remains pending.
