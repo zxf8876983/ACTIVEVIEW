@@ -22,6 +22,11 @@ def validate_infrastructure(repo_root: Path = REPO_ROOT) -> Dict[str, Any]:
     required = [repo_root / ".ai" / name for name in ("RESEARCH_PLAN.md", "RESEARCH_LOG.md", "REJECTED_IDEAS.md")]
     required += [stage_root / "README.md", stage_root / "EXPERIMENT_REGISTRY.csv"]
     required += [stage_root / "templates" / name for name in ("hypothesis.md", "conclusion.md", "config.yaml")]
+    required += [
+        repo_root / "activeview" / "research" / "test_gate.py",
+        repo_root / "tests" / "unit" / "test_research_test_gate.py",
+        repo_root / "tests" / "integration" / "test_research_experiment_lifecycle.py",
+    ]
     for path in required:
         if not path.is_file():
             errors.append(f"missing:{path.relative_to(repo_root)}")

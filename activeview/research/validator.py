@@ -10,9 +10,10 @@ from typing import Any, Dict, Mapping
 from activeview.active_view.utility_label_builder import file_sha256
 
 from .experiment import ExperimentStatus
-from .manifest import git_value, load_manifest
-from .provenance import provenance_complete
+from .manifest import load_manifest, validate_controlled_config
+from .provenance import provenance_complete, verify_frozen_provenance
 from .registry import get_experiment
+from .test_gate import validate_final_test_authorization
 
 
 def _config_id(path: Path) -> str | None:
@@ -40,6 +41,10 @@ def validate_experiment(
     experiment_id = str(experiment.get("experiment_id", ""))
     status = str(experiment.get("status", ""))
     decision = str(experiment.get("decision", "NA"))
+    git_metadata = manifest.get("git", {})
+    if not isinstance(git_metadata, Mapping):
+        errors.append("git_metadata_missing")
+        git_metadata = {}
     if not re.fullmatch(r"EXP\d+", experiment_id):
         errors.append("experiment_id_invalid")
     if status not in {item.value for item in ExperimentStatus}:
@@ -57,11 +62,22 @@ def validate_experiment(
     if _config_id(config_path) != experiment_id:
         errors.append("config_experiment_id_mismatch")
     paths = manifest.get("paths", {})
-    if isinstance(paths, Mapping) and config_path.is_file() and paths.get("config_sha256") != file_sha256(config_path):
-        errors.append("config_hash_mismatch")
+    if not isinstance(paths, Mapping):
+        errors.append("paths_missing")
+        paths = {}
+    if isinstance(paths, Mapping) and config_path.is_file():
+        if status == "PLANNED" and paths.get("draft_config_sha256") != file_sha256(config_path):
+            warnings.append("draft_config_changed_before_start")
+        if status in {"RUNNING", "COMPLETED", "FINAL_FROZEN"} and paths.get("run_config_sha256") != file_sha256(config_path):
+            errors.append("run_config_hash_mismatch")
+    errors.extend(validate_controlled_config(config_path, experiment_id))
     provenance = manifest.get("provenance", {})
     if require_complete_provenance and not provenance_complete(provenance if isinstance(provenance, Mapping) else {}):
         errors.append("frozen_provenance_incomplete")
+    if status in {"RUNNING", "COMPLETED", "FINAL_FROZEN"}:
+        errors.extend(verify_frozen_provenance(provenance if isinstance(provenance, Mapping) else {}))
+        if not git_metadata.get("run_commit"):
+            errors.append("run_commit_missing")
     protocol = manifest.get("protocol", {})
     if not isinstance(protocol, Mapping):
         errors.append("protocol_missing")
@@ -73,31 +89,38 @@ def validate_experiment(
     if status not in {"FINAL_FROZEN"} and protocol.get("test_authorized") is not False:
         errors.append("test_authorization_invalid")
     if status == "FINAL_FROZEN":
-        if decision != "ACCEPT":
-            errors.append("final_frozen_requires_accept")
-        if protocol.get("final_model_frozen") is not True or protocol.get("test_authorized") is not True:
-            errors.append("final_frozen_protocol_invalid")
+        errors.extend(validate_final_test_authorization(
+            manifest,
+            authorization_path=source_dir / "final_test_authorization.json",
+            config_path=config_path,
+        ))
         authorization_path = source_dir / "final_test_authorization.json"
-        if not authorization_path.is_file():
-            errors.append("final_authorization_missing")
-        else:
+        if authorization_path.is_file():
             try:
-                authorization = json.loads(authorization_path.read_text(encoding="utf-8"))
+                payload = json.loads(authorization_path.read_text(encoding="utf-8"))
+                authorization = payload if isinstance(payload, Mapping) else {}
             except (OSError, ValueError):
                 authorization = {}
-                errors.append("final_authorization_invalid")
-            if authorization.get("authorized") is not True or authorization.get("experiment_id") != experiment_id:
-                errors.append("final_authorization_identity_invalid")
-            if not authorization.get("frozen_git_commit") or authorization.get("frozen_git_commit") != git_value("rev-parse", "HEAD"):
-                errors.append("final_authorization_commit_mismatch")
-            if authorization.get("config_sha256") != file_sha256(config_path):
-                errors.append("final_authorization_config_hash_mismatch")
             if not authorization.get("manifest_sha256_before_authorization"):
                 errors.append("final_authorization_manifest_hash_missing")
     if status == "COMPLETED":
+        if decision not in {"ACCEPT", "REJECT", "INCONCLUSIVE"}:
+            errors.append("completed_decision_invalid")
         for filename in ("val_metrics.json", "analysis.json", "conclusion.md"):
             if not (source_dir / filename).is_file():
                 errors.append(f"completed_file_missing:{filename}")
+        conclusion = source_dir / "conclusion.md"
+        if conclusion.is_file():
+            text = conclusion.read_text(encoding="utf-8")
+            if "## Decision" not in text or "NA" in text or "TODO" in text:
+                errors.append("conclusion_incomplete")
+    if status == "PLANNED":
+        if decision != "NA":
+            errors.append("planned_decision_must_be_na")
+        if protocol.get("test_used") is not False:
+            errors.append("planned_test_used_must_be_false")
+    if status == "RUNNING" and (not git_metadata.get("run_commit") or not paths.get("run_config_sha256")):
+        errors.append("running_freeze_metadata_missing")
     if registry_path is not None:
         try:
             row = get_experiment(registry_path, experiment_id)
@@ -105,6 +128,10 @@ def validate_experiment(
                 errors.append("registry_status_mismatch")
             if row.get("decision", "NA") != decision:
                 errors.append("registry_decision_mismatch")
+            if row.get("source_dir") != str(source_dir.resolve()):
+                errors.append("registry_source_dir_mismatch")
+            if row.get("runtime_dir") != str(runtime_dir.resolve()):
+                errors.append("registry_runtime_dir_mismatch")
         except (KeyError, ValueError) as error:
             errors.append(f"registry_identity_invalid:{error}")
     return {"passed": not errors, "error_count": len(errors), "warning_count": len(warnings), "errors": errors, "warnings": warnings, "experiment_id": experiment_id, "status": status, "decision": decision}

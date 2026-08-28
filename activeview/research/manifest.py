@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -51,6 +52,50 @@ def save_manifest(source_dir: Path, payload: Mapping[str, Any]) -> None:
 
 def manifest_sha256(source_dir: Path) -> str:
     return file_sha256(source_dir / "run_manifest.json")
+
+
+def parse_controlled_config(path: Path) -> Dict[str, Dict[str, Any]]:
+    """Parse only the small nested subset needed by lifecycle guards."""
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    sections: Dict[str, Dict[str, Any]] = {}
+    current: str | None = None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        section = re.match(r"^([A-Za-z_][\w-]*):\s*$", line)
+        if section:
+            current = section.group(1)
+            sections.setdefault(current, {})
+            continue
+        item = re.match(r"^\s{2}([A-Za-z_][\w-]*):\s*(.*?)\s*$", line)
+        if not item or current is None:
+            continue
+        raw = item.group(2).strip()
+        if raw.lower() in {"true", "false"}:
+            value: Any = raw.lower() == "true"
+        elif raw in {"", "null", "~"}:
+            value = None
+        else:
+            value = raw.strip("'\"")
+        sections[current][item.group(1)] = value
+    return sections
+
+
+def validate_controlled_config(path: Path, expected_experiment_id: str) -> list[str]:
+    """Validate Test-lock fields without importing a YAML dependency."""
+    try:
+        config = parse_controlled_config(path)
+    except (OSError, ValueError) as error:
+        return [f"config_invalid:{error}"]
+    errors: list[str] = []
+    if config.get("experiment", {}).get("id") != expected_experiment_id:
+        errors.append("config_experiment_id_mismatch")
+    if config.get("evaluation", {}).get("test") is not False:
+        errors.append("config_evaluation_test_must_be_false")
+    if config.get("protocol", {}).get("test_locked") is not True:
+        errors.append("config_test_locked_must_be_true")
+    if config.get("protocol", {}).get("test_authorized") is not False:
+        errors.append("config_test_authorized_must_be_false")
+    return errors
 
 
 def experiment_from_manifest(payload: Mapping[str, Any]) -> Experiment:

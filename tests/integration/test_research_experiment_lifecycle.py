@@ -1,11 +1,13 @@
 import json
 
 from activeview.active_view.utility_label_builder import file_sha256
+import pytest
+
 from activeview.research.manifest import load_manifest, save_manifest
 from activeview.scripts.create_experiment import create_experiment
 from activeview.scripts.finalize_experiment import finalize_experiment
 from activeview.scripts.start_experiment import start_experiment
-from activeview.research.test_gate import assert_test_allowed
+from activeview.research.test_gate import TestGateError, assert_test_allowed
 
 
 def _complete_provenance(tmp_path):
@@ -23,20 +25,38 @@ def _complete_provenance(tmp_path):
     }
 
 
-def test_create_start_validate_finalize_lifecycle(tmp_path):
-    result = create_experiment(stage="stage_c_v1", name="demo", hypothesis="one change", repo_root=tmp_path, data_root=tmp_path / "data")
+def test_create_start_validate_finalize_and_authorize_lifecycle(tmp_path, monkeypatch):
+    result = create_experiment(stage="stage_c_v1", name="demo", hypothesis="one change", core_change="change one", repo_root=tmp_path, data_root=tmp_path / "data")
     assert result["experiment_id"] == "EXP001"
     source = tmp_path / "experiments/stage_c_v1/EXP001_demo"
     manifest = load_manifest(source)
     manifest["provenance"] = _complete_provenance(tmp_path)
     save_manifest(source, manifest)
+    config_path = source / "config.yaml"
+    config_path.write_text(config_path.read_text(encoding="utf-8") + "# human review\n", encoding="utf-8")
+    monkeypatch.setattr("activeview.scripts.start_experiment.git_dirty", lambda: False)
+    monkeypatch.setattr("activeview.scripts.start_experiment.git_value", lambda *args, **kwargs: "abc")
     start_experiment("EXP001", repo_root=tmp_path, require_clean=False)
+    started_manifest = load_manifest(source)
+    assert started_manifest["paths"]["run_config_sha256"] == file_sha256(config_path)
+    assert started_manifest["paths"]["run_config_sha256"] != started_manifest["paths"]["draft_config_sha256"]
+    assert started_manifest["git"]["run_commit"] == "abc"
     (source / "val_metrics.json").write_text(json.dumps({"split": "val", "recognition": {"accuracy": 0.5, "macro_f1": 0.4}, "regret": {"mean": 1.0, "median": 0.1, "p90": 2.0}, "positive_headroom_capture": 0.7}), encoding="utf-8")
     (source / "analysis.json").write_text("{}", encoding="utf-8")
-    (source / "conclusion.md").write_text("# conclusion\n", encoding="utf-8")
+    (source / "conclusion.md").write_text("# Experiment Conclusion\n\n## Observation\nMeasured.\n\n## Interpretation\nInference.\n\n## Decision\nACCEPT\n\n## Next\nNone.\n", encoding="utf-8")
     result = finalize_experiment("EXP001", decision="ACCEPT", repo_root=tmp_path)
     assert result["status"] == "COMPLETED"
     assert load_manifest(source)["experiment"]["decision"] == "ACCEPT"
+    monkeypatch.setattr("activeview.scripts.authorize_final_test.git_dirty", lambda: False)
+    monkeypatch.setattr("activeview.scripts.authorize_final_test.git_value", lambda *args, **kwargs: "abc")
+    monkeypatch.setattr("activeview.research.test_gate.git_value", lambda *args, **kwargs: "abc")
+    from activeview.scripts.authorize_final_test import authorize_final_test
+    authorize_final_test("EXP001", repo_root=tmp_path, confirm_final_model_frozen=True, require_clean=False)
+    manifest = load_manifest(source)
+    assert_test_allowed(manifest, authorization_path=source / "final_test_authorization.json", config_path=source / "config.yaml", current_commit="abc")
+    (source / "config.yaml").write_text((source / "config.yaml").read_text(encoding="utf-8") + "# mutation\n", encoding="utf-8")
+    with pytest.raises(TestGateError, match="config_hash_mismatch"):
+        assert_test_allowed(manifest, authorization_path=source / "final_test_authorization.json", config_path=source / "config.yaml", current_commit="abc")
 
 
 def test_no_real_experiment_is_created_in_repository():

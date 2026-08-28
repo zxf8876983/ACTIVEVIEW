@@ -1,14 +1,17 @@
 # ACTIVEVIEW Handoff
 
-Status: CLEAN
+Status: CLEAN — Phase 0 hardening complete; awaiting final human review
 Updated: 2026-08-29
 
-## Phase 0 research infrastructure — completed
+## Phase 0 research infrastructure — completed, review pending
 
-Implemented `activeview/research/` and the lifecycle CLIs:
+Implemented and hardened `activeview/research/` and the lifecycle CLIs:
 `create_experiment`, `start_experiment`, `validate_experiment`,
 `finalize_experiment`, `authorize_final_test`, and
-`validate_research_infrastructure`. The Stage C-v1 registry at
+`validate_research_infrastructure`. Start now freezes the actual run commit,
+run config, hypothesis and command hashes; validators re-hash every frozen
+artifact; and the final Test gate accepts only canonical nested manifests. The
+Stage C-v1 registry at
 `experiments/stage_c_v1/EXPERIMENT_REGISTRY.csv` is empty and no real EXP001
 was created. Test is fail-closed until a COMPLETED+ACCEPT experiment is
 explicitly FINAL_FROZEN with authorization, frozen Git commit, and config

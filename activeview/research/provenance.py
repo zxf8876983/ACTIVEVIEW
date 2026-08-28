@@ -85,3 +85,33 @@ def provenance_complete(provenance: Mapping[str, Any]) -> bool:
             return all(hashes(item) for item in value.values())
         return True
     return all(hashes(provenance[key]) for key in required)
+
+
+def verify_frozen_provenance(recorded_provenance: Mapping[str, Any]) -> list[str]:
+    """Re-hash every recorded frozen artifact and return explicit errors."""
+    errors: list[str] = []
+    required = ("stage_a", "stage_b", "stage_c_features", "stgcn_checkpoint", "label_mapping", "record_split")
+
+    def visit(value: Any, logical_path: str) -> None:
+        if isinstance(value, Mapping):
+            if "path" in value:
+                path = Path(str(value.get("path", "")))
+                if not path.is_file():
+                    errors.append(f"frozen_artifact_missing:{logical_path}")
+                    return
+                expected = value.get("sha256")
+                actual = file_sha256(path)
+                if not expected or actual != expected:
+                    errors.append(f"frozen_artifact_hash_mismatch:{logical_path}")
+                return
+            for key, child in value.items():
+                visit(child, f"{logical_path}.{key}")
+
+    if not isinstance(recorded_provenance, Mapping):
+        return ["frozen_provenance_missing"]
+    for key in required:
+        if key not in recorded_provenance:
+            errors.append(f"frozen_provenance_missing:{key}")
+        else:
+            visit(recorded_provenance[key], key)
+    return errors

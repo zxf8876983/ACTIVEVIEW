@@ -1,5 +1,7 @@
 import json
 
+from activeview.active_view.utility_label_builder import file_sha256
+from activeview.research.provenance import verify_frozen_provenance
 from activeview.research.validator import validate_experiment
 
 
@@ -22,3 +24,36 @@ def test_validator_rejects_missing_provenance_and_completed_files(tmp_path):
     assert not report["passed"]
     assert "frozen_provenance_incomplete" in report["errors"]
     assert "completed_file_missing:val_metrics.json" in report["errors"]
+
+
+def test_validator_rehashes_frozen_artifacts(tmp_path):
+    source, runtime = tmp_path / "EXP001_demo", tmp_path / "runtime"
+    source.mkdir(); runtime.mkdir()
+    config = source / "config.yaml"
+    config.write_text(
+        "experiment:\n  id: EXP001\n"
+        "evaluation:\n  test: false\n"
+        "protocol:\n  test_locked: true\n  test_authorized: false\n",
+        encoding="utf-8",
+    )
+    artifact = tmp_path / "artifact.bin"
+    artifact.write_bytes(b"stable")
+    recorded = {"path": str(artifact), "exists": True, "sha256": file_sha256(artifact)}
+    provenance = {
+        "stage_a": {"summary": recorded},
+        "stage_b": {"summary": recorded},
+        "stage_c_features": {"summary": recorded},
+        "stgcn_checkpoint": recorded,
+        "label_mapping": recorded,
+        "record_split": {"summary": recorded},
+    }
+    manifest = _manifest(source, runtime, "RUNNING", "NA")
+    manifest["git"] = {"run_commit": "abc"}
+    manifest["paths"] = {"run_config_sha256": file_sha256(config)}
+    manifest["provenance"] = provenance
+    (source / "run_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    assert validate_experiment(source)["passed"]
+    artifact.write_bytes(b"changed")
+    report = validate_experiment(source)
+    assert not report["passed"]
+    assert "frozen_artifact_hash_mismatch:stage_a.summary" in report["errors"]

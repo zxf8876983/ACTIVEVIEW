@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 from pathlib import Path
 import sys
 from typing import Any, Dict
@@ -91,59 +92,62 @@ def create_experiment(
     if source_dir.exists():
         raise FileExistsError(f"Experiment directory already exists: {source_dir}")
     runtime_dir = get_stage_experiment_runtime_root(stage, directory_name) if repo == REPO_ROOT else ((data_root or get_data_root()) / "experiments" / stage / directory_name)
-    source_dir.mkdir(parents=True)
-    runtime_dir.mkdir(parents=True, exist_ok=False)
-    for child in ("checkpoints", "logs", "predictions", "plots", "runtime"):
-        (runtime_dir / child).mkdir()
-    experiment = Experiment(
-        experiment_id=experiment_id, name=name, stage=stage, hypothesis=hypothesis,
-        motivation=motivation, baseline=baseline, core_change=core_change,
-        frozen_items=["Stage A", "Stage B", "Stage C features", "frozen ST-GCN", "record split"],
-        metrics=["Accuracy", "Macro-F1", "mean/median/p90 regret", "positive headroom capture"],
-        acceptance_criteria=[], rejection_criteria=[], source_dir=str(source_dir.resolve()),
-        runtime_dir=str(runtime_dir.resolve()), created_at=utc_now(),
-    )
-    config = {
-        "experiment": {"id": experiment_id, "name": name, "stage": stage},
-        "baseline": {"model": None, "checkpoint": None},
-        "change": {"category": None, "description": None},
-        "frozen": {"stage_a": True, "stage_b": True, "stage_c_features": True, "stgcn_checkpoint": True, "record_split": True, "candidate_protocol": True},
-        "training": {"seed": None, "epochs": None, "batch_size": None, "learning_rate": None},
-        "evaluation": {"train": True, "val": True, "test": False},
-        "protocol": {"test_locked": True, "test_authorized": False},
-    }
-    config_path = source_dir / "config.yaml"
-    # YAML is intentionally dependency-free: this template is valid YAML and
-    # remains human-editable without introducing a second config framework.
-    config_path.write_text("\n".join([
-        f"experiment:\n  id: {experiment_id}\n  name: {name}\n  stage: {stage}",
-        "baseline:\n  model:\n  checkpoint:",
-        "change:\n  category:\n  description:",
-        "frozen:\n  stage_a: true\n  stage_b: true\n  stage_c_features: true\n  stgcn_checkpoint: true\n  record_split: true\n  candidate_protocol: true",
-        "training:\n  seed:\n  epochs:\n  batch_size:\n  learning_rate:",
-        "evaluation:\n  train: true\n  val: true\n  test: false",
-        "protocol:\n  test_locked: true\n  test_authorized: false", "",
-    ]), encoding="utf-8")
-    manifest: Dict[str, Any] = {
-        "schema_version": "stage-c-research-v1",
-        "experiment": experiment.to_dict(),
-        "git": {"start_commit": git_value("rev-parse", "HEAD", default="unknown"), "end_commit": None, "dirty_at_creation": git_dirty()},
-        "provenance": collect_stage_c_research_provenance(data_root),
-        "protocol": {"test_locked": True, "test_used": False, "final_model_frozen": False, "test_authorized": False},
-        "training": {"seed": None}, "model": {}, "loss": {}, "sampler": {}, "optimizer": {},
-        "paths": {"source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "config_sha256": file_sha256(config_path)},
-    }
-    write_json_atomic(source_dir / "run_manifest.json", manifest)
-    write_status(source_dir, manifest)
-    (source_dir / "hypothesis.md").write_text(_hypothesis_text(experiment), encoding="utf-8")
-    (source_dir / "conclusion.md").write_text("# Experiment Conclusion\n\n## Observation\n\nTODO\n\n## Interpretation\n\nTODO\n\n## Decision\n\nNA\n\n## Next\n\nTODO\n\n## Protocol\n\nTest used: false\nFrozen Stage A/B changed: false\nFrozen Stage C features changed: false\n", encoding="utf-8")
-    command = "#!/usr/bin/env bash\nset -euo pipefail\n\n# Experiment: " + experiment_id + "\n# Approved training command must be written here after hypothesis/config review.\n# Stage C-v1 Test evaluation is forbidden during development.\n\necho \"No training command configured.\"\nexit 1\n"
-    command_path = source_dir / "command.sh"
-    command_path.write_text(command, encoding="utf-8")
-    command_path.chmod(0o755)
-    registry_row = {"experiment_id": experiment_id, "name": name, "stage": stage, "status": "PLANNED", "hypothesis": hypothesis, "core_change": core_change, "baseline": baseline, "created_at": experiment.created_at, "completed_at": "", "git_commit_start": manifest["git"]["start_commit"], "git_commit_end": "", "decision": "NA", "test_used": "false", "source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "notes": "Research experiment created; human review required before start."}
-    register_experiment(registry_path, registry_row)
-    return {"experiment_id": experiment_id, "source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "dirty_at_creation": manifest["git"]["dirty_at_creation"], "registry": str(registry_path.resolve())}
+    source_created = False
+    runtime_created = False
+    registered = False
+    try:
+        source_dir.mkdir(parents=True)
+        source_created = True
+        runtime_dir.mkdir(parents=True, exist_ok=False)
+        runtime_created = True
+        for child in ("checkpoints", "logs", "predictions", "plots", "runtime"):
+            (runtime_dir / child).mkdir()
+        experiment = Experiment(
+            experiment_id=experiment_id, name=name, stage=stage, hypothesis=hypothesis,
+            motivation=motivation, baseline=baseline, core_change=core_change,
+            frozen_items=["Stage A", "Stage B", "Stage C features", "frozen ST-GCN", "record split"],
+            metrics=["Accuracy", "Macro-F1", "mean/median/p90 regret", "positive headroom capture"],
+            acceptance_criteria=[], rejection_criteria=[], source_dir=str(source_dir.resolve()),
+            runtime_dir=str(runtime_dir.resolve()), created_at=utc_now(),
+        )
+        config_path = source_dir / "config.yaml"
+        config_path.write_text("\n".join([
+            f"experiment:\n  id: {experiment_id}\n  name: {name}\n  stage: {stage}",
+            "baseline:\n  model:\n  checkpoint:",
+            "change:\n  category:\n  description:",
+            "frozen:\n  stage_a: true\n  stage_b: true\n  stage_c_features: true\n  stgcn_checkpoint: true\n  record_split: true\n  candidate_protocol: true",
+            "training:\n  seed:\n  epochs:\n  batch_size:\n  learning_rate:",
+            "evaluation:\n  train: true\n  val: true\n  test: false",
+            "protocol:\n  test_locked: true\n  test_authorized: false", "",
+        ]), encoding="utf-8")
+        manifest: Dict[str, Any] = {
+            "schema_version": "stage-c-research-v1",
+            "experiment": experiment.to_dict(),
+            "git": {"creation_commit": git_value("rev-parse", "HEAD", default="unknown"), "start_commit": None, "run_commit": None, "end_commit": None, "dirty_at_creation": git_dirty()},
+            "provenance": collect_stage_c_research_provenance(data_root),
+            "protocol": {"test_locked": True, "test_used": False, "final_model_frozen": False, "test_authorized": False},
+            "training": {"seed": None}, "model": {}, "loss": {}, "sampler": {}, "optimizer": {},
+            "paths": {"source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "draft_config_sha256": file_sha256(config_path), "run_config_sha256": None},
+        }
+        write_json_atomic(source_dir / "run_manifest.json", manifest)
+        write_status(source_dir, manifest)
+        (source_dir / "hypothesis.md").write_text(_hypothesis_text(experiment), encoding="utf-8")
+        (source_dir / "conclusion.md").write_text("# Experiment Conclusion\n\n## Observation\n\nTODO\n\n## Interpretation\n\nTODO\n\n## Decision\n\nNA\n\n## Next\n\nTODO\n\n## Protocol\n\nTest used: false\nFrozen Stage A/B changed: false\nFrozen Stage C features changed: false\n", encoding="utf-8")
+        command = "#!/usr/bin/env bash\nset -euo pipefail\n\n# Experiment: " + experiment_id + "\n# Approved training command must be written here after hypothesis/config review.\n# Stage C-v1 Test evaluation is forbidden during development.\n\necho \"No training command configured.\"\nexit 1\n"
+        command_path = source_dir / "command.sh"
+        command_path.write_text(command, encoding="utf-8")
+        command_path.chmod(0o755)
+        registry_row = {"experiment_id": experiment_id, "name": name, "stage": stage, "status": "PLANNED", "hypothesis": hypothesis, "core_change": core_change, "baseline": baseline, "created_at": experiment.created_at, "completed_at": "", "git_commit_start": "", "git_commit_end": "", "decision": "NA", "test_used": "false", "source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "notes": "Research experiment created; human review required before start."}
+        register_experiment(registry_path, registry_row)
+        registered = True
+        return {"experiment_id": experiment_id, "source_dir": str(source_dir.resolve()), "runtime_dir": str(runtime_dir.resolve()), "dirty_at_creation": manifest["git"]["dirty_at_creation"], "registry": str(registry_path.resolve())}
+    except Exception:
+        if not registered:
+            if source_created and source_dir.exists():
+                shutil.rmtree(source_dir)
+            if runtime_created and runtime_dir.exists():
+                shutil.rmtree(runtime_dir)
+        raise
 
 
 def main() -> None:
