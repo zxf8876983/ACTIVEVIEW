@@ -73,7 +73,9 @@ def candidate_geometry_features(
     candidate_position = _finite_array(
         candidate["snapped_position"], name="candidate_snapped_position", shape=(3,)
     )
-    world_delta = candidate_position - current
+    # Stage A's relative_position is the audited agent-to-agent displacement;
+    # use it as the world delta so the y convention matches navigation exactly.
+    world_delta = _finite_array(candidate["relative_position"], name="relative_position", shape=(3,))
     cos_yaw, sin_yaw = float(np.cos(yaw)), float(np.sin(yaw))
     relative = np.asarray(
         [cos_yaw * world_delta[0] - sin_yaw * world_delta[2], world_delta[1],

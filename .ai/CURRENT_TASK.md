@@ -137,14 +137,16 @@ Macro-F1. Test is reported once for final diagnosis only.
 Artifacts:
 
 - Feature cache and schema: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/`
-- Pairwise checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stage_c/pairwise_mlp_best.pth` (selected epoch 17, 142,785 parameters)
-- Set ranker checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stage_c/set_ranker_best.pth` (selected epoch 28, 407,745 parameters)
+- Pairwise checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stage_c/pairwise_mlp_best.pth` (selected epoch 29, 142,785 parameters)
+- Set ranker checkpoint: `/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stage_c/set_ranker_best.pth` (selected epoch 46, 407,745 parameters)
 - Combined summary: `stage_c/stage_c_summary.json`
 - Independent validator: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/validation_report.json` (`passed=true`)
 
 Validation re-computes all saved Val/Test metric trees from prediction JSONL,
-checks canonical 589/197/194 split counts, Stage A/B/feature provenance
-hashes, finite feature schemas and feature counts. Stage D, Habitat
+independently reselects each candidate/Stay action from predicted utilities,
+checks Stage B recognition outcomes and regret, canonical 589/197/194 split
+counts, Stage A/B/feature provenance hashes, finite feature schemas and feature
+counts. Stage D, Habitat
 re-rendering and online learned-policy evaluation have not started.
 
 The validator additionally recomputes the complete metrics tree with a

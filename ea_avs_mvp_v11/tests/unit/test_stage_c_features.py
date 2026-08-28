@@ -23,7 +23,7 @@ def test_current_feature_shape_and_geometry_shape():
 
 def test_geometry_uses_egocentric_delta_and_snapped_radius():
     candidate = {
-        "position": [99.0, 0.0, 99.0], "snapped_position": [2.0, 0.0, 0.0],
+        "position": [99.0, 0.0, 99.0], "snapped_position": [2.0, 0.0, 0.0], "relative_position": [2.0, 0.0, 0.0],
         "euclidean_distance_m": 2.0, "geodesic_distance_m": 2.0,
         "relative_azimuth_deg": 0.0,
     }
@@ -38,7 +38,7 @@ def test_feature_constructor_ignores_labels_and_future_candidate_perception():
     second = current_state_features(*current_inputs)
     assert np.array_equal(first, second)
     candidate = {
-        "snapped_position": [1.0, 0.0, 0.0], "position": [100.0, 0.0, 100.0],
+        "snapped_position": [1.0, 0.0, 0.0], "position": [100.0, 0.0, 100.0], "relative_position": [1.0, 0.0, 0.0],
         "euclidean_distance_m": 1.0, "geodesic_distance_m": 1.0,
         "relative_azimuth_deg": 90.0, "candidate_entropy": 0.01,
         "candidate_confidence": 0.99, "candidate_utility": 10.0,

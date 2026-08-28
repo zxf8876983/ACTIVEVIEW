@@ -71,13 +71,15 @@ evaluation outputs are under `datasets/policy_v11_5/stage_c/`; current input
 is a 275-D frozen ST-GCN state and each candidate input is 11-D egocentric
 geometry (snapped displacement in the current agent yaw frame and snapped
 placement radii).
-`PairwiseUtilityMLP` (142,785 parameters, selected epoch 17) and
+`PairwiseUtilityMLP` (142,785 parameters, selected epoch 29) and
 permutation-equivariant `SetUtilityRanker` (407,745 parameters, selected epoch
-28) were trained with record-balanced sampling and Val Macro-F1 checkpoint
+46) were trained with record-balanced sampling and Val Macro-F1 checkpoint
 selection. Their combined summary is `stage_c/stage_c_summary.json`, and the
 independent validator report is `stage_c/validation_report.json` with
-`passed=true`. Test metrics are final-only diagnostics; Stage D and Habitat
-online learned-policy evaluation have not started.
+`passed=true`. The validator independently reconstructs each candidate/Stay
+decision and regret from predicted utilities plus Stage B diagnostics. Test
+metrics are final-only diagnostics; Stage D and Habitat online learned-policy
+evaluation have not started.
 
 ## Historical code boundary
 

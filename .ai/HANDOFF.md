@@ -137,12 +137,14 @@ ranking, and Val recognition Macro-F1 checkpoint selection; Test is final-only.
 Artifacts:
 
 - Feature root and diagnostics: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/`
-- Pairwise checkpoint: `checkpoints/stage_c/pairwise_mlp_best.pth`, epoch 17, 142,785 parameters.
-- Set ranker checkpoint: `checkpoints/stage_c/set_ranker_best.pth`, epoch 28, 407,745 parameters.
+- Pairwise checkpoint: `checkpoints/stage_c/pairwise_mlp_best.pth`, epoch 29, 142,785 parameters.
+- Set ranker checkpoint: `checkpoints/stage_c/set_ranker_best.pth`, epoch 46, 407,745 parameters.
 - Combined summary: `stage_c/stage_c_summary.json`.
 - Independent validator result: `/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_c/validation_report.json`, `passed=true`.
 
-The Stage C validator re-computes all saved Val/Test metrics from prediction
-JSONL, verifies canonical split counts, Stage A/B/feature provenance hashes,
-finite feature schemas and counts, and confirms Stage D has not started.
+The Stage C validator independently reselects each candidate/Stay action from
+predicted utilities, obtains recognition outcomes and regret from Stage B,
+then recomputes all saved Val/Test metrics from prediction JSONL. It also
+verifies canonical split counts, Stage A/B/feature provenance hashes, finite
+feature schemas and counts, and confirms Stage D has not started.
 No Habitat re-rendering or learned-policy online evaluation was performed.

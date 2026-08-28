@@ -45,6 +45,69 @@ def _compare(expected: Any, observed: Any, path: str, errors: List[str], tol: fl
         errors.append(f"metric_value_mismatch:{path}")
 
 
+def _expected_candidate_id(predicted: List[float], ids: List[int], geodesic: List[float]) -> int:
+    if not predicted or len(predicted) != len(ids) or len(ids) != len(geodesic):
+        raise ValueError("prediction/candidate arrays are not aligned")
+    index = min(range(len(ids)), key=lambda item: (-float(predicted[item]), float(geodesic[item]), int(ids[item])))
+    return int(ids[index])
+
+
+def _validate_independent_decision(row: Mapping[str, Any], stage_b: Mapping[str, Any], contract: Mapping[str, Any], model_type: str, split: str, errors: List[str]) -> None:
+    episode_id = str(row["episode_id"])
+    ids = [int(value) for value in row.get("candidate_viewpoint_ids", [])]
+    predicted = [float(value) for value in row.get("predicted_utilities", [])]
+    geodesic = [float(value) for value in contract["candidate_geodesic"]]
+    if len(predicted) != len(ids) or not predicted or not np.isfinite(np.asarray(predicted, dtype=np.float64)).all():
+        errors.append(f"invalid_predicted_utilities:{model_type}:{split}:{episode_id}")
+        return
+    expected_candidate_id = _expected_candidate_id(predicted, ids, geodesic)
+    if int(row.get("predicted_candidate_viewpoint_id", -1)) != expected_candidate_id:
+        errors.append(f"decision_candidate_id_mismatch:{model_type}:{split}:{episode_id}")
+    expected_stays = max(predicted) <= 0.0
+    if bool(row.get("predicted_stays")) != expected_stays:
+        errors.append(f"decision_stay_mismatch:{model_type}:{split}:{episode_id}")
+    expected_action = "stay" if expected_stays else f"candidate:{expected_candidate_id}"
+    if row.get("predicted_action") != expected_action:
+        errors.append(f"decision_action_mismatch:{model_type}:{split}:{episode_id}")
+    candidates = {int(item["viewpoint_id"]): item for item in stage_b["candidates"]}
+    current = stage_b["current"]
+    selected = current if expected_stays else candidates[expected_candidate_id]
+    expected_selected_utility = 0.0 if expected_stays else float(selected["utility"])
+    if not math.isclose(float(row.get("selected_true_utility", float("nan"))), expected_selected_utility, rel_tol=0.0, abs_tol=1e-6):
+        errors.append(f"selected_true_utility_mismatch:{model_type}:{split}:{episode_id}")
+    if int(row.get("selected_predicted_label_id", -1)) != int(selected["predicted_label_id"]):
+        errors.append(f"selected_prediction_mismatch:{model_type}:{split}:{episode_id}")
+    if not math.isclose(float(row.get("selected_entropy", float("nan"))), float(selected["entropy"]), rel_tol=0.0, abs_tol=1e-6):
+        errors.append(f"selected_entropy_mismatch:{model_type}:{split}:{episode_id}")
+    oracle = stage_b["oracle"]
+    candidate_oracle_id = int(oracle["candidate_oracle_viewpoint_id"])
+    safe_oracle_id = int(oracle["safe_oracle_viewpoint_id"])
+    candidate_oracle = candidates[candidate_oracle_id]
+    safe_oracle = current if bool(oracle["safe_oracle_stays"]) else candidates[safe_oracle_id]
+    checks = {
+        "candidate_oracle_viewpoint_id": candidate_oracle_id,
+        "candidate_oracle_predicted_label_id": int(candidate_oracle["predicted_label_id"]),
+        "safe_oracle_viewpoint_id": safe_oracle_id,
+        "safe_oracle_predicted_label_id": int(safe_oracle["predicted_label_id"]),
+    }
+    for field, expected in checks.items():
+        if int(row.get(field, -1)) != expected:
+            errors.append(f"oracle_{field}_mismatch:{model_type}:{split}:{episode_id}")
+    if bool(row.get("safe_oracle_stays")) != bool(oracle["safe_oracle_stays"]):
+        errors.append(f"oracle_safe_stay_mismatch:{model_type}:{split}:{episode_id}")
+    expected_safe_action = "stay" if bool(oracle["safe_oracle_stays"]) else f"candidate:{safe_oracle_id}"
+    if row.get("safe_oracle_action") != expected_safe_action:
+        errors.append(f"oracle_safe_action_mismatch:{model_type}:{split}:{episode_id}")
+    for field, expected in {
+        "candidate_oracle_entropy": float(candidate_oracle["entropy"]),
+        "safe_oracle_entropy": float(safe_oracle["entropy"]),
+        "safe_oracle_utility": float(oracle["safe_oracle_utility"]),
+        "regret": float(oracle["safe_oracle_utility"]) - expected_selected_utility,
+    }.items():
+        if not math.isclose(float(row.get(field, float("nan"))), expected, rel_tol=0.0, abs_tol=1e-6):
+            errors.append(f"decision_{field}_mismatch:{model_type}:{split}:{episode_id}")
+
+
 def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval_summaries: List[Path] | None = None, report_path: Path | None = None) -> Dict[str, Any]:
     errors: List[str] = []
     feature_contracts: Dict[str, Dict[str, Dict[str, Any]]] = {split: {} for split in SPLITS}
@@ -220,6 +283,8 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
                 for split in ("val", "test"):
                     prediction_path = Path(summary["prediction_files"][split])
                     rows = [json.loads(line) for line in prediction_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+                    stage_b_path = stage_b_root / "utility_labels" / f"{split}.jsonl"
+                    stage_b_lookup = {str(item["episode_id"]): item for item in (json.loads(line) for line in stage_b_path.read_text(encoding="utf-8").splitlines() if line.strip())}
                     expected = feature_contracts[split]
                     observed_ids: List[str] = []
                     for row in rows:
@@ -236,6 +301,11 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
                             errors.append(f"prediction_utility_targets_mismatch:{model_type}:{split}:{episode_id}")
                         if len(row.get("candidate_geodesic", contract["candidate_geodesic"])) != len(contract["candidate_geodesic"]):
                             errors.append(f"prediction_candidate_count_mismatch:{model_type}:{split}:{episode_id}")
+                        stage_b = stage_b_lookup.get(episode_id)
+                        if stage_b is None:
+                            errors.append(f"missing_stage_b_episode:{model_type}:{split}:{episode_id}")
+                        else:
+                            _validate_independent_decision(row, stage_b, contract, model_type, split, errors)
                     if len(observed_ids) != len(set(observed_ids)):
                         errors.append(f"duplicate_prediction_episode_id:{model_type}:{split}")
                     if set(observed_ids) != set(expected):
