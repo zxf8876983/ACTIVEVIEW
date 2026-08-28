@@ -68,7 +68,9 @@ The scene list and status are recorded in
 
 Stage C is implemented from frozen Stage A/B artifacts. Feature cache and
 evaluation outputs are under `datasets/policy_v11_5/stage_c/`; current input
-is a 275-D frozen ST-GCN state and each candidate input is 11-D geometry.
+is a 275-D frozen ST-GCN state and each candidate input is 11-D egocentric
+geometry (snapped displacement in the current agent yaw frame and snapped
+placement radii).
 `PairwiseUtilityMLP` (142,785 parameters, selected epoch 17) and
 permutation-equivariant `SetUtilityRanker` (407,745 parameters, selected epoch
 28) were trained with record-balanced sampling and Val Macro-F1 checkpoint

@@ -8,7 +8,7 @@ import numpy as np
 import torch
 
 
-FEATURE_SCHEMA_VERSION = "stage-c-features-v1"
+FEATURE_SCHEMA_VERSION = "stage-c-features-v2-egocentric-geometry"
 CURRENT_ACTION_FEATURE_DIM = 256
 CURRENT_LOG_PROB_DIM = 16
 CURRENT_FEATURE_DIM = CURRENT_ACTION_FEATURE_DIM + CURRENT_LOG_PROB_DIM + 3
@@ -19,7 +19,7 @@ CURRENT_FEATURE_NAMES = (
     + ["current_entropy", "current_top1_top2_margin", "current_pose_confidence"]
 )
 CANDIDATE_GEOMETRY_NAMES = (
-    "relative_position_x", "relative_position_y", "relative_position_z",
+    "ego_relative_position_x", "ego_relative_position_y", "ego_relative_position_z",
     "euclidean_distance_m", "geodesic_distance_m", "sin_relative_azimuth",
     "cos_relative_azimuth", "path_ratio", "current_radius_m",
     "candidate_radius_m", "delta_radius_m",
@@ -59,16 +59,31 @@ def candidate_geometry_features(
     candidate: Mapping[str, Any],
     *,
     current_position: Sequence[float],
+    current_rotation_wxyz: Sequence[float],
     placement_position: Sequence[float],
 ) -> np.ndarray:
-    """Build one geometry-only candidate feature vector (no viewpoint ID)."""
-    relative = _finite_array(candidate["relative_position"], name="relative_position", shape=(3,))
+    """Build geometry in the current agent frame (no world-coordinate shortcut)."""
+    current = _finite_array(current_position, name="current_position", shape=(3,))
+    rotation = _finite_array(current_rotation_wxyz, name="current_rotation_wxyz", shape=(4,))
+    norm = float(np.linalg.norm(rotation))
+    if norm <= 1e-8:
+        raise ValueError("current rotation quaternion is degenerate")
+    w, x, y, z = (rotation / norm).tolist()
+    yaw = float(np.arctan2(2.0 * (w * y + x * z), 1.0 - 2.0 * (y * y + z * z)))
+    candidate_position = _finite_array(
+        candidate["snapped_position"], name="candidate_snapped_position", shape=(3,)
+    )
+    world_delta = candidate_position - current
+    cos_yaw, sin_yaw = float(np.cos(yaw)), float(np.sin(yaw))
+    relative = np.asarray(
+        [cos_yaw * world_delta[0] - sin_yaw * world_delta[2], world_delta[1],
+         sin_yaw * world_delta[0] + cos_yaw * world_delta[2]],
+        dtype=np.float32,
+    )
     euclidean = float(candidate["euclidean_distance_m"])
     geodesic = float(candidate["geodesic_distance_m"])
     azimuth = np.deg2rad(float(candidate["relative_azimuth_deg"]))
-    current = _finite_array(current_position, name="current_position", shape=(3,))
     placement = _finite_array(placement_position, name="placement_position", shape=(3,))
-    candidate_position = _finite_array(candidate["position"], name="candidate_position", shape=(3,))
     current_radius = float(np.linalg.norm((current - placement)[[0, 2]]))
     candidate_radius = float(np.linalg.norm((candidate_position - placement)[[0, 2]]))
     values = np.asarray(
@@ -88,12 +103,13 @@ def candidate_geometry_matrix(
     candidates: Sequence[Mapping[str, Any]],
     *,
     current_position: Sequence[float],
+    current_rotation_wxyz: Sequence[float],
     placement_position: Sequence[float],
 ) -> np.ndarray:
     if not candidates:
         raise ValueError("candidate set must not be empty")
     return np.stack(
-        [candidate_geometry_features(item, current_position=current_position, placement_position=placement_position) for item in candidates],
+        [candidate_geometry_features(item, current_position=current_position, current_rotation_wxyz=current_rotation_wxyz, placement_position=placement_position) for item in candidates],
         axis=0,
     )
 

@@ -11,13 +11,14 @@ import sys
 from typing import Any, Dict, List, Mapping
 
 import numpy as np
+import torch
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from ea_avs_mvp_v11.active_view.stage_c_metrics import summarize_stage_c_predictions
-from ea_avs_mvp_v11.active_view.stage_c_features import schema_metadata
+from ea_avs_mvp_v11.active_view.stage_c_features import candidate_geometry_matrix, schema_metadata
 from ea_avs_mvp_v11.active_view.utility_label_builder import file_sha256
 from ea_avs_mvp_v11.dataset.policy_split import load_policy_splits
 
@@ -46,6 +47,7 @@ def _compare(expected: Any, observed: Any, path: str, errors: List[str], tol: fl
 
 def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval_summaries: List[Path] | None = None, report_path: Path | None = None) -> Dict[str, Any]:
     errors: List[str] = []
+    feature_contracts: Dict[str, Dict[str, Dict[str, Any]]] = {split: {} for split in SPLITS}
     feature_summary_path = stage_c_root / "stage_c_feature_summary.json"
     try:
         feature_summary = json.loads(feature_summary_path.read_text(encoding="utf-8"))
@@ -79,10 +81,16 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
         for split in SPLITS:
             episode_path = Path(stage_a_summary["episode_files"][split])
             utility_path = stage_b_root / "utility_labels" / f"{split}.jsonl"
+            feature_path = Path(feature_summary["feature_files"][split])
             if feature_summary.get("source_stage_a_episode_sha256", {}).get(split) != file_sha256(episode_path):
                 errors.append(f"stage_a_episode_hash_mismatch:{split}")
             if feature_summary.get("source_stage_b_utility_sha256", {}).get(split) != file_sha256(utility_path):
                 errors.append(f"stage_b_utility_hash_mismatch:{split}")
+            if feature_summary.get("feature_file_sha256", {}).get(split) != file_sha256(feature_path):
+                errors.append(f"feature_file_hash_mismatch:{split}")
+        stats_path = Path(feature_summary["feature_stats"])
+        if feature_summary.get("feature_stats_sha256") != file_sha256(stats_path):
+            errors.append("feature_stats_hash_mismatch")
         schema = feature_summary.get("schema")
         if not isinstance(schema, Mapping):
             errors.append("missing_feature_schema")
@@ -93,18 +101,77 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
             if schema != schema_metadata():
                 errors.append("feature_schema_mismatch")
         for split in SPLITS:
-            path = Path(feature_summary["feature_files"][split])
-            count = sum(1 for line in path.read_text(encoding="utf-8").splitlines() if line.strip())
+            stage_a_path = Path(stage_a_summary["episode_files"][split])
+            stage_b_path = stage_b_root / "utility_labels" / f"{split}.jsonl"
+            feature_path = Path(feature_summary["feature_files"][split])
+            seen_ids: set[str] = set()
+            count = 0
+            archive_placements: Dict[str, np.ndarray] = {}
+            with stage_a_path.open(encoding="utf-8") as stage_a_handle, stage_b_path.open(encoding="utf-8") as stage_b_handle, feature_path.open(encoding="utf-8") as feature_handle:
+                while True:
+                    stage_a_line = stage_a_handle.readline()
+                    stage_b_line = stage_b_handle.readline()
+                    feature_line = feature_handle.readline()
+                    if not stage_a_line and not stage_b_line and not feature_line:
+                        break
+                    if not stage_a_line or not stage_b_line or not feature_line:
+                        errors.append(f"stage_alignment_length_mismatch:{split}")
+                        break
+                    episode = json.loads(stage_a_line)
+                    utility = json.loads(stage_b_line)
+                    row = json.loads(feature_line)
+                    episode_id = str(episode["episode_id"])
+                    if episode_id != str(utility.get("episode_id")) or episode_id != str(row.get("episode_id")):
+                        errors.append(f"stage_alignment_id_mismatch:{split}:{count}")
+                    if episode_id in seen_ids:
+                        errors.append(f"duplicate_feature_episode_id:{split}:{episode_id}")
+                    seen_ids.add(episode_id)
+                    count += 1
+                    expected_candidates = episode["candidate_pool"]
+                    stage_b_candidates = utility.get("candidates", [])
+                    expected_ids = [int(item["viewpoint_id"]) for item in expected_candidates]
+                    stage_b_ids = [int(item["viewpoint_id"]) for item in stage_b_candidates]
+                    observed_ids = [int(item) for item in row.get("candidate_viewpoint_ids", [])]
+                    if expected_ids != stage_b_ids or expected_ids != observed_ids:
+                        errors.append(f"candidate_id_alignment_mismatch:{split}:{episode_id}")
+                    expected_utilities = [float(item["utility"]) for item in stage_b_candidates]
+                    observed_utilities = [float(item) for item in row.get("utility_targets", [])]
+                    if len(expected_utilities) != len(observed_utilities) or not np.allclose(expected_utilities, observed_utilities, atol=1e-6, rtol=0.0):
+                        errors.append(f"utility_target_mismatch:{split}:{episode_id}")
+                    expected_geodesics = [float(item["geodesic_distance_m"]) for item in expected_candidates]
+                    observed_geodesics = [float(item) for item in row.get("candidate_geodesic", [])]
+                    if len(expected_geodesics) != len(observed_geodesics) or not np.allclose(expected_geodesics, observed_geodesics, atol=1e-7, rtol=0.0):
+                        errors.append(f"candidate_geodesic_mismatch:{split}:{episode_id}")
+                    current = np.asarray(row["current_feature"], dtype=np.float32)
+                    geometry = np.asarray(row["candidate_geometry"], dtype=np.float32)
+                    if current.shape != (275,) or geometry.shape != (len(expected_candidates), 11) or not np.isfinite(current).all() or not np.isfinite(geometry).all():
+                        errors.append(f"invalid_feature_values:{split}:{episode_id}")
+                    try:
+                        archive_path = str(episode["current_view"]["skeleton_source_path"])
+                        placement = archive_placements.get(archive_path)
+                        if placement is None:
+                            with np.load(archive_path, allow_pickle=False) as archive:
+                                placement = np.asarray(archive["placement_position"], dtype=np.float32)
+                            archive_placements[archive_path] = placement
+                        expected_geometry = candidate_geometry_matrix(
+                            expected_candidates,
+                            current_position=episode["current_view"]["agent_position"],
+                            current_rotation_wxyz=episode["current_view"]["rotation_wxyz"],
+                            placement_position=placement,
+                        )
+                        if geometry.shape == expected_geometry.shape and not np.allclose(geometry, expected_geometry, atol=1e-5, rtol=0.0):
+                            errors.append(f"candidate_geometry_mismatch:{split}:{episode_id}")
+                    except (OSError, KeyError, TypeError, ValueError) as error:
+                        errors.append(f"candidate_geometry_audit_failed:{split}:{episode_id}:{error}")
+                    feature_contracts[split][episode_id] = {
+                        "record_id": str(episode["record_id"]), "policy_split": str(episode["policy_split"]),
+                        "scene_id": str(episode["scene_id"]), "region": str(episode["region"]),
+                        "label_id": int(episode["label_id"]), "current_viewpoint_id": int(episode["current_view"]["viewpoint_id"]),
+                        "candidate_viewpoint_ids": expected_ids, "utility_targets": expected_utilities,
+                        "candidate_geodesic": expected_geodesics,
+                    }
             if count != int(feature_summary["feature_file_counts"][split]):
                 errors.append(f"feature_count_mismatch:{split}")
-            for line in path.read_text(encoding="utf-8").splitlines():
-                if not line.strip():
-                    continue
-                row = json.loads(line)
-                current = np.asarray(row["current_feature"], dtype=np.float32)
-                geometry = np.asarray(row["candidate_geometry"], dtype=np.float32)
-                if current.shape != (275,) or geometry.ndim != 2 or geometry.shape[1] != 11 or not np.isfinite(current).all() or not np.isfinite(geometry).all():
-                    errors.append(f"invalid_feature_values:{split}")
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
         errors.append(f"feature_validation_failed:{error}")
 
@@ -123,6 +190,19 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
                 checkpoint_path = Path(summary["checkpoint"])
                 if summary.get("checkpoint_sha256") != file_sha256(checkpoint_path):
                     errors.append(f"predictor_checkpoint_hash_mismatch:{model_type}")
+                training_summary_path = checkpoint_path.parent / f"{model_type}_training_summary.json"
+                if not training_summary_path.exists():
+                    errors.append(f"missing_training_summary:{model_type}")
+                else:
+                    training_summary = json.loads(training_summary_path.read_text(encoding="utf-8"))
+                    for field in ("feature_summary_sha256", "feature_file_sha256", "feature_stats_sha256"):
+                        if training_summary.get(field) != feature_summary.get(field) and field != "feature_summary_sha256":
+                            errors.append(f"training_{field}_mismatch:{model_type}")
+                    if training_summary.get("feature_summary_sha256") != file_sha256(stage_c_root / "stage_c_feature_summary.json"):
+                        errors.append(f"training_feature_summary_hash_mismatch:{model_type}")
+                    payload = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+                    if payload.get("feature_summary_sha256") != training_summary.get("feature_summary_sha256") or payload.get("feature_file_sha256") != training_summary.get("feature_file_sha256") or payload.get("feature_stats_sha256") != training_summary.get("feature_stats_sha256"):
+                        errors.append(f"checkpoint_feature_provenance_mismatch:{model_type}")
                 label_mapping_path = Path(summary["label_mapping"])
                 if summary.get("label_mapping_sha256") != file_sha256(label_mapping_path):
                     errors.append(f"label_mapping_hash_mismatch:{model_type}")
@@ -133,9 +213,33 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
                 feature_summary = json.loads((stage_c_root / "stage_c_feature_summary.json").read_text(encoding="utf-8"))
                 if summary.get("feature_file_counts") != feature_summary.get("feature_file_counts"):
                     errors.append(f"feature_file_count_mismatch:{model_type}")
+                if summary.get("feature_file_sha256") != feature_summary.get("feature_file_sha256"):
+                    errors.append(f"feature_file_hash_mismatch:{model_type}")
+                if summary.get("feature_stats_sha256") != feature_summary.get("feature_stats_sha256"):
+                    errors.append(f"feature_stats_hash_mismatch:{model_type}")
                 for split in ("val", "test"):
                     prediction_path = Path(summary["prediction_files"][split])
                     rows = [json.loads(line) for line in prediction_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+                    expected = feature_contracts[split]
+                    observed_ids: List[str] = []
+                    for row in rows:
+                        episode_id = str(row.get("episode_id", ""))
+                        observed_ids.append(episode_id)
+                        contract = expected.get(episode_id)
+                        if contract is None:
+                            errors.append(f"unexpected_prediction_episode:{model_type}:{split}:{episode_id}")
+                            continue
+                        for field in ("record_id", "policy_split", "scene_id", "region", "label_id", "current_viewpoint_id", "candidate_viewpoint_ids"):
+                            if row.get(field) != contract[field]:
+                                errors.append(f"prediction_{field}_mismatch:{model_type}:{split}:{episode_id}")
+                        if len(row.get("utility_targets", [])) != len(contract["utility_targets"]) or not np.allclose(row.get("utility_targets", []), contract["utility_targets"], atol=1e-6, rtol=0.0):
+                            errors.append(f"prediction_utility_targets_mismatch:{model_type}:{split}:{episode_id}")
+                        if len(row.get("candidate_geodesic", contract["candidate_geodesic"])) != len(contract["candidate_geodesic"]):
+                            errors.append(f"prediction_candidate_count_mismatch:{model_type}:{split}:{episode_id}")
+                    if len(observed_ids) != len(set(observed_ids)):
+                        errors.append(f"duplicate_prediction_episode_id:{model_type}:{split}")
+                    if set(observed_ids) != set(expected):
+                        errors.append(f"prediction_episode_coverage_mismatch:{model_type}:{split}")
                     if not isinstance(summary.get("evaluation_only_fields"), list):
                         errors.append(f"missing_evaluation_only_field_declaration:{model_type}")
                     recomputed = summarize_stage_c_predictions(rows, summary["categories"])

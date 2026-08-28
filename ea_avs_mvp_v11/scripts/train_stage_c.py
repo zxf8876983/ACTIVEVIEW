@@ -34,6 +34,10 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
     _seed(seed)
     device = torch.device(device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu")
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
+    feature_summary_path = feature_root / "stage_c_feature_summary.json"
+    feature_summary = json.loads(feature_summary_path.read_text(encoding="utf-8"))
+    feature_file_sha256 = feature_summary["feature_file_sha256"]
+    feature_stats_sha256 = feature_summary["feature_stats_sha256"]
     train_set = EpisodeFeatureDataset(feature_root / "features/train.jsonl", **stats)
     val_set = EpisodeFeatureDataset(feature_root / "features/val.jsonl", **stats)
     sampler = RecordBalancedSampler(train_set.rows, episodes_per_record=episodes_per_record, seed=seed)
@@ -64,12 +68,17 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
         improved = val_score > best_metric + 1e-12
         if improved:
             best_metric = val_score; best_epoch = epoch; stale = 0
-            torch.save({"model_state_dict": model.state_dict(), "model_type": model_type, "epoch": epoch, "config": {"batch_size": batch_size, "episodes_per_record": episodes_per_record, "lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "seed": seed}}, output_dir / f"{model_type}_best.pth")
+            torch.save({
+                "model_state_dict": model.state_dict(), "model_type": model_type, "epoch": epoch,
+                "feature_summary_sha256": file_sha256(feature_summary_path),
+                "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256,
+                "config": {"batch_size": batch_size, "episodes_per_record": episodes_per_record, "lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "seed": seed},
+            }, output_dir / f"{model_type}_best.pth")
         else:
             stale += 1
         if stale >= patience:
             break
-    summary = {"stage": "C", "model_type": model_type, "parameter_count": count_parameters(model), "device": str(device), "max_epochs": max_epochs, "selected_epoch": best_epoch, "checkpoint": str((output_dir / f"{model_type}_best.pth").resolve()), "checkpoint_sha256": file_sha256(output_dir / f"{model_type}_best.pth"), "checkpoint_selection_metric": "Val StageC recognition Macro-F1", "sampler": {"mode": "record_balanced", "episodes_per_record_per_epoch": episodes_per_record}, "loss": {"lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "regression": "SmoothL1", "ranking": "stay-inclusive soft-target cross-entropy"}, "history": history}
+    summary = {"stage": "C", "model_type": model_type, "parameter_count": count_parameters(model), "device": str(device), "max_epochs": max_epochs, "selected_epoch": best_epoch, "checkpoint": str((output_dir / f"{model_type}_best.pth").resolve()), "checkpoint_sha256": file_sha256(output_dir / f"{model_type}_best.pth"), "checkpoint_selection_metric": "Val StageC recognition Macro-F1", "feature_summary": str(feature_summary_path.resolve()), "feature_summary_sha256": file_sha256(feature_summary_path), "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256, "sampler": {"mode": "record_balanced", "episodes_per_record_per_epoch": episodes_per_record}, "loss": {"lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "regression": "SmoothL1", "ranking": "stay-inclusive soft-target cross-entropy"}, "history": history}
     (output_dir / f"{model_type}_training_summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     return summary
 

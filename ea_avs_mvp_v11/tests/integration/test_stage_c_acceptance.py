@@ -1,7 +1,12 @@
 import json
 from pathlib import Path
+import sys
 
 import pytest
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from ea_avs_mvp_v11.scripts.validate_stage_c import validate
 

@@ -128,7 +128,9 @@ Stage B artifact was revalidated successfully.
 
 Implemented current-conditioned utility prediction without changing Stage A/B.
 The feature cache contains 41,819/13,987/13,774 Episodes for train/val/test;
-current input is 275-D frozen ST-GCN state and candidate input is 11-D geometry.
+current input is 275-D frozen ST-GCN state and candidate input is 11-D geometry
+(snapped displacement in the current agent yaw frame plus distance/azimuth/path
+features and snapped placement radii).
 Both models use record-balanced training, SmoothL1 plus stay-inclusive listwise
 ranking, and Val recognition Macro-F1 checkpoint selection; Test is final-only.
 

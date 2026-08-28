@@ -20,6 +20,7 @@ from ea_avs_mvp_v11.core.paths import get_data_root
 
 
 SPLITS = ("train", "val", "test")
+NEAR_ZERO_TOLERANCE = 1e-6
 
 
 def _percentiles(values: List[float]) -> Dict[str, float | int]:
@@ -38,7 +39,21 @@ def _bucket(value: float, edges: List[float]) -> str:
 
 
 def _summarize_bucket(values: Mapping[str, List[float]]) -> Dict[str, Any]:
-    return {key: {**_percentiles(items), "positive_ratio": float(np.mean(np.asarray(items) > 0.0)) if items else 0.0} for key, items in sorted(values.items())}
+    output: Dict[str, Any] = {}
+    for key, items in sorted(values.items()):
+        output[key] = {**_percentiles(items), **_sign_ratios(items)}
+    return output
+
+
+def _sign_ratios(values: List[float]) -> Dict[str, float]:
+    array = np.asarray(values, dtype=np.float64)
+    if not values:
+        return {"positive_ratio": 0.0, "near_zero_ratio": 0.0, "negative_ratio": 0.0}
+    return {
+        "positive_ratio": float(np.mean(array > NEAR_ZERO_TOLERANCE)),
+        "near_zero_ratio": float(np.mean(np.abs(array) <= NEAR_ZERO_TOLERANCE)),
+        "negative_ratio": float(np.mean(array < -NEAR_ZERO_TOLERANCE)),
+    }
 
 
 def build(stage_b_root: Path, output_path: Path) -> Dict[str, Any]:
@@ -88,9 +103,7 @@ def build(stage_b_root: Path, output_path: Path) -> Dict[str, Any]:
             "max_candidate_utility": _percentiles(max_utils),
             "candidate_pair_utility": {
                 **_percentiles(pair_utils),
-                "positive_ratio": float(np.mean(np.asarray(pair_utils) > 0.0)) if pair_utils else 0.0,
-                "near_zero_ratio": float(np.mean(np.abs(np.asarray(pair_utils)) <= 1e-6)) if pair_utils else 0.0,
-                "negative_ratio": float(np.mean(np.asarray(pair_utils) < 0.0)) if pair_utils else 0.0,
+                **_sign_ratios(pair_utils),
             },
             "headroom": stage_b_summary.get("metrics", {}).get(split, {}).get("headroom", {}),
             "by_region": _summarize_bucket(regions),

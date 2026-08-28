@@ -127,9 +127,10 @@ The validator log is saved at
 Stage C consumes only accepted Stage A/B artifacts. The current-only input is
 the frozen ST-GCN 256-D feature, 16-D current log-probabilities, entropy,
 top-1/top-2 margin and pose confidence (275-D). Candidate input is 11-D
-geometry only. Candidate perception, labels, skeletons, viewpoint IDs and
-utilities are excluded from model inputs; body yaw and movement penalties are
-not used. Training is record-balanced with SmoothL1 plus stay-inclusive
+geometry only: snapped displacement expressed in the current agent's yaw frame,
+distance/azimuth/path features and snapped placement radii. Candidate
+perception, labels, skeletons, viewpoint IDs and utilities are excluded from
+model inputs; body yaw and movement penalties are not used. Training is record-balanced with SmoothL1 plus stay-inclusive
 listwise ranking, and checkpoints are selected by validation recognition
 Macro-F1. Test is reported once for final diagnosis only.
 

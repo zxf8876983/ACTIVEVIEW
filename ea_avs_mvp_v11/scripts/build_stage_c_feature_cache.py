@@ -69,6 +69,7 @@ def _make_row(episode: Mapping[str, Any], utility: Mapping[str, Any], current_fe
     geometry = candidate_geometry_matrix(
         candidates,
         current_position=current["agent_position"],
+        current_rotation_wxyz=current["rotation_wxyz"],
         placement_position=placement_position,
     )
     return {
@@ -167,7 +168,9 @@ def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoin
         "status": "generated",
         "schema": schema_metadata(),
         "feature_files": {split: str((feature_dir / f"{split}.jsonl").resolve()) for split in SPLITS},
+        "feature_file_sha256": {split: file_sha256(feature_dir / f"{split}.jsonl") for split in SPLITS},
         "feature_stats": str(stats_path.resolve()),
+        "feature_stats_sha256": file_sha256(stats_path),
         "feature_file_counts": counts,
         "source_stage_a_summary": str(stage_a_summary_path.resolve()),
         "source_stage_a_summary_sha256": file_sha256(stage_a_summary_path),
