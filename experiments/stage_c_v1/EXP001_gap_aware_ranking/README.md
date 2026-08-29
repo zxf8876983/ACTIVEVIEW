@@ -53,6 +53,11 @@ bash experiments/stage_c_v1/EXP001_gap_aware_ranking/run.sh
 
 Do not run before human review. The script does not evaluate Test.
 
+The Val-only compact result is written to the external runtime artifact at
+`$ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v1/EXP001_gap_aware_ranking/result.json`.
+Full predictions and machine-readable metrics remain under that experiment's
+`runtime/` directory.
+
 ## Result
 
 Pending.

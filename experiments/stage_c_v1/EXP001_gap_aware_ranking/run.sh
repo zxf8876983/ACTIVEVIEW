@@ -2,14 +2,15 @@
 set -euo pipefail
 
 # EXP001 — run only after human review. Train and Val are used; Test is not.
-DATA_ROOT="${ACTIVEVIEW_DATA_ROOT:-../../data/ActiveView}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+DATA_ROOT="${ACTIVEVIEW_DATA_ROOT:-${REPO_ROOT}/../../data/ActiveView}"
 EXP_NAME="EXP001_gap_aware_ranking"
 OUT="${DATA_ROOT}/experiments/stage_c_v1/${EXP_NAME}"
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 mkdir -p "${OUT}/checkpoints" "${OUT}/runtime"
 git -C "${REPO_ROOT}" rev-parse HEAD > "${OUT}/code_commit.txt"
-cp "$(dirname "$0")/config.yaml" "${OUT}/config.yaml"
+cp "${SCRIPT_DIR}/config.yaml" "${OUT}/config.yaml"
 
 (cd "${REPO_ROOT}" && python -m activeview.scripts.train_stage_c \
   --model-type set_ranker \
@@ -19,6 +20,7 @@ cp "$(dirname "$0")/config.yaml" "${OUT}/config.yaml"
   --batch-size 128 \
   --episodes-per-record 16 \
   --max-epochs 100 \
+  --patience 10 \
   --lr 0.001 \
   --weight-decay 0.0001 \
   --lambda-reg 1.0 \
@@ -37,4 +39,4 @@ cp "$(dirname "$0")/config.yaml" "${OUT}/config.yaml"
   --checkpoint "${OUT}/checkpoints/set_ranker_best.pth" \
   --output-dir "${OUT}/runtime" \
   --baseline "${REPO_ROOT}/experiments/stage_c_v1/${EXP_NAME}/baseline.json" \
-  --experiment-id EXP001)
+  --experiment-id EXP001 > "${OUT}/result.json")

@@ -66,9 +66,10 @@ the evaluation.
 - Preserve negative results. Never silently change a frozen protocol to make a
   metric look better, and never overwrite an earlier experiment.
 - Comments and identifiers use English; explanations to the user use Chinese.
-- Keep modules focused (prefer 200–400 lines; avoid files over 800 lines), add
-  type hints, avoid mutable defaults and bare `except`, and follow standard
-  import ordering.
+- Keep code readable, but do not refactor stable scientific code solely
+  because a file is long. Prefer local, minimal changes over architectural
+  cleanup. Add type hints, avoid mutable defaults and bare `except`, and
+  follow standard import ordering.
 
 ## Validation
 
