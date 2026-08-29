@@ -10,7 +10,7 @@
   "difficulty_threshold": 2.5236817835225276,
   "checkpoint_sha256": "a5de3606e5275304dc6bd2cb6151f1a5dd6d79abdd99990432dcbf986b25eab8",
   "feature_summary_sha256": "ca88cd7d3dceb23aa5165d1a0b44124118d209ca6370d6ba2eec6d31ef2d1a5b",
-  "prediction_output": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_c_v1/EXP002_hard_record_sampling/reference/train_predictions.jsonl",
+  "prediction_output": "ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v1/EXP002_hard_record_sampling/reference/train_predictions.jsonl",
   "hard_records": [
     {
       "record_id": "babel_val_02592_005",

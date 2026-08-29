@@ -95,7 +95,7 @@ def build_train_difficulty(
         "difficulty_threshold": float(hard_records[-1]["mean_safe_oracle_regret"]),
         "checkpoint_sha256": file_sha256(checkpoint),
         "feature_summary_sha256": file_sha256(feature_root / "stage_c_feature_summary.json"),
-        "prediction_output": str(prediction_output.resolve()),
+        "prediction_output": "ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v1/EXP002_hard_record_sampling/reference/train_predictions.jsonl",
         "hard_records": hard_records,
         "normal_records": normal_records,
         "records": records,
