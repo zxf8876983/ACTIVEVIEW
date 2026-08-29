@@ -86,6 +86,19 @@ def test_relative_geometry_is_permutation_equivariant():
     assert np.allclose(first[permutation], shuffled)
 
 
+def test_relative_geometry_ties_share_rank_and_remain_permutation_equivariant():
+    base = _base_geometry([1.5, 1.5, 3.0, 3.0], [1.0, 1.0, 2.0, 2.0])
+    first = candidate_set_relative_features(base)
+    permutation = np.array([3, 1, 0, 2])
+    shuffled = candidate_set_relative_features(base[permutation])
+
+    assert np.allclose(first[permutation], shuffled)
+    assert first[0, 1] == first[1, 1]
+    assert first[2, 1] == first[3, 1]
+    assert first[0, 3] == first[1, 3]
+    assert first[2, 3] == first[3, 3]
+
+
 def test_relative_geometry_single_candidate_or_constant_set_is_finite():
     single = candidate_set_relative_features(_base_geometry([2.0], [1.0]))
     constant = candidate_set_relative_features(

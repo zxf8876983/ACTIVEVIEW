@@ -62,13 +62,8 @@ def _write_jsonl(path: Path, rows: list[Dict[str, Any]]) -> None:
             handle.write(json.dumps(row, separators=(",", ":"), ensure_ascii=False) + "\n")
 
 
-def _categories(feature_root: Path) -> list[str]:
-    mapping_path = (
-        feature_root.parent.parent
-        / "stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed"
-        / "label_mapping.json"
-    )
-    mapping = _load(mapping_path)
+def _categories(label_mapping_path: Path) -> list[str]:
+    mapping = _load(label_mapping_path)
     return [name for name, _ in sorted(mapping.items(), key=lambda item: int(item[1]))]
 
 
@@ -156,6 +151,7 @@ def evaluate_val_experiment(
     baseline = _load(baseline_path)
     feature_summary = _load(feature_root / "stage_c_feature_summary.json")
     geometry_dim = int(feature_summary["candidate_geometry_dim"])
+    label_mapping_path = Path(feature_summary["label_mapping"])
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
     device = torch.device(
         device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu"
@@ -178,7 +174,8 @@ def evaluate_val_experiment(
         load_stage_b_lookup(stage_b_root / "utility_labels" / "val.jsonl"),
         device,
     )
-    metrics = evaluate_predictions(predictions, _categories(feature_root))
+    categories = _categories(label_mapping_path)
+    metrics = evaluate_predictions(predictions, categories)
 
     stage_a_summary = _load(dataset_root / "stage_a_summary.json")
     stage_a_rows = load_jsonl(stage_a_summary["episode_files"]["val"])
@@ -191,7 +188,7 @@ def evaluate_val_experiment(
         predictions,
         expected_split="val",
     )
-    analysis = analyze_rows(aligned, _categories(feature_root), split="val", model=model_type)
+    analysis = analyze_rows(aligned, categories, split="val", model=model_type)
     analysis["evaluation_protocol"] = {
         "split": "val",
         "test_used": False,

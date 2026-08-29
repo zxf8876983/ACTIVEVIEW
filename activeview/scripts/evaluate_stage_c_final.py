@@ -34,7 +34,8 @@ def evaluate_model(*, feature_root: Path, stage_b_root: Path, checkpoint: Path, 
     feature_summary = json.loads(feature_summary_path.read_text(encoding="utf-8"))
     geometry_dim = int(feature_summary["candidate_geometry_dim"])
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
-    mapping = json.loads((feature_root.parent.parent / "stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed" / "label_mapping.json").read_text(encoding="utf-8"))
+    label_mapping_path = Path(feature_summary["label_mapping"])
+    mapping = json.loads(label_mapping_path.read_text(encoding="utf-8"))
     categories = [name for name, _ in sorted(mapping.items(), key=lambda item: int(item[1]))]
     model = build_utility_predictor(model_type, geometry_dim=geometry_dim).to(device)
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
@@ -60,7 +61,7 @@ def evaluate_model(*, feature_root: Path, stage_b_root: Path, checkpoint: Path, 
         "feature_file_sha256": feature_summary["feature_file_sha256"],
         "feature_stats_sha256": feature_summary["feature_stats_sha256"],
         "stgcn_checkpoint_sha256": feature_summary["stgcn_checkpoint_sha256"],
-        "label_mapping": str((feature_root.parent.parent / "stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed" / "label_mapping.json").resolve()),
+        "label_mapping": str(label_mapping_path.resolve()),
         "label_mapping_sha256": feature_summary["label_mapping_sha256"],
         "canonical_split_counts": feature_summary["canonical_split_counts"],
         "feature_file_counts": feature_summary["feature_file_counts"],

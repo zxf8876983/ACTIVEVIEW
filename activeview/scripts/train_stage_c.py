@@ -71,7 +71,7 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
         raise ValueError(f"Unsupported sampler_type: {sampler_type}")
     train_loader = DataLoader(train_set, batch_size=batch_size, sampler=sampler, collate_fn=collate_episode_batch, num_workers=0)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, collate_fn=collate_episode_batch, num_workers=0)
-    mapping = json.loads((feature_root.parent.parent / "stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed" / "label_mapping.json").read_text(encoding="utf-8"))
+    mapping = json.loads(Path(feature_summary["label_mapping"]).read_text(encoding="utf-8"))
     categories = [name for name, _ in sorted(mapping.items(), key=lambda item: int(item[1]))]
     stage_b_lookup = load_stage_b_lookup(stage_b_root / "utility_labels/val.jsonl")
     model = build_utility_predictor(model_type, geometry_dim=geometry_dim).to(device)

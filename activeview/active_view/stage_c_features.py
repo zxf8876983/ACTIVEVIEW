@@ -138,10 +138,11 @@ def _set_zscore(values: np.ndarray) -> np.ndarray:
 def _set_rank(values: np.ndarray) -> np.ndarray:
     if values.size <= 1:
         return np.zeros_like(values, dtype=np.float32)
-    order = np.argsort(values, kind="mergesort")
-    ranks = np.empty(values.size, dtype=np.float32)
-    ranks[order] = np.arange(values.size, dtype=np.float32) / float(values.size - 1)
-    return ranks
+    _, inverse, counts = np.unique(values, return_inverse=True, return_counts=True)
+    ends = np.cumsum(counts)
+    starts = ends - counts
+    average_positions = (starts + ends - 1) / 2.0
+    return (average_positions[inverse] / float(values.size - 1)).astype(np.float32)
 
 
 def candidate_set_relative_features(base_geometry: np.ndarray) -> np.ndarray:
