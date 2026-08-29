@@ -7,7 +7,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 DATA_ROOT="${ACTIVEVIEW_DATA_ROOT:-${REPO_ROOT}/../../data/ActiveView}"
 FEATURE_ROOT="${DATA_ROOT}/datasets/policy_v11_5/stage_c_v2/joint_tokens"
 OUT="${DATA_ROOT}/experiments/stage_c_v2/EXP008_joint_aware_current"
-BASELINE="${SCRIPT_DIR}/../EXP008_joint_aware_current/baseline.json"
+BASELINE="${SCRIPT_DIR}/baseline.json"
 CHECKPOINT="${OUT}/checkpoints/joint_aware_set_ranker_best.pth"
 
 mkdir -p "${OUT}/checkpoints" "${OUT}/runtime"
