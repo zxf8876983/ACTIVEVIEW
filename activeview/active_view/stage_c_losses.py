@@ -90,3 +90,35 @@ def stage_c_loss(
     )
     total = float(lambda_reg) * huber + float(lambda_rank) * listwise + float(lambda_gap) * gap_loss
     return {"total": total, "regression": huber, "ranking": listwise, "gap_ranking": gap_loss}
+
+
+def move_stay_loss(
+    move_logits: torch.Tensor,
+    move_target: torch.Tensor,
+    predicted_utility: torch.Tensor,
+    target_utility: torch.Tensor,
+    candidate_mask: torch.Tensor,
+    *,
+    lambda_move: float = 1.0,
+    **kwargs: float,
+) -> dict[str, torch.Tensor]:
+    """Combine the frozen candidate loss with a current-only Move/Stay BCE."""
+    if move_logits.ndim != 1 or move_target.ndim != 1 or move_logits.shape != move_target.shape:
+        raise ValueError("move_logits and move_target must be aligned vectors")
+    if not torch.isfinite(move_logits).all() or not torch.isfinite(move_target).all():
+        raise ValueError("Move/Stay tensors must be finite")
+    if not 0.0 <= float(lambda_move):
+        raise ValueError("lambda_move must be non-negative")
+    losses = stage_c_loss(
+        predicted_utility,
+        target_utility,
+        candidate_mask,
+        **kwargs,
+    )
+    move = torch.nn.functional.binary_cross_entropy_with_logits(
+        move_logits,
+        move_target.to(dtype=move_logits.dtype),
+    )
+    losses["move"] = move
+    losses["total"] = losses["total"] + float(lambda_move) * move
+    return losses

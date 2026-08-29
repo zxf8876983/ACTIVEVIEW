@@ -64,19 +64,18 @@ Val-only evaluation completed on commit `5b57417`; no Test evaluation was used.
 Train-only hard-record-aware sampler (118 hard and 471 normal records), but
 P90/mean regret, headroom and C2 did not improve. Test was not used.
 
-`EXP003_relative_geometry` has completed its authorized Val-only run and is
-**PENDING USER REVIEW**. Its single change was five candidate-set-relative
-geometry features appended to the frozen 11-D geometry (16-D total). The
-feature cache and Set Ranker checkpoint are stored under the external runtime
-root; no Test evaluation was run. Compact results and a geometry-bias
-diagnostic are recorded in the EXP003 source experiment directory.
+`EXP003_relative_geometry` completed its authorized Val-only run and is
+**REJECTED** because the preregistered 5% mean-regret improvement target was
+not met. Its positive geometry trend and near-radius bias remain diagnostic
+evidence; no Test evaluation was run.
 
 ## Research queue
 
-1. User review of EXP003 relative geometry (Val-only result);
-2. richer current temporal representation;
-3. perceived body orientation only if later evidence supports it;
-4. Stage D Habitat closed loop after a final method is selected.
+1. `EXP004_radius_ablation` — PLANNED, remove direct radius cues;
+2. `EXP005_direction_geometry` — PLANNED, add circular directional set features;
+3. `EXP006_move_stay_decoupled` — PLANNED, add current-only Move/Stay gate;
+4. `EXP007_candidate_relations` — PLANNED, add explicit candidate relations;
+5. Stage D Habitat closed loop only after a final method is selected.
 
 ## Runtime roots
 

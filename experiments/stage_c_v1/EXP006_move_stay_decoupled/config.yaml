@@ -1,0 +1,35 @@
+experiment:
+  id: EXP006
+  name: move_stay_decoupled
+  status: PLANNED
+
+model:
+  type: move_stay_set_ranker
+
+training:
+  seed: 42
+  epochs: 100
+  patience: 10
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  episodes_per_record: 16
+
+sampler:
+  type: record_balanced
+
+loss:
+  lambda_reg: 1.0
+  lambda_rank: 1.0
+  tau: 0.5
+  lambda_gap: 0.0
+  lambda_move: 1.0
+  move_target: safe_oracle_not_stay
+
+geometry:
+  variant: frozen_stage_c_v0
+  candidate_geometry_dim: 11
+
+evaluation:
+  split: val
+  test_used: false

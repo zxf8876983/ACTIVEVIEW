@@ -39,14 +39,17 @@ percentage points. Test was not used.
 
 ## EXP003 — Relative Geometry Representation
 
-Status: COMPLETED — PENDING USER REVIEW. Five candidate-set-relative
-continuous features were appended to the frozen 11-D geometry: radius/geodesic
-z-scores and ranks, plus normalized delta radius. The independent 16-D cache
-was rebuilt from the accepted Stage C-v0 feature JSONL, the Set Ranker selected
-epoch 46, and Val-only evaluation completed. Accuracy/Macro-F1 improved by
-0.586/0.683 percentage points; mean regret improved 2.094% (below the
-pre-registered 5% target), P90 regret improved 1.912%, headroom improved 0.623
-points, and C2 rate worsened 1.265 points. An independent geometry diagnostic
-found a persistent preference for closer candidates (77.09% of selected moves
-versus 55.01% for SafeOracle). Full compact results and analysis are recorded
-in `experiments/stage_c_v1/EXP003_relative_geometry/`. Test was not used.
+Decision: REJECT. Five candidate-set-relative continuous features were appended
+to the frozen 11-D geometry and evaluated on Val only. Accuracy/Macro-F1
+improved by 0.586/0.683 percentage points; mean regret improved 2.094%, below
+the pre-registered 5% target; P90 and headroom improved modestly, while C2
+worsened 1.265 points. The diagnostic found a persistent near-radius shortcut
+(77.09% closer selections versus 55.01% for SafeOracle). Results remain
+evidence for independent follow-up experiments. Test was not used.
+
+## EXP004–EXP007 — Diagnostic experiment preparation
+
+2026-08-29: prepared four independent PLANNED Val-only experiments against the
+frozen Stage C-v0 baseline: radius ablation, circular direction features,
+current-only Move/Stay gate, and explicit candidate relations. No experiment
+was trained and no Test evaluation was run.

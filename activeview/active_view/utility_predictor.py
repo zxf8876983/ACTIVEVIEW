@@ -84,11 +84,31 @@ class SetUtilityRanker(nn.Module):
         return self.utility_head(tokens)
 
 
+class MoveStaySetUtilityRanker(SetUtilityRanker):
+    """Set ranker with a current-only binary Move/Stay decision head."""
+
+    model_type = "move_stay_set_ranker"
+
+    def __init__(self, current_dim: int = CURRENT_FEATURE_DIM, geometry_dim: int = CANDIDATE_GEOMETRY_DIM) -> None:
+        super().__init__(current_dim, geometry_dim)
+        self.move_head = nn.Sequential(
+            nn.Linear(128, 64),
+            nn.GELU(),
+            nn.Linear(64, 1),
+        )
+
+    def move_logits(self, current_feature: torch.Tensor) -> torch.Tensor:
+        """Return one Move logit per Episode using current context only."""
+        return self.move_head(self.current_encoder(current_feature)).squeeze(-1)
+
+
 def build_utility_predictor(model_type: str, *, current_dim: int = CURRENT_FEATURE_DIM, geometry_dim: int = CANDIDATE_GEOMETRY_DIM) -> nn.Module:
     if model_type == "pairwise_mlp":
         return PairwiseUtilityMLP(current_dim, geometry_dim)
     if model_type == "set_ranker":
         return SetUtilityRanker(current_dim, geometry_dim)
+    if model_type == "move_stay_set_ranker":
+        return MoveStaySetUtilityRanker(current_dim, geometry_dim)
     raise ValueError(f"Unknown Stage C model type: {model_type}")
 
 

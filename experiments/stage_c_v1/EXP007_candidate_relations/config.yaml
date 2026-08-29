@@ -1,0 +1,34 @@
+experiment:
+  id: EXP007
+  name: candidate_relations
+  status: PLANNED
+
+model:
+  type: set_ranker
+
+training:
+  seed: 42
+  epochs: 100
+  patience: 10
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  episodes_per_record: 16
+
+sampler:
+  type: record_balanced
+
+loss:
+  lambda_reg: 1.0
+  lambda_rank: 1.0
+  tau: 0.5
+  lambda_gap: 0.0
+
+geometry:
+  variant: candidate_relations
+  candidate_geometry_dim: 16
+  added: [delta_radius_to_set_mean, delta_geodesic_to_set_mean, nearest_candidate_geometry_distance, mean_candidate_geometry_distance, candidate_geometry_density]
+
+evaluation:
+  split: val
+  test_used: false

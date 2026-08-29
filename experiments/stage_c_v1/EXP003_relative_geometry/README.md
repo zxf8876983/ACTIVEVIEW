@@ -2,7 +2,7 @@
 
 ## Status
 
-COMPLETED — PENDING USER REVIEW
+COMPLETED — REJECTED
 
 ## Scientific Question
 
@@ -95,4 +95,6 @@ evaluation was run.
 ## Result
 
 See `result.json` for the compact Val result and `analysis.md` for the
-geometry-bias diagnostic. Final retain/reject decision is pending user review.
+geometry-bias diagnostic. The preregistered 5% mean-regret target was not met,
+so EXP003 is recorded as REJECTED. Its diagnostic evidence is retained for
+independent follow-up experiments.

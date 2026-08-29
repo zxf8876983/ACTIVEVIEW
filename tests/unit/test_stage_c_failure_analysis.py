@@ -74,6 +74,14 @@ def test_candidate_set_gap_and_safe_ratio_are_reported():
     assert summary["candidate_miss"]["ratio_thresholds"]["selected_at_least_50pct_oracle"] == pytest.approx(1.0)
 
 
+def test_geometry_analysis_accepts_variant_dimensions_and_uses_base_columns():
+    row = _row("e-variant", "r-variant", safe_stays=False, predicted_stays=False, predicted_id=2, safe_id=2, regret=0.0)
+    row["candidate_geometry"] = [values + [99.0] * 5 for values in row["candidate_geometry"]]
+    geometry = analyze_rows([row], ["sit"])["geometry"]
+    assert geometry["safe_oracle_move_geometry_count"] == 1
+    assert geometry["safe_oracle_move_geometry"]["candidate_radius"]["mean"] == pytest.approx(1.5)
+
+
 def test_candidate_set_gap_bins_are_a_partition():
     rows = []
     for index, gap in enumerate((0.1, 0.2, 0.3, 0.4)):

@@ -1,7 +1,7 @@
 {
   "experiment_id": "EXP003",
   "experiment_name": "relative_geometry",
-  "status": "completed_pending_user_review",
+  "status": "completed_rejected",
   "model_type": "set_ranker",
   "split": "val",
   "test_used": false,

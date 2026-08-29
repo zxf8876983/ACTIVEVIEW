@@ -97,9 +97,12 @@ def _candidate_geometry(row: Mapping[str, Any], viewpoint_id: int) -> Dict[str, 
         return None
     geometry = np.asarray(row["candidate_geometry"], dtype=np.float64)
     values = geometry[ids.index(viewpoint_id)]
-    if values.shape != (11,) or not np.isfinite(values).all():
+    if values.ndim != 1 or values.shape[0] < len(GEOMETRY_NAMES) or not np.isfinite(values[: len(GEOMETRY_NAMES)]).all():
         return None
-    result = {name: float(value) for name, value in zip(GEOMETRY_NAMES, values)}
+    result = {
+        name: float(value)
+        for name, value in zip(GEOMETRY_NAMES, values[: len(GEOMETRY_NAMES)])
+    }
     result["abs_azimuth_deg"] = abs(math.degrees(math.atan2(result["sin_azimuth"], result["cos_azimuth"])))
     result["signed_azimuth_deg"] = math.degrees(math.atan2(result["sin_azimuth"], result["cos_azimuth"]))
     return result

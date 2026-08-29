@@ -1,4 +1,8 @@
 id,name,status,code_commit,val_macro_f1,val_mean_regret,val_p90_regret,large_gap_mean_regret,decision,notes
 EXP001,gap_aware_ranking,COMPLETED,5b57417ccc6d92621f4dee421bafc37a30be58fc,0.5995195569440674,1.4646072802997447,5.69624738693237,2.441426933854667,REJECT,"Large-gap regret improved only 0.32%; C2/P90/headroom did not improve"
 EXP002,hard_record_sampling,COMPLETED,330310f9486ae320b59e12d44e249795c6d903f6,0.5936060388261705,1.459952538530646,5.6153066275874135,2.44150708978555,REJECT,"Hard-record-aware sampling did not improve Val P90/mean regret, headroom or C2; Test unused"
-EXP003,relative_geometry,PLANNED,,,,,,PENDING,"Candidate-set-relative geometry features; pending human review"
+EXP003,relative_geometry,COMPLETED,4b96d71b200fa880a9535bca130e85be3aac0492,0.6048747673020518,1.4201176312302746,5.50060636997233,,REJECT,"Mean regret improved 2.094%, below preregistered 5%; geometry trend positive but near-radius bias remains; C2 worsened"
+EXP004,radius_ablation,PLANNED,,,,,,PENDING,"Remove direct radius and radius-derived geometry cues; Val-only, not run"
+EXP005,direction_geometry,PLANNED,,,,,,PENDING,"Add four circular candidate-set directional features; Val-only, not run"
+EXP006,move_stay_decoupled,PLANNED,,,,,,PENDING,"Add current-only Move/Stay gate with SafeOracle supervision; Val-only, not run"
+EXP007,candidate_relations,PLANNED,,,,,,PENDING,"Add five candidate-to-candidate geometry summaries; Val-only, not run"

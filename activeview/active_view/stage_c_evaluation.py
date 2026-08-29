@@ -20,7 +20,18 @@ def _candidate_choice(predicted: Sequence[float], ids: Sequence[int], geodesic: 
     return int(ids[order]), float(predicted[order])
 
 
-def predict_dataset(model: torch.nn.Module, loader, stage_b_lookup: Mapping[str, Mapping[str, Any]], device: torch.device) -> list[Dict[str, Any]]:
+def move_stay_decision(move_probability: float) -> bool:
+    """Return whether to Stay for a sigmoid Move probability below 0.5."""
+    return float(move_probability) < 0.5
+
+
+def predict_dataset(
+    model: torch.nn.Module,
+    loader,
+    stage_b_lookup: Mapping[str, Mapping[str, Any]],
+    device: torch.device,
+    model_type: str = "",
+) -> list[Dict[str, Any]]:
     model.eval()
     rows: list[Dict[str, Any]] = []
     with torch.inference_mode():
@@ -29,6 +40,11 @@ def predict_dataset(model: torch.nn.Module, loader, stage_b_lookup: Mapping[str,
             geometry = batch["candidate_geometry"].to(device)
             mask = batch["candidate_mask"].to(device)
             predicted = model(current, geometry, mask).cpu().numpy()
+            move_probabilities = None
+            if model_type == "move_stay_set_ranker":
+                if not hasattr(model, "move_logits"):
+                    raise TypeError("move_stay_set_ranker must expose move_logits")
+                move_probabilities = torch.sigmoid(model.move_logits(current)).cpu().numpy()
             targets = batch["utility_targets"].numpy()
             valid_mask = batch["candidate_mask"].numpy()
             geodesic = batch["candidate_geodesic"].numpy()
@@ -40,7 +56,12 @@ def predict_dataset(model: torch.nn.Module, loader, stage_b_lookup: Mapping[str,
                 stage_b = stage_b_lookup[str(episode_id)]
                 by_id = {int(item["viewpoint_id"]): item for item in stage_b["candidates"]}
                 predicted_candidate_id, max_predicted = _candidate_choice(predicted_values, ids, geo_values)
-                predicted_stays = max_predicted <= 0.0
+                if move_probabilities is None:
+                    predicted_stays = max_predicted <= 0.0
+                    move_probability = None
+                else:
+                    move_probability = float(move_probabilities[index])
+                    predicted_stays = move_stay_decision(move_probability)
                 current_id = int(stage_b["current"]["viewpoint_id"])
                 selected_id = current_id if predicted_stays else predicted_candidate_id
                 selected_stage_b = stage_b["current"] if predicted_stays else by_id[selected_id]
@@ -58,6 +79,7 @@ def predict_dataset(model: torch.nn.Module, loader, stage_b_lookup: Mapping[str,
                     "predicted_candidate_viewpoint_id": predicted_candidate_id,
                     "predicted_action": "stay" if predicted_stays else f"candidate:{predicted_candidate_id}",
                     "predicted_stays": predicted_stays,
+                    "move_probability": move_probability,
                     "selected_true_utility": 0.0 if predicted_stays else float(by_id[selected_id]["utility"]),
                     "selected_predicted_label_id": int(selected_stage_b["predicted_label_id"]),
                     "selected_entropy": float(selected_stage_b["entropy"]),

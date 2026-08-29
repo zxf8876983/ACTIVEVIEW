@@ -173,6 +173,7 @@ def evaluate_val_experiment(
         loader,
         load_stage_b_lookup(stage_b_root / "utility_labels" / "val.jsonl"),
         device,
+        model_type=model_type,
     )
     categories = _categories(label_mapping_path)
     metrics = evaluate_predictions(predictions, categories)
@@ -243,7 +244,7 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--baseline", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--model-type", choices=("set_ranker", "pairwise_mlp"), default="set_ranker")
+    parser.add_argument("--model-type", choices=("set_ranker", "pairwise_mlp", "move_stay_set_ranker"), default="set_ranker")
     parser.add_argument("--experiment-id", default="")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--batch-size", type=int, default=256)
