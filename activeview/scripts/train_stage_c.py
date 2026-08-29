@@ -36,6 +36,7 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
     feature_summary_path = feature_root / "stage_c_feature_summary.json"
     feature_summary = json.loads(feature_summary_path.read_text(encoding="utf-8"))
+    geometry_dim = int(feature_summary["candidate_geometry_dim"])
     feature_file_sha256 = feature_summary["feature_file_sha256"]
     feature_stats_sha256 = feature_summary["feature_stats_sha256"]
     train_set = EpisodeFeatureDataset(feature_root / "features/train.jsonl", **stats)
@@ -73,7 +74,7 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
     mapping = json.loads((feature_root.parent.parent / "stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed" / "label_mapping.json").read_text(encoding="utf-8"))
     categories = [name for name, _ in sorted(mapping.items(), key=lambda item: int(item[1]))]
     stage_b_lookup = load_stage_b_lookup(stage_b_root / "utility_labels/val.jsonl")
-    model = build_utility_predictor(model_type).to(device)
+    model = build_utility_predictor(model_type, geometry_dim=geometry_dim).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="max", patience=3, factor=0.5)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -101,13 +102,13 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
                 "model_state_dict": model.state_dict(), "model_type": model_type, "epoch": epoch,
                 "feature_summary_sha256": file_sha256(feature_summary_path),
                 "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256,
-                "config": {"batch_size": batch_size, "episodes_per_record": episodes_per_record, "sampler_type": sampler_type, "record_difficulty_sha256": difficulty_sha256, "hard_episodes_per_record": hard_episodes_per_record, "normal_episodes_per_record": normal_episodes_per_record, "lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "lambda_gap": lambda_gap, "tau_gap": tau_gap, "max_gap_weight": max_gap_weight, "seed": seed},
+                "config": {"batch_size": batch_size, "episodes_per_record": episodes_per_record, "sampler_type": sampler_type, "record_difficulty_sha256": difficulty_sha256, "hard_episodes_per_record": hard_episodes_per_record, "normal_episodes_per_record": normal_episodes_per_record, "lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "lambda_gap": lambda_gap, "tau_gap": tau_gap, "max_gap_weight": max_gap_weight, "geometry_dim": geometry_dim, "seed": seed},
             }, output_dir / f"{model_type}_best.pth")
         else:
             stale += 1
         if stale >= patience:
             break
-    summary = {"stage": "C", "model_type": model_type, "parameter_count": count_parameters(model), "device": str(device), "max_epochs": max_epochs, "selected_epoch": best_epoch, "checkpoint": str((output_dir / f"{model_type}_best.pth").resolve()), "checkpoint_sha256": file_sha256(output_dir / f"{model_type}_best.pth"), "checkpoint_selection_metric": "Val StageC recognition Macro-F1", "feature_summary": str(feature_summary_path.resolve()), "feature_summary_sha256": file_sha256(feature_summary_path), "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256, "sampler": sampler_summary, "loss": {"lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "lambda_gap": lambda_gap, "tau_gap": tau_gap, "max_gap_weight": max_gap_weight, "regression": "SmoothL1", "ranking": "stay-inclusive soft-target cross-entropy", "gap_ranking": "gap-weighted soft pairwise ranking"}, "history": history}
+    summary = {"stage": "C", "model_type": model_type, "parameter_count": count_parameters(model), "device": str(device), "max_epochs": max_epochs, "selected_epoch": best_epoch, "checkpoint": str((output_dir / f"{model_type}_best.pth").resolve()), "checkpoint_sha256": file_sha256(output_dir / f"{model_type}_best.pth"), "checkpoint_selection_metric": "Val StageC recognition Macro-F1", "feature_summary": str(feature_summary_path.resolve()), "feature_summary_sha256": file_sha256(feature_summary_path), "feature_file_sha256": feature_file_sha256, "feature_stats_sha256": feature_stats_sha256, "candidate_geometry_dim": geometry_dim, "sampler": sampler_summary, "loss": {"lambda_reg": lambda_reg, "lambda_rank": lambda_rank, "tau": tau, "lambda_gap": lambda_gap, "tau_gap": tau_gap, "max_gap_weight": max_gap_weight, "regression": "SmoothL1", "ranking": "stay-inclusive soft-target cross-entropy", "gap_ranking": "gap-weighted soft pairwise ranking"}, "history": history}
     (output_dir / f"{model_type}_training_summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     return summary
 

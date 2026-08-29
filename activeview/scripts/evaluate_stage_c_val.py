@@ -155,6 +155,7 @@ def evaluate_val_experiment(
         raise FileNotFoundError(checkpoint)
     baseline = _load(baseline_path)
     feature_summary = _load(feature_root / "stage_c_feature_summary.json")
+    geometry_dim = int(feature_summary["candidate_geometry_dim"])
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
     device = torch.device(
         device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu"
@@ -167,7 +168,7 @@ def evaluate_val_experiment(
         collate_fn=collate_episode_batch,
         num_workers=0,
     )
-    model = build_utility_predictor(model_type).to(device)
+    model = build_utility_predictor(model_type, geometry_dim=geometry_dim).to(device)
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(payload["model_state_dict"])
     model.eval()
@@ -205,6 +206,7 @@ def evaluate_val_experiment(
         "protocol": "ACTIVEVIEW v11.5 Stage C-v1 Val-only evaluation",
         "experiment_id": experiment_id,
         "model_type": model_type,
+        "candidate_geometry_dim": geometry_dim,
         "split": "val",
         "test_used": False,
         "checkpoint": str(checkpoint.resolve()),

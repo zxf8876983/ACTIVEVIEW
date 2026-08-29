@@ -2,7 +2,7 @@
 
 ## Status
 
-PLANNED
+REJECTED
 
 ## Scientific Question
 
@@ -69,9 +69,11 @@ no more than 0.5 percentage points. The criteria are fixed before training.
 
 ## Run
 
-Pending human approval. `run.sh` is prepared but has not been executed.
-It evaluates Val only and never invokes Test.
+Executed on commit `330310f9486ae320b59e12d44e249795c6d903f6`. The run used
+Train-only hard-record-aware sampling and evaluated Val only; Test was not
+used.
 
 ## Result
 
-Pending.
+See `analysis.md`. The primary Val P90 regret criterion was not met, so EXP002
+is rejected. No sampler parameters were searched after this result.

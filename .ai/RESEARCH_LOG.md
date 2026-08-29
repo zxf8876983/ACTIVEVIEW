@@ -13,9 +13,9 @@ gap-aware and hard-example objectives before changing representation.
 
 ## EXP001 — Gap-Aware Ranking
 
-Status: PLANNED. The hypothesis, frozen baseline and single loss change are
-recorded in `experiments/stage_c_v1/EXP001_gap_aware_ranking/`. No training or
-Test evaluation has been run.
+Status: REJECTED. The hypothesis, frozen baseline and single loss change are
+recorded in `experiments/stage_c_v1/EXP001_gap_aware_ranking/`; its Val-only
+run did not meet the preregistered target. No Test evaluation was used.
 
 ## Workflow simplification
 
@@ -32,7 +32,15 @@ Stage C failure mode.
 
 ## EXP002 — Hard-Record-Aware Sampling
 
-Status: PLANNED. The frozen Stage C-v0 Train inference identified 118 hard
-records among 589 (top 20% by mean SafeOracle regret). Sampling is prepared
-with 32 Episodes/record for hard records and 12 for normal records, while
-keeping approximate epoch volume unchanged. No EXP002 training has run.
+Decision: REJECT. The Val-only run with 32 Episodes/record for hard records
+and 12 for normal records did not improve P90 regret (5.6153066 versus the
+5.6078177 baseline), mean regret, headroom or C2. Macro-F1 decreased by 0.44
+percentage points. Test was not used.
+
+## EXP003 — Relative Geometry Representation
+
+Status: PLANNED. Five candidate-set-relative continuous features are appended
+to the frozen 11-D geometry: radius/geodesic z-scores and ranks, plus
+normalized delta radius. The independent 16-D cache was built by transforming
+the accepted Stage C-v0 feature JSONL; no Habitat, perception, training or Test
+evaluation was run. Human review is required before training.

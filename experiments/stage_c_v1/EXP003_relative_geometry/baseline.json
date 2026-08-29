@@ -1,0 +1,15 @@
+{
+  "split": "val",
+  "episodes": 13987,
+  "records": 197,
+  "model": "Stage C-v0 SetUtilityRanker",
+  "accuracy": 0.6491027382569529,
+  "macro_f1": 0.5980419794734363,
+  "regret": {
+    "mean": 1.4504976684431725,
+    "median": 0.0051433994667604566,
+    "p90": 5.607817676663398
+  },
+  "headroom_capture": 0.7779652640409261,
+  "c2_rate": 0.31743762064774433
+}

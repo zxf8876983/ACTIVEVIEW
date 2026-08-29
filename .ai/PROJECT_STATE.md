@@ -60,18 +60,21 @@ Its compact baseline is in
 `experiments/stage_c_v1/EXP001_gap_aware_ranking/baseline.json`. The experiment
 Val-only evaluation completed on commit `5b57417`; no Test evaluation was used.
 
-`EXP002_hard_record_sampling` is **PLANNED**. Its single proposed change is a
-Train-only hard-record-aware sampler using the frozen Stage C-v0 difficulty
-ranking. The difficulty file contains 118 hard and 471 normal Train records;
-no EXP002 training has started.
+`EXP002_hard_record_sampling` is **REJECTED**. Its Val-only run used the
+Train-only hard-record-aware sampler (118 hard and 471 normal records), but
+P90/mean regret, headroom and C2 did not improve. Test was not used.
+
+`EXP003_relative_geometry` is **PLANNED**. Its single proposed change is five
+candidate-set-relative geometry features appended to the frozen 11-D geometry
+(16-D total). The independent feature cache has been built from the accepted
+Stage C-v0 cache; no EXP003 training or Test evaluation has started.
 
 ## Research queue
 
-1. EXP002 hard-record-aware sampling (pending human approval);
-2. relative geometry and candidate relations;
-3. richer current temporal representation;
-4. perceived body orientation only if later evidence supports it;
-5. Stage D Habitat closed loop after a final method is selected.
+1. EXP003 relative geometry (pending human review);
+2. richer current temporal representation;
+3. perceived body orientation only if later evidence supports it;
+4. Stage D Habitat closed loop after a final method is selected.
 
 ## Runtime roots
 

@@ -32,10 +32,11 @@ def evaluate_model(*, feature_root: Path, stage_b_root: Path, checkpoint: Path, 
     device = torch.device(device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu")
     feature_summary_path = feature_root / "stage_c_feature_summary.json"
     feature_summary = json.loads(feature_summary_path.read_text(encoding="utf-8"))
+    geometry_dim = int(feature_summary["candidate_geometry_dim"])
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
     mapping = json.loads((feature_root.parent.parent / "stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed" / "label_mapping.json").read_text(encoding="utf-8"))
     categories = [name for name, _ in sorted(mapping.items(), key=lambda item: int(item[1]))]
-    model = build_utility_predictor(model_type).to(device)
+    model = build_utility_predictor(model_type, geometry_dim=geometry_dim).to(device)
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(payload["model_state_dict"]); model.eval()
     predictions_dir = output_dir / "predictions"; predictions_dir.mkdir(parents=True, exist_ok=True)
@@ -50,7 +51,7 @@ def evaluate_model(*, feature_root: Path, stage_b_root: Path, checkpoint: Path, 
                 handle.write(json.dumps(row, separators=(",", ":"), ensure_ascii=False) + "\n")
     summary = {
         "protocol": "ACTIVEVIEW v11.5 Stage C offline evaluation", "stage": "C", "status": "evaluated",
-        "model_type": model_type, "checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": file_sha256(checkpoint),
+        "model_type": model_type, "candidate_geometry_dim": geometry_dim, "checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": file_sha256(checkpoint),
         "feature_summary": str(feature_summary_path.resolve()), "feature_summary_sha256": file_sha256(feature_summary_path),
         "source_stage_a_summary_sha256": feature_summary["source_stage_a_summary_sha256"],
         "source_stage_a_episode_sha256": feature_summary["source_stage_a_episode_sha256"],
@@ -63,7 +64,7 @@ def evaluate_model(*, feature_root: Path, stage_b_root: Path, checkpoint: Path, 
         "label_mapping_sha256": feature_summary["label_mapping_sha256"],
         "canonical_split_counts": feature_summary["canonical_split_counts"],
         "feature_file_counts": feature_summary["feature_file_counts"],
-        "feature_schema": schema_metadata(), "body_yaw_used": False, "movement_cost_penalty_used": False,
+        "feature_schema": feature_summary["schema"], "body_yaw_used": False, "movement_cost_penalty_used": False,
         "future_candidate_perception_used_as_input": False, "stgcn_frozen": True, "categories": categories,
         "evaluation_only_fields": ["label_id", "selected_true_utility", "selected_predicted_label_id", "selected_entropy", "candidate_oracle_predicted_label_id", "safe_oracle_predicted_label_id"],
         "feature_root": str(feature_root.resolve()), "metrics": metrics,

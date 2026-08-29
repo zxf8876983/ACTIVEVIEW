@@ -164,13 +164,15 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
         if feature_summary.get("feature_stats_sha256") != file_sha256(stats_path):
             errors.append("feature_stats_hash_mismatch")
         schema = feature_summary.get("schema")
+        include_relative_features = False
         if not isinstance(schema, Mapping):
             errors.append("missing_feature_schema")
         else:
+            include_relative_features = bool(schema.get("relative_geometry_features", False))
             forbidden_inputs = FORBIDDEN.intersection(set(schema.get("input_whitelist", [])))
             if forbidden_inputs:
                 errors.append(f"forbidden_feature_whitelist:{sorted(forbidden_inputs)}")
-            if schema != schema_metadata():
+            if schema != schema_metadata(include_relative_features=include_relative_features):
                 errors.append("feature_schema_mismatch")
         for split in SPLITS:
             stage_a_path = Path(stage_a_summary["episode_files"][split])
@@ -216,7 +218,8 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
                         errors.append(f"candidate_geodesic_mismatch:{split}:{episode_id}")
                     current = np.asarray(row["current_feature"], dtype=np.float32)
                     geometry = np.asarray(row["candidate_geometry"], dtype=np.float32)
-                    if current.shape != (275,) or geometry.shape != (len(expected_candidates), 11) or not np.isfinite(current).all() or not np.isfinite(geometry).all():
+                    geometry_dim = int(schema.get("candidate_geometry_dim", 11)) if isinstance(schema, Mapping) else 11
+                    if current.shape != (275,) or geometry.shape != (len(expected_candidates), geometry_dim) or not np.isfinite(current).all() or not np.isfinite(geometry).all():
                         errors.append(f"invalid_feature_values:{split}:{episode_id}")
                     try:
                         archive_path = str(episode["current_view"]["skeleton_source_path"])
@@ -230,6 +233,7 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
                             current_position=episode["current_view"]["agent_position"],
                             current_rotation_wxyz=episode["current_view"]["rotation_wxyz"],
                             placement_position=placement,
+                            include_relative_features=include_relative_features,
                         )
                         if geometry.shape == expected_geometry.shape and not np.allclose(geometry, expected_geometry, atol=1e-5, rtol=0.0):
                             errors.append(f"candidate_geometry_mismatch:{split}:{episode_id}")

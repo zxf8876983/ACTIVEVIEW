@@ -43,7 +43,7 @@ def build_summary(*, stage_c_root: Path, checkpoint_root: Path, output: Path) ->
             "stgcn_frozen": True,
         },
         "canonical_split_counts": feature_summary["canonical_split_counts"],
-        "feature_schema": schema_metadata(),
+        "feature_schema": feature_summary.get("schema", schema_metadata()),
         "feature_summary": str(feature_summary_path.resolve()),
         "feature_summary_sha256": file_sha256(feature_summary_path),
         "source_stage_a_summary_sha256": feature_summary["source_stage_a_summary_sha256"],

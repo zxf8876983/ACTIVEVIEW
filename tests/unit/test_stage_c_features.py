@@ -1,10 +1,15 @@
 import numpy as np
 
 from activeview.active_view.stage_c_features import (
+    BASE_CANDIDATE_GEOMETRY_DIM,
     CANDIDATE_GEOMETRY_DIM,
     CURRENT_FEATURE_DIM,
+    RELATIVE_CANDIDATE_GEOMETRY_DIM,
+    RELATIVE_CANDIDATE_GEOMETRY_NAMES,
+    candidate_set_relative_features,
     candidate_geometry_features,
     current_state_features,
+    schema_metadata,
 )
 
 
@@ -47,3 +52,53 @@ def test_feature_constructor_ignores_labels_and_future_candidate_perception():
     first_geometry = candidate_geometry_features(candidate, current_position=[0.0, 0.0, 0.0], current_rotation_wxyz=[1.0, 0.0, 0.0, 0.0], placement_position=[0.0, 0.0, 0.0])
     second_geometry = candidate_geometry_features(altered, current_position=[0.0, 0.0, 0.0], current_rotation_wxyz=[1.0, 0.0, 0.0, 0.0], placement_position=[0.0, 0.0, 0.0])
     assert np.array_equal(first_geometry, second_geometry)
+
+
+def _base_geometry(radii, geodesics, deltas=None):
+    deltas = deltas if deltas is not None else [radius - 2.0 for radius in radii]
+    rows = np.zeros((len(radii), BASE_CANDIDATE_GEOMETRY_DIM), dtype=np.float32)
+    rows[:, 4] = geodesics
+    rows[:, 9] = radii
+    rows[:, 10] = deltas
+    return rows
+
+
+def test_relative_geometry_ranks_and_zscores_are_finite():
+    relative = candidate_set_relative_features(
+        _base_geometry([1.0, 2.0, 4.0], [3.0, 1.0, 2.0])
+    )
+
+    assert relative.shape == (3, RELATIVE_CANDIDATE_GEOMETRY_DIM)
+    assert np.isfinite(relative).all()
+    assert np.array_equal(np.argsort(relative[:, 1]), np.array([0, 1, 2]))
+    assert np.array_equal(np.argsort(relative[:, 3]), np.array([1, 2, 0]))
+    assert RELATIVE_CANDIDATE_GEOMETRY_NAMES == (
+        "radius_zscore", "radius_rank", "geodesic_zscore", "geodesic_rank",
+        "delta_radius_normalized",
+    )
+
+
+def test_relative_geometry_is_permutation_equivariant():
+    base = _base_geometry([1.0, 2.0, 4.0], [3.0, 1.0, 2.0])
+    permutation = np.array([2, 0, 1])
+    first = candidate_set_relative_features(base)
+    shuffled = candidate_set_relative_features(base[permutation])
+    assert np.allclose(first[permutation], shuffled)
+
+
+def test_relative_geometry_single_candidate_or_constant_set_is_finite():
+    single = candidate_set_relative_features(_base_geometry([2.0], [1.0]))
+    constant = candidate_set_relative_features(
+        _base_geometry([2.0, 2.0], [1.0, 1.0])
+    )
+    assert np.isfinite(single).all()
+    assert np.isfinite(constant).all()
+    assert np.allclose(single[:, :4], 0.0)
+    assert np.allclose(constant[:, [0, 2]], 0.0)
+    assert np.isfinite(constant[:, [1, 3]]).all()
+
+
+def test_relative_schema_dimension_matches_feature_names():
+    schema = schema_metadata(include_relative_features=True)
+    assert schema["candidate_geometry_dim"] == CANDIDATE_GEOMETRY_DIM + RELATIVE_CANDIDATE_GEOMETRY_DIM
+    assert len(schema["candidate_geometry_names"]) == schema["candidate_geometry_dim"]
