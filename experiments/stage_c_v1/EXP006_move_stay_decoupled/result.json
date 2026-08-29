@@ -1,0 +1,36 @@
+{
+  "experiment_id": "EXP006",
+  "experiment_name": "move_stay_decoupled",
+  "status": "completed_pending_user_review",
+  "model_type": "move_stay_set_ranker",
+  "code_commit": "6011ec10d8c8dac185dc6906222a31bb7bb27610",
+  "split": "val",
+  "test_used": false,
+  "episode_count": 13987,
+  "record_count": 197,
+  "candidate_geometry_dim": 11,
+  "selected_epoch": 38,
+  "metrics": {
+    "accuracy": 0.6386644741545721,
+    "macro_f1": 0.5888756131856563,
+    "mean_regret": 1.49243306646117,
+    "median_regret": 0.008931853342801332,
+    "p90_regret": 5.615548580887023,
+    "headroom": 0.822656017174818,
+    "c2_rate": 0.3967970258096804
+  },
+  "runtime_artifacts": {
+    "root": "${ACTIVEVIEW_DATA_ROOT}/experiments/stage_c_v1/EXP006_move_stay_decoupled",
+    "feature_root": "${ACTIVEVIEW_DATA_ROOT}/datasets/policy_v11_5/stage_c"
+  },
+  "geometry_bias": {
+    "source": "Val full analysis first 11 base columns",
+    "predicted_move_rate": 0.9546721956102094,
+    "safe_oracle_move_rate": 0.8535068277686423,
+    "selected_candidate_radius_mean_m": 1.6499288414494693,
+    "selected_delta_radius_mean_m": -0.5433717518007051,
+    "selected_closer_same_farther": [0.6719089343218753, 0.21433385756009884, 0.11375720811802591],
+    "predicted_utility_radius_mean_pearson": -0.6086391957429471,
+    "true_utility_radius_mean_pearson": -0.3291319624901527
+  }
+}

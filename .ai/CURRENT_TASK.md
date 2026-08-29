@@ -2,10 +2,10 @@
 
 ## Current task
 
-Prepare EXP004–EXP007 for joint human review. All four are PLANNED, independent
-Val-only experiments against the frozen Stage C-v0 baseline. Their source
-protocols, configs and Val-only `run.sh` entry points are present under
-`experiments/stage_c_v1/`.
+EXP004–EXP007 Train→Val runs are complete and ready for joint human review.
+All four were independent Val-only experiments against the frozen Stage C-v0
+baseline. Compact results are recorded in each experiment directory and full
+runtime outputs remain under `ACTIVEVIEW_DATA_ROOT`.
 
 ## Frozen
 
@@ -15,7 +15,6 @@ diagnostics are evidence only and are not a baseline or a dependency.
 
 ## Do not
 
-- train EXP004–EXP007;
 - run Test;
 - regenerate Habitat, YOLO, VideoPose3D, Stage A/B/C-v0 or EXP003 artifacts;
 - create EXP008 or enter Stage D.

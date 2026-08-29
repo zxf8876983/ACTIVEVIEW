@@ -1,0 +1,36 @@
+{
+  "experiment_id": "EXP005",
+  "experiment_name": "direction_geometry",
+  "status": "completed_pending_user_review",
+  "model_type": "set_ranker",
+  "code_commit": "6011ec10d8c8dac185dc6906222a31bb7bb27610",
+  "split": "val",
+  "test_used": false,
+  "episode_count": 13987,
+  "record_count": 197,
+  "candidate_geometry_dim": 15,
+  "selected_epoch": 31,
+  "metrics": {
+    "accuracy": 0.6460999499535283,
+    "macro_f1": 0.5952409183075531,
+    "mean_regret": 1.4779959706355696,
+    "median_regret": 0.005470657721502903,
+    "p90_regret": 5.730793067812918,
+    "headroom": 0.7757282347319102,
+    "c2_rate": 0.32086937870880106
+  },
+  "runtime_artifacts": {
+    "root": "${ACTIVEVIEW_DATA_ROOT}/experiments/stage_c_v1/EXP005_direction_geometry",
+    "feature_root": "${ACTIVEVIEW_DATA_ROOT}/datasets/policy_v11_5/stage_c_v1/EXP005_direction_geometry"
+  },
+  "geometry_bias": {
+    "source": "Val full analysis first 11 base columns",
+    "predicted_move_rate": 0.7046543218703082,
+    "safe_oracle_move_rate": 0.8535068277686423,
+    "selected_candidate_radius_mean_m": 1.588524738121052,
+    "selected_delta_radius_mean_m": -0.7499130535024133,
+    "selected_closer_same_farther": [0.8023538961038961, 0.15868506493506493, 0.03896103896103896],
+    "predicted_utility_radius_mean_pearson": -0.5911144518110251,
+    "true_utility_radius_mean_pearson": -0.3291319624901527
+  }
+}

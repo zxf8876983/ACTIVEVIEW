@@ -12,7 +12,8 @@ EXP003 relative-geometry representation is recorded as REJECTED because its
 Val-only metrics and geometry-bias diagnostic remain in
 `experiments/stage_c_v1/EXP003_relative_geometry/` as evidence only.
 
-EXP004–EXP007 are prepared as independent PLANNED protocols against frozen
-Stage C-v0. Their feature-cache builders, Move/Stay model support, configs and
-Val-only run scripts are present but have not been executed. No training or
-Test evaluation is authorized in this handoff.
+EXP004–EXP007 have completed independent Train→Val runs against frozen Stage
+C-v0. Compact results are in each `experiments/stage_c_v1/EXP00X_*/result.json`;
+full checkpoints, predictions and analyses are under the corresponding
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v1/` directories. All four decisions
+remain pending user review. No Test evaluation was run.

@@ -2,7 +2,7 @@
 
 ## Status
 
-PLANNED
+COMPLETED — PENDING USER REVIEW
 
 ## Question
 
@@ -53,8 +53,11 @@ than 0.5 percentage points. Acceptance is a later human decision.
 
 ## Run
 
-Pending human approval. `run.sh` is Val-only and has not been executed.
+`run.sh` completed Train→Val only. No Test evaluation was run. Full runtime
+outputs are under `${ACTIVEVIEW_DATA_ROOT}/experiments/stage_c_v1/EXP007_candidate_relations/`.
 
 ## Result
 
-Pending. No training or Test evaluation has been run.
+See `result.json` for the compact Val result. Mean regret was 1.4505859 and
+the radius diagnostic still selected closer views in 79.16% of moves
+(SafeOracle: 55.01%). No Test evaluation was run.

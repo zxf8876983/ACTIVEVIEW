@@ -1,0 +1,36 @@
+{
+  "experiment_id": "EXP004",
+  "experiment_name": "radius_ablation",
+  "status": "completed_pending_user_review",
+  "model_type": "set_ranker",
+  "code_commit": "6011ec10d8c8dac185dc6906222a31bb7bb27610",
+  "split": "val",
+  "test_used": false,
+  "episode_count": 13987,
+  "record_count": 197,
+  "candidate_geometry_dim": 10,
+  "selected_epoch": 61,
+  "metrics": {
+    "accuracy": 0.6483877886608994,
+    "macro_f1": 0.5991786153499028,
+    "mean_regret": 1.4658934371395604,
+    "median_regret": 0.005629160441571912,
+    "p90_regret": 5.6431467533111555,
+    "headroom": 0.7721123281176329,
+    "c2_rate": 0.31643669121326945
+  },
+  "runtime_artifacts": {
+    "root": "${ACTIVEVIEW_DATA_ROOT}/experiments/stage_c_v1/EXP004_radius_ablation",
+    "feature_root": "${ACTIVEVIEW_DATA_ROOT}/datasets/policy_v11_5/stage_c_v1/EXP004_radius_ablation"
+  },
+  "geometry_bias": {
+    "source": "frozen Stage C-v0 11-D geometry joined by episode_id; analyzer cannot read 10-D variant directly",
+    "predicted_move_rate": 0.6906413097876599,
+    "safe_oracle_move_rate": 0.8535068277686423,
+    "selected_candidate_radius_mean_m": 1.5989130313105218,
+    "selected_delta_radius_mean_m": -0.7420437903507896,
+    "selected_closer_same_farther": [0.7981366459627329, 0.16314699792960663, 0.03871635610766046],
+    "predicted_utility_radius_mean_pearson": -0.5828890175001281,
+    "true_utility_radius_mean_pearson": -0.3291319624901527
+  }
+}

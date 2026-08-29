@@ -71,10 +71,10 @@ evidence; no Test evaluation was run.
 
 ## Research queue
 
-1. `EXP004_radius_ablation` — PLANNED, remove direct radius cues;
-2. `EXP005_direction_geometry` — PLANNED, add circular directional set features;
-3. `EXP006_move_stay_decoupled` — PLANNED, add current-only Move/Stay gate;
-4. `EXP007_candidate_relations` — PLANNED, add explicit candidate relations;
+1. `EXP004_radius_ablation` — COMPLETED, pending user review;
+2. `EXP005_direction_geometry` — COMPLETED, pending user review;
+3. `EXP006_move_stay_decoupled` — COMPLETED, pending user review;
+4. `EXP007_candidate_relations` — COMPLETED, pending user review;
 5. Stage D Habitat closed loop only after a final method is selected.
 
 ## Runtime roots

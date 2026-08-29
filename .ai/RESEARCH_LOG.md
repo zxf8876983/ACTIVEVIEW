@@ -49,7 +49,7 @@ evidence for independent follow-up experiments. Test was not used.
 
 ## EXP004–EXP007 — Diagnostic experiment preparation
 
-2026-08-29: prepared four independent PLANNED Val-only experiments against the
-frozen Stage C-v0 baseline: radius ablation, circular direction features,
-current-only Move/Stay gate, and explicit candidate relations. No experiment
-was trained and no Test evaluation was run.
+2026-08-29: completed four independent Train→Val experiments against the frozen
+Stage C-v0 baseline: radius ablation, circular direction features, current-only
+Move/Stay gate, and explicit candidate relations. EXP004–EXP007 results are
+pending user review; no Test evaluation was run.

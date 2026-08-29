@@ -2,7 +2,7 @@
 
 ## Status
 
-PLANNED
+COMPLETED — PENDING USER REVIEW
 
 ## Question
 
@@ -54,8 +54,11 @@ Acceptance is a later human decision.
 
 ## Run
 
-Pending human approval. `run.sh` is Val-only and has not been executed.
+`run.sh` completed Train→Val only. No Test evaluation was run. Full runtime
+outputs are under `${ACTIVEVIEW_DATA_ROOT}/experiments/stage_c_v1/EXP006_move_stay_decoupled/`.
 
 ## Result
 
-Pending. No training or Test evaluation has been run.
+See `result.json` for the compact Val result. The gate moved in 95.47% of
+episodes versus 85.35% for SafeOracle; C2 rose to 39.68%. No Test evaluation
+was run.
