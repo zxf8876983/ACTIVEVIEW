@@ -77,44 +77,64 @@ def _comparison(
     metrics: Dict[str, Any],
     analysis: Dict[str, Any],
 ) -> Dict[str, Any]:
-    baseline_large = baseline["large_gap"]
-    current_large = analysis["candidate_set_difficulty"]["large"]
-    baseline_c2 = baseline["c2_wrong_high_utility_loss_rate"]
-    current_c2 = analysis["failure_taxonomy"]["C2_wrong_high_utility_loss"]["ratio"]
-    baseline_mean = float(baseline_large["mean_regret"])
-    current_mean = float(current_large["regret"]["mean"])
-    mean_improvement = (baseline_mean - current_mean) / abs(baseline_mean) if baseline_mean else 0.0
-    macro_f1_delta = (
-        float(metrics["recognition"]["StageC"]["macro_f1"])
-        - float(baseline["macro_f1"])
+    """Compare generic Val metrics without applying experiment-specific criteria.
+
+    ``analysis`` is used only to obtain the C2 diagnostic, which is not part of
+    the generic recognition/regret summary.  Acceptance decisions remain in
+    each experiment's README and are intentionally not emitted here.
+    """
+    current_c2 = float(
+        analysis["failure_taxonomy"]["C2_wrong_high_utility_loss"]["ratio"]
     )
-    p90_improved = float(metrics["decision_regret"]["p90"]) < float(
-        baseline["regret"]["p90"]
-    )
-    headroom_improved = float(metrics["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]) > float(
-        baseline["headroom_capture"]
-    )
-    c2_improved = current_c2 < baseline_c2
-    large_gap_improved = mean_improvement >= 0.05
-    harmful_diagnostic_improved = c2_improved or p90_improved or headroom_improved
-    return {
-        "baseline_large_gap_mean_regret": baseline_mean,
-        "experiment_large_gap_mean_regret": current_mean,
-        "large_gap_mean_regret_relative_improvement": mean_improvement,
-        "experiment_c2_rate": current_c2,
-        "experiment_headroom_capture": float(metrics["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]),
-        "c2_rate_delta": current_c2 - baseline_c2,
-        "p90_regret_delta": float(metrics["decision_regret"]["p90"]) - float(baseline["regret"]["p90"]),
-        "headroom_capture_delta": float(metrics["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]) - float(baseline["headroom_capture"]),
-        "val_accuracy_delta": float(metrics["recognition"]["StageC"]["accuracy"]) - float(baseline["accuracy"]),
-        "val_macro_f1_delta": macro_f1_delta,
-        "acceptance_checks": {
-            "large_gap_mean_regret_improved_5pct": large_gap_improved,
-            "harmful_ranking_diagnostic_improved": harmful_diagnostic_improved,
-            "macro_f1_drop_within_0_5pp": macro_f1_delta >= -0.005,
-        },
-        "preliminary_protocol_status": "PASS" if large_gap_improved and harmful_diagnostic_improved and macro_f1_delta >= -0.005 else "REVIEW",
+    baseline_c2 = _baseline_c2_rate(baseline)
+    current = {
+        "accuracy": float(metrics["recognition"]["StageC"]["accuracy"]),
+        "macro_f1": float(metrics["recognition"]["StageC"]["macro_f1"]),
+        "mean_regret": float(metrics["decision_regret"]["mean"]),
+        "median_regret": float(metrics["decision_regret"]["median"]),
+        "p90_regret": float(metrics["decision_regret"]["p90"]),
+        "headroom": float(
+            metrics["positive_headroom_capture"][
+                "aggregate_positive_clipped_ratio"
+            ]
+        ),
+        "c2_rate": current_c2,
     }
+    baseline_values = {
+        "accuracy": float(baseline["accuracy"]),
+        "macro_f1": float(baseline["macro_f1"]),
+        "mean_regret": float(baseline["regret"]["mean"]),
+        "median_regret": (
+            float(baseline["regret"]["median"])
+            if "median" in baseline.get("regret", {})
+            else None
+        ),
+        "p90_regret": float(baseline["regret"]["p90"]),
+        "headroom": float(baseline["headroom_capture"]),
+        "c2_rate": baseline_c2,
+    }
+    return {
+        "baseline": baseline_values,
+        "experiment": current,
+        "accuracy_delta": current["accuracy"] - baseline_values["accuracy"],
+        "macro_f1_delta": current["macro_f1"] - baseline_values["macro_f1"],
+        "mean_regret_delta": current["mean_regret"] - baseline_values["mean_regret"],
+        "p90_regret_delta": current["p90_regret"] - baseline_values["p90_regret"],
+        "headroom_delta": current["headroom"] - baseline_values["headroom"],
+        "c2_rate_delta": current["c2_rate"] - baseline_values["c2_rate"],
+    }
+
+
+def _baseline_c2_rate(baseline: Dict[str, Any]) -> float:
+    """Read the canonical C2 field, retaining compatibility with EXP001."""
+    if "c2_rate" in baseline:
+        return float(baseline["c2_rate"])
+    if "c2_wrong_high_utility_loss_rate" in baseline:
+        return float(baseline["c2_wrong_high_utility_loss_rate"])
+    raise KeyError(
+        "Baseline must define c2_rate or the legacy "
+        "c2_wrong_high_utility_loss_rate"
+    )
 
 
 def evaluate_val_experiment(
@@ -243,15 +263,15 @@ def main() -> None:
     )
     metrics = result["metrics"]
     comparison = result["comparison_to_frozen_v0_val"]
+    experiment_metrics = comparison["experiment"]
     compact = {
-        "accuracy": metrics["recognition"]["StageC"]["accuracy"],
-        "macro_f1": metrics["recognition"]["StageC"]["macro_f1"],
-        "mean_regret": metrics["decision_regret"]["mean"],
-        "p90_regret": metrics["decision_regret"]["p90"],
-        "headroom": comparison["experiment_headroom_capture"],
-        "c2_rate": comparison["experiment_c2_rate"],
-        "large_gap_mean_regret": comparison["experiment_large_gap_mean_regret"],
-        "large_gap_relative_improvement": comparison["large_gap_mean_regret_relative_improvement"],
+        "accuracy": experiment_metrics["accuracy"],
+        "macro_f1": experiment_metrics["macro_f1"],
+        "mean_regret": experiment_metrics["mean_regret"],
+        "median_regret": experiment_metrics["median_regret"],
+        "p90_regret": experiment_metrics["p90_regret"],
+        "headroom": experiment_metrics["headroom"],
+        "c2_rate": experiment_metrics["c2_rate"],
         "test_used": False,
     }
     print(json.dumps(compact, indent=2, ensure_ascii=False))
