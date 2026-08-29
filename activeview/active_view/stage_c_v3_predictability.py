@@ -72,6 +72,30 @@ def _normalize(train: np.ndarray, values: np.ndarray) -> tuple[np.ndarray, np.nd
 def _nearest_indices(train: np.ndarray, query: np.ndarray, k: int) -> np.ndarray:
     if len(train) < k:
         raise ValueError(f"Train reference has {len(train)} rows; k={k} is invalid")
+    # The fallback dataset contains hundreds of thousands of candidate rows.
+    # Use exact squared-Euclidean distances in GPU-sized query blocks when
+    # CUDA is available; this preserves the audit definition without
+    # materializing the full train-by-query distance matrix on the CPU.
+    try:
+        import torch
+
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+            train_tensor = torch.as_tensor(train, dtype=torch.float32, device=device)
+            train_norm = (train_tensor * train_tensor).sum(dim=1)
+            result = np.empty((len(query), k), dtype=np.int64)
+            query_block_size = 2048
+            for start in range(0, len(query), query_block_size):
+                block = torch.as_tensor(query[start : start + query_block_size], dtype=torch.float32, device=device)
+                distances = (block * block).sum(dim=1, keepdim=True) + train_norm.unsqueeze(0)
+                distances = distances - 2.0 * (block @ train_tensor.transpose(0, 1))
+                result[start : start + len(block)] = torch.topk(
+                    distances, k=k, largest=False, sorted=True,
+                ).indices.cpu().numpy()
+                del block, distances
+            return result
+    except ImportError:
+        pass
     try:
         from sklearn.neighbors import NearestNeighbors
 
