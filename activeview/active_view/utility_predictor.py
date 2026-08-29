@@ -263,7 +263,7 @@ class FuturePerceptionTeacherMLP(nn.Module):
         self,
         current_dim: int = CURRENT_FEATURE_DIM,
         geometry_dim: int = CANDIDATE_GEOMETRY_DIM,
-        future_dim: int = 18,
+        future_dim: int = 17,
     ) -> None:
         super().__init__()
         self.current_encoder = nn.Sequential(

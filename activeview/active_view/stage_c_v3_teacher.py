@@ -20,11 +20,11 @@ from activeview.active_view.stage_c_evaluation import _candidate_choice
 
 CURRENT_DIM = 275
 GEOMETRY_DIM = 11
-FUTURE_DIM = 18
+FUTURE_DIM = 17
 NUM_CLASSES = 16
 FUTURE_FEATURE_NAMES = tuple(
     [f"future_candidate_predicted_label_one_hot_{index}" for index in range(NUM_CLASSES)]
-    + ["future_candidate_logp_true", "future_candidate_entropy"]
+    + ["future_candidate_entropy"]
 )
 
 
@@ -48,18 +48,18 @@ def future_perception_vector(candidate: Mapping[str, Any]) -> np.ndarray:
     """Encode the future fields actually persisted by Stage B.
 
     Stage B does not persist a full 16-D log-probability vector, pooled ST-GCN
-    feature or pose confidence.  We therefore use only its available semantic
-    outputs: predicted class (one-hot), true-label log probability and entropy.
-    The ``correct`` flag is deliberately excluded because it is derived using
-    the ground-truth label rather than being an independent perception output.
+    feature or pose confidence.  We therefore use only future predicted class
+    (one-hot) and entropy.  The true-label log probability is deliberately
+    excluded because it depends on the ground-truth label and is a direct
+    ingredient of the Stage B utility target.  The ``correct`` flag is also
+    excluded because it is ground-truth-derived.
     """
     predicted = int(candidate["predicted_label_id"])
     if predicted < 0 or predicted >= NUM_CLASSES:
         raise ValueError(f"Invalid future predicted_label_id: {predicted}")
     values = np.zeros(FUTURE_DIM, dtype=np.float32)
     values[predicted] = 1.0
-    values[NUM_CLASSES] = float(candidate["logp_true"])
-    values[NUM_CLASSES + 1] = float(candidate["entropy"])
+    values[NUM_CLASSES] = float(candidate["entropy"])
     if not np.isfinite(values).all():
         raise ValueError("Future candidate perception contains non-finite values")
     return values
@@ -167,7 +167,8 @@ def build_teacher_cache(
             "candidate_geometry_dim": GEOMETRY_DIM,
             "future_candidate_perception_dim": FUTURE_DIM,
             "future_candidate_perception_names": list(FUTURE_FEATURE_NAMES),
-            "future_fields_source": ["predicted_label_id", "logp_true", "entropy"],
+            "future_fields_source": ["predicted_label_id", "entropy"],
+            "excluded_ground_truth_dependent_fields": ["logp_true", "correct"],
             "unavailable_fields_not_fabricated": ["full_candidate_log_probs", "candidate_stgcn_feature", "candidate_pose_confidence"],
         },
         "feature_files": {split: str((feature_dir / f"{split}.jsonl").resolve()) for split in splits},

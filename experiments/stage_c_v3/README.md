@@ -10,11 +10,12 @@ Test is locked.
 
 | Experiment | Question | Status |
 |---|---|---|
-| EXP011 | How much easier is utility prediction when actual future candidate perception is revealed? | PLANNED |
+| EXP011 | How much easier is utility prediction when actual future candidate perception is revealed? | HOLD |
 | EXP012 | How predictable is utility from online-available state and geometry alone? | PLANNED |
 | EXP013 | Does frozen v0 rank a useful proposal set even when Top-1 is wrong? | PLANNED |
 
-No experiment in this directory has been trained or executed. No Habitat,
+No experiment in this directory has been trained or executed. EXP011 is on
+HOLD until its corrected 17-D future-feature schema is reviewed. No Habitat,
 RGB, YOLO, VideoPose3D or ST-GCN rerun is part of this diagnostic preparation.
 
 ## Interpretation boundaries

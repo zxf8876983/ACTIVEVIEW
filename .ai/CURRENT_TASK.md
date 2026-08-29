@@ -36,6 +36,7 @@ does not preserve explicit body-to-candidate directional alignment.
 ## Stage C-v3 preparation
 
 Prepare EXP011 future-perception teacher, EXP012 Train-reference/Val-query
-predictability audit and EXP013 frozen-v0 Top-K audit. No training, diagnostic
-execution, Test evaluation, Habitat or perception rerun is allowed in this
-task.
+predictability audit and EXP013 frozen-v0 Top-K audit. EXP011 is currently on
+HOLD pending review of its corrected 17-D future schema. No training,
+diagnostic execution, Test evaluation, Habitat or perception rerun is allowed
+in this task.

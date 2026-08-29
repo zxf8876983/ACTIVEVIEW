@@ -83,6 +83,15 @@ Train-to-Val plateau. Prepared three read-only diagnostics for the next
 scientific question: whether the remaining gap is caused by future-perception
 information unavailable at decision time. EXP011 is a diagnostic-only
 future-perception teacher, EXP012 is a Train-reference/Val-query utility
-predictability audit, and EXP013 is a frozen-v0 Top-K reachability audit. All
-remain PLANNED; no training, diagnostic execution, Test, Habitat or perception
-rerun was performed.
+predictability audit, and EXP013 is a frozen-v0 Top-K reachability audit.
+EXP011 remains HOLD after schema review; EXP012 and EXP013 remain PLANNED. No
+training, diagnostic execution, Test, Habitat or perception rerun was
+performed.
+
+## EXP011 schema correction — HOLD
+
+2026-08-30: review identified that candidate `logp_true` is GT-dependent and
+is a direct ingredient of the Stage B utility target. It was removed from the
+future-perception teacher input; EXP011 now uses only a 16-D predicted-label
+one-hot and 1-D entropy (17-D total). No cache, training or evaluation was
+run; EXP011 remains on HOLD pending review.

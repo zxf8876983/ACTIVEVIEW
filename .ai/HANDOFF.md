@@ -29,6 +29,8 @@ The limitation was preregistered before running: the current skeleton
 representation is body-yaw canonicalized and therefore does not preserve
 explicit body-to-candidate directional alignment. EXP008–EXP010 are recorded as
 rejected diagnostic directions. Stage C-v3 EXP011–EXP013 predictability
-diagnostics are now prepared but not executed. They remain PLANNED pending
-human scientific review; no training, Test evaluation, Habitat or perception
-rerun is authorized by this handoff.
+diagnostics are now prepared but not executed. EXP011 is on HOLD because its
+initial future schema exposed the GT-dependent `logp_true`; it is now corrected
+to 17-D (predicted-label one-hot plus entropy), pending human scientific review.
+EXP012 and EXP013 remain PLANNED. No training, Test evaluation, Habitat or
+perception rerun is authorized by this handoff.

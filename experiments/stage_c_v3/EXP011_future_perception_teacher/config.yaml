@@ -1,17 +1,16 @@
 experiment:
   id: EXP011
   name: future_perception_teacher
-  status: PLANNED
+  status: HOLD
   diagnostic_only: true
   deployable_policy: false
 
 inputs:
   current_feature_dim: 275
   candidate_geometry_dim: 11
-  future_candidate_perception_dim: 18
+  future_candidate_perception_dim: 17
   future_fields:
     - predicted_label_id_one_hot_16d
-    - logp_true
     - entropy
 
 model:

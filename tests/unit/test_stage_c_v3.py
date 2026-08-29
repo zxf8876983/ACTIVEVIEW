@@ -18,16 +18,16 @@ def _write_jsonl(path, rows):
 
 def test_future_teacher_vector_uses_only_persisted_fields():
     vector = future_perception_vector({"predicted_label_id": 3, "logp_true": -0.7, "entropy": 0.2, "correct": True})
-    assert vector.shape == (18,)
+    assert vector.shape == (17,)
     assert vector[3] == 1.0
-    assert vector[16:].tolist() == pytest.approx([-0.7, 0.2])
+    assert vector[16] == pytest.approx(0.2)
 
 
 def test_future_teacher_forward_is_candidate_aligned():
     model = FuturePerceptionTeacherMLP().eval()
     current = torch.randn(2, 275)
     geometry = torch.randn(2, 4, 11)
-    future = torch.randn(2, 4, 18)
+    future = torch.randn(2, 4, 17)
     output = model(current, geometry, future, torch.ones(2, 4, dtype=torch.bool))
     assert output.shape == (2, 4)
 
@@ -36,7 +36,7 @@ def test_future_teacher_candidate_permutation_permutates_outputs():
     model = FuturePerceptionTeacherMLP().eval()
     current = torch.randn(1, 275)
     geometry = torch.randn(1, 4, 11)
-    future = torch.randn(1, 4, 18)
+    future = torch.randn(1, 4, 17)
     permutation = torch.tensor([2, 0, 3, 1])
     first = model(current, geometry, future)
     second = model(current, geometry[:, permutation], future[:, permutation])

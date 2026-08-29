@@ -2,8 +2,9 @@
 
 ## Status
 
-PLANNED — cache builder, teacher MLP, Val evaluator and run script prepared;
-training has not been run.
+HOLD — the initial schema exposed the GT-dependent `logp_true` field. The
+schema has been corrected to 17-D, but the diagnostic remains unexecuted
+pending scientific review.
 
 ## Scientific question
 
@@ -17,12 +18,13 @@ The teacher uses the frozen Stage C current 275-D feature, accepted 11-D
 candidate geometry, and only future fields actually persisted by Stage B:
 
 * candidate `predicted_label_id`, represented as a 16-D one-hot vector;
-* candidate `logp_true`;
 * candidate `entropy`.
 
 Stage B does not persist a full candidate 16-D log-probability vector, pooled
 ST-GCN feature or pose confidence. These fields are not fabricated. The
-ground-truth-derived `correct` flag is excluded from the teacher input.
+ground-truth-dependent `logp_true` is excluded because it is a direct
+ingredient of the Stage B utility target. The ground-truth-derived `correct`
+flag is also excluded from the teacher input.
 
 ## Model and protocol
 
@@ -34,6 +36,7 @@ used for fitting and Val for evaluation; Test is locked.
 
 `diagnostic_only=true`, `deployable_policy=false`, and
 `future_candidate_perception_used=true` are persisted in the teacher schema.
+The future input is exactly 17-D: predicted-label one-hot plus entropy.
 
 ## Pre-registered interpretation
 
