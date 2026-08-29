@@ -1,0 +1,15 @@
+experiment:
+  id: EXP013
+  name: topk_reachability
+  status: PLANNED
+  diagnostic_only: true
+
+inputs:
+  source_model: frozen_stage_c_v0_set_ranker
+  split: val
+  top_k: [1, 2, 3, 5]
+  near_optimal_epsilon: 0.01
+  tie_break: [predicted_utility_desc, geodesic_asc, viewpoint_id_asc]
+
+evaluation:
+  test_used: false

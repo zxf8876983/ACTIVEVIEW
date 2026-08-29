@@ -1,0 +1,4 @@
+id,name,status,code_commit,val_accuracy,val_macro_f1,val_mean_regret,val_p90_regret,decision,notes
+EXP011,future_perception_teacher,PLANNED,,,,,PENDING,"Diagnostic-only teacher; future candidate perception is intentionally exposed; no training yet"
+EXP012,predictability_audit,PLANNED,,,,,PENDING,"Train-reference/Val-query nearest-neighbour audit; no execution yet"
+EXP013,topk_reachability,PLANNED,,,,,PENDING,"Frozen Stage C-v0 Val Top-K audit; no execution yet"

@@ -27,5 +27,8 @@ VideoPose3D rerun occurred.
 
 The limitation was preregistered before running: the current skeleton
 representation is body-yaw canonicalized and therefore does not preserve
-explicit body-to-candidate directional alignment. All three experiments remain
-pending human scientific review.
+explicit body-to-candidate directional alignment. EXP008–EXP010 are recorded as
+rejected diagnostic directions. Stage C-v3 EXP011–EXP013 predictability
+diagnostics are now prepared but not executed. They remain PLANNED pending
+human scientific review; no training, Test evaluation, Habitat or perception
+rerun is authorized by this handoff.

@@ -93,13 +93,15 @@ runtime roots under `ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v2/`:
 | EXP009 | 0.647530 | 0.597071 | 1.502271 | 5.819350 | 0.759083 | 0.308572 |
 | EXP010 | 0.651677 | 0.598782 | 1.458965 | 5.660032 | 0.784780 | 0.326875 |
 
-All three remain pending human scientific review; no automatic v2 acceptance
-decision has been made.
+All three are recorded as rejected diagnostic directions: none improved the
+primary regret criteria over frozen v0. Their negative results are retained;
+no Test evaluation was performed.
 
-The next authorized candidates are:
+The next authorized research task is:
 
-1. human review of the EXP008–EXP010 Val results;
-2. any separately authorized follow-up experiment;
+1. prepare (but do not execute) Stage C-v3 predictability diagnostics
+   EXP011–EXP013;
+2. any separately authorized follow-up experiment after human review;
 3. Stage D Habitat closed loop only after a final method is selected.
 
 The v2 experiments test current representation and candidate-conditioned

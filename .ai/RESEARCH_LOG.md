@@ -73,4 +73,16 @@ Macro-F1 0.598766, mean regret 1.474656, P90 regret 5.633397, headroom 0.770660
 and C2 0.332952 (epoch 26). EXP009 achieved 0.647530, 0.597071, 1.502271,
 5.819350, 0.759083 and 0.308572 (epoch 22). EXP010 achieved 0.651677,
 0.598782, 1.458965, 5.660032, 0.784780 and 0.326875 (epoch 54). Results are
-pending human scientific review; no automatic acceptance decision has been made.
+recorded as rejected diagnostic directions; no automatic v2 acceptance
+decision was made.
+
+## Stage C-v3 predictability diagnostics preparation
+
+2026-08-30: the Stage C-v2 architecture probes did not break the 64–65%
+Train-to-Val plateau. Prepared three read-only diagnostics for the next
+scientific question: whether the remaining gap is caused by future-perception
+information unavailable at decision time. EXP011 is a diagnostic-only
+future-perception teacher, EXP012 is a Train-reference/Val-query utility
+predictability audit, and EXP013 is a frozen-v0 Top-K reachability audit. All
+remain PLANNED; no training, diagnostic execution, Test, Habitat or perception
+rerun was performed.

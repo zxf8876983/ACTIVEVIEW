@@ -2,7 +2,7 @@
 
 ## Status
 
-COMPLETED — Train-to-Val run finished; pending human scientific review.
+COMPLETED — diagnostic direction rejected after Train-to-Val review.
 
 ## Hypothesis
 
@@ -48,5 +48,7 @@ capture 0.759083, and C2 rate 0.308572. Relative to the frozen v0 Val
 baseline, the deltas were Accuracy -0.001573, Macro-F1 -0.000971, mean regret
 +0.051773, P90 regret +0.211532, headroom -0.018882, and C2 -0.008865.
 
-Runtime artifacts: `ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v2/EXP009_candidate_conditioned_attention/`.
+Decision: **REJECT** as a v2 diagnostic direction; mean/P90 regret and
+headroom did not improve over the frozen v0 Val baseline. Runtime artifacts:
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v2/EXP009_candidate_conditioned_attention/`.
 The body-yaw-canonicalized skeleton limitation above remains in force.

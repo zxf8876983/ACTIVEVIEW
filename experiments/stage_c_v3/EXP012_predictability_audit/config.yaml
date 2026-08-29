@@ -1,0 +1,21 @@
+experiment:
+  id: EXP012
+  name: predictability_audit
+  status: PLANNED
+  diagnostic_only: true
+
+inputs:
+  geometry_dim: 11
+  observable_semantic_context_dim: 19
+  observable_plus_geometry_dim: 30
+  k_neighbors: 5
+  reference_split: train
+  query_split: val
+
+analysis:
+  normalization: train_mean_std_only
+  disagreement_threshold: train_utility_iqr
+  sign_threshold: 1.0e-6
+
+evaluation:
+  test_used: false

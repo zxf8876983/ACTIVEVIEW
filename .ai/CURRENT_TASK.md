@@ -3,8 +3,10 @@
 ## Current task
 
 EXP004–EXP007 Train→Val runs are complete and recorded as rejected diagnostic
-directions. Stage C-v2 EXP008–EXP010 have now completed their authorized
-Train→Val runs and are pending human scientific review. Test remains locked.
+directions. Stage C-v2 EXP008–EXP010 also completed Train→Val and are recorded
+as rejected diagnostic directions. The active task is to prepare Stage C-v3
+predictability diagnostics EXP011–EXP013; do not execute them. Test remains
+locked.
 
 ## Frozen
 
@@ -16,8 +18,8 @@ diagnostics are evidence only and are not a baseline or a dependency.
 
 - run Test;
 - regenerate Habitat, YOLO, VideoPose3D, Stage A/B/C-v0 or EXP003 artifacts;
-- run Test for EXP008, EXP009 or EXP010;
-- start a new v2 experiment or add body-yaw features without explicit
+- execute EXP011, EXP012 or EXP013;
+- start a new policy experiment or add body-yaw features without explicit
   authorization;
 - enter Stage D.
 
@@ -30,3 +32,10 @@ metrics and the frozen v0 comparison are recorded in the experiment READMEs and
 `experiments/stage_c_v2/registry.csv`. The preregistered limitation is that
 the current skeleton representation is body-yaw canonicalized and therefore
 does not preserve explicit body-to-candidate directional alignment.
+
+## Stage C-v3 preparation
+
+Prepare EXP011 future-perception teacher, EXP012 Train-reference/Val-query
+predictability audit and EXP013 frozen-v0 Top-K audit. No training, diagnostic
+execution, Test evaluation, Habitat or perception rerun is allowed in this
+task.

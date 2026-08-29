@@ -254,6 +254,50 @@ class SkeletonPolicyTransformer(nn.Module):
         return self.utility_head(self.interaction(candidate_tokens, src_key_padding_mask=padding_mask))
 
 
+class FuturePerceptionTeacherMLP(nn.Module):
+    """Diagnostic-only teacher that may read post-hoc candidate perception."""
+
+    model_type = "future_perception_teacher"
+
+    def __init__(
+        self,
+        current_dim: int = CURRENT_FEATURE_DIM,
+        geometry_dim: int = CANDIDATE_GEOMETRY_DIM,
+        future_dim: int = 18,
+    ) -> None:
+        super().__init__()
+        self.current_encoder = nn.Sequential(
+            nn.Linear(current_dim, 128), nn.LayerNorm(128), nn.GELU(),
+        )
+        self.geometry_encoder = nn.Sequential(
+            nn.Linear(geometry_dim, 64), nn.LayerNorm(64), nn.GELU(),
+        )
+        self.future_encoder = nn.Sequential(
+            nn.Linear(future_dim, 64), nn.LayerNorm(64), nn.GELU(),
+        )
+        self.utility_head = nn.Sequential(
+            nn.Linear(256, 128), nn.LayerNorm(128), nn.GELU(),
+            nn.Dropout(0.1), nn.Linear(128, 1),
+        )
+
+    def forward(
+        self,
+        current_feature: torch.Tensor,
+        candidate_geometry: torch.Tensor,
+        future_candidate_perception: torch.Tensor,
+        candidate_mask: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        if current_feature.ndim != 2 or candidate_geometry.ndim != 3:
+            raise ValueError("Teacher inputs must be [B,D] and [B,N,D]")
+        if future_candidate_perception.shape[:2] != candidate_geometry.shape[:2]:
+            raise ValueError("Future perception and geometry candidate counts differ")
+        current = self.current_encoder(current_feature).unsqueeze(1)
+        geometry = self.geometry_encoder(candidate_geometry)
+        future = self.future_encoder(future_candidate_perception)
+        tokens = torch.cat([current.expand(-1, geometry.size(1), -1), geometry, future], dim=-1)
+        return self.utility_head(tokens).squeeze(-1)
+
+
 def build_utility_predictor(model_type: str, *, current_dim: int = CURRENT_FEATURE_DIM, geometry_dim: int = CANDIDATE_GEOMETRY_DIM) -> nn.Module:
     if model_type == "pairwise_mlp":
         return PairwiseUtilityMLP(current_dim, geometry_dim)
@@ -267,6 +311,8 @@ def build_utility_predictor(model_type: str, *, current_dim: int = CURRENT_FEATU
         return CandidateConditionedAttentionRanker(geometry_dim)
     if model_type == "skeleton_policy_transformer":
         return SkeletonPolicyTransformer(geometry_dim)
+    if model_type == "future_perception_teacher":
+        return FuturePerceptionTeacherMLP(geometry_dim=geometry_dim)
     raise ValueError(f"Unknown Stage C model type: {model_type}")
 
 

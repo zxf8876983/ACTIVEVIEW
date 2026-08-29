@@ -1,0 +1,40 @@
+experiment:
+  id: EXP011
+  name: future_perception_teacher
+  status: PLANNED
+  diagnostic_only: true
+  deployable_policy: false
+
+inputs:
+  current_feature_dim: 275
+  candidate_geometry_dim: 11
+  future_candidate_perception_dim: 18
+  future_fields:
+    - predicted_label_id_one_hot_16d
+    - logp_true
+    - entropy
+
+model:
+  type: future_perception_teacher
+  current_hidden_dim: 128
+  geometry_hidden_dim: 64
+  future_hidden_dim: 64
+  candidate_hidden_dim: 256
+
+training:
+  seed: 42
+  epochs: 100
+  patience: 10
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  episodes_per_record: 16
+
+loss:
+  lambda_reg: 1.0
+  lambda_rank: 1.0
+  tau: 0.5
+
+evaluation:
+  split: val
+  test_used: false
