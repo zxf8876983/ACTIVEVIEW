@@ -97,12 +97,16 @@ All three are recorded as rejected diagnostic directions: none improved the
 primary regret criteria over frozen v0. Their negative results are retained;
 no Test evaluation was performed.
 
-The next authorized research task is:
+Stage C-v3 EXP011–EXP013 predictability diagnostics have completed their
+authorized Train→Val / read-only Val runs. EXP011's corrected 17-D teacher did
+not improve regret/headroom over v0; EXP012 showed only modest utility
+predictability gains from legal current state; EXP013 showed strong offline
+Top-K coverage by K=5. Results are recorded in `experiments/stage_c_v3/` and
+the external runtime root, pending human scientific review.
 
-1. prepare (but do not execute) Stage C-v3 predictability diagnostics
-   EXP011–EXP013;
-2. any separately authorized follow-up experiment after human review;
-3. Stage D Habitat closed loop only after a final method is selected.
+The next authorized research task is a separately approved follow-up after
+review; Stage D Habitat closed loop remains out of scope until a final method
+is selected.
 
 The v2 experiments test current representation and candidate-conditioned
 reasoning, not new losses, samplers, utility targets or perception data.

@@ -2,7 +2,7 @@
 
 ## Status
 
-PLANNED — post-hoc Val audit prepared; no diagnostics have been executed.
+COMPLETED — post-hoc frozen-v0 Val audit; Test was not used.
 
 ## Scientific question
 
@@ -25,4 +25,18 @@ policy as a sequential proposal mechanism, not an automatic design decision.
 ## Run
 
 `run.sh` reads only frozen Val prediction and Stage B utility files and writes
-`topk_reachability.json` under the external runtime root. It has not been run.
+`topk_reachability.json` under the external runtime root.
+
+## Val result
+
+| K | CandidateOracle hit | SafeOracle move hit | Near-optimal hit | Positive-candidate recall | Mean Top-K regret |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 35.66% | 33.66% | 52.86% | 77.33% | 0.88692 |
+| 2 | 57.35% | 55.23% | 73.80% | 89.44% | 0.36989 |
+| 3 | 71.34% | 69.76% | 84.60% | 94.50% | 0.17940 |
+| 5 | 87.16% | 86.30% | 94.44% | 98.31% | 0.04842 |
+
+Top-5 reduces the move-only P90 regret to `0.000076`, but these are offline
+proposal-set diagnostics rather than online policy performance. The runtime
+report is
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v3/EXP013_topk_reachability/topk_reachability.json`.

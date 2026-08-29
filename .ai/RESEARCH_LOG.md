@@ -84,8 +84,8 @@ scientific question: whether the remaining gap is caused by future-perception
 information unavailable at decision time. EXP011 is a diagnostic-only
 future-perception teacher, EXP012 is a Train-reference/Val-query utility
 predictability audit, and EXP013 is a frozen-v0 Top-K reachability audit.
-EXP011 remains HOLD after schema review; EXP012 and EXP013 remain PLANNED. No
-training, diagnostic execution, Test, Habitat or perception rerun was
+EXP011 remained on HOLD until its schema was corrected; EXP012 and EXP013
+remained PLANNED until execution. No Test, Habitat or perception rerun was
 performed.
 
 ## EXP011 schema correction — HOLD
@@ -95,3 +95,17 @@ is a direct ingredient of the Stage B utility target. It was removed from the
 future-perception teacher input; EXP011 now uses only a 16-D predicted-label
 one-hot and 1-D entropy (17-D total). No cache, training or evaluation was
 run; EXP011 remains on HOLD pending review.
+
+## EXP011–EXP013 — Stage C-v3 predictability diagnostics
+
+2026-08-30: authorized Train→Val / read-only Val diagnostics completed without
+Test. EXP011 used the corrected 17-D future input (predicted-label one-hot plus
+entropy) and selected epoch 41: Accuracy 0.652106, Macro-F1 0.619947, mean
+regret 1.649950, P90 6.534039, headroom 0.767026. Classification improved over
+v0, but regret and headroom did not. EXP012 found modest predictability gains
+from adding legal current state to geometry (sign agreement 0.6362→0.6740;
+MAE 4.27625→4.17351) while disagreement remained high. EXP013 found Top-5
+coverage of 87.16% CandidateOracle hit, 86.30% SafeOracle move hit and
+0.04842 mean move-only Top-K regret. These are diagnostic results pending
+human review; no Stage A/B/C-v0 artifact changed and no Test evaluation was
+performed.

@@ -29,8 +29,10 @@ The limitation was preregistered before running: the current skeleton
 representation is body-yaw canonicalized and therefore does not preserve
 explicit body-to-candidate directional alignment. EXP008–EXP010 are recorded as
 rejected diagnostic directions. Stage C-v3 EXP011–EXP013 predictability
-diagnostics are now prepared but not executed. EXP011 is on HOLD because its
-initial future schema exposed the GT-dependent `logp_true`; it is now corrected
-to 17-D (predicted-label one-hot plus entropy), pending human scientific review.
-EXP012 and EXP013 remain PLANNED. No training, Test evaluation, Habitat or
-perception rerun is authorized by this handoff.
+diagnostics completed under the authorized Train→Val / read-only Val protocol.
+EXP011 used the corrected 17-D schema (predicted-label one-hot plus entropy;
+`logp_true` excluded), EXP012 used exact k=5 Train-reference/Val-query
+analysis, and EXP013 used frozen-v0 Val Top-K analysis. No Test evaluation,
+Habitat or perception rerun occurred. Results are recorded in
+`experiments/stage_c_v3/` and the external runtime root. Await human scientific
+review; do not start another experiment automatically.

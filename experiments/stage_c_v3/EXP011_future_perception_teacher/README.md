@@ -2,9 +2,9 @@
 
 ## Status
 
-HOLD — the initial schema exposed the GT-dependent `logp_true` field. The
-schema has been corrected to 17-D, but the diagnostic remains unexecuted
-pending scientific review.
+COMPLETED — corrected 17-D schema, Train→Val only. The initial schema exposed
+the GT-dependent `logp_true` field; it was removed before this run. Retention
+as a scientific direction remains pending review.
 
 ## Scientific question
 
@@ -46,7 +46,24 @@ below 5% mean-regret improvement would indicate that future perception alone
 does not explain the plateau. These are diagnostic interpretations, not model
 acceptance criteria.
 
+## Val result
+
+The corrected run selected epoch 41 by Val Macro-F1. Accuracy was `65.21%`,
+Macro-F1 `61.99%`, mean regret `1.64995`, median regret `0.00102`, P90 regret
+`6.53404`, and aggregate positive headroom capture `76.70%`. Candidate exact
+hit was `41.58%` and SafeOracle action match was `36.08%`.
+
+Relative to frozen v0 Val (Accuracy `64.91%`, Macro-F1 `59.80%`, mean regret
+`1.45050`, P90 `5.60782`, headroom `77.80%`), this restricted future-feature
+teacher improved classification but not regret or headroom. It is therefore
+not evidence that the available future predicted-label/entropy fields alone
+explain the policy plateau, and it must not be described as a complete
+future-perception upper bound.
+
+Runtime evidence is stored under
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v3/EXP011_future_perception_teacher/`.
+
 ## Run
 
 `run.sh` builds the cache from frozen Stage B/C-v0 files, trains the teacher and
-runs a Val-only evaluator. It has not been executed.
+runs a Val-only evaluator. The recorded runtime is external to Git.

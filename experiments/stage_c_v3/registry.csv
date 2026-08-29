@@ -1,4 +1,4 @@
 id,name,status,code_commit,val_accuracy,val_macro_f1,val_mean_regret,val_p90_regret,decision,notes
-EXP011,future_perception_teacher,HOLD,,,,,HOLD,"Initial logp_true feature was GT-dependent; corrected 17-D schema (predicted-label one-hot + entropy) prepared; no training yet"
-EXP012,predictability_audit,PLANNED,,,,,PENDING,"Train-reference/Val-query nearest-neighbour audit; no execution yet"
-EXP013,topk_reachability,PLANNED,,,,,PENDING,"Frozen Stage C-v0 Val Top-K audit; no execution yet"
+EXP011,future_perception_teacher,COMPLETED,5b5a123d38fdf1b3d66c01bde73b59f499e5dc40,0.652106,0.619947,1.649950,6.534039,PENDING_USER_REVIEW,"Corrected 17-D teacher; Train→Val only; classification improved but regret/headroom did not"
+EXP012,predictability_audit,COMPLETED,96f6e8a98206e6d90f8575f8a2798a8cefd05d24,,,,,PENDING_USER_REVIEW,"Train-reference/Val-query audit completed with exact k=5; no Test"
+EXP013,topk_reachability,COMPLETED,5b5a123d38fdf1b3d66c01bde73b59f499e5dc40,,,,,PENDING_USER_REVIEW,"Frozen Stage C-v0 Val Top-K audit completed; no Test"
