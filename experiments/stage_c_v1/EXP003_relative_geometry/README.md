@@ -2,7 +2,7 @@
 
 ## Status
 
-PLANNED
+COMPLETED — PENDING USER REVIEW
 
 ## Scientific Question
 
@@ -88,9 +88,11 @@ decided after the Val-only run; this README does not authorize Test.
 
 ## Run
 
-`run.sh` is prepared for a later human-approved run. It first builds the
-feature-only cache, then trains and evaluates on Val. It has not been run.
+`run.sh` was run once after explicit authorization. It rebuilt the independent
+feature-only cache, trained the Set Ranker and evaluated Val only. No Test
+evaluation was run.
 
 ## Result
 
-Pending human review and training authorization.
+See `result.json` for the compact Val result and `analysis.md` for the
+geometry-bias diagnostic. Final retain/reject decision is pending user review.

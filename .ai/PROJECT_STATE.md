@@ -64,14 +64,16 @@ Val-only evaluation completed on commit `5b57417`; no Test evaluation was used.
 Train-only hard-record-aware sampler (118 hard and 471 normal records), but
 P90/mean regret, headroom and C2 did not improve. Test was not used.
 
-`EXP003_relative_geometry` is **PLANNED**. Its single proposed change is five
-candidate-set-relative geometry features appended to the frozen 11-D geometry
-(16-D total). The independent feature cache has been built from the accepted
-Stage C-v0 cache; no EXP003 training or Test evaluation has started.
+`EXP003_relative_geometry` has completed its authorized Val-only run and is
+**PENDING USER REVIEW**. Its single change was five candidate-set-relative
+geometry features appended to the frozen 11-D geometry (16-D total). The
+feature cache and Set Ranker checkpoint are stored under the external runtime
+root; no Test evaluation was run. Compact results and a geometry-bias
+diagnostic are recorded in the EXP003 source experiment directory.
 
 ## Research queue
 
-1. EXP003 relative geometry (pending human review);
+1. User review of EXP003 relative geometry (Val-only result);
 2. richer current temporal representation;
 3. perceived body orientation only if later evidence supports it;
 4. Stage D Habitat closed loop after a final method is selected.

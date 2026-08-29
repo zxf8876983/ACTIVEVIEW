@@ -1,0 +1,97 @@
+{
+  "experiment_id": "EXP003",
+  "experiment_name": "relative_geometry",
+  "status": "completed_pending_user_review",
+  "model_type": "set_ranker",
+  "split": "val",
+  "test_used": false,
+  "episode_count": 13987,
+  "record_count": 197,
+  "candidate_geometry_dim": 16,
+  "selected_epoch": 46,
+  "metrics": {
+    "accuracy": 0.6549653249445914,
+    "macro_f1": 0.6048747673020518,
+    "mean_regret": 1.4201176312302746,
+    "median_regret": 0.004597483872203156,
+    "p90_regret": 5.50060636997233,
+    "headroom": 0.7841997966334607,
+    "c2_rate": 0.3300922284978909
+  },
+  "frozen_v0_val_baseline": {
+    "accuracy": 0.6491027382569529,
+    "macro_f1": 0.5980419794734363,
+    "mean_regret": 1.4504976684431725,
+    "median_regret": 0.0051433994667604566,
+    "p90_regret": 5.607817676663398,
+    "headroom": 0.7779652640409261,
+    "c2_rate": 0.31743762064774433
+  },
+  "delta_vs_frozen_v0": {
+    "accuracy": 0.005862586687638505,
+    "macro_f1": 0.006832787828615516,
+    "mean_regret": -0.030380037212897948,
+    "p90_regret": -0.1072113066910676,
+    "headroom": 0.006234532592534592,
+    "c2_rate": 0.012654607850146549,
+    "mean_regret_relative_improvement": 0.02094456121774054,
+    "p90_regret_relative_improvement": 0.019118186944133565
+  },
+  "geometry_bias": {
+    "source": "EXP003 Val feature cache, first 11 frozen geometry columns; no utility/label inputs used",
+    "predicted_move_rate": 0.7174519196396654,
+    "safe_oracle_move_rate": 0.8535068277686423,
+    "model_selected_move": {
+      "count": 10035,
+      "candidate_radius_mean_m": 1.6098156412739508,
+      "delta_radius_mean_m": -0.7091821533563307,
+      "radius_rank_mean": 0.14106140496275024,
+      "geodesic_mean_m": 3.0788560904016764,
+      "geodesic_rank_mean": 0.46725964246639784,
+      "abs_azimuth_mean_deg": 78.04484304932735,
+      "abs_azimuth_median_deg": 90.0,
+      "radius_direction_rates": {
+        "closer": 0.7709018435475835,
+        "same": 0.1900348779272546,
+        "farther": 0.039063278525161935
+      }
+    },
+    "safe_oracle_move": {
+      "count": 11938,
+      "candidate_radius_mean_m": 1.9408610917292042,
+      "delta_radius_mean_m": -0.2858220077895064,
+      "radius_rank_mean": 0.3460457327384367,
+      "geodesic_mean_m": 2.902606934503727,
+      "geodesic_rank_mean": 0.4552734337436916,
+      "abs_azimuth_mean_deg": 71.99698441950075,
+      "abs_azimuth_median_deg": 45.0,
+      "radius_direction_rates": {
+        "closer": 0.550091808677534,
+        "same": 0.20196012774333875,
+        "farther": 0.24794806357912717
+      }
+    },
+    "high_regret_safe_move": {
+      "regret_threshold_p90": 5.50060636997233,
+      "count": 1248,
+      "candidate_radius_mean_m": 2.074118557648781,
+      "delta_radius_mean_m": -0.12416695583707248,
+      "radius_rank_mean": 0.43084466948649636,
+      "farther_rate": 0.3189102564102564
+    },
+    "utility_radius_correlation": {
+      "predicted_utility_per_episode_mean_pearson": -0.5913676193528091,
+      "predicted_utility_per_episode_median_pearson": -0.6998415329222026,
+      "true_utility_per_episode_mean_pearson": -0.3250610516793429,
+      "true_utility_per_episode_median_pearson": -0.4239858260637331
+    },
+    "diagnostic_note": "The generic failure-analysis geometry block currently reports n=0 for 16-D rows because its helper accepts only 11-D geometry; the values above were independently recomputed from the same serialized feature rows."
+  },
+  "runtime_artifacts": {
+    "root": "${ACTIVEVIEW_DATA_ROOT}/experiments/stage_c_v1/EXP003_relative_geometry",
+    "full_metrics": "runtime/val_metrics_full.json",
+    "full_analysis": "runtime/val_analysis_full.json",
+    "predictions": "runtime/val_predictions.jsonl",
+    "checkpoint": "checkpoints/set_ranker_best.pth"
+  }
+}

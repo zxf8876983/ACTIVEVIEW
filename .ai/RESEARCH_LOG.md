@@ -39,8 +39,14 @@ percentage points. Test was not used.
 
 ## EXP003 — Relative Geometry Representation
 
-Status: PLANNED. Five candidate-set-relative continuous features are appended
-to the frozen 11-D geometry: radius/geodesic z-scores and ranks, plus
-normalized delta radius. The independent 16-D cache was built by transforming
-the accepted Stage C-v0 feature JSONL; no Habitat, perception, training or Test
-evaluation was run. Human review is required before training.
+Status: COMPLETED — PENDING USER REVIEW. Five candidate-set-relative
+continuous features were appended to the frozen 11-D geometry: radius/geodesic
+z-scores and ranks, plus normalized delta radius. The independent 16-D cache
+was rebuilt from the accepted Stage C-v0 feature JSONL, the Set Ranker selected
+epoch 46, and Val-only evaluation completed. Accuracy/Macro-F1 improved by
+0.586/0.683 percentage points; mean regret improved 2.094% (below the
+pre-registered 5% target), P90 regret improved 1.912%, headroom improved 0.623
+points, and C2 rate worsened 1.265 points. An independent geometry diagnostic
+found a persistent preference for closer candidates (77.09% of selected moves
+versus 55.01% for SafeOracle). Full compact results and analysis are recorded
+in `experiments/stage_c_v1/EXP003_relative_geometry/`. Test was not used.
