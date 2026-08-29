@@ -1,2 +1,3 @@
 id,name,status,code_commit,val_macro_f1,val_mean_regret,val_p90_regret,large_gap_mean_regret,decision,notes
-EXP001,gap_aware_ranking,PLANNED,,,,,PENDING,"Utility-gap-aware ranking; run only after human review"
+EXP001,gap_aware_ranking,COMPLETED,5b57417ccc6d92621f4dee421bafc37a30be58fc,0.5995195569440674,1.4646072802997447,5.69624738693237,2.441426933854667,REJECT,"Large-gap regret improved only 0.32%; C2/P90/headroom did not improve"
+EXP002,hard_record_sampling,PLANNED,,,,,PENDING,"Train-only hard-record-aware sampling; pending human approval"

@@ -114,6 +114,62 @@ class RecordBalancedSampler(Sampler[int]):
         return len(self.groups) * self.episodes_per_record
 
 
+class HardRecordAwareSampler(Sampler[int]):
+    """Oversample Train records marked hard by a frozen difficulty analysis."""
+
+    def __init__(
+        self,
+        rows: Sequence[Mapping[str, Any]],
+        hard_record_ids: Iterable[str],
+        *,
+        hard_episodes_per_record: int = 32,
+        normal_episodes_per_record: int = 12,
+        seed: int = 42,
+    ) -> None:
+        if hard_episodes_per_record <= 0 or normal_episodes_per_record <= 0:
+            raise ValueError("episodes_per_record values must be positive")
+        self.groups: Dict[str, List[int]] = defaultdict(list)
+        for index, row in enumerate(rows):
+            self.groups[str(row["record_id"])].append(index)
+        self.hard_record_ids = {str(record_id) for record_id in hard_record_ids}
+        unknown = self.hard_record_ids.difference(self.groups)
+        if unknown:
+            raise ValueError(
+                "Difficulty contains record IDs absent from the Train dataset: "
+                + ", ".join(sorted(unknown))
+            )
+        self.hard_episodes_per_record = int(hard_episodes_per_record)
+        self.normal_episodes_per_record = int(normal_episodes_per_record)
+        self.seed = int(seed)
+        self.epoch = 0
+
+    def set_epoch(self, epoch: int) -> None:
+        self.epoch = int(epoch)
+
+    def __iter__(self) -> Iterator[int]:
+        rng = np.random.default_rng(self.seed + self.epoch)
+        indices: List[int] = []
+        for record_id in sorted(self.groups):
+            group = np.asarray(self.groups[record_id], dtype=np.int64)
+            count = (
+                self.hard_episodes_per_record
+                if record_id in self.hard_record_ids
+                else self.normal_episodes_per_record
+            )
+            selected = rng.choice(group, size=count, replace=len(group) < count)
+            indices.extend(int(value) for value in selected)
+        rng.shuffle(indices)
+        return iter(indices)
+
+    def __len__(self) -> int:
+        hard_count = len(self.hard_record_ids)
+        normal_count = len(self.groups) - hard_count
+        return (
+            hard_count * self.hard_episodes_per_record
+            + normal_count * self.normal_episodes_per_record
+        )
+
+
 def feature_statistics(rows: Iterable[Mapping[str, Any]]) -> Dict[str, np.ndarray]:
     current: List[np.ndarray] = []
     geometry: List[np.ndarray] = []

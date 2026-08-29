@@ -1,45 +1,45 @@
 # Current Task
 
-## Status
-
-Repository simplified for research-first development.
-
 ## Current experiment
 
-`EXP001 — utility-gap-aware ranking`
+EXP002 — hard-record-aware sampling
 
-Status: **PLANNED**; human review is required before running it.
+Status: **PLANNED**; human review is required before training.
 
 ## Goal
 
-Test whether the gap-aware ranking term reduces harmful large-gap Val regret.
+Test whether Train-only difficult motion records are underrepresented during
+Stage C training.
 
-## Single change
+## Evidence
 
-Add `L_gap` to the existing Set Ranker loss. No architecture or input change.
+The frozen EXP001 Val analysis found that the worst 10% of motion records
+accounted for 37.43% of catastrophic failures (approximately 3.74×
+concentration). A frozen Stage C-v0 Train inference identified 118 hard records
+among 589.
+
+## Single Change
+
+Replace record-balanced sampling with a hard-record-aware sampler. Hard records
+sample 32 Episodes/epoch; normal records sample 12. The base loss is restored
+with `lambda_gap=0`.
 
 ## Frozen
 
-Stage A/B/C-v0 artifacts, features, ST-GCN, Set Ranker architecture, sampler,
-candidate protocol and record split.
+Architecture, features, Stage A/B/C-v0 artifacts, loss, optimizer, scheduler,
+split, ST-GCN, candidate protocol, decision rule and metrics.
 
-## Parameters
+## Primary
 
-`lambda_gap=1.0`, `tau_gap=1.0`, `max_gap_weight=10.0`; seed 42; 100 epochs;
-batch size 128; AdamW learning rate 0.001 and weight decay 0.0001.
+Val P90 regret; target at least 5% relative reduction from 5.6078176767.
 
-## Val baseline
+## Next
 
-Val Accuracy 0.6491; Macro-F1 0.5980; mean regret 1.4505; p90 regret 5.6078;
-positive headroom capture 0.7780; large-gap mean regret 2.4493; C2 rate 0.3174.
-
-## Next action
-
-Human review, then run `experiments/stage_c_v1/EXP001_gap_aware_ranking/run.sh`.
+Human review before training.
 
 ## Do not
 
+- run EXP002;
 - run Test;
-- change frozen methods or data;
-- create EXP002;
-- start another experiment automatically.
+- change geometry or loss;
+- create EXP003.

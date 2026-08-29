@@ -47,9 +47,9 @@ Failure analysis found C2 wrong-candidate errors and long-tail hard records;
 body-orientation evidence was weak/inconclusive. These are diagnostics, not a
 reason to alter the frozen protocol.
 
-## Current experiment
+## Current experiments
 
-`EXP001_gap_aware_ranking` is **PLANNED**. Its single proposed change is a
+`EXP001_gap_aware_ranking` is **REJECTED**. Its single proposed change was a
 stay-inclusive utility-gap-weighted pairwise ranking term:
 
 ```text
@@ -58,16 +58,20 @@ lambda_gap=1.0, tau_gap=1.0, max_gap_weight=10.0
 
 Its compact baseline is in
 `experiments/stage_c_v1/EXP001_gap_aware_ranking/baseline.json`. The experiment
-has not started; no training, data regeneration or Test evaluation is pending.
+Val-only evaluation completed on commit `5b57417`; no Test evaluation was used.
+
+`EXP002_hard_record_sampling` is **PLANNED**. Its single proposed change is a
+Train-only hard-record-aware sampler using the frozen Stage C-v0 difficulty
+ranking. The difficulty file contains 118 hard and 471 normal Train records;
+no EXP002 training has started.
 
 ## Research queue
 
-1. gap-aware ranking (EXP001, pending human approval);
-2. hard-example sampling/weighting;
-3. relative geometry and candidate relations;
-4. richer current temporal representation;
-5. perceived body orientation only if later evidence supports it;
-6. Stage D Habitat closed loop after a final method is selected.
+1. EXP002 hard-record-aware sampling (pending human approval);
+2. relative geometry and candidate relations;
+3. richer current temporal representation;
+4. perceived body orientation only if later evidence supports it;
+5. Stage D Habitat closed loop after a final method is selected.
 
 ## Runtime roots
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-PLANNED
+REJECTED
 
 ## Question
 
@@ -60,4 +60,9 @@ Full predictions and machine-readable metrics remain under that experiment's
 
 ## Result
 
-Pending.
+EXP001 was evaluated on Val only. The primary large-gap mean regret improved by
+0.32%, below the preregistered 5% requirement. Mean/P90 regret and positive
+headroom capture did not improve, and C2 rate increased slightly. Macro-F1
+remained within the safety tolerance. See `analysis.md` for the complete
+scientific interpretation; full predictions and metrics remain in the external
+runtime artifact.

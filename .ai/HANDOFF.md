@@ -2,12 +2,9 @@
 
 Status: CLEAN
 
-Current task: repository simplification is complete; EXP001 remains PLANNED.
+EXP001 was evaluated on Val only and rejected: the large-gap regret reduction
+was 0.32%, below the preregistered 5% target.
 
-Latest state: the former experiment-management package was removed from the
-active source tree. Scientific Stage A/B/C methods and accepted runtime data
-were not changed. Historical records remain in `docs/archive/legacy/` and the
-compact EXP001 record is under `experiments/stage_c_v1/`.
-
-Next: obtain human approval before running EXP001. Use Train and Val only;
-do not run Test during method development.
+EXP002 hard-record-aware sampling is prepared and PLANNED. Train-only frozen
+v0 difficulty artifacts identify 118 hard and 471 normal records. Await human
+approval before training; do not run Test or create EXP003.

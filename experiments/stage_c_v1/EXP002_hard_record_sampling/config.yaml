@@ -1,0 +1,31 @@
+experiment:
+  id: EXP002
+  name: hard_record_sampling
+
+model:
+  type: set_ranker
+
+training:
+  seed: 42
+  epochs: 100
+  patience: 10
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+
+sampler:
+  type: hard_record_aware
+  hard_fraction: 0.20
+  hard_episodes_per_record: 32
+  normal_episodes_per_record: 12
+  difficulty_metric: mean_safe_oracle_regret
+  difficulty_source: train_only_stage_c_v0
+
+loss:
+  lambda_reg: 1.0
+  lambda_rank: 1.0
+  tau: 0.5
+  lambda_gap: 0.0
+
+evaluation:
+  split: val

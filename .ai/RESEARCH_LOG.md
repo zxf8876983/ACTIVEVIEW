@@ -22,3 +22,17 @@ Test evaluation has been run.
 2026-08-29: the engineering-heavy experiment lifecycle was simplified to
 lightweight README/config/run/result/analysis records. Accepted scientific
 artifacts remain unchanged.
+
+## EXP001 — Gap-Aware Ranking
+
+Decision: REJECT. Large-gap mean regret improved only 0.32%, far below the
+pre-registered 5%; mean/P90 regret, C2 and headroom did not improve. The tested
+utility-gap weighting is therefore insufficient to explain or fix the main
+Stage C failure mode.
+
+## EXP002 — Hard-Record-Aware Sampling
+
+Status: PLANNED. The frozen Stage C-v0 Train inference identified 118 hard
+records among 589 (top 20% by mean SafeOracle regret). Sampling is prepared
+with 32 Episodes/record for hard records and 12 for normal records, while
+keeping approximate epoch volume unchanged. No EXP002 training has run.
