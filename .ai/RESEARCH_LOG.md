@@ -52,4 +52,13 @@ evidence for independent follow-up experiments. Test was not used.
 2026-08-29: completed four independent Train→Val experiments against the frozen
 Stage C-v0 baseline: radius ablation, circular direction features, current-only
 Move/Stay gate, and explicit candidate relations. EXP004–EXP007 results are
-pending user review; no Test evaluation was run.
+recorded as rejected diagnostic directions; no Test evaluation was run.
+
+## Stage C-v2 architecture preparation
+
+2026-08-29: geometry, loss and sampling changes plateaued around 64–65% Val
+Accuracy. Prepared three independent, untrained architecture candidates:
+joint-aware frozen ST-GCN tokens (EXP008), candidate-conditioned joint
+attention (EXP009), and direct current-skeleton policy Transformer (EXP010).
+All use the frozen Stage C-v0 utility protocol, Train→Val only, and remain
+PLANNED pending human review.

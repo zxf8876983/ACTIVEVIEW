@@ -1,0 +1,39 @@
+experiment:
+  id: EXP008
+  name: joint_aware_current
+  status: PLANNED
+
+model:
+  type: joint_aware_set_ranker
+  current_representation: frozen_stgcn_final_block_joint_tokens_mean_pool
+  joint_token_shape: [17, 256]
+  pooled_current_dim: 128
+  candidate_head: set_ranker_style
+
+training:
+  seed: 42
+  epochs: 100
+  patience: 10
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  episodes_per_record: 16
+
+sampler:
+  type: record_balanced
+
+loss:
+  lambda_reg: 1.0
+  lambda_rank: 1.0
+  tau: 0.5
+  lambda_gap: 0.0
+
+geometry:
+  source: frozen_stage_c_v0
+  candidate_geometry_dim: 11
+
+evaluation:
+  split: val
+  test_used: false
+  primary_accuracy_target: 0.6691027382569529
+  primary_mean_regret_target: 1.3779727850210138

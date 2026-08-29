@@ -1,0 +1,4 @@
+id,name,status,code_commit,val_macro_f1,val_mean_regret,val_p90_regret,decision,notes
+EXP008,joint_aware_current,PLANNED,,,,,PENDING,"Replace globally pooled current representation with frozen joint-aware tokens; no training yet"
+EXP009,candidate_conditioned_attention,PLANNED,,,,,PENDING,"Candidate geometry queries frozen joint tokens; no training yet"
+EXP010,skeleton_policy_transformer,PLANNED,,,,,PENDING,"Direct current skeleton policy encoder; no training yet"

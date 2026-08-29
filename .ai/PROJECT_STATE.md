@@ -69,13 +69,24 @@ P90/mean regret, headroom and C2 did not improve. Test was not used.
 not met. Its positive geometry trend and near-radius bias remain diagnostic
 evidence; no Test evaluation was run.
 
+## Stage C-v1 diagnostic experiments
+
+`EXP004_radius_ablation`, `EXP005_direction_geometry`, `EXP006_move_stay_decoupled`
+and `EXP007_candidate_relations` completed independent Train→Val runs. Their
+Val results did not meet the preregistered improvement target and are recorded
+as rejected diagnostic directions; no Test evaluation was used.
+
 ## Research queue
 
-1. `EXP004_radius_ablation` — COMPLETED, pending user review;
-2. `EXP005_direction_geometry` — COMPLETED, pending user review;
-3. `EXP006_move_stay_decoupled` — COMPLETED, pending user review;
-4. `EXP007_candidate_relations` — COMPLETED, pending user review;
-5. Stage D Habitat closed loop only after a final method is selected.
+Stage C-v2 is now prepared but not run. The next authorized candidates are:
+
+1. `EXP008_joint_aware_current` — PLANNED;
+2. `EXP009_candidate_conditioned_attention` — PLANNED;
+3. `EXP010_skeleton_policy_transformer` — PLANNED;
+4. Stage D Habitat closed loop only after a final method is selected.
+
+The v2 experiments test current representation and candidate-conditioned
+reasoning, not new losses, samplers, utility targets or perception data.
 
 ## Runtime roots
 

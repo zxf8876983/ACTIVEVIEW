@@ -2,7 +2,7 @@
 
 ## Status
 
-COMPLETED — PENDING USER REVIEW
+COMPLETED — REJECTED
 
 ## Question
 
