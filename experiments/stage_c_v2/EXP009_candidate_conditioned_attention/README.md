@@ -2,7 +2,7 @@
 
 ## Status
 
-PLANNED — code/config prepared; no training or evaluation has been run.
+COMPLETED — Train-to-Val run finished; pending human scientific review.
 
 ## Hypothesis
 
@@ -37,5 +37,16 @@ selection is Val Macro-F1. Test is not used.
 
 ## Run
 
-`run.sh` builds/loads the shared current-observation cache, trains on Train and
-evaluates Val only. It is not run during this preparation task.
+`run.sh` built/loaded the shared current-observation cache, trained on Train
+and evaluated Val only. Test was not used.
+
+## Val result
+
+Selected epoch: **22**. Accuracy 0.647530, Macro-F1 0.597071, mean regret
+1.502271, median regret 0.005624, P90 regret 5.819350, positive headroom
+capture 0.759083, and C2 rate 0.308572. Relative to the frozen v0 Val
+baseline, the deltas were Accuracy -0.001573, Macro-F1 -0.000971, mean regret
++0.051773, P90 regret +0.211532, headroom -0.018882, and C2 -0.008865.
+
+Runtime artifacts: `ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v2/EXP009_candidate_conditioned_attention/`.
+The body-yaw-canonicalized skeleton limitation above remains in force.

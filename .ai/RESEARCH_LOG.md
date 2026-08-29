@@ -57,8 +57,20 @@ recorded as rejected diagnostic directions; no Test evaluation was run.
 ## Stage C-v2 architecture preparation
 
 2026-08-29: geometry, loss and sampling changes plateaued around 64–65% Val
-Accuracy. Prepared three independent, untrained architecture candidates:
-joint-aware frozen ST-GCN tokens (EXP008), candidate-conditioned joint
-attention (EXP009), and direct current-skeleton policy Transformer (EXP010).
-All use the frozen Stage C-v0 utility protocol, Train→Val only, and remain
-PLANNED pending human review.
+Accuracy. Prepared three independent architecture candidates: joint-aware
+frozen ST-GCN tokens (EXP008), candidate-conditioned joint attention (EXP009),
+and direct current-skeleton policy Transformer (EXP010). Before execution, the
+following limitation was preregistered: the current skeleton representation is
+body-yaw canonicalized and therefore does not preserve explicit body-to-
+candidate directional alignment.
+
+## EXP008–EXP010 — Stage C-v2 Val runs
+
+2026-08-30: all three authorized experiments completed Train→Val using the
+shared cache built from frozen Stage A/B/C-v0 artifacts. No Test, Habitat, RGB,
+YOLO or VideoPose3D processing was performed. EXP008 achieved Accuracy 0.644813,
+Macro-F1 0.598766, mean regret 1.474656, P90 regret 5.633397, headroom 0.770660
+and C2 0.332952 (epoch 26). EXP009 achieved 0.647530, 0.597071, 1.502271,
+5.819350, 0.759083 and 0.308572 (epoch 22). EXP010 achieved 0.651677,
+0.598782, 1.458965, 5.660032, 0.784780 and 0.326875 (epoch 54). Results are
+pending human scientific review; no automatic acceptance decision has been made.

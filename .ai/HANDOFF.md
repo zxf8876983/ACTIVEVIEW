@@ -15,10 +15,17 @@ Val-only metrics and geometry-bias diagnostic remain in
 EXP004–EXP007 completed independent Train→Val runs against frozen Stage C-v0
 and are recorded as rejected diagnostic directions. No Test evaluation was run.
 
-Stage C-v2 preparation is complete in `experiments/stage_c_v2/`:
-EXP008 uses mean-pooled frozen ST-GCN joint tokens, EXP009 uses one
-candidate-conditioned cross-attention layer over those tokens, and EXP010
+Stage C-v2 EXP008–EXP010 completed authorized Train→Val runs in
+`experiments/stage_c_v2/`. EXP008 uses mean-pooled frozen ST-GCN joint tokens,
+EXP009 uses one candidate-conditioned cross-attention layer, and EXP010
 encodes the current `[3,30,17]` skeleton with a lightweight Transformer and
-candidate queries. Shared cache construction and Train→Val entry points are
-implemented but were not executed. No Stage A/B/C-v0 artifacts changed, and no
-training, Test, Habitat, YOLO or VideoPose3D run was started.
+candidate queries. Selected epochs were 26, 22 and 54. Runtime outputs are
+under `ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v2/`; compact results and
+comparisons are in the experiment READMEs and registry. No Test evaluation was
+performed. No Stage A/B/C-v0 artifacts changed, and no Habitat, YOLO or
+VideoPose3D rerun occurred.
+
+The limitation was preregistered before running: the current skeleton
+representation is body-yaw canonicalized and therefore does not preserve
+explicit body-to-candidate directional alignment. All three experiments remain
+pending human scientific review.

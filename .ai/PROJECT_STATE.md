@@ -1,6 +1,6 @@
 # ACTIVEVIEW Scientific State
 
-Updated: 2026-08-29
+Updated: 2026-08-30
 
 ## Research goal
 
@@ -78,12 +78,29 @@ as rejected diagnostic directions; no Test evaluation was used.
 
 ## Research queue
 
-Stage C-v2 is now prepared but not run. The next authorized candidates are:
+Stage C-v2 experiments completed their authorized Train-to-Val runs on the
+shared frozen-cache protocol. Test remains locked and no Test evaluation was
+performed. The current skeleton representation is body-yaw canonicalized and
+therefore does not preserve explicit body-to-candidate directional alignment;
+this limitation was preregistered before the runs.
 
-1. `EXP008_joint_aware_current` — PLANNED;
-2. `EXP009_candidate_conditioned_attention` — PLANNED;
-3. `EXP010_skeleton_policy_transformer` — PLANNED;
-4. Stage D Habitat closed loop only after a final method is selected.
+Val results are recorded in `experiments/stage_c_v2/` and the corresponding
+runtime roots under `ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v2/`:
+
+| Experiment | Accuracy | Macro-F1 | Mean regret | P90 regret | Headroom | C2 |
+|---|---:|---:|---:|---:|---:|---:|
+| EXP008 | 0.644813 | 0.598766 | 1.474656 | 5.633397 | 0.770660 | 0.332952 |
+| EXP009 | 0.647530 | 0.597071 | 1.502271 | 5.819350 | 0.759083 | 0.308572 |
+| EXP010 | 0.651677 | 0.598782 | 1.458965 | 5.660032 | 0.784780 | 0.326875 |
+
+All three remain pending human scientific review; no automatic v2 acceptance
+decision has been made.
+
+The next authorized candidates are:
+
+1. human review of the EXP008–EXP010 Val results;
+2. any separately authorized follow-up experiment;
+3. Stage D Habitat closed loop only after a final method is selected.
 
 The v2 experiments test current representation and candidate-conditioned
 reasoning, not new losses, samplers, utility targets or perception data.
