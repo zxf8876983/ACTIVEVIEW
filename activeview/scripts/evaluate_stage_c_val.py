@@ -79,20 +79,20 @@ def _comparison(
 ) -> Dict[str, Any]:
     baseline_large = baseline["large_gap"]
     current_large = analysis["candidate_set_difficulty"]["large"]
-    baseline_c2 = baseline["failure_taxonomy"]["C2_wrong_high_utility_loss"]["ratio"]
+    baseline_c2 = baseline["c2_wrong_high_utility_loss_rate"]
     current_c2 = analysis["failure_taxonomy"]["C2_wrong_high_utility_loss"]["ratio"]
     baseline_mean = float(baseline_large["mean_regret"])
     current_mean = float(current_large["regret"]["mean"])
     mean_improvement = (baseline_mean - current_mean) / abs(baseline_mean) if baseline_mean else 0.0
     macro_f1_delta = (
         float(metrics["recognition"]["StageC"]["macro_f1"])
-        - float(baseline["recognition"]["StageC"]["macro_f1"])
+        - float(baseline["macro_f1"])
     )
     p90_improved = float(metrics["decision_regret"]["p90"]) < float(
-        baseline["decision_regret"]["p90"]
+        baseline["regret"]["p90"]
     )
     headroom_improved = float(metrics["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]) > float(
-        baseline["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]
+        baseline["headroom_capture"]
     )
     c2_improved = current_c2 < baseline_c2
     large_gap_improved = mean_improvement >= 0.05
@@ -101,10 +101,12 @@ def _comparison(
         "baseline_large_gap_mean_regret": baseline_mean,
         "experiment_large_gap_mean_regret": current_mean,
         "large_gap_mean_regret_relative_improvement": mean_improvement,
+        "experiment_c2_rate": current_c2,
+        "experiment_headroom_capture": float(metrics["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]),
         "c2_rate_delta": current_c2 - baseline_c2,
-        "p90_regret_delta": float(metrics["decision_regret"]["p90"]) - float(baseline["decision_regret"]["p90"]),
-        "headroom_capture_delta": float(metrics["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]) - float(baseline["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]),
-        "val_accuracy_delta": float(metrics["recognition"]["StageC"]["accuracy"]) - float(baseline["recognition"]["StageC"]["accuracy"]),
+        "p90_regret_delta": float(metrics["decision_regret"]["p90"]) - float(baseline["regret"]["p90"]),
+        "headroom_capture_delta": float(metrics["positive_headroom_capture"]["aggregate_positive_clipped_ratio"]) - float(baseline["headroom_capture"]),
+        "val_accuracy_delta": float(metrics["recognition"]["StageC"]["accuracy"]) - float(baseline["accuracy"]),
         "val_macro_f1_delta": macro_f1_delta,
         "acceptance_checks": {
             "large_gap_mean_regret_improved_5pct": large_gap_improved,
@@ -121,16 +123,17 @@ def evaluate_val_experiment(
     stage_b_root: Path,
     dataset_root: Path,
     checkpoint: Path,
-    baseline_dir: Path,
+    baseline_path: Path,
     output_dir: Path,
     model_type: str,
     device_name: str,
     batch_size: int,
+    experiment_id: str = "",
 ) -> Dict[str, Any]:
     """Evaluate one frozen checkpoint on Val and compare with the frozen baseline."""
     if not checkpoint.is_file():
         raise FileNotFoundError(checkpoint)
-    baseline = _load(baseline_dir / "baseline_val_metrics.json")
+    baseline = _load(baseline_path)
     feature_summary = _load(feature_root / "stage_c_feature_summary.json")
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
     device = torch.device(
@@ -176,11 +179,11 @@ def evaluate_val_experiment(
     }
     comparison = _comparison(baseline, metrics, analysis)
     output_dir.mkdir(parents=True, exist_ok=True)
-    prediction_path = output_dir / "predictions" / f"{model_type}_val.jsonl"
+    prediction_path = output_dir / "val_predictions.jsonl"
     _write_jsonl(prediction_path, predictions)
     metrics_payload = {
         "protocol": "ACTIVEVIEW v11.5 Stage C-v1 Val-only evaluation",
-        "experiment_id": "EXP001",
+        "experiment_id": experiment_id,
         "model_type": model_type,
         "split": "val",
         "test_used": False,
@@ -192,15 +195,16 @@ def evaluate_val_experiment(
         "prediction_file": str(prediction_path.resolve()),
         "prediction_file_sha256": file_sha256(prediction_path),
     }
-    _write_json(output_dir / "val_metrics.json", metrics_payload)
     analysis["comparison_to_frozen_v0_val"] = comparison
     analysis["artifact_provenance"] = {
-        "baseline_val_metrics_sha256": file_sha256(baseline_dir / "baseline_val_metrics.json"),
-        "baseline_val_analysis_sha256": file_sha256(baseline_dir / "baseline_val_analysis.json"),
+        "baseline_sha256": file_sha256(baseline_path),
         "checkpoint_sha256": file_sha256(checkpoint),
         "feature_summary_sha256": file_sha256(feature_root / "stage_c_feature_summary.json"),
     }
-    _write_json(output_dir / "analysis.json", analysis)
+    _write_json(output_dir / "val_analysis_full.json", analysis)
+    # Keep the full machine-readable metrics under the runtime output root.
+    # A caller may copy a compact summary into an experiment note if desired.
+    _write_json(output_dir / "val_metrics_full.json", metrics_payload)
     return {
         "output_dir": str(output_dir.resolve()),
         "split": "val",
@@ -218,9 +222,10 @@ def main() -> None:
     parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_b")
     parser.add_argument("--dataset-root", type=Path, default=data_root / "datasets/policy_v11_5")
     parser.add_argument("--checkpoint", type=Path, required=True)
-    parser.add_argument("--baseline-dir", type=Path, required=True)
+    parser.add_argument("--baseline", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--model-type", choices=("set_ranker", "pairwise_mlp"), default="set_ranker")
+    parser.add_argument("--experiment-id", default="")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--batch-size", type=int, default=256)
     args = parser.parse_args()
@@ -229,13 +234,27 @@ def main() -> None:
         stage_b_root=args.stage_b_root,
         dataset_root=args.dataset_root,
         checkpoint=args.checkpoint,
-        baseline_dir=args.baseline_dir,
+        baseline_path=args.baseline,
         output_dir=args.output_dir,
+        experiment_id=args.experiment_id,
         model_type=args.model_type,
         device_name=args.device,
         batch_size=args.batch_size,
     )
-    print(json.dumps(result, indent=2, ensure_ascii=False))
+    metrics = result["metrics"]
+    comparison = result["comparison_to_frozen_v0_val"]
+    compact = {
+        "accuracy": metrics["recognition"]["StageC"]["accuracy"],
+        "macro_f1": metrics["recognition"]["StageC"]["macro_f1"],
+        "mean_regret": metrics["decision_regret"]["mean"],
+        "p90_regret": metrics["decision_regret"]["p90"],
+        "headroom": comparison["experiment_headroom_capture"],
+        "c2_rate": comparison["experiment_c2_rate"],
+        "large_gap_mean_regret": comparison["experiment_large_gap_mean_regret"],
+        "large_gap_relative_improvement": comparison["large_gap_mean_regret_relative_improvement"],
+        "test_used": False,
+    }
+    print(json.dumps(compact, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

@@ -1,15 +1,14 @@
-from activeview.scripts.evaluate_research_experiment import _comparison
+from activeview.scripts.evaluate_stage_c_val import _comparison
 
 
 def _baseline():
     return {
         "large_gap": {"mean_regret": 10.0},
-        "failure_taxonomy": {
-            "C2_wrong_high_utility_loss": {"ratio": 0.4},
-        },
-        "recognition": {"StageC": {"accuracy": 0.65, "macro_f1": 0.60}},
-        "decision_regret": {"p90": 8.0},
-        "positive_headroom_capture": {"aggregate_positive_clipped_ratio": 0.70},
+        "c2_wrong_high_utility_loss_rate": 0.4,
+        "accuracy": 0.65,
+        "macro_f1": 0.60,
+        "regret": {"p90": 8.0},
+        "headroom_capture": 0.70,
     }
 
 

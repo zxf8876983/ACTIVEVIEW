@@ -158,7 +158,7 @@ def main() -> None:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=REPO_ROOT / "experiments/stage_c_v1/EXP001_gap_aware_ranking",
+        default=data_root / "experiments/stage_c_v1/EXP001_gap_aware_ranking/reference",
     )
     args = parser.parse_args()
     result = freeze_val_baseline(

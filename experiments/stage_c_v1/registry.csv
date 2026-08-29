@@ -1,0 +1,2 @@
+id,name,status,code_commit,val_macro_f1,val_mean_regret,val_p90_regret,large_gap_mean_regret,decision,notes
+EXP001,gap_aware_ranking,PLANNED,,,,,PENDING,"Utility-gap-aware ranking; run only after human review"

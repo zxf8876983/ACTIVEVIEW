@@ -1,41 +1,25 @@
 experiment:
   id: EXP001
   name: gap_aware_ranking
-  stage: stage_c_v1
-baseline:
-  model: set_ranker
-  checkpoint: checkpoints/stage_c/set_ranker_best.pth
-change:
-  category: loss
-  description: utility-gap-aware pairwise ranking
-frozen:
-  stage_a: true
-  stage_b: true
-  stage_c_features: true
-  stgcn_checkpoint: true
-  record_split: true
-  candidate_protocol: true
+
+model:
+  type: set_ranker
+
 training:
   seed: 42
   epochs: 100
   batch_size: 128
   learning_rate: 0.001
-optimizer:
-  name: AdamW
   weight_decay: 0.0001
-sampler:
-  mode: record_balanced
   episodes_per_record: 16
+
 loss:
-  gap_aware:
-    enabled: true
-    lambda_gap: 1.0
-    tau_gap: 1.0
-    max_weight: 10.0
+  lambda_reg: 1.0
+  lambda_rank: 1.0
+  tau: 0.5
+  lambda_gap: 1.0
+  tau_gap: 1.0
+  max_gap_weight: 10.0
+
 evaluation:
-  train: true
-  val: true
-  test: false
-protocol:
-  test_locked: true
-  test_authorized: false
+  split: val

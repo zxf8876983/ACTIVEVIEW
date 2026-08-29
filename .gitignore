@@ -28,5 +28,5 @@ datasets/
 *.pth
 *.ckpt
 *.npz
-tools/videopose3d/images/
-
+activeview/perception/videopose3d/images/
+.claude/logs/

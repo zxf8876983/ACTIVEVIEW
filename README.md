@@ -1,37 +1,38 @@
 # ACTIVEVIEW v11.5
 
-ACTIVEVIEW 研究机器人在 HM3D 室内环境中主动选择观察视角，以降低人体姿态估计不确定性并提升老人动作感知。
+ACTIVEVIEW studies active viewpoint selection for robust indoor human action
+recognition, with an emphasis on elderly daily activities under occlusion and
+limited robot viewpoints.
 
-## 当前唯一实验协议
+## Canonical scientific protocol
 
-- 动作标签：BABEL 官方筛选的 14 类 + `lie` + `stumble`，共 16 类；不使用 `fall`。
-- 数据划分：BABEL `train.json` → Train，`val.json` → Val；单标签、源区间 `>30` 帧；官方类别上限为 Train 400、Val 100。
-- 视觉链路：
+- 16 selected BABEL action classes (`lie` and `stumble` included; `fall`
+  excluded);
+- record split `train/val/test = 589/197/194`;
+- RGB-only `256×256` observations, uniformly sampled to 30 frames;
+- `male_0` Habitat rendering → YOLO26n-Pose → VideoPose3D → H36M-17
+  normalization → frozen ST-GCN;
+- 21 HM3D-train scenes, four furniture regions, and 32 candidate viewpoints;
+- candidate decisions never use future RGB/depth or future perception outputs.
 
-  `AMASS/SMPL → male_0 Habitat 纯色场景 → RGB → Ultralytics YOLO26n-Pose → VideoPose3D → root/scale/yaw-only normalization → ST-GCN`
+See [`docs/V11_5_SELECTED16_DATASET_PROTOCOL.md`](docs/V11_5_SELECTED16_DATASET_PROTOCOL.md)
+for the protocol and [`docs/V11_5_DEVELOPMENT.md`](docs/V11_5_DEVELOPMENT.md)
+for implementation and data history.
 
-- 输入：RGB-only，`256×256`，均匀采样 30 帧；ST-GCN 冻结后用于主动视角评估。
-- 主动视角离线评估：HM3D-train 目标场景中的卧室、客厅、厨房和 dining area 四个家具语义区域，每个动作 32 个候选视点；只保存骨架和元数据，不保存 RGB/Depth。旧场景 `00800-TEEsavR23oF` 仅作历史兼容，不属于当前评估集。
-- 策略对比包含 Fixed、Random、Nearest；`Oracle` 为同一候选视点池上的事后 GT-correctness 理论上限，不参与实际决策。
+## Runtime data
 
-完整协议见 [`docs/V11_5_SELECTED16_DATASET_PROTOCOL.md`](docs/V11_5_SELECTED16_DATASET_PROTOCOL.md)，代码变更、数据字段和评估流程见 [`docs/V11_5_DEVELOPMENT.md`](docs/V11_5_DEVELOPMENT.md)。
+Runtime data lives under `ACTIVEVIEW_DATA_ROOT` (default:
+`../../data/ActiveView/`) and is not committed to Git. Habitat scenes and
+semantic annotations are read only from `ACTIVEVIEW_HABITAT_DATA_ROOT` (the
+configured `robot/DATA/` root); no other disk is scanned.
 
-## 运行时数据
+- ST-GCN data/checkpoint: `datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/` and `checkpoints/`;
+- formal offline strategy data: `datasets/offline/hm3d-train/`;
+- accepted Stage A/B/C runtime artifacts: `datasets/policy_v11_5/`;
+- historical reference-only minival data: `datasets/offline/hm3d-minival/00800-TEEsavR23oF/`;
+- baseline strategy results: `results/semantic_region_offline_baselines.json`.
 
-运行时根目录为 `/home/zxf/WorkSpace/code/data/ActiveView/`，也可通过 `ACTIVEVIEW_DATA_ROOT` 覆盖。原始 AMASS/BABEL 不放入 Git。
-
-Habitat 场景和语义文件只从 `/home/zxf/WorkSpace/code/code/robot/DATA/` 读取，也可通过
-`ACTIVEVIEW_HABITAT_DATA_ROOT` 覆盖；禁止为了寻找场景扫描其它磁盘。`male_0` 模型已复制到
-`data/ActiveView/assets/habitat_humanoids/male_0/`，运行时不再依赖 Habitat-Lab 源目录。
-
-- 训练/验证估计骨架：[stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed](../../data/ActiveView/datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed)
-- 冻结 ST-GCN：[stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled](../../data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled)
-- 正式离线策略数据（HM3D-train）：[`offline/hm3d-train/`](../../data/ActiveView/datasets/offline/hm3d-train)，包含当前 21 个正式评估场景。
-- Stage A/B/C runtime artifacts：[`datasets/policy_v11_5/`](../../data/ActiveView/datasets/policy_v11_5)，包括 Episodes、utility labels、features 和验证报告。
-- 历史 reference-only 离线数据（不属于当前评估集）：[`offline/hm3d-minival/00800-TEEsavR23oF`](../../data/ActiveView/datasets/offline/hm3d-minival/00800-TEEsavR23oF)。
-- 基线结果：[semantic_region_offline_baselines.json](../../data/ActiveView/results/semantic_region_offline_baselines.json)
-
-## 主要入口
+## Main commands
 
 ```bash
 python -m activeview.scripts.prepare_selected16_manifests
@@ -43,38 +44,21 @@ python -m activeview.scripts.generate_semantic_region_offline_views --workers 4
 python -m activeview.scripts.evaluate_semantic_region_offline
 ```
 
-`activeview/` 是唯一正式源码包；v1–v10 目录已从当前工作树移除，历史报告仅作只读科研记录。
+## Research experiments
 
-## Controlled research experiments
-
-Phase 0 infrastructure is under `activeview/research/` and
-`experiments/stage_c_v1/`. Each scientific hypothesis gets one immutable
-`EXPxxx` directory and one primary change. The standard lifecycle is:
-
-```text
-create (PLANNED) → human review → start (RUNNING) → Train/Val → validate
-→ finalize (COMPLETED) → optional human FINAL_FROZEN authorization
-```
-
-The registry is intentionally empty until the next experiment is approved;
-Phase 0 does not create `EXP001`. The lifecycle is
-`create (PLANNED) → start (RUNNING) → finalize (COMPLETED) →
-freeze_final_candidate (FINAL_FROZEN) → commit → authorize_final_test`.
-The final authorization is written only under the external runtime directory,
-after a clean working tree check, and records the post-freeze Git commit and
-configuration hash. Test evaluation is fail-closed until that artifact
-matches the canonical nested manifest. Failed and negative results are
-retained, and the next experiment is never started automatically.
+Each Stage C-v1 experiment is a small research record under
+`experiments/stage_c_v1/`, containing a README, executable configuration and
+run script. Large checkpoints, predictions and logs stay under
+`ACTIVEVIEW_DATA_ROOT/experiments/`. Development uses Train and Val only;
+Test is run only after the final method is explicitly selected.
 
 ## Repository layout
 
-- `activeview/`: 唯一正式 Python 源码和 CLI。
-- `tests/`: 仓库级 unit/integration tests。
-- `docs/`: 协议、开发记录和精选科研结果。
-- `experiments/`: 后续实验定义与小型结果（大型运行时产物不入库）。
-- `.ai/`: AI/人类研究状态与交接记录。
-- `ACTIVEVIEW_DATA_ROOT`: 外部 datasets、checkpoints、缓存和运行时结果根目录。
+- `activeview/`: sole production and research source package;
+- `tests/`: scientific unit and integration tests;
+- `docs/`: active protocol/development documents and historical archive;
+- `.ai/`: concise AI/human research state;
+- `experiments/`: lightweight experiment records.
 
-Directory-versioned source development has ended. Future model iterations are
-tracked with Git commits/branches, experiment IDs, configs and provenance
-manifests rather than copied source trees.
+Historical v1–v10 documents are archived under `docs/archive/legacy/` and are
+not part of the default agent context.

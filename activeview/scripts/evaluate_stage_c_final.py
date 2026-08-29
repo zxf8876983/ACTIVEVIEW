@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Evaluate a trained Stage C predictor with frozen Stage B diagnostics."""
+"""Final Val/Test evaluation for a frozen Stage C method.
+
+Do not use this script during Stage C-v1 method development. Test evaluation
+is reserved for the explicitly selected final method.
+"""
 
 from __future__ import annotations
 

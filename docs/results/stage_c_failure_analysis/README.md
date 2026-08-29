@@ -14,10 +14,12 @@ generation was run.
 ## Files
 
 - `stage_c_failure_report.md`: human-readable scientific report.
-- `stage_c_failure_summary.json`: complete machine-readable statistics.
-- `episode_failure_table.csv`: one row per Test Episode.
 - `record_failure_table.csv`: one row per independent motion record.
 - `figures/`: five diagnostic plots used by the report.
+
+The complete machine-readable summary and per-Episode table are retained in
+the configured runtime directory `datasets/policy_v11_5/stage_c/failure_analysis/`
+and are intentionally not tracked in Git.
 
 The reproducible entry point is
 `activeview/scripts/analyze_stage_c_failures.py`. Its default output is the

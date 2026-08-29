@@ -1,166 +1,105 @@
-# AGENTS.md
+# ACTIVEVIEW Agent Guide
 
-> **ACTIVEVIEW AI Coding Agent Entrance & Operational Protocol**  
-> 本文件是所有代码模型（Codex, DeepSeek, Claude Code, Gemini 等）进入 `ACTIVEVIEW` 仓库时的第一入口与操作规范。
-
----
-
-## 1. 强制阅读顺序 (Mandatory Reading Order)
-
-新代码模型接手仓库时，**严禁从 v1 开始逐目录全量扫描历史代码**，请严格按照以下顺序加载上下文：
+ACTIVEVIEW is a research codebase for active viewpoint selection in indoor
+elderly action recognition. The repository favors scientific correctness,
+reproducibility, readability and fast iteration over production-platform
+engineering:
 
 ```text
-1. AGENTS.md (本文件: 总体入口与科研约束)
-2. .ai/PROJECT_STATE.md (项目短期状态记忆: 当前阶段、活跃版本、已实现能力与未决问题)
-3. .ai/RESEARCH_PLAN.md (长期科研路线与冻结基础)
-4. .ai/RESEARCH_LOG.md (append-only 科研历史)
-5. .ai/REJECTED_IDEAS.md (deferred/rejected 方向)
-6. .ai/CURRENT_TASK.md (当前任务定义: 检查是否有待执行或持久化的具体任务)
-7. .ai/HANDOFF.md (跨模型交接记录: 检查是否有前任 Agent 留下的未完成交接)
-8. 当前活跃版本对应的 Version Specification MD (由 .ai/PROJECT_STATE.md 指定)
-9. 与当前任务直接相关的局部代码文件
+scientific correctness > reproducibility > readability > iteration speed > engineering robustness
 ```
 
-> **Token 节约原则**：仅在需要明确追溯某项算法或历史设计演进缘由时，才按需查阅旧版本文档与历史目录。
+## Reading order
 
----
+At the start of a task read:
 
-## 2. 当前活跃版本与目录结构 (Active Version & Repository Map)
+1. `AGENTS.md`;
+2. `.ai/PROJECT_STATE.md`;
+3. `.ai/CURRENT_TASK.md`;
+4. the relevant experiment `README.md`/`config.yaml` when an experiment is involved;
+5. only the directly relevant source files.
 
-活跃版本与当前规范由 `.ai/PROJECT_STATE.md` 动态声明。代码模型每次接手任务时，必须以 `PROJECT_STATE.md` 指向的 active version 为准，严禁在代码或提示词中写死特定版本号。
+Read `.ai/RESEARCH_LOG.md` when historical experiment context is needed and
+`.ai/HANDOFF.md` only when resuming an interrupted task. Historical documents
+under `docs/archive/` are not default context.
 
-| 目录 / 文件 | 状态 | 说明 |
-|---|---|---|
-| **`activeview/`** | **当前活跃实现 (Active)** | v11.5 RGB-only、YOLO26n-Pose、VideoPose3D、ST-GCN 与语义区域主动视角评估 |
-| **`docs/V11_5_SELECTED16_DATASET_PROTOCOL.md`** | **当前规范文档 (Active Spec)** | v11.5 16 类数据划分、姿态链路和评估协议 |
-| **`docs/V11_5_DEVELOPMENT.md`** | **当前开发文档 (Active Development Log)** | v11.5 代码模块、数据生成、离线视点 schema、策略评估和变更记录 |
-| 历史 v1–v10 源码树 | 历史版本 (Historical) | 已从当前工作树移除；仅通过 Git 历史恢复 |
-| `EA_AVS_MVP01` ~ `MVP50_Document.md` | 历史规范文档 | 只读历史参考 |
-| `.ai/` | 上下文基础设施 | `PROJECT_STATE.md`, `CURRENT_TASK.md`, `HANDOFF.md` |
+## Source and data boundaries
 
----
+- `activeview/` is the sole production and research source package. Never
+  create copied version trees such as `ea_avs_mvp_v12/` or `activeview_v2/`.
+- Runtime datasets, checkpoints, RGB/depth, skeletons, caches and predictions
+  belong under `ACTIVEVIEW_DATA_ROOT` (default `../../data/ActiveView/`), not Git.
+- Habitat assets are read from `ACTIVEVIEW_HABITAT_DATA_ROOT` (the configured
+  `robot/DATA/` directory). Never scan undeclared disks, especially
+  `/home/zxf/MG08/`.
+- Resolve paths through `activeview/core/paths.py`; do not hardcode new machine
+  paths or create repository symlinks to runtime data.
 
-## 3. 源码仓库与运行时数据物理边界 (Repository & Runtime Data Boundary)
+## Frozen v11.5 scientific invariants
 
-为保证 Git 代码仓库轻量化并规范大规模实验数据的存储，ACTIVEVIEW 采用源码与运行时数据物理隔离机制：
+Do not change these definitions without explicit user authorization:
 
-- **Git 源码仓库根目录 (Source Repository Root)**：
-  `<workspace>/code/ActiveView/` (例如本机开发路径 `/home/zxf/WorkSpace/code/code/ActiveView/`)
-  用于保存 Python 源码、配置文件（YAML/JSON）、单元测试、脚本、Version Specifications、科研文档与必要的小型 metadata。
-- **默认运行时数据根目录 (Default Runtime Data Root)**：
-  `../../data/ActiveView/` (相对于源码仓库根目录解析，例如本机对应 `/home/zxf/WorkSpace/code/data/ActiveView/`)
-  用于保存数据集（`datasets/`）、外部资产（`assets/`）、缓存（`cache/`）、实验运行输出（`runs/`）、模型权重（`checkpoints/`）、批量可视化（`visualizations/`）、日志（`logs/`）与临时文件（`tmp/`）。
-- **固定 Habitat 数据根目录 (Habitat Data Root)**：
-  `/home/zxf/WorkSpace/code/code/robot/DATA/`（可用 `ACTIVEVIEW_HABITAT_DATA_ROOT` 覆盖）。v11 的场景和语义文件只允许从该目录读取，禁止为寻找场景扫描其它磁盘；当前 `male_0` 模型副本位于运行时根目录的 `assets/habitat_humanoids/male_0/`。
-- **统一环境变量覆盖 (Optional Override)**：
-  可通过 `ACTIVEVIEW_DATA_ROOT` 显式指定绝对路径覆盖默认相对位置。
-  当前代码与工具统一通过 `activeview/core/paths.py`、`ACTIVEVIEW_DATA_ROOT` 和 `ACTIVEVIEW_HABITAT_DATA_ROOT` 解析路径，严禁扫描未声明的外部目录。
+- RGB-only 256×256 → YOLO26n-Pose → VideoPose3D → H36M-17 normalization →
+  frozen ST-GCN;
+- 16 selected action classes, 21 HM3D-train scenes, four semantic regions and
+  32 candidate viewpoints;
+- record split `train/val/test = 589/197/194`;
+- estimated skeletons only; no AMASS/SMPL GT joints to ST-GCN;
+- no future candidate RGB/depth, labels or post-hoc predictions in a decision;
+- accepted Stage A/B/C-v0 artifacts, feature schema and utility definitions;
+- candidate pool, baseline definitions, metrics and randomization protocol.
 
-### 唯一生产源码包
+During Stage C-v1 development use Train and Val only. Do not use Test for
+architecture, loss, sampler or hyperparameter selection. Run final Test only
+when the user explicitly states that the final method is frozen and requests
+the evaluation.
 
-`activeview/` 是唯一正式的生产与科研源码包。禁止再创建
-`ea_avs_mvp_v12/`、`activeview_v2/` 等版本复制目录；算法迭代必须通过
-Git commit/branch、experiment ID、配置和运行时 checkpoint provenance 管理。
+## Research-first coding principles
 
-### 长期数据边界规则：
-1. **禁止大文件入库**：Coding Agent 严禁将大型 runtime artifacts（RGB/Depth/Semantic 大图、视频、npy/npz 中间数组、pt/pth/ckpt 权重等）写入 Git 仓库；
-2. **外部数据目录归属**：所有大规模实验产物必须写入数据根目录；
-3. **禁止软链接混淆**：不要在 Git 仓库内部创建指向外部数据目录的符号链接；
-4. **统一相对/环境变量解析**：涉及数据集、缓存、输出路径时，统一通过 `activeview/core/paths.py` 与 `ACTIVEVIEW_DATA_ROOT` 环境变量解析，严禁依赖固定机器路径；
-5. **历史版本保护**：历史版本实现只读；当前清理和开发以 v11.5 为准。
+- Prefer a direct function or CLI argument when a feature serves one
+  experiment. Do not add managers, services, registries, state machines,
+  generic plugin systems or provenance/authorization frameworks unless the
+  user explicitly requests them.
+- Make one core scientific change per experiment. Keep the experiment record
+  under `experiments/stage_c_v1/<EXP>/` with a README, config, run script,
+  result and analysis. Keep large runtime artifacts outside Git.
+- Preserve negative results. Never silently change a frozen protocol to make a
+  metric look better, and never overwrite an earlier experiment.
+- Comments and identifiers use English; explanations to the user use Chinese.
+- Keep modules focused (prefer 200–400 lines; avoid files over 800 lines), add
+  type hints, avoid mutable defaults and bare `except`, and follow standard
+  import ordering.
 
----
+## Validation
 
-## 4. 科研开发核心规则 (Scientific Development Rules)
+Run only checks relevant to the change and report commands honestly:
 
-### 4.1 最小修改原则 (Minimal Modification Principle)
-1. **理解先行**：先阅读相关代码与规范，再进行最小范围修改。
-2. **拒绝顺手重构**：不做未经明确要求的目录移动、架构重写或“代码整洁度”整理。
-3. **唯一主线约束**：当前仓库已经完成唯一主线收束。所有正式科研与算法开发必须在 `activeview/` 唯一源码包内进行，禁止复制源码树创建新的版本目录。任何跨模块架构重构仍必须获得显式科研授权，不得以“代码整理”为由自行重构。
+```bash
+python -m compileall -q activeview tests
+python -m pytest -q tests/unit tests/integration
+```
 
-### 4.2 科研边界与实验协议保护 (Research Boundary Protection)
-未经明确科研授权，**严禁自行变更以下任何科学定义与实验协议**：
-* 科研问题定义（单步/One-shot 主动观察位姿重选择）；
-* 数据划分与场景配置；
-* 评价指标计算公式（Visibility, Action Part Score, Orientation Score, Occlusion Rate 等）；
-* **Pred / True 信息边界**；
-* **Oracle 离线上界定义**（必须在同 aperture / 同 depth / 同 candidate pool 口径下比较）；
-* 候选点采样空间（radii, angles, candidate aperture）；
-* Baseline 策略定义（Fixed, Random, Nearest, 消融策略）；
-* 随机种子策略与实验评测环境参数；
-* **严禁为了获得“更漂亮的实验数字”而静默放宽或篡改实验协议与判定阈值**。
+Scientific validators may be run read-only when their frozen runtime artifacts
+are available:
 
-### 4.3 严格防止未来观测信息泄漏 (No Future Observation Leakage)
-ACTIVEVIEW 是主动视角选择研究：
-* **决策时（Decision-time）**：策略选择（尤其是 `EstimatedState-Ours` / `GTState-Ours`）只能使用预测评分 `Q_pred`（基于当前已知地图几何、先验或当前状态估计）。**严禁在选择候选点阶段调用渲染器偷看候选点的未来 RGB、Depth 或真实遮挡状态**。
-* **评估时（Evaluation-time）**：选中位姿渲染后的真实观测（`*_true`）仅供后验评估与指标记录，绝不能反向影响决策。
-* 若任务需求存在破坏该边界的风险，必须立即终止并向用户报告。
+```bash
+python -m activeview.scripts.validate_stage_a
+python -m activeview.scripts.validate_stage_b
+python -m activeview.scripts.validate_stage_c
+```
 
-### 4.4 Research Experiments
+Do not claim Habitat/GPU/data-heavy validation that was not run. If a required
+dependency or artifact is unavailable, report `NOT RUN` and the reason.
 
-研究实验遵循 `experiments/stage_c_v1/` 中的 controlled-experiment
-基础设施：一个实验只能有一个主要科学改动，每个 `EXPxxx` 目录不可覆盖或
-复用，失败和负结果必须保留。Train/Val 可用于开发，Test 在明确冻结
-`FINAL_FROZEN` candidate、提交最终冻结变更并生成外部 authorization 之前
-始终 locked。实验完成后停止，不得自动创建或启动下一个实验；
-`activeview/` 仍是唯一源码包。
+## Context maintenance
 
----
+- Update `.ai/PROJECT_STATE.md` only when the scientific phase or canonical
+  protocol changes.
+- Overwrite `.ai/CURRENT_TASK.md` when the current task changes.
+- Append meaningful experiment outcomes to `.ai/RESEARCH_LOG.md`.
+- Update `.ai/HANDOFF.md` only for interruption or handoff; a clean completed
+  task should leave it concise and marked `CLEAN`.
 
-## 5. 修改后的验证要求 (Validation Requirements)
-
-Agent 每次必须根据以下优先级确定当前任务的验证命令：
-1. **`.ai/CURRENT_TASK.md`** 中显式声明的 Validation Plan
-2. **`.ai/PROJECT_STATE.md`** 指向的 active version
-3. **当前 active version 的 Version Specification**（设计文档中的验证要求）
-4. **当前版本已有的 tests / smoke / debug 脚本**
-
-### 默认验证命令示例 (以当前 active version 为准)
-当前活跃版本下的默认验证命令示例：
-1. **轻量语法与导入检查**：
-   ```bash
-   python -m compileall -q activeview tests
-   ```
-2. **纯 Python 逻辑与策略单元测试**（无需 Habitat 物理引擎）：
-   ```bash
-   pytest -q tests/unit tests/integration
-   ```
-   Research infrastructure-only tests may be run separately with:
-   ```bash
-   pytest -q tests/unit/test_research_*.py tests/integration/test_research_experiment_lifecycle.py
-   ```
-3. **功能脚本 / Smoke Test / Debug 脚本**（在具备完整仿真环境时按需运行）：
-   ```bash
-   python -m activeview.scripts.validate_stage_a
-   python -m activeview.scripts.validate_stage_b
-   python -m activeview.scripts.validate_stage_c
-   ```
-
-### 诚实报告原则 (Honest Validation Reporting)
-* 严禁声称执行了未实际运行的测试。
-* 若因缺少 Habitat-Sim / GPU / 资源资产 / 依赖包导致无法运行某些测试，必须明确记录为：
-  `NOT RUN: <具体原因>`。
-
----
-
-## 6. 跨 Agent 交接规范 (Handoff Rules)
-
-当遇到以下情况时：
-* 即将切换代码模型（如 Claude Code → Codex / DeepSeek / Gemini 等）；
-* 当前模型会话长度或调用额度即将耗尽；
-* 任务较为复杂，需要分多轮执行；
-* 遇到未解决的阻塞问题或临时中断；
-* 用户明确要求生成交接记录；
-
-**必须在退出前更新 `.ai/HANDOFF.md`**。请根据实际执行情况填写当前分支、HEAD、未提交变更、已完成事项、未执行的测试及下一步建议。任务彻底闭环后，交接状态应重置为 `Status: CLEAN`。
-
----
-
-## 7. 上下文维护原则 (Context Maintenance Principles)
-
-- **代码变化** -> 由 Git commit / commit history 记录
-- **科研阶段 / active version / 关键能力变化** -> 更新 `.ai/PROJECT_STATE.md`
-- **复杂或跨会话任务** -> 写入 `.ai/CURRENT_TASK.md`
-- **任务中途切换模型或中断** -> 写入 `.ai/HANDOFF.md`
-- **长期工作规则变化** -> 更新 `AGENTS.md`
-> 普通小 bug 修复或单轮局部修改不需要同时维护所有上下文 Markdown 文件，避免过度维护开销。
+At completion, summarize modified files, validation, runtime state and the
+next human decision. Stop when the requested task is complete; do not start a
+new experiment automatically.
