@@ -11,6 +11,11 @@ the current skeleton. A candidate geometry query over frozen joint-aware
 tokens should provide that conditioning while retaining permutation-equivariant
 candidate-set interaction.
 
+## Pre-registered representation limitation
+
+The current skeleton representation is body-yaw canonicalized and therefore
+does not preserve explicit body-to-candidate directional alignment.
+
 ## Single change
 
 Each accepted 11-D candidate geometry is mapped to a 128-D query and performs

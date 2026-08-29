@@ -11,6 +11,11 @@ that is useful for viewpoint utility prediction. Mean-pooled final-block joint
 tokens should preserve this information without introducing a new temporal
 model or changing the candidate interaction head.
 
+## Pre-registered representation limitation
+
+The current skeleton representation is body-yaw canonicalized and therefore
+does not preserve explicit body-to-candidate directional alignment.
+
 ## Single change
 
 Replace the 256-D globally pooled ST-GCN feature with frozen final-block

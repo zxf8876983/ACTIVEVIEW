@@ -12,6 +12,11 @@ that directly models the current estimated skeleton sequence can retain
 temporal and joint structure while using only frozen ST-GCN semantic outputs as
 context.
 
+## Pre-registered representation limitation
+
+The current skeleton representation is body-yaw canonicalized and therefore
+does not preserve explicit body-to-candidate directional alignment.
+
 ## Single change
 
 Encode the current normalized estimated skeleton (`[3, 30, 17]`) as 510
