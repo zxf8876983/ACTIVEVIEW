@@ -168,3 +168,12 @@ mean regret 0.586204 / P90 1.699901 / headroom 0.890887; corrected EXP014
 second-step action match was 46.33% and move-only exact hit 17.07%. Both runs
 used Val only (`test_used=false`); no Stage A/B/C-v0, perception or ST-GCN
 artifact changed.
+
+## EXP016 preparation — second-step error decomposition
+
+2026-08-30: prepared a no-training, Val-only analysis to isolate corrected
+EXP014 second-step Stay/Move gate errors from p2/p3 candidate-ranking errors.
+All variants preserve the frozen Stage C-v0 first action and use true U2 only
+for offline oracle branches. Added policy primitives, a Val-only CLI, an
+experiment record and focused synthetic tests. The real Val analysis has not
+been executed; Test remains locked.

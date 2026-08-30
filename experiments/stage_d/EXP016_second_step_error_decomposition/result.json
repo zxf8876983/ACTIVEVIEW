@@ -1,0 +1,24 @@
+{
+  "experiment_id": "EXP016",
+  "experiment_name": "second_step_error_decomposition",
+  "status": "PREPARED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": false,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": false,
+  "stgcn_retrained": false,
+  "real_val_analysis_executed": false,
+  "source_contract": {
+    "stage_c_v0_predictions": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl",
+    "corrected_exp014_predictions": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/runtime/val_second_step_predictions.jsonl",
+    "corrected_stage_d_cache": "ACTIVEVIEW_DATA_ROOT/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential",
+    "stage_b_val_utility": "ACTIVEVIEW_DATA_ROOT/datasets/policy_v11_5/stage_b/utility_labels/val.jsonl"
+  },
+  "protocol": {
+    "first_step_frozen": true,
+    "true_u2_used_only_for_offline_oracle": true,
+    "test_split_accepted": false
+  },
+  "note": "Preparation artifact only. EXP016 real Val analysis has NOT been executed."
+}
