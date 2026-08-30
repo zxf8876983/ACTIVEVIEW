@@ -271,3 +271,29 @@ policy selected Stay for all 9,742 Val v0-Move episodes, yielding Accuracy
 0.649103, Macro-F1 0.598042, mean regret 1.450498, P90 regret 5.607818 and
 headroom 0.777965. The formulation was **REJECTED** as a useful policy under
 the fixed protocol; no Test or upstream artifact was used.
+
+## EXP022 — Executed-Candidate Utility Regression Gate
+
+2026-08-31: trained the fixed 129-D EXP020 contextual head with raw
+executed-candidate `true_U2(c_hat)` targets for 30 Train epochs using default
+SmoothL1 loss, then applied the strict predicted-utility-positive gate once on
+Val. EXP022 reached Accuracy 0.659898, Macro-F1 0.611687, mean regret
+1.416495, P90 regret 5.494913 and headroom 0.782352, versus EXP014's
+0.658254 / 1.422463. It recovered 1.94% of the executed-candidate oracle
+Accuracy gap and 0.90% of its mean-regret gap, with zero candidate identity
+mismatches. Decision: **ACCEPTED as research-direction evidence**, not final
+policy acceptance. Test was not read and frozen upstream artifacts were not
+modified.
+
+## EXP023 — Supervised-Warm-Started Contextual Bandit
+
+2026-08-31: trained a fixed contextual scorer for 20 Train-only epochs of
+candidate-U2 SmoothL1 warm-start followed by 10 Train-only epochs of fixed
+full-information expected-reward optimization with entropy bonus 0.001. The
+warm start avoided EXP021's all-Stay collapse. EXP023 selected Stay/p2/p3 on
+Val at 6903/1730/1109 episodes and reached Accuracy 0.660470, Macro-F1
+0.608566, mean regret 1.374664, P90 regret 5.294162 and headroom 0.786731.
+It exceeded EXP014 on Accuracy by 0.002216 and reduced mean regret by
+0.047799, recovering 1.96% / 5.72% of the fixed-first oracle gaps. Decision:
+**ACCEPTED as research-direction evidence**, not final-policy acceptance. Test
+was not read, no Val tuning occurred, and no EXP024 was started.

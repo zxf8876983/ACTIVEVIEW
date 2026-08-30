@@ -1,0 +1,299 @@
+{
+  "experiment_id": "EXP023",
+  "experiment_name": "supervised_warmstarted_contextual_bandit",
+  "status": "COMPLETED",
+  "decision": "ACCEPT",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": false,
+  "stgcn_retrained": false,
+  "first_step_protocol_frozen": true,
+  "train": {
+    "experiment_id": "EXP023",
+    "split": "train",
+    "episode_count": 29133,
+    "phase_a": {
+      "epochs": 20,
+      "batch_size": 256,
+      "learning_rate": 0.001,
+      "loss": "SmoothL1Loss",
+      "loss_history": [
+        2.7680752859733313,
+        2.651736763017707,
+        2.6009466311584046,
+        2.5658340989240096,
+        2.524092982596318,
+        2.4935380153019633,
+        2.4445270522960905,
+        2.415149499494932,
+        2.388149117169704,
+        2.3569392598350896,
+        2.3192627501815903,
+        2.287328956747744,
+        2.255755479060891,
+        2.233556475529844,
+        2.190197309619329,
+        2.172348287722373,
+        2.138280509887614,
+        2.1147693326747965,
+        2.0800004978731192,
+        2.0648388132165
+      ],
+      "final_loss": 2.0648388132165,
+      "utility_mae": 2.364638057986873
+    },
+    "phase_b": {
+      "epochs": 10,
+      "batch_size": 256,
+      "learning_rate": 0.0001,
+      "entropy_beta": 0.001,
+      "entropy_used": true,
+      "loss": "negative_expected_reward_minus_entropy_bonus",
+      "history": [
+        {
+          "mean_loss": -0.3355781243565407,
+          "mean_expected_reward": 0.3349997215526658,
+          "mean_entropy": 0.578402827164992,
+          "mean_stay_probability": 0.6233777663667059,
+          "mean_p2_probability": 0.21931143640915365,
+          "mean_p3_probability": 0.15731079526054043,
+          "collapse_indicator": false,
+          "epoch": 1
+        },
+        {
+          "mean_loss": -0.4579147463440956,
+          "mean_expected_reward": 0.4575976987898716,
+          "mean_entropy": 0.3170486822224619,
+          "mean_stay_probability": 0.7291156747999706,
+          "mean_p2_probability": 0.15866712675890315,
+          "mean_p3_probability": 0.11221719981626,
+          "collapse_indicator": false,
+          "epoch": 2
+        },
+        {
+          "mean_loss": -0.5040338623240552,
+          "mean_expected_reward": 0.5038026883424308,
+          "mean_entropy": 0.23117457775783534,
+          "mean_stay_probability": 0.7471233970046931,
+          "mean_p2_probability": 0.1481795475629574,
+          "mean_p3_probability": 0.10469705793326692,
+          "collapse_indicator": false,
+          "epoch": 3
+        },
+        {
+          "mean_loss": -0.5410717580450456,
+          "mean_expected_reward": 0.5408880087098717,
+          "mean_entropy": 0.1837498873499834,
+          "mean_stay_probability": 0.7492352912936909,
+          "mean_p2_probability": 0.1464024923668419,
+          "mean_p3_probability": 0.10436221870918809,
+          "collapse_indicator": false,
+          "epoch": 4
+        },
+        {
+          "mean_loss": -0.5732329876408233,
+          "mean_expected_reward": 0.5730680756362186,
+          "mean_entropy": 0.16491512038058923,
+          "mean_stay_probability": 0.7319515091102851,
+          "mean_p2_probability": 0.15924178763481883,
+          "mean_p3_probability": 0.10880670726137656,
+          "collapse_indicator": false,
+          "epoch": 5
+        },
+        {
+          "mean_loss": -0.5861913181929094,
+          "mean_expected_reward": 0.5860527426641723,
+          "mean_entropy": 0.13857623745086275,
+          "mean_stay_probability": 0.7336811515962747,
+          "mean_p2_probability": 0.15723126702363813,
+          "mean_p3_probability": 0.10908758320712006,
+          "collapse_indicator": false,
+          "epoch": 6
+        },
+        {
+          "mean_loss": -0.6161899212414707,
+          "mean_expected_reward": 0.616067375723457,
+          "mean_entropy": 0.12254536239759514,
+          "mean_stay_probability": 0.7384653475434912,
+          "mean_p2_probability": 0.15294513127624004,
+          "mean_p3_probability": 0.10858952218841025,
+          "collapse_indicator": false,
+          "epoch": 7
+        },
+        {
+          "mean_loss": -0.6324571140571599,
+          "mean_expected_reward": 0.632341347153227,
+          "mean_entropy": 0.11576784952492432,
+          "mean_stay_probability": 0.7256096246657197,
+          "mean_p2_probability": 0.16282824705931348,
+          "mean_p3_probability": 0.11156212906061148,
+          "collapse_indicator": false,
+          "epoch": 8
+        },
+        {
+          "mean_loss": -0.6496052785010251,
+          "mean_expected_reward": 0.6495049378409778,
+          "mean_entropy": 0.10033584235502853,
+          "mean_stay_probability": 0.7312129835829907,
+          "mean_p2_probability": 0.16010132311937864,
+          "mean_p3_probability": 0.10868569569394897,
+          "collapse_indicator": false,
+          "epoch": 9
+        },
+        {
+          "mean_loss": -0.6598940432732527,
+          "mean_expected_reward": 0.6598016551920467,
+          "mean_entropy": 0.09238743066319197,
+          "mean_stay_probability": 0.7289212505129075,
+          "mean_p2_probability": 0.1610811921314489,
+          "mean_p3_probability": 0.10999755712010377,
+          "collapse_indicator": false,
+          "epoch": 10
+        }
+      ],
+      "final_loss": -0.6598940432732527,
+      "final_mean_expected_reward": 0.6598016551920467,
+      "final_mean_entropy": 0.09238743066319197,
+      "final_action_probabilities": {
+        "Stay": 0.7289212505129075,
+        "p2": 0.1610811921314489,
+        "p3": 0.10999755712010377
+      },
+      "final_collapse_indicator": false
+    },
+    "val_used_for_selection": false,
+    "test_used": false
+  },
+  "val_episode_count": 13987,
+  "v0_move_episode_count": 9742,
+  "metrics_table": [
+    {
+      "variant": "EXP014",
+      "gate": "predicted utility > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6582540930864375,
+      "macro_f1": 0.6101526052247462,
+      "mean_regret": 1.4224626188609946,
+      "median_regret": 0.003525762353092432,
+      "p90_regret": 5.515662515163418,
+      "headroom_capture": 0.7833127000367449,
+      "average_moves": 0.8649460213054979,
+      "mean_geodesic_cost_m": 2.5220799648630496
+    },
+    {
+      "variant": "EXP021",
+      "accuracy": 0.6491027382569529,
+      "macro_f1": 0.5980419794734363,
+      "mean_regret": 1.4504976684431725,
+      "median_regret": 0.0051433994667604566,
+      "p90_regret": 5.607817676663398,
+      "headroom_capture": 0.7779652640409261,
+      "average_moves": 0.6965038964752985,
+      "mean_geodesic_cost_m": 2.200937583140191
+    },
+    {
+      "variant": "EXP023",
+      "accuracy": 0.6604704368342031,
+      "macro_f1": 0.6085657457589277,
+      "mean_regret": 1.3746635965289113,
+      "median_regret": 0.003706232899276074,
+      "p90_regret": 5.294162066862918,
+      "headroom_capture": 0.7867312289639564,
+      "average_moves": 0.899478086794881,
+      "mean_geodesic_cost_m": 2.5976654816012186,
+      "gate": "argmax([0,q2,q3])",
+      "candidate": "model-selected p2/p3"
+    },
+    {
+      "variant": "Fixed-first Second-Step Oracle",
+      "accuracy": 0.7715021091013083,
+      "macro_f1": 0.725081382409528,
+      "mean_regret": 0.5862035541860805,
+      "median_regret": 0.0,
+      "p90_regret": 1.6999013550579545,
+      "headroom_capture": 0.8908871486261597,
+      "average_moves": 1.0880817902337885,
+      "mean_geodesic_cost_m": 2.8595771753818675,
+      "gate": "argmax([0,true_U2(p2),true_U2(p3)])",
+      "candidate": "oracle"
+    }
+  ],
+  "action_quality": {
+    "episode_count": 9742,
+    "action_counts": {
+      "Stay": 6903,
+      "p2": 1730,
+      "p3": 1109
+    },
+    "stay_rate": 0.7085814001231779,
+    "p2_rate": 0.17758160541983165,
+    "p3_rate": 0.11383699445699035,
+    "exact_action_match_count": 4518,
+    "exact_action_match_rate": 0.4637651406282078,
+    "binary_move_stay_match_count": 5302,
+    "binary_move_stay_match_rate": 0.5442414288647095,
+    "candidate_exact_hit_both_move_count": 1154,
+    "candidate_exact_hit_both_move_rate": 0.5954592363261094,
+    "candidate_exact_hit_both_move_denominator": 1938,
+    "selected_action_mean_true_utility": 0.10887817325649445
+  },
+  "offline_oracle_action_diagnostics": {
+    "train": {
+      "episode_count": 29133,
+      "action_counts": {
+        "Stay": 12572,
+        "p2": 9363,
+        "p3": 7198
+      },
+      "selected_action_mean_true_utility": 1.4133663509647703
+    },
+    "val": {
+      "episode_count": 9742,
+      "action_counts": {
+        "Stay": 4265,
+        "p2": 3185,
+        "p3": 2292
+      },
+      "selected_action_mean_true_utility": 1.2409034875912488
+    }
+  },
+  "headroom_recovery": {
+    "oracle_accuracy_gap": 0.11324801601487089,
+    "accuracy_gain": 0.002216343747765692,
+    "accuracy_recovery": 0.019570707070706284,
+    "oracle_regret_gap": 0.8362590646749141,
+    "regret_reduction": 0.04779902233208322,
+    "regret_recovery": 0.05715815152409084
+  },
+  "provenance": {
+    "source_commit": "58cb4c395c9c8ca031dc62c3fc86cd6935d4650c",
+    "stage_d_feature_summary": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/stage_d_feature_summary.json",
+    "stage_d_feature_summary_sha256": "5ada9ca595aca421b77c507ee6ea3ccd19eda0008fda943f4483e5a41837adfb",
+    "stage_d_train_features": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/features/train.jsonl",
+    "stage_d_train_features_sha256": "eb97b380da6ecd6a121144f8c29af523b6848eb7eaaf00573b7fa8b982516817",
+    "stage_d_val_features": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/features/val.jsonl",
+    "stage_d_val_features_sha256": "4e78731acc35d356fcfa89e20c6cb119ec68da38b37342f45ef2d6336f36a72d",
+    "stage_d_feature_stats": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/stage_d_feature_stats.json",
+    "stage_d_feature_stats_sha256": "35f81dfc5eadb79e85a435b932ff6b89006d5089bff6eb60ef9e6c25626ec0df",
+    "stage_b_val_utility": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_b/utility_labels/val.jsonl",
+    "stage_b_val_utility_sha256": "34f1d55724940a150ce55cf3babefdc2fcb700f6074093948916552958527729",
+    "v0_val_predictions": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl",
+    "v0_val_predictions_sha256": "232c5c366799f73459856974872d35a67121cf36a744e6cfdc73dbbe7ed136d8",
+    "exp021_result": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP021_contextual_bandit/result.json",
+    "exp021_result_sha256": "ab912203c2866b3373b4890cd1b24c39d9c38f150091bfc60c2a9522ca3ae4ce",
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP023_warmstarted_contextual_bandit/checkpoints/warmstarted_contextual_bandit_final.pth",
+    "checkpoint_sha256": "139e36b18377ce568d27f56609ab7661bda6bbc1d1e8a8f78644fe6c0fead642"
+  },
+  "validity": {
+    "phase_a_train_only": true,
+    "phase_b_train_only": true,
+    "true_u2_used_only_as_train_reward_or_target": true,
+    "true_u2_used_as_model_input": false,
+    "val_used_for_selection": false,
+    "stay_score_fixed_zero": true,
+    "final_phase_b_epoch_used": true,
+    "test_split_accepted": false
+  }
+}

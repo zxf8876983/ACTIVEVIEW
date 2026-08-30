@@ -1,0 +1,28 @@
+experiment_id: EXP023
+experiment_name: supervised_warmstarted_contextual_bandit
+split:
+  phase_a: train
+  phase_b: train
+  evaluation: val
+  test_used: false
+model:
+  architecture: Stage-D contextual encoders + 2-layer Transformer + action head
+  action_set: [Stay, p2, p3]
+  stay_score: 0.0
+loss:
+  phase_a: SmoothL1Loss over candidate U2 targets
+  phase_b: negative expected reward minus beta times entropy
+  entropy_beta: 0.001
+training:
+  seed: 42
+  batch_size: 256
+  phase_a_epochs: 20
+  phase_a_learning_rate: 0.001
+  phase_b_epochs: 10
+  phase_b_learning_rate: 0.0001
+  phase_b_starts_from_phase_a: true
+protocol:
+  first_step_frozen: true
+  true_u2_as_model_input: false
+  val_used_for_selection: false
+  test_used: false

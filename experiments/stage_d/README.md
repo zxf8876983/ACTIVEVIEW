@@ -62,6 +62,18 @@ not create sensors, RGB/depth, humanoids or perception outputs.
   expected-utility objective collapsed to all-Stay on Val (Accuracy 0.649103,
   mean regret 1.450498), so the formulation is **REJECTED**; see its
   `analysis.md`.
+- **EXP022** is a completed Train→Val raw executed-candidate utility-regression
+  gate. It retains EXP014's frozen candidate ranking and predicts signed
+  `U2(c_hat)` magnitude with a fixed 129-D contextual head. Val Accuracy was
+  0.659898 and mean regret 1.416495, a small coherent improvement over EXP014;
+  this is **ACCEPTED as research-direction evidence**, not deployment
+  acceptance. See its `analysis.md`.
+- **EXP023** is a completed Train→Val supervised-warm-start contextual-bandit
+  test. Twenty Train-only SmoothL1 warm-start epochs followed by ten fixed
+  expected-reward epochs avoided EXP021's all-Stay collapse. Val Accuracy was
+  0.660470 and mean regret 1.374664, modestly better than EXP014 and clearly
+  better than EXP021; this is **ACCEPTED as research-direction evidence**,
+  not final-policy acceptance. See its `analysis.md`.
 
 Execution outcomes are recorded in each experiment's `result.json` and
 `analysis.md`. After the geometry correction and Val-only rerun, EXP014 is

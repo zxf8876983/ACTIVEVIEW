@@ -3,8 +3,10 @@ import torch
 
 from activeview.active_view.stage_d_contextual_bandit import (
     ContextualBanditRanker,
+    expected_reward_loss_with_entropy,
     expected_reward_loss,
     select_bandit_actions,
+    supervised_candidate_utility_loss,
 )
 
 
@@ -28,6 +30,25 @@ def test_reward_tensor_is_not_part_of_model_input():
         scores_a = model(s0, s1, delta, geometry, mask)
         scores_b = model(s0, s1, delta, geometry, mask)
     assert torch.equal(scores_a, scores_b)
+
+
+def test_phase_a_loss_uses_canonical_candidate_utility_targets():
+    scores = torch.tensor([[1.0, -1.0]], requires_grad=True)
+    targets = torch.tensor([[2.0, -2.0]])
+    mask = torch.tensor([[True, True]])
+    loss = supervised_candidate_utility_loss(scores, targets, mask)
+    expected = torch.nn.functional.smooth_l1_loss(scores, targets)
+    assert torch.equal(loss, expected)
+
+
+def test_entropy_bonus_lowers_loss_for_positive_beta():
+    scores = torch.tensor([[0.0, 0.0]], requires_grad=True)
+    rewards = torch.tensor([[1.0, 0.0]])
+    mask = torch.tensor([[True, True]])
+    no_entropy, _, entropy = expected_reward_loss_with_entropy(scores, rewards, mask, beta=0.0)
+    with_entropy, _, _ = expected_reward_loss_with_entropy(scores, rewards, mask, beta=0.001)
+    assert entropy.item() > 0.0
+    assert with_entropy.item() < no_entropy.item()
 
 
 def test_bandit_model_returns_candidate_scores():

@@ -90,12 +90,21 @@ def expected_reward_loss(
     """Return ``-E_pi[r]`` and the corresponding expected reward."""
     if scores.shape != rewards.shape or scores.shape != candidate_mask.shape:
         raise ValueError("scores, rewards and candidate_mask must have the same shape")
-    stay_score = torch.zeros((scores.size(0), 1), dtype=scores.dtype, device=scores.device)
-    all_scores = torch.cat([stay_score, scores], dim=1)
+    probabilities = action_probabilities(scores, candidate_mask)
     all_rewards = torch.cat(
         [torch.zeros((rewards.size(0), 1), dtype=rewards.dtype, device=rewards.device), rewards],
         dim=1,
     )
+    expected = (probabilities * all_rewards).sum(dim=1)
+    return -expected.mean(), expected
+
+
+def action_probabilities(scores: torch.Tensor, candidate_mask: torch.Tensor) -> torch.Tensor:
+    """Return softmax probabilities for ``[Stay, p2, p3]`` with Stay fixed at zero."""
+    if scores.ndim != 2 or candidate_mask.shape != scores.shape:
+        raise ValueError("scores and candidate_mask must be aligned 2-D tensors")
+    stay_score = torch.zeros((scores.size(0), 1), dtype=scores.dtype, device=scores.device)
+    all_scores = torch.cat([stay_score, scores], dim=1)
     all_mask = torch.cat(
         [
             torch.ones((candidate_mask.size(0), 1), dtype=torch.bool, device=candidate_mask.device),
@@ -104,9 +113,46 @@ def expected_reward_loss(
         dim=1,
     )
     masked_scores = all_scores.masked_fill(~all_mask, torch.finfo(scores.dtype).min)
-    probabilities = torch.softmax(masked_scores, dim=1)
+    return torch.softmax(masked_scores, dim=1)
+
+
+def expected_reward_loss_with_entropy(
+    scores: torch.Tensor,
+    rewards: torch.Tensor,
+    candidate_mask: torch.Tensor,
+    beta: float = 0.001,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Return entropy-regularized loss, expected reward and policy entropy."""
+    if beta < 0.0 or not np.isfinite(float(beta)):
+        raise ValueError("entropy coefficient must be finite and non-negative")
+    if scores.shape != rewards.shape or scores.shape != candidate_mask.shape:
+        raise ValueError("scores, rewards and candidate_mask must have the same shape")
+    probabilities = action_probabilities(scores, candidate_mask)
+    all_rewards = torch.cat(
+        [torch.zeros((rewards.size(0), 1), dtype=rewards.dtype, device=rewards.device), rewards],
+        dim=1,
+    )
     expected = (probabilities * all_rewards).sum(dim=1)
-    return -expected.mean(), expected
+    entropy = -(probabilities * torch.log(probabilities.clamp_min(1e-12))).sum(dim=1)
+    loss = -expected.mean() - float(beta) * entropy.mean()
+    return loss, expected, entropy
+
+
+def supervised_candidate_utility_loss(
+    scores: torch.Tensor,
+    targets: torch.Tensor,
+    candidate_mask: torch.Tensor,
+) -> torch.Tensor:
+    """Return masked default SmoothL1 loss for Phase-A utility warm-start."""
+    if scores.shape != targets.shape or scores.shape != candidate_mask.shape:
+        raise ValueError("scores, targets and candidate_mask must have the same shape")
+    if not torch.isfinite(scores).all() or not torch.isfinite(targets).all():
+        raise ValueError("scores and targets must be finite")
+    valid = candidate_mask.bool()
+    if not bool(valid.any()):
+        raise ValueError("candidate_mask must contain at least one valid candidate")
+    losses = nn.functional.smooth_l1_loss(scores, targets, reduction="none")
+    return losses.masked_select(valid).mean()
 
 
 def select_bandit_actions(
