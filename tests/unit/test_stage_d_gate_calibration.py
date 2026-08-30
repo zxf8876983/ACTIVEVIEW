@@ -91,13 +91,29 @@ def test_frozen_v0_stay_never_becomes_second_step_move():
 
 
 def test_train_calibration_rejects_val_and_test_rows():
-    with pytest.raises(ValueError, match="non-train"):
+    with pytest.raises(ValueError, match="only train"):
         calibrate_train_threshold(
             [_prediction_row("e", [1.0, -1.0], split="val")],
             [_cache_row("e", split="train")],
         )
     with pytest.raises(ValueError, match="requires val"):
         validate_exp017_split("test", "val")
+
+
+def test_train_calibration_rejects_missing_prediction_policy_split():
+    with pytest.raises(ValueError, match="<missing>"):
+        calibrate_train_threshold(
+            [_prediction_row("e", [1.0, -1.0])],
+            [_cache_row("e", split="train")],
+        )
+
+
+def test_train_calibration_rejects_missing_cache_policy_split():
+    with pytest.raises(ValueError, match="<missing>"):
+        calibrate_train_threshold(
+            [_prediction_row("e", [1.0, -1.0], split="train")],
+            [{key: value for key, value in _cache_row("e").items() if key != "policy_split"}],
+        )
 
 
 def test_calibration_uses_train_rows_and_writes_frozen_artifact_contract():
@@ -162,5 +178,9 @@ def test_calibration_artifact_rejects_test_or_invalid_schema(tmp_path):
 
 
 def test_exp017_cli_has_no_test_split_entry_point():
+    required = [
+        "--cache-root", "cache", "--stage-b-root", "stage-b", "--checkpoint", "checkpoint",
+        "--v0-predictions", "v0", "--label-mapping", "labels", "--output-dir", "output",
+    ]
     with pytest.raises(SystemExit):
-        build_parser().parse_args(["--split", "test"])
+        build_parser().parse_args(required + ["--split", "test"])

@@ -35,15 +35,17 @@ def _explicit_split(row: Mapping[str, Any]) -> str | None:
 
 
 def _assert_rows_for_split(rows: Sequence[Mapping[str, Any]], split: str, name: str) -> None:
-    invalid = sorted(
-        {
-            value
-            for row in rows
-            if (value := _explicit_split(row)) is not None and value != split
-        }
-    )
+    invalid: set[str] = set()
+    for row in rows:
+        value = _explicit_split(row)
+        if value is None:
+            invalid.add("<missing>")
+        elif value != split:
+            invalid.add(value)
     if invalid:
-        raise ValueError(f"{name} contains non-{split} rows: {invalid}")
+        raise ValueError(
+            f"{name} must explicitly contain only {split} rows: {sorted(invalid)}"
+        )
 
 
 def gate_score(prediction_row: Mapping[str, Any]) -> float:

@@ -12,7 +12,6 @@ STAGE_B_ROOT="${DATASET_ROOT}/stage_b"
 EXP014_ROOT="${DATA_ROOT}/experiments/stage_d/EXP014_two_step_sequential"
 OUT="${DATA_ROOT}/experiments/stage_d/EXP017_second_step_gate_calibration"
 CHECKPOINT="${EXP014_ROOT}/checkpoints/sequential_observation_ranker_best.pth"
-VAL_PREDICTIONS="${EXP014_ROOT}/runtime/val_second_step_predictions.jsonl"
 V0_PREDICTIONS="${EXP014_ROOT}/v0_predictions/val_predictions.jsonl"
 LABEL_MAPPING="${DATA_ROOT}/datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/label_mapping.json"
 
@@ -21,7 +20,6 @@ mkdir -p "${OUT}/runtime"
   --cache-root "${CACHE_ROOT}" \
   --stage-b-root "${STAGE_B_ROOT}" \
   --checkpoint "${CHECKPOINT}" \
-  --val-predictions "${VAL_PREDICTIONS}" \
   --v0-predictions "${V0_PREDICTIONS}" \
   --label-mapping "${LABEL_MAPPING}" \
   --output-dir "${OUT}" \

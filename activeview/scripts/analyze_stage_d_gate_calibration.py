@@ -88,6 +88,8 @@ def _load_frozen_predictions(
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(payload["model_state_dict"])
     rows = predict_second_step_dataset(model, loader, device)
+    for row in rows:
+        row["policy_split"] = split
     _write_jsonl(output_path, rows)
     return rows, output_path
 
