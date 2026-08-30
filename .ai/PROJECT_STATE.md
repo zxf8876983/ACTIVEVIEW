@@ -111,6 +111,20 @@ is selected.
 The v2 experiments test current representation and candidate-conditioned
 reasoning, not new losses, samplers, utility targets or perception data.
 
+## Stage D queue
+
+The one-shot Stage C-v0 ranking phase is frozen. EXP011–EXP013 showed moderate
+online utility predictability but strong Top-K proposal coverage. Preparation
+records for the next approved sequential study are in `experiments/stage_d/`:
+
+- EXP014 is a planned two-step policy: frozen v0 Top-3 first proposal, one
+  visited s1 observation, then a second Stay/p2/p3 decision using s1-relative
+  geometry and observable s0/s1 state transition.
+- EXP015 is a planned no-training fixed-first sequential budget/oracle analysis.
+
+Both are Train/Val-only designs. Test, Habitat/perception regeneration and
+ST-GCN retraining remain prohibited until separately authorized.
+
 ## Runtime roots
 
 - Source: repository `activeview/` (the only source package).

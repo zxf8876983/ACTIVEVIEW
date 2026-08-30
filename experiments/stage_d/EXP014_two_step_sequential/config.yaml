@@ -1,0 +1,49 @@
+experiment:
+  id: EXP014
+  name: two_step_sequential
+  status: PLANNED
+
+frozen_first_stage:
+  model: stage_c_v0_set_ranker
+  checkpoint: checkpoints/stage_c/set_ranker_best.pth
+  proposal_top_k: 3
+  move_rule: max_predicted_utility_positive
+
+inputs:
+  s0_feature_dim: 275
+  s1_feature_dim: 275
+  delta_semantic_dim: 19
+  second_step_geometry_dim: 11
+  future_unvisited_candidate_perception_used_as_input: false
+  visited_s1_perception_used_as_input: true
+
+model:
+  type: sequential_observation_ranker
+  s0_hidden_dim: 128
+  s1_hidden_dim: 128
+  delta_hidden_dim: 32
+  geometry_hidden_dim: 64
+  interaction: transformer_encoder_2_layers_d_model_128_nhead_4
+
+training:
+  seed: 42
+  epochs: 100
+  patience: 10
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip: 1.0
+  episodes_per_record: 16
+
+loss:
+  regression: smooth_l1
+  ranking: stay_inclusive_soft_target_listwise_cross_entropy
+  lambda_reg: 1.0
+  lambda_rank: 1.0
+  tau: 0.5
+  lambda_gap: 0.0
+
+evaluation:
+  split: val
+  test_used: false
+  checkpoint_selection_metric: final_trajectory_macro_f1

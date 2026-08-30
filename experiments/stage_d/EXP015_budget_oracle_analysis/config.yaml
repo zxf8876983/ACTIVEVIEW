@@ -1,0 +1,25 @@
+experiment:
+  id: EXP015
+  name: budget_oracle_analysis
+  status: PLANNED
+  training: false
+
+inputs:
+  split: val
+  proposal_top_k: 3
+  test_used: false
+
+methods:
+  - NoMove
+  - FrozenStageCv0
+  - EXP014
+  - FixedFirstSecondStepOracle
+  - CandidateOracle
+  - SafeOracle
+
+fixed_first_second_step_oracle:
+  first_action: frozen_stage_c_v0
+  second_action: argmax_stay_zero_or_true_u2_p2_p3
+
+outputs:
+  budget_metrics: budget_oracle_analysis.json

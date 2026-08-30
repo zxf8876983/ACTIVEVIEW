@@ -109,3 +109,13 @@ coverage of 87.16% CandidateOracle hit, 86.30% SafeOracle move hit and
 0.04842 mean move-only Top-K regret. These are diagnostic results pending
 human review; no Stage A/B/C-v0 artifact changed and no Test evaluation was
 performed.
+
+## Stage D preparation
+
+2026-08-30: EXP013 Top-3/Top-5 proposal coverage motivated reinterpreting the
+frozen Stage C-v0 model as a first-stage proposal mechanism. Prepared EXP014
+two-step sequential policy and EXP015 fixed-first sequential budget/oracle
+analysis. The preparation adds only navigation-only pairwise geodesic cache
+support, frozen s1 ST-GCN feature reconstruction and a new second-step head;
+it does not run training/evaluation or alter Stage A/B/C-v0 artifacts. Test
+remains locked pending human review.

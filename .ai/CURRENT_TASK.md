@@ -1,43 +1,44 @@
 # Current Task
 
-## Current task
+## Stage D preparation
 
-EXP004–EXP007 Train→Val runs are complete and recorded as rejected diagnostic
-directions. Stage C-v2 EXP008–EXP010 also completed Train→Val and are recorded
-as rejected diagnostic directions. Stage C-v3 predictability diagnostics
-EXP011–EXP013 have now completed under the authorized Train→Val / read-only Val
-protocol. Test remains locked; the next step is human scientific review, not an
-automatic follow-up experiment.
+Stage C-v0 one-shot ranking is frozen. EXP011–EXP013 diagnostics indicate
+moderate online utility predictability but strong Top-K proposal coverage, so
+the next approved preparation is sequential active view selection.
+
+This change prepares EXP014 (two-step sequential policy) and EXP015
+(fixed-first budget/oracle analysis). Both remain **PLANNED** pending human
+review. No formal experiment has been run.
 
 ## Frozen
 
-Stage A/B/C-v0 artifacts, ST-GCN, split, candidate pool, current viewpoint,
-decision protocol, and all accepted runtime data. EXP003 is rejected; its
-diagnostics are evidence only and are not a baseline or a dependency.
+Stage A/B/C-v0 artifacts, ST-GCN checkpoint, motion split 589/197/194,
+candidate pool, current-view protocol, Stage C-v0 proposal ordering and all
+perception data remain frozen.
 
-## Do not
+## Protocol boundaries
 
-- run Test;
-- regenerate Habitat, YOLO, VideoPose3D, Stage A/B/C-v0 or EXP003 artifacts;
-- execute EXP011, EXP012 or EXP013 again without a new authorization;
-- start a new policy experiment or add body-yaw features without explicit
-  authorization;
-- enter Stage D.
+- Train and Val only; Test is locked.
+- No Habitat rendering, RGB/depth, YOLO, VideoPose3D or ST-GCN retraining.
+- No Stage C-v0 retraining, loss/sampler/threshold changes, Top-K sweep,
+  exploration or body-yaw feature.
+- EXP014 may use only visited s1 perception; unvisited p2/p3 perception is
+  never a policy input.
+- EXP015 performs no training and fails clearly if EXP014 Val output is absent.
 
-## Completed v2 run summary
+## Preparation status
 
-The shared cache was built from frozen Stage A/B/C-v0 artifacts only. Runtime
-outputs are under `ACTIVEVIEW_DATA_ROOT/experiments/stage_c_v2/`. EXP008,
-EXP009 and EXP010 selected epochs 26, 22 and 54 respectively. Their Val
-metrics and the frozen v0 comparison are recorded in the experiment READMEs and
-`experiments/stage_c_v2/registry.csv`. The preregistered limitation is that
-the current skeleton representation is body-yaw canonicalized and therefore
-does not preserve explicit body-to-candidate directional alignment.
+- [x] Added frozen-v0 Train/Val proposal inference helper.
+- [x] Added navigation-only pairwise viewpoint geodesic builder.
+- [x] Added Stage D second-step cache schema, s1 frozen ST-GCN reconstruction,
+      s1-relative 11-D geometry and U2 supervision construction.
+- [x] Added SequentialObservationRanker, Val trajectory evaluator and
+      Fixed-first Second-Step Oracle analysis.
+- [x] Added EXP014/EXP015 README, config, run scripts and registry entries.
+- [x] Added focused Stage D unit tests and compile check.
+- [ ] Await human review before any execution.
 
-## Stage C-v3 diagnostics
+## Current state
 
-EXP011–EXP013 execution is complete. EXP011 used the corrected 17-D
-future-perception schema (predicted-label one-hot + entropy); EXP012 used exact
-k=5 Train-reference/Val-query analysis; EXP013 used frozen-v0 Val Top-K audit.
-No Test evaluation, Habitat or perception rerun was performed. Await human
-review before any new experiment.
+Preparation is complete. No training, Val evaluation, Test evaluation or data
+generation was performed in this task.
