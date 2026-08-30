@@ -1,32 +1,20 @@
 # Current Task
 
-## EXP022 and EXP023 completed
+## RGB Observation Dataset V1 completed
 
-Stage C-v0 and corrected EXP014–EXP021 remain frozen. EXP022 trained only a
-fixed 129-D raw executed-candidate utility regressor on Train and applied the
-strict `predicted_U_exec > 0` gate once on Val. On 9,742 Val v0-Move episodes it
-reached Accuracy `0.659898`, Macro-F1 `0.611687`, mean regret `1.416495`, P90
-regret `5.494913` and headroom `0.782352`; it is **ACCEPTED as
-research-direction evidence**, not deployment acceptance.
+RGB Observation V1 has been generated and fully audited for the canonical
+HM3D-train offline skeleton dataset. The source skeleton root remained
+read-only. The separate MG08 RGB root contains 21 scenes, 82,320 records and
+2,634,240 RGB views (`uint8`, `[32,256,256,3]`), all using fixed frame index
+15. Completeness audit: missing 0, extra 0, invalid 0.
 
-EXP023 trained a fixed contextual bandit in two Train-only phases: 20 epochs
-of candidate-U2 SmoothL1 warm-start followed by 10 epochs of expected-reward
-fine-tuning with entropy bonus `0.001`. It avoided EXP021's all-Stay collapse
-and reached Val Accuracy `0.660470`, Macro-F1 `0.608566`, mean regret
-`1.374664`, P90 `5.294162` and headroom `0.786731`; it is **ACCEPTED as
-research-direction evidence**, not final-policy acceptance. Fixed-first oracle
-remains Accuracy `0.771502` / mean regret `0.586204`.
-
-## Protocol boundaries
-
-- EXP022 and EXP023 used fixed Train→Val protocols; Test was not read or used.
-- No EXP014 retraining, Habitat rendering, perception regeneration, ST-GCN
-  retraining, or Stage A/B/C-v0/EXP014–EXP021 artifact modification was
-  performed.
-- No Val tuning or threshold/architecture search was performed. EXP024 must
-  not be started automatically.
+Generation used 16 Habitat workers per scene after explicit user
+authorization. No YOLO, VideoPose3D, ST-GCN, skeleton regeneration or policy
+experiment was run. The external output is documented in
+`docs/results/rgb_observation_v1.md` and summarized by
+`docs/results/rgb_observation_v1_summary.json`.
 
 ## Status
 
-EXP022 and EXP023 are complete and recorded for human scientific review.
-Await the next explicit research authorization.
+RGB Observation Dataset V1 is complete and ready for human review. Do not
+automatically start RGB embedding extraction or any policy experiment.

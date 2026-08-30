@@ -297,3 +297,16 @@ It exceeded EXP014 on Accuracy by 0.002216 and reduced mean regret by
 0.047799, recovering 1.96% / 5.72% of the fixed-first oracle gaps. Decision:
 **ACCEPTED as research-direction evidence**, not final-policy acceptance. Test
 was not read, no Val tuning occurred, and no EXP024 was started.
+
+## RGB Observation Dataset V1
+
+2026-08-31: generated a separate raw RGB observation dataset aligned one-to-one
+with the canonical HM3D-train skeleton records. The source skeleton root was
+read-only; RGB output was written under `/home/zxf/MG08/robot/ActiveView/`.
+Each of 82,320 records contains 32 `uint8` RGB views at `[256,256,3]`, all
+restored from fixed motion frame index 15 and the saved skeleton camera states.
+The 21-scene output contains 2,634,240 viewpoints and occupies
+214,924,343,585 bytes (200.16 GiB); full audit found 0 missing, 0 extra and 0
+invalid records. Generation used 16 Habitat workers per scene after explicit
+authorization. No YOLO, VideoPose3D, ST-GCN or skeleton regeneration was run,
+and no policy Test evaluation or embedding extraction was started.
