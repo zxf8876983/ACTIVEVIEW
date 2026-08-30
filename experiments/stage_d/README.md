@@ -52,6 +52,16 @@ not create sensors, RGB/depth, humanoids or perception outputs.
   candidate ranking. Val Accuracy was 0.656681 and mean regret 1.429851,
   slightly worse than EXP014; the result is **INCONCLUSIVE**, not a policy
   acceptance. See its `analysis.md`.
+- **EXP020** is a completed Train→Val contextual-latent gate experiment. It
+  extracts the frozen EXP014 128-D candidate token before the utility head
+  and trains only a fixed 129-D binary gate. Val Accuracy was 0.661757, but
+  mean regret increased to 1.453868; the result is **INCONCLUSIVE**. See its
+  `analysis.md`.
+- **EXP021** is a completed Train→Val offline full-information contextual-bandit
+  experiment with actions `{Stay, p2, p3}` and fixed Stay score zero. The
+  expected-utility objective collapsed to all-Stay on Val (Accuracy 0.649103,
+  mean regret 1.450498), so the formulation is **REJECTED**; see its
+  `analysis.md`.
 
 Execution outcomes are recorded in each experiment's `result.json` and
 `analysis.md`. After the geometry correction and Val-only rerun, EXP014 is

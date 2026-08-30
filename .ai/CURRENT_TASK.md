@@ -1,34 +1,30 @@
 # Current Task
 
-## EXP019 — executed-candidate-aware second-step gate completed
+## EXP020 and EXP021 completed
 
-Stage C-v0 and corrected EXP014–EXP018 remain frozen. EXP019 trained one
-small `Linear(12,64) → ReLU → Linear(64,1)` binary gate on 29,133 Train
-second-step examples for exactly 30 epochs. The target was
-`1[true_U2(c_hat)>0]`, where `c_hat` is selected only by frozen EXP014
-predicted-utility/geodesic/viewpoint-ID ranking. Val used the fixed
-probability threshold 0.5 exactly once.
+Stage C-v0 and corrected EXP014–EXP019 remain frozen. EXP020 trained only a
+fixed 129-D binary gate on the frozen EXP014 contextual candidate token plus
+predicted utility. On 9,742 Val v0-Move episodes it reached Accuracy `0.661757`,
+Macro-F1 `0.612956`, mean regret `1.453868`, P90 regret `5.635810` and
+headroom `0.778625`; decision **INCONCLUSIVE** because regret worsened.
 
-## Result
-
-On 13,987 Val episodes (9,742 v0-Move), EXP019 reached Accuracy `0.656681`,
-Macro-F1 `0.607936`, mean regret `1.429851`, P90 regret `5.532555` and
-headroom capture `0.780325`, versus EXP014 Accuracy `0.658254`, Macro-F1
-`0.610153` and mean regret `1.422463`. The executed-candidate oracle remained
-at Accuracy `0.743119` / mean regret `0.761339`. EXP019 changed 984 Stay→Move
-and 253 Move→Stay decisions; candidate identity mismatch count was zero.
+EXP021 trained a new contextual full-information bandit policy with fixed
+Stay score zero and actions `{Stay,p2,p3}`. The 30-epoch expected-utility
+objective collapsed to Stay for every Val v0-Move episode: Accuracy `0.649103`,
+Macro-F1 `0.598042`, mean regret `1.450498`, P90 `5.607818`, headroom
+`0.777965`; decision **REJECT**. Fixed-first oracle remained Accuracy
+`0.771502` / mean regret `0.586204`.
 
 ## Protocol boundaries
 
-- EXP019 trained only on Train and evaluated once on Val; Test was not read or
-  used.
+- Both experiments used Train→Val only; Test was not read or used.
 - No EXP014 retraining, Habitat rendering, perception regeneration, ST-GCN
-  retraining, or Stage A/B/C-v0/EXP014–EXP018 artifact modification was
+  retraining, or Stage A/B/C-v0/EXP014–EXP019 artifact modification was
   performed.
-- EXP019 is an analysis result with decision **INCONCLUSIVE**; no policy was
-  accepted and EXP020 must not be started automatically.
+- EXP020 and EXP021 are recorded for scientific review; no EXP022 should be
+  started automatically.
 
 ## Status
 
-EXP019 completed. Await human scientific review before authorizing any next
-experiment.
+EXP020 and EXP021 completed. Await human scientific review before authorizing
+any next experiment.

@@ -228,6 +228,24 @@ def _action_quality(
     }
 
 
+def _offline_oracle_actions(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Summarize the diagnostic argmax over Stay and true candidate rewards."""
+    counts = {"Stay": 0, "p2": 0, "p3": 0}
+    rewards: list[float] = []
+    for row in rows:
+        ids = [int(value) for value in row["remaining_candidate_ids"]]
+        values = [float(value) for value in row["second_step_utility_targets"]]
+        stays, selected_id, _score = select_bandit_actions(values, ids)
+        name = action_name(stays, selected_id, ids)
+        counts[name] += 1
+        rewards.append(0.0 if stays else values[ids.index(int(selected_id))])
+    return {
+        "episode_count": len(rows),
+        "action_counts": counts,
+        "selected_action_mean_true_utility": float(np.mean(rewards)) if rewards else 0.0,
+    }
+
+
 def _metric_row(name: str, summary: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "variant": name,
@@ -334,10 +352,15 @@ def analyze(
     oracle_accuracy_gap = float(oracle["accuracy"]) - float(exp014["accuracy"])
     oracle_regret_gap = float(exp014["mean_regret"]) - float(oracle["mean_regret"])
     action_quality = _action_quality(stage_b_rows=stage_b_val, v0_rows=v0_val, cache_rows=val_set.rows, policy_rows=val_policy_rows)
+    oracle_action_diagnostics = {
+        "train": _offline_oracle_actions(train_set.rows),
+        "val": _offline_oracle_actions(val_set.rows),
+    }
     result = {
         "experiment_id": "EXP021",
         "experiment_name": "contextual_bandit_joint_second_step_policy",
         "status": "COMPLETED",
+        "decision": "REJECT",
         "split": "val",
         "test_used": False,
         "training_performed": True,
@@ -350,6 +373,7 @@ def analyze(
         "v0_move_episode_count": len(val_set),
         "metrics_table": table,
         "action_quality": action_quality,
+        "offline_oracle_action_diagnostics": oracle_action_diagnostics,
         "headroom_recovery": {
             "oracle_accuracy_gap": oracle_accuracy_gap,
             "accuracy_gain": float(by_variant["EXP021"]["accuracy"]) - float(exp014["accuracy"]),

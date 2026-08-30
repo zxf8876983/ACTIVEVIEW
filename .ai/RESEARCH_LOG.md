@@ -251,3 +251,23 @@ versus AnyPositiveOracleGate 0.720026 / 0.969138 mean regret and EXP014
 were non-positive for the candidate actually selected by EXP014. EXP018 is an
 analysis-only **INCONCLUSIVE** diagnostic; Test was not read and no upstream
 artifact was modified.
+
+## EXP020 — Frozen EXP014 Contextual-Latent Executed Gate
+
+2026-08-31: trained a fixed 129-D binary gate using the frozen EXP014
+contextual candidate token (extracted before its utility head) plus frozen
+predicted utility. After 30 fixed Train epochs, Val Accuracy was 0.661757,
+Macro-F1 0.612956, mean regret 1.453868, P90 regret 5.635810 and headroom
+0.778625. Gate ROC-AUC/PR-AUC were 0.641344/0.554610. Accuracy rose modestly
+over EXP014 but regret worsened; decision **INCONCLUSIVE**. Test and all
+upstream perception/artifacts remained untouched.
+
+## EXP021 — Offline Contextual-Bandit Joint Second-Step Policy
+
+2026-08-31: trained a new contextual scorer for the full-information
+one-step action set `{Stay,p2,p3}` by maximizing expected Train utility under
+`softmax([0,q2,q3])`, with Stay fixed at zero. After 30 fixed epochs, the
+policy selected Stay for all 9,742 Val v0-Move episodes, yielding Accuracy
+0.649103, Macro-F1 0.598042, mean regret 1.450498, P90 regret 5.607818 and
+headroom 0.777965. The formulation was **REJECTED** as a useful policy under
+the fixed protocol; no Test or upstream artifact was used.
