@@ -11,6 +11,7 @@ STAGE_B_ROOT="${DATASET_ROOT}/stage_b"
 EXP014_ROOT="${DATA_ROOT}/experiments/stage_d/EXP014_two_step_sequential"
 EXP017_ROOT="${DATA_ROOT}/experiments/stage_d/EXP017_second_step_gate_calibration"
 OUT="${DATA_ROOT}/experiments/stage_d/EXP019_executed_candidate_gate"
+EXP014_CHECKPOINT="${EXP014_ROOT}/checkpoints/sequential_observation_ranker_best.pth"
 TRAIN_PREDICTIONS="${EXP017_ROOT}/runtime/train_second_step_predictions.jsonl"
 VAL_PREDICTIONS="${EXP017_ROOT}/runtime/val_second_step_predictions.jsonl"
 V0_PREDICTIONS="${EXP014_ROOT}/v0_predictions/val_predictions.jsonl"
@@ -18,10 +19,12 @@ LABEL_MAPPING="${DATA_ROOT}/datasets/stgcn_babel_selected16_habitat_pure_stumble
 
 test -f "${TRAIN_PREDICTIONS}"
 test -f "${VAL_PREDICTIONS}"
+test -f "${EXP014_CHECKPOINT}"
 mkdir -p "${OUT}"
 (cd "${REPO_ROOT}" && python -m activeview.scripts.train_stage_d_executed_gate \
   --cache-root "${CACHE_ROOT}" \
   --stage-b-root "${STAGE_B_ROOT}" \
+  --exp014-checkpoint "${EXP014_CHECKPOINT}" \
   --train-predictions "${TRAIN_PREDICTIONS}" \
   --val-predictions "${VAL_PREDICTIONS}" \
   --v0-predictions "${V0_PREDICTIONS}" \

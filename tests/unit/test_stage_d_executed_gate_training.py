@@ -51,7 +51,14 @@ def test_training_examples_have_no_true_utility_in_model_features():
     assert examples[0]["features"].shape == (EXECUTED_GATE_FEATURE_DIM,)
     assert np.allclose(examples[0]["features"][:11], 1.0)
     assert examples[0]["features"][11] == pytest.approx(0.2)
-    assert "true_utility" not in {"features"}
+    changed_target_row = _feature_row()
+    changed_target_row["second_step_utility_targets"] = [-1.0, 1.0]
+    changed = build_executed_gate_examples(
+        feature_rows=[changed_target_row], prediction_rows=[_prediction_row()],
+        geometry_mean=[0.0] * 11, geometry_std=[1.0] * 11, split="train",
+    )
+    assert np.array_equal(examples[0]["features"], changed[0]["features"])
+    assert examples[0]["target"] != changed[0]["target"]
 
 
 def test_exp019_model_has_fixed_small_architecture():

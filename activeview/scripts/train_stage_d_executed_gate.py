@@ -38,6 +38,9 @@ REFERENCE = {
     "EXP014": {"accuracy": 0.6582540930864375, "macro_f1": 0.6101526052247462, "mean_regret": 1.4224626188609946},
     "ExecutedCandidateOracleGate": {"accuracy": 0.7431186101379853, "macro_f1": 0.6932308383305563, "mean_regret": 0.7613394852938011},
 }
+EXP019_EPOCHS = 30
+EXP019_BATCH_SIZE = 256
+EXP019_LEARNING_RATE = 1e-3
 
 
 def _seed_everything(seed: int) -> None:
@@ -159,6 +162,7 @@ def analyze(
     *,
     cache_root: Path,
     stage_b_root: Path,
+    exp014_checkpoint: Path,
     train_predictions: Path,
     val_predictions: Path,
     v0_predictions: Path,
@@ -172,7 +176,14 @@ def analyze(
     device_name: str = "cuda:0",
 ) -> dict[str, Any]:
     """Train on Train examples exactly 30 epochs, then evaluate Val once."""
+    if epochs != EXP019_EPOCHS or batch_size != EXP019_BATCH_SIZE or not np.isclose(learning_rate, EXP019_LEARNING_RATE):
+        raise ValueError(
+            "EXP019 fixed training protocol requires epochs=30, batch_size=256, "
+            "learning_rate=1e-3"
+        )
     _seed_everything(seed)
+    if not exp014_checkpoint.is_file():
+        raise FileNotFoundError(f"Frozen EXP014 checkpoint not found: {exp014_checkpoint}")
     device = _device(device_name)
     summary_path = cache_root / "stage_d_feature_summary.json"
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -197,7 +208,7 @@ def analyze(
     checkpoint = runtime_dir / "checkpoints" / "executed_candidate_gate_final.pth"
     checkpoint.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"experiment_id": "EXP019", "model_state_dict": model.state_dict(), "model_config": {"input_dim": 12, "hidden_dim": 64}, "training": {"seed": seed, "epochs": epochs, "batch_size": batch_size, "learning_rate": learning_rate}}, checkpoint)
-    training_summary = {"experiment_id": "EXP019", "split": "train", "episode_count": len(train_examples), "positive_count": int(train_y.sum()), "negative_count": int(train_y.size - train_y.sum()), "final_loss": final_loss, "loss_history": history, "selection": "final_epoch_fixed_30", "val_used_for_selection": False, "test_used": False}
+    training_summary = {"experiment_id": "EXP019", "split": "train", "episode_count": len(train_examples), "positive_count": int(train_y.sum()), "negative_count": int(train_y.size - train_y.sum()), "final_loss": final_loss, "loss_history": history, "selection": "final_epoch_fixed_30", "epochs": epochs, "batch_size": batch_size, "learning_rate": learning_rate, "val_used_for_selection": False, "test_used": False, "exp014_checkpoint": str(exp014_checkpoint.resolve()), "exp014_checkpoint_sha256": file_sha256(exp014_checkpoint)}
     (runtime_dir / "training_summary.json").write_text(json.dumps(training_summary, indent=2), encoding="utf-8")
 
     model.eval()
@@ -208,9 +219,19 @@ def analyze(
     val_gate_metrics["roc_auc"] = binary_roc_auc(val_logits, val_y.tolist())
     val_gate_metrics["pr_auc"] = binary_average_precision(val_logits, val_y.tolist())
     val_originals = {str(row["episode_id"]): row for row in val_pred_rows}
+    frozen_identity_mismatch = 0
+    for example in val_examples:
+        original = val_originals[str(example["episode_id"])]
+        if not bool(original["predicted_stays"]):
+            if int(original["predicted_candidate_viewpoint_id"]) != int(example["candidate_id"]):
+                frozen_identity_mismatch += 1
+    if frozen_identity_mismatch:
+        raise ValueError(
+            f"Frozen EXP014 candidate identity mismatch: {frozen_identity_mismatch}"
+        )
     exp019_rows = _prediction_rows(val_examples, val_logits, val_originals)
     _write_jsonl(runtime_dir / "val_gate_predictions.jsonl", exp019_rows)
-    candidate_identity_mismatch = sum(int(row["predicted_candidate_viewpoint_id"] != int(example["candidate_id"])) for row, example in zip(exp019_rows, val_examples) if not bool(row["predicted_stays"]))
+    candidate_identity_mismatch = frozen_identity_mismatch
 
     stage_b_val = load_jsonl(stage_b_root / "utility_labels" / "val.jsonl")
     v0_val = load_jsonl(v0_predictions)
@@ -234,7 +255,7 @@ def analyze(
         "episode_count": len(stage_b_val), "v0_move_eligible_episode_count": len(val_examples), "train": training_summary, "val_gate_metrics_against_y_exec": val_gate_metrics, "metrics_table": table,
         "headroom_recovery": {"oracle_accuracy_gap": oracle_accuracy_gap, "exp019_accuracy_gain": metrics["EXP019"]["accuracy"] - metrics["EXP014"]["accuracy"], "executed_gate_accuracy_recovery": (metrics["EXP019"]["accuracy"] - metrics["EXP014"]["accuracy"]) / oracle_accuracy_gap if abs(oracle_accuracy_gap) > 1e-12 else None, "oracle_regret_gap": oracle_regret_gap, "exp019_regret_reduction": metrics["EXP014"]["mean_regret"] - metrics["EXP019"]["mean_regret"], "executed_gate_regret_recovery": (metrics["EXP014"]["mean_regret"] - metrics["EXP019"]["mean_regret"]) / oracle_regret_gap if abs(oracle_regret_gap) > 1e-12 else None},
         "action_change": _action_change({str(row["episode_id"]): row for row in val_pred_rows}, {str(row["episode_id"]): row for row in exp019_rows}, val_examples), "candidate_identity_mismatch_count": int(candidate_identity_mismatch), "episode_alignment": alignment,
-        "provenance": {"source_commit": _git_commit(), "stage_d_feature_summary": str(summary_path.resolve()), "stage_d_feature_summary_sha256": file_sha256(summary_path), "stage_d_train_features": str(Path(summary["feature_files"]["train"]).resolve()), "stage_d_train_features_sha256": file_sha256(Path(summary["feature_files"]["train"])), "stage_d_val_features": str(Path(summary["feature_files"]["val"]).resolve()), "stage_d_val_features_sha256": file_sha256(Path(summary["feature_files"]["val"])), "stage_d_feature_stats": str((cache_root / "stage_d_feature_stats.json").resolve()), "stage_d_feature_stats_sha256": file_sha256(cache_root / "stage_d_feature_stats.json"), "train_predictions": str(train_predictions.resolve()), "train_predictions_sha256": file_sha256(train_predictions), "val_predictions": str(val_predictions.resolve()), "val_predictions_sha256": file_sha256(val_predictions), "v0_val_predictions": str(v0_predictions.resolve()), "v0_val_predictions_sha256": file_sha256(v0_predictions), "stage_b_val_utility": str((stage_b_root / "utility_labels" / "val.jsonl").resolve()), "stage_b_val_utility_sha256": file_sha256(stage_b_root / "utility_labels" / "val.jsonl"), "checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": file_sha256(checkpoint)},
+        "provenance": {"source_commit": _git_commit(), "exp014_checkpoint": str(exp014_checkpoint.resolve()), "exp014_checkpoint_sha256": file_sha256(exp014_checkpoint), "stage_d_feature_summary": str(summary_path.resolve()), "stage_d_feature_summary_sha256": file_sha256(summary_path), "stage_d_train_features": str(Path(summary["feature_files"]["train"]).resolve()), "stage_d_train_features_sha256": file_sha256(Path(summary["feature_files"]["train"])), "stage_d_val_features": str(Path(summary["feature_files"]["val"]).resolve()), "stage_d_val_features_sha256": file_sha256(Path(summary["feature_files"]["val"])), "stage_d_feature_stats": str((cache_root / "stage_d_feature_stats.json").resolve()), "stage_d_feature_stats_sha256": file_sha256(cache_root / "stage_d_feature_stats.json"), "train_predictions": str(train_predictions.resolve()), "train_predictions_sha256": file_sha256(train_predictions), "val_predictions": str(val_predictions.resolve()), "val_predictions_sha256": file_sha256(val_predictions), "v0_val_predictions": str(v0_predictions.resolve()), "v0_val_predictions_sha256": file_sha256(v0_predictions), "stage_b_val_utility": str((stage_b_root / "utility_labels" / "val.jsonl").resolve()), "stage_b_val_utility_sha256": file_sha256(stage_b_root / "utility_labels" / "val.jsonl"), "checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": file_sha256(checkpoint)},
         "validity": {"candidate_ranking_frozen": True, "first_step_protocol_frozen": True, "true_u2_used_only_as_train_target_and_offline_oracle": True, "true_u2_used_as_model_input": False, "val_used_for_selection": False, "fixed_threshold_probability": 0.5, "final_epoch_used": True, "exp014_retrained": False, "test_split_accepted": False},
     }
     payload = json.dumps(result, indent=2, ensure_ascii=False)
@@ -255,6 +276,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache-root", type=Path, required=True)
     parser.add_argument("--stage-b-root", type=Path, required=True)
+    parser.add_argument("--exp014-checkpoint", type=Path, required=True)
     parser.add_argument("--train-predictions", type=Path, required=True)
     parser.add_argument("--val-predictions", type=Path, required=True)
     parser.add_argument("--v0-predictions", type=Path, required=True)
@@ -271,7 +293,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = build_parser().parse_args()
-    result = analyze(cache_root=args.cache_root, stage_b_root=args.stage_b_root, train_predictions=args.train_predictions, val_predictions=args.val_predictions, v0_predictions=args.v0_predictions, label_mapping=args.label_mapping, output=args.output, runtime_dir=args.runtime_dir, seed=args.seed, epochs=args.epochs, batch_size=args.batch_size, learning_rate=args.learning_rate, device_name=args.device)
+    result = analyze(cache_root=args.cache_root, stage_b_root=args.stage_b_root, exp014_checkpoint=args.exp014_checkpoint, train_predictions=args.train_predictions, val_predictions=args.val_predictions, v0_predictions=args.v0_predictions, label_mapping=args.label_mapping, output=args.output, runtime_dir=args.runtime_dir, seed=args.seed, epochs=args.epochs, batch_size=args.batch_size, learning_rate=args.learning_rate, device_name=args.device)
     print(json.dumps({"experiment_id": "EXP019", "split": "val", "test_used": False, "training_performed": True, "metrics_table": result["metrics_table"], "val_gate_metrics_against_y_exec": result["val_gate_metrics_against_y_exec"]}, indent=2, ensure_ascii=False))
 
 
