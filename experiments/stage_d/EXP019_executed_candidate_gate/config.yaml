@@ -1,0 +1,26 @@
+experiment_id: EXP019
+experiment_name: executed_candidate_gate
+split:
+  train: train
+  evaluation: val
+  test_used: false
+model:
+  input_dim: 12
+  hidden_dim: 64
+  activation: ReLU
+loss: BCEWithLogitsLoss
+optimizer:
+  name: Adam
+  learning_rate: 0.001
+training:
+  seed: 42
+  epochs: 30
+  batch_size: 256
+  selection: final_epoch
+protocol:
+  first_step_frozen: true
+  p1_frozen: true
+  candidate_ranking: predicted_utility_then_geodesic_then_viewpoint_id
+  true_u2_model_input: false
+  val_threshold_probability: 0.5
+  exp014_retrained: false
