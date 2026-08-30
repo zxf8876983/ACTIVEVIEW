@@ -195,3 +195,15 @@ oracle reached 0.771502 / 0.725081 / 0.586204. Gate correction recovered
 candidate correction recovered 22.54% and 22.38%. EXP016 is analysis-only
 **INCONCLUSIVE**; Test was not read and no training or upstream artifact was
 modified.
+
+## EXP017 preparation — second-step gate calibration audit
+
+2026-08-30: prepared EXP017 as a no-training diagnostic. The implementation
+fits one strict scalar `gate_score > tau` threshold from frozen EXP014 Train
+predictions using balanced accuracy, with deterministic Move-F1/zero-distance/
+larger-threshold tie-breaking, then applies the frozen threshold once to Val.
+The learned p2/p3 candidate ordering and frozen Stage C-v0 first decision are
+unchanged. Calibration artifacts are written before Val evaluation, explicit
+Test input is rejected, and candidate identity is audited across tau variants.
+Only synthetic unit tests and static checks are authorized at this stage; real
+EXP017 Train calibration and Val evaluation have not been executed.

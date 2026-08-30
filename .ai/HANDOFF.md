@@ -2,16 +2,18 @@
 
 Status: CLEAN
 
-EXP016 Val-only analysis is complete. The analysis keeps the frozen Stage C-v0
-first decision and separates the second-step Stay/Move gate from p2/p3
-candidate identity. It accepts Val only and rejects Test at the CLI.
+EXP017 preparation is complete but its real Train calibration and Val
+evaluation have not been executed. It calibrates one strict scalar
+`gate_score > tau` threshold from frozen EXP014 Train predictions and applies
+that frozen threshold once to Val. Candidate ranking and the Stage C-v0 first
+decision remain unchanged; Test is rejected and never read.
 
-No training, Test access, Habitat rendering, perception regeneration or
-upstream artifact modification was performed. The compact result is in the
-EXP016 experiment directory; the full runtime result is under
-`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP016_second_step_error_decomposition/`.
+New source:
+`activeview/active_view/stage_d_gate_calibration.py` and
+`activeview/scripts/analyze_stage_d_gate_calibration.py`.
+Experiment record:
+`experiments/stage_d/EXP017_second_step_gate_calibration/`.
 
-The implementation matches frozen EXP015 true-U2 tie behavior (cached
-candidate order) and rejects any Stage B/v0 or second-step cache/prediction
-episode-ID mismatch before analysis. EXP016 is **INCONCLUSIVE** pending human
-scientific review; no follow-up experiment has started.
+No training, Habitat rendering, perception regeneration, ST-GCN retraining or
+upstream artifact modification was performed. Human code review and explicit
+execution authorization are required before running `run.sh`.

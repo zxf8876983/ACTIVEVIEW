@@ -1,0 +1,28 @@
+experiment_id: EXP017
+name: second_step_gate_calibration
+status: prepared
+split:
+  fit: train
+  evaluate: val
+  test_used: false
+intervention:
+  type: scalar_gate_threshold_only
+  gate_score: max(pred_u2_p2, pred_u2_p3)
+  decision: "move iff gate_score > tau"
+  selection_metric: train_gate_balanced_accuracy
+  tie_break:
+    - greater_train_move_f1
+    - threshold_closest_to_zero
+    - numerically_larger_threshold
+frozen:
+  exp014_checkpoint: true
+  exp014_candidate_ordering: true
+  stage_c_v0_first_decision_and_p1: true
+  stage_a_stage_b_stage_c_artifacts: true
+execution:
+  training_performed: false
+  perception_regenerated: false
+  habitat_rendering_performed: false
+  stgcn_retrained: false
+  real_train_calibration_executed: false
+  real_val_evaluation_executed: false
