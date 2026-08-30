@@ -310,3 +310,26 @@ The 21-scene output contains 2,634,240 viewpoints and occupies
 invalid records. Generation used 16 Habitat workers per scene after explicit
 authorization. No YOLO, VideoPose3D, ST-GCN or skeleton regeneration was run,
 and no policy Test evaluation or embedding extraction was started.
+
+## EXP024 — DINOv2 RGB Context Utility Regression Pilot
+
+2026-08-31: completed the authorized EXP024 Train→Val pilot using only
+already visited Stage-D `s0` and `s1` RGB observations. A deduplicated cache of
+77,750 observations (58,266 Train and 19,484 Val) was extracted with frozen
+Hugging Face `facebook/dinov2-base` ViT-B/14 global CLS embeddings (768-D,
+float16); cache extraction took 1,354.320 seconds and occupied 141,402,204
+bytes. The RGB projector and 513-D SmoothL1 raw executed-utility regression
+head were trained for 30 fixed Train epochs; final Train loss was 1.456738.
+
+On 13,987 Val episodes, EXP024 reached Accuracy 0.657682, Macro-F1 0.609503,
+mean regret 1.414353, P90 regret 5.431195 and headroom 0.782434. Utility
+regression MAE/RMSE were 2.896349/4.314998, Pearson 0.428491 and Spearman
+0.252335. Compared with frozen EXP022 (Accuracy 0.659898, mean regret
+1.416495), EXP024 changed Accuracy by -0.002216 and mean regret by -0.002142;
+the Accuracy recovery fraction versus the executed-candidate oracle was
+-0.006740 and regret recovery was 0.012266. Candidate identity mismatch was
+zero. EXP024 is **INCONCLUSIVE** as evidence for a useful global-CLS RGB
+policy improvement: regret improved slightly while Accuracy declined, so this
+does not support escalating automatically to spatial RGB features. Test was
+not read, no future-candidate RGB was accessed, and no upstream or RGB dataset
+artifact was modified.

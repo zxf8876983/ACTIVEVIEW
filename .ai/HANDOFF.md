@@ -2,14 +2,15 @@
 
 Status: CLEAN
 
-RGB Observation Dataset V1 is complete. External runtime output:
-`/home/zxf/MG08/robot/ActiveView/datasets/offline/hm3d-train/`.
-The source skeleton root was read-only:
-`/home/zxf/WorkSpace/code/data/ActiveView/datasets/offline/hm3d-train/`.
+EXP024 DINOv2 RGB Context Utility Regression Pilot is complete. Runtime cache,
+checkpoint and predictions are under
+`/home/zxf/MG08/robot/ActiveView/`; source summaries are under
+`experiments/stage_d/EXP024_dinov2_rgb_context/`. The cache uses 77,750 unique
+visited `s0`/`s1` RGB observations (58,266 Train; 19,484 Val), float16 768-D
+DINOv2 global CLS embeddings, and no future-candidate RGB.
 
-Final audit: 21 scenes, 82,320 source records, 82,320 RGB records,
-2,634,240 views, missing/extra/invalid = 0/0/0, fixed frame 15,
-`uint8 [32,256,256,3]`, 16 workers, 200.16 GiB measured output. No YOLO,
-VideoPose3D, ST-GCN, skeleton regeneration, policy training or Test evaluation
-was performed. Do not start embedding extraction or another experiment without
-explicit authorization.
+Val EXP024: Accuracy 0.657682, Macro-F1 0.609503, mean regret 1.414353,
+P90 5.431195, headroom 0.782434; candidate identity mismatches = 0. Relative
+to EXP022, Accuracy delta = -0.002216 and mean-regret delta = -0.002142.
+Test remained locked. No upstream artifact, RGB dataset, perception pipeline
+or Habitat rendering was modified. Do not start EXP025 automatically.
