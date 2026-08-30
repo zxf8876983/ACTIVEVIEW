@@ -1,6 +1,6 @@
 # EXP017 — Second-Step Gate Calibration Audit
 
-**Status: PREPARED; real Train calibration and Val evaluation not executed.**
+**Status: COMPLETED; Val-only result is REJECT.**
 
 EXP017 is a no-training diagnostic of the corrected frozen EXP014 second-step
 policy. Its single intervention is to replace the fixed `tau=0` Move/Stay
@@ -27,10 +27,20 @@ it is never used to select a deployable candidate.
 - No Stage A/B/C artifact, perception output, Habitat observation or EXP014
   checkpoint is modified.
 
-## Intended command
+## Result
 
-`run.sh` is provided for a later, explicitly authorized execution. This
-preparation task does not invoke it.
+Train selected `tau=-0.08218251913785934`. On Val, the calibrated policy
+reduced Accuracy from `0.658254` to `0.650962`, reduced Macro-F1 from
+`0.610153` to `0.598102`, increased mean regret from `1.422463` to `1.477153`,
+and reduced headroom from `0.783313` to `0.777146`. It changed 2,838
+second-step decisions from Stay to Move; candidate identity was unchanged
+whenever both policies moved. The scalar-threshold intervention is therefore
+rejected as a deployable policy; see `analysis.md`.
+
+## Reproduction command
+
+`run.sh` records the authorized Train-calibrate → freeze artifact → Val-only
+evaluation entry point. It has no Test input or Test CLI path.
 
 ## Files
 

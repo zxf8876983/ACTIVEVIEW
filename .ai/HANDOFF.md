@@ -2,18 +2,17 @@
 
 Status: CLEAN
 
-EXP017 preparation is complete but its real Train calibration and Val
-evaluation have not been executed. It calibrates one strict scalar
-`gate_score > tau` threshold from frozen EXP014 Train predictions and applies
-that frozen threshold once to Val. Candidate ranking and the Stage C-v0 first
-decision remain unchanged; Test is rejected and never read.
+EXP017 second-step gate calibration is complete under the Train→Val protocol
+and is **REJECTED** as a deployable global-threshold intervention. Train chose
+`tau=-0.08218251913785934`; Val trajectory performance worsened despite better
+gate balanced accuracy and Move recall. Candidate identity was unchanged when
+both tau variants moved, and the frozen EXP014/OracleGate references matched.
 
-New source:
-`activeview/active_view/stage_d_gate_calibration.py` and
-`activeview/scripts/analyze_stage_d_gate_calibration.py`.
-Experiment record:
+Runtime result and calibration artifact:
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP017_second_step_gate_calibration/`.
+Compact experiment record:
 `experiments/stage_d/EXP017_second_step_gate_calibration/`.
 
-No training, Habitat rendering, perception regeneration, ST-GCN retraining or
-upstream artifact modification was performed. Human code review and explicit
-execution authorization are required before running `run.sh`.
+Test remains locked and was not read. No Stage A/B/C-v0, EXP014/015/016,
+perception or Habitat artifact was modified. No follow-up experiment has been
+started automatically; human review is required before any next intervention.

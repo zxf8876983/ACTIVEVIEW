@@ -37,10 +37,11 @@ not create sensors, RGB/depth, humanoids or perception outputs.
 - **EXP016** is a completed no-training, Val-only error decomposition. It
   keeps the frozen v0 first decision fixed and separately replaces the
   second-step gate and p2/p3 candidate identity with offline oracle choices.
-- **EXP017** is prepared as a no-training, Train-calibrated gate audit. It
+- **EXP017** is a completed no-training, Train-calibrated gate audit. It
   selects one scalar Move/Stay threshold from frozen EXP014 Train predictions,
   then applies it once to Val while retaining the learned candidate ordering.
-  The real calibration and Val evaluation are not yet authorized.
+  The scalar threshold worsened Val trajectory metrics and is rejected; see
+  its `analysis.md`.
 
 Execution outcomes are recorded in each experiment's `result.json` and
 `analysis.md`. After the geometry correction and Val-only rerun, EXP014 is

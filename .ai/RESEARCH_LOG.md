@@ -207,3 +207,19 @@ unchanged. Calibration artifacts are written before Val evaluation, explicit
 Test input is rejected, and candidate identity is audited across tau variants.
 Only synthetic unit tests and static checks are authorized at this stage; real
 EXP017 Train calibration and Val evaluation have not been executed.
+
+## EXP017 — second-step gate calibration result
+
+2026-08-31: executed the authorized EXP017 no-training Train→Val audit using
+the corrected frozen EXP014 checkpoint. Train selected the strict threshold
+`tau=-0.08218251913785934` from 29,133 second-step episodes. On 13,987 Val
+episodes, the calibrated policy reached Accuracy 0.650962 / Macro-F1 0.598102 /
+mean regret 1.477153 / P90 regret 5.605605 / headroom 0.777146, compared with
+EXP014 tau=0 at 0.658254 / 0.610153 / 1.422463 / 5.515663 / 0.783313. The
+threshold changed 2,838 Stay decisions to Move and none in the reverse
+direction; learned candidate identity was unchanged in all 2,356 episodes
+where both policies moved. Gate balanced accuracy improved on Val from
+0.571825 to 0.609873, but trajectory performance worsened. EXP017 is
+**REJECTED** as a deployable global-threshold intervention. Test was not read;
+no training, perception regeneration, Habitat rendering or upstream artifact
+modification was performed.
