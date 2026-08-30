@@ -46,6 +46,12 @@ not create sensors, RGB/depth, humanoids or perception outputs.
   compares the any-positive gate with a gate aligned to the candidate frozen
   by EXP014. The latter exposes 1,196 ranking-induced gate mismatches and is
   an offline diagnostic, not a deployable policy; see its `analysis.md`.
+- **EXP019** is a completed Train→Val executed-candidate gate experiment. It
+  trains a fixed small binary MLP for 30 Train epochs and applies a fixed
+  0.5 probability threshold on Val, while retaining EXP014's frozen
+  candidate ranking. Val Accuracy was 0.656681 and mean regret 1.429851,
+  slightly worse than EXP014; the result is **INCONCLUSIVE**, not a policy
+  acceptance. See its `analysis.md`.
 
 Execution outcomes are recorded in each experiment's `result.json` and
 `analysis.md`. After the geometry correction and Val-only rerun, EXP014 is

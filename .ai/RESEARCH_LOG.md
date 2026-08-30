@@ -178,6 +178,18 @@ for offline oracle branches. Added policy primitives, a Val-only CLI, an
 experiment record and focused synthetic tests. The real Val analysis has not
 been executed; Test remains locked.
 
+## EXP019 — Executed-Candidate-Aware Second-Step Gate
+
+2026-08-31: trained one fixed 12-D binary gate for exactly 30 Train epochs,
+supervised by `1[true_U2(c_hat)>0]` with frozen EXP014 candidate ranking, then
+evaluated once on Val. EXP019 achieved Accuracy 0.656681, Macro-F1 0.607936,
+mean regret 1.429851, P90 regret 5.532555 and headroom capture 0.780325,
+slightly worse than EXP014 (0.658254 / 0.610153 / 1.422463). The executed-
+candidate oracle remains 0.743119 Accuracy / 0.761339 mean regret. The gate
+changed 984 Stay→Move and 253 Move→Stay decisions, with zero candidate
+identity mismatches. Decision: **INCONCLUSIVE**; no Test was read or used,
+and no frozen upstream artifact was changed.
+
 2026-08-30: corrected the EXP016 preparation after protocol review. Oracle
 candidate selection now exactly reproduces frozen EXP015 `np.argmax` behavior,
 including cached-order ties; learned selection remains utility/geodesic/ID
