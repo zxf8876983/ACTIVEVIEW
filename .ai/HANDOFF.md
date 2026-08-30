@@ -10,3 +10,7 @@ No real EXP016 Val analysis, training, Test access, Habitat rendering,
 perception regeneration or upstream artifact modification was performed.
 Await human code review and explicit authorization before running the real
 Val command.
+
+The preparation also now matches frozen EXP015 true-U2 tie behavior (cached
+candidate order) and rejects any Stage B/v0 or second-step cache/prediction
+episode-ID mismatch before analysis.

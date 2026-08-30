@@ -24,7 +24,14 @@ after the cached `p1` observation is replaced.
 
 True U2 is used only for offline oracle branches and never as a learned-policy
 input.  The fixed-first oracle compares `Stay=0`, `true U2(p2)` and
-`true U2(p3)` with the existing deterministic geodesic/viewpoint-ID tie-break.
+`true U2(p3)` using the frozen EXP015 `np.argmax` semantics: ties retain the
+original cached p2/p3 order.  Learned candidate selection retains the existing
+utility/geodesic/viewpoint-ID tie-break.
+
+Before constructing any trajectories, the analyzer requires exact episode-ID
+alignment: Stage B Val and frozen-v0 Val must match, and both the Stage D
+second-step cache and EXP014 predictions must contain exactly the frozen-v0
+Move subset.  Extra or missing rows fail closed.
 
 ## Frozen inputs
 

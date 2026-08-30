@@ -177,3 +177,10 @@ All variants preserve the frozen Stage C-v0 first action and use true U2 only
 for offline oracle branches. Added policy primitives, a Val-only CLI, an
 experiment record and focused synthetic tests. The real Val analysis has not
 been executed; Test remains locked.
+
+2026-08-30: corrected the EXP016 preparation after protocol review. Oracle
+candidate selection now exactly reproduces frozen EXP015 `np.argmax` behavior,
+including cached-order ties; learned selection remains utility/geodesic/ID
+ordered. The Val analyzer now fails closed unless Stage B and frozen-v0 IDs
+match exactly and the Stage D cache plus EXP014 predictions equal the frozen-v0
+Move subset. No real Val analysis or Test access was performed.

@@ -17,6 +17,10 @@ for every variant.
 - Added the EXP016 README, analysis record, preparation result and run script.
 - Added synthetic unit tests for gate/candidate isolation, negative-U2 edge
   cases, deterministic ties, frozen first-step behavior and Test rejection.
+- Corrected EXP016 OracleCandidate ties to match frozen EXP015 cache-order
+  `np.argmax` semantics; learned candidates retain geodesic/ID tie-breaking.
+- Added fail-closed exact episode-ID alignment for Stage B/v0 and the
+  v0-Move-only Stage D cache/EXP014 prediction subset.
 
 ## Protocol boundaries
 

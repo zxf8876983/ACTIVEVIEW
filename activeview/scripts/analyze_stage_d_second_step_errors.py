@@ -18,6 +18,7 @@ from activeview.active_view.stage_d_error_decomposition import (
     build_exp016_variant_trajectories,
     exp016_decision_diagnostics,
     summarize_variant_rows,
+    validate_exp016_episode_alignment,
     validate_exp016_split,
 )
 from activeview.active_view.stage_d_evaluation import (
@@ -151,6 +152,12 @@ def analyze(
     _assert_val_rows(v0_rows, "Stage C-v0 Val predictions")
     _assert_val_rows(cache_rows, "Stage D Val cache")
     _assert_val_rows(exp014_rows, "EXP014 Val predictions")
+    alignment = validate_exp016_episode_alignment(
+        stage_b_rows=stage_b_rows,
+        v0_prediction_rows=v0_rows,
+        cache_rows=cache_rows,
+        exp014_prediction_rows=exp014_rows,
+    )
 
     categories = _categories(label_mapping)
     exp014_trajectories = build_stage_d_trajectories(stage_b_rows, v0_rows, cache_rows, exp014_rows)
@@ -234,6 +241,7 @@ def analyze(
             "stage_d_cache_val": len(cache_rows),
             "exp014_val_predictions": len(exp014_rows),
         },
+        "episode_alignment": alignment,
         "policies": {
             "EXP014": "learned gate + learned candidate; corrected EXP014 decision logic",
             "OracleGate_LearnedCandidate": "oracle true-U2 Stay/Move gate + learned p2/p3 candidate",

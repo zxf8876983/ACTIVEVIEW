@@ -4,8 +4,10 @@ from activeview.scripts.analyze_stage_d_second_step_errors import build_parser
 from activeview.active_view.stage_d_error_decomposition import (
     build_exp016_variant_trajectories,
     second_step_variant_decision,
+    validate_exp016_episode_alignment,
     validate_exp016_split,
 )
+from activeview.active_view.stage_d_evaluation import build_fixed_first_oracle
 
 
 def _stage_b_record(episode_id: str, label_id: int = 0) -> dict:
@@ -163,6 +165,69 @@ def test_ties_use_geodesic_then_viewpoint_id():
         true_utilities=[1.0, 1.0], candidate_ids=[3, 2], candidate_geodesics=[1.0, 1.0],
     )
     assert decision["candidate_id"] == 2
+
+
+def test_oracle_candidate_ties_preserve_frozen_exp015_cache_order():
+    decision = second_step_variant_decision(
+        gate="learned", candidate="oracle", learned_utilities=[1.0, 1.0],
+        true_utilities=[1.0, 1.0], candidate_ids=[3, 2], candidate_geodesics=[10.0, 1.0],
+    )
+    assert decision["candidate_id"] == 3
+
+
+def test_exp016_oracle_candidate_matches_frozen_fixed_first_tie_order():
+    stage_b, v0, cache, exp014 = _move_inputs()
+    cache[0]["remaining_candidate_ids"] = [3, 2]
+    cache[0]["second_step_utility_targets"] = [1.0, 1.0]
+    cache[0]["second_step_candidate_geodesic"] = [10.0, 1.0]
+    exp014[0]["remaining_candidate_ids"] = [3, 2]
+    exp014[0]["predicted_utilities"] = [1.0, 1.0]
+
+    decision = second_step_variant_decision(
+        gate="oracle", candidate="oracle", learned_utilities=[1.0, 1.0],
+        true_utilities=cache[0]["second_step_utility_targets"],
+        candidate_ids=cache[0]["remaining_candidate_ids"],
+        candidate_geodesics=cache[0]["second_step_candidate_geodesic"],
+    )
+    frozen = build_fixed_first_oracle(stage_b, v0, cache)
+    assert decision["candidate_id"] == 3
+    assert frozen[0]["selected_viewpoint_id"] == 3
+
+
+def test_exp016_requires_exact_episode_universe_and_second_step_subset():
+    stage_b, v0, cache, exp014 = _move_inputs()
+    alignment = validate_exp016_episode_alignment(
+        stage_b_rows=stage_b,
+        v0_prediction_rows=v0,
+        cache_rows=cache,
+        exp014_prediction_rows=exp014,
+    )
+    assert alignment["stage_b_episode_count"] == 1
+    assert alignment["expected_second_step_episode_count"] == 1
+
+    with pytest.raises(ValueError, match="Stage D cache second-step episode IDs mismatch"):
+        validate_exp016_episode_alignment(
+            stage_b_rows=stage_b,
+            v0_prediction_rows=v0,
+            cache_rows=cache + [{"episode_id": "unexpected"}],
+            exp014_prediction_rows=exp014,
+        )
+
+    with pytest.raises(ValueError, match="EXP014 prediction second-step episode IDs mismatch"):
+        validate_exp016_episode_alignment(
+            stage_b_rows=stage_b,
+            v0_prediction_rows=v0,
+            cache_rows=cache,
+            exp014_prediction_rows=exp014 + [{"episode_id": "unexpected"}],
+        )
+
+    with pytest.raises(ValueError, match="Stage B/v0 episode IDs mismatch"):
+        validate_exp016_episode_alignment(
+            stage_b_rows=stage_b,
+            v0_prediction_rows=v0 + [{"episode_id": "unexpected", "predicted_stays": True}],
+            cache_rows=cache,
+            exp014_prediction_rows=exp014,
+        )
 
 
 def test_exp016_rejects_test_split():

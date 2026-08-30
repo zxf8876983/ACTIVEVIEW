@@ -65,6 +65,80 @@ def _candidate_decision(
     return int(ordered[0]), float(values[list(candidate_ids).index(ordered[0])])
 
 
+def _frozen_oracle_candidate_decision(
+    values: Sequence[float], candidate_ids: Sequence[int]
+) -> tuple[int, float]:
+    """Select a true-U2 candidate exactly as the frozen EXP015 oracle.
+
+    EXP015 uses ``np.argmax`` over the cached p2/p3 sequence.  NumPy's first
+    maximum rule is therefore part of the frozen oracle contract: ties are
+    resolved by the original cache order, not by geodesic distance or
+    viewpoint ID.
+    """
+    finite = _finite_values(values, "true_utilities")
+    ids = [int(value) for value in candidate_ids]
+    if len(finite) != len(ids) or not ids:
+        raise ValueError("oracle candidate arrays must have equal non-zero lengths")
+    if len(set(ids)) != len(ids):
+        raise ValueError("candidate IDs must be unique")
+    index = int(np.argmax(np.asarray(finite, dtype=np.float64)))
+    return ids[index], finite[index]
+
+
+def validate_exp016_episode_alignment(
+    *,
+    stage_b_rows: Sequence[Mapping[str, Any]],
+    v0_prediction_rows: Sequence[Mapping[str, Any]],
+    cache_rows: Sequence[Mapping[str, Any]],
+    exp014_prediction_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, int]:
+    """Require one exact episode universe for the EXP016 Val analysis.
+
+    Stage B and frozen-v0 predictions define the full Val universe.  Only
+    frozen-v0 Move episodes should have second-step cache/prediction rows;
+    extra rows are rejected instead of being silently ignored by downstream
+    trajectory or diagnostic loops.
+    """
+    stage_b = _index(stage_b_rows, "Stage B utility")
+    v0 = _index(v0_prediction_rows, "v0 prediction")
+    cache = _index(cache_rows, "Stage D cache")
+    exp014 = _index(exp014_prediction_rows, "EXP014 prediction")
+    stage_b_ids = set(stage_b)
+    v0_ids = set(v0)
+    if stage_b_ids != v0_ids:
+        missing = sorted(stage_b_ids - v0_ids)
+        extra = sorted(v0_ids - stage_b_ids)
+        raise ValueError(
+            "Stage B/v0 episode IDs mismatch; "
+            f"missing={missing[:5]} extra={extra[:5]}"
+        )
+
+    expected_second_step_ids = {
+        episode_id
+        for episode_id, row in v0.items()
+        if not bool(row["predicted_stays"])
+    }
+    for name, indexed in (
+        ("Stage D cache", cache),
+        ("EXP014 prediction", exp014),
+    ):
+        observed_ids = set(indexed)
+        if observed_ids != expected_second_step_ids:
+            missing = sorted(expected_second_step_ids - observed_ids)
+            extra = sorted(observed_ids - expected_second_step_ids)
+            raise ValueError(
+                f"{name} second-step episode IDs mismatch; "
+                f"missing={missing[:5]} extra={extra[:5]}"
+            )
+    return {
+        "stage_b_episode_count": len(stage_b_ids),
+        "v0_episode_count": len(v0_ids),
+        "expected_second_step_episode_count": len(expected_second_step_ids),
+        "stage_d_cache_episode_count": len(cache),
+        "exp014_prediction_episode_count": len(exp014),
+    }
+
+
 def second_step_variant_decision(
     *,
     gate: str,
@@ -106,8 +180,10 @@ def second_step_variant_decision(
             "candidate_source": candidate,
         }
 
-    selected_values = learned if candidate == "learned" else true
-    selected_id, selected_value = _candidate_decision(selected_values, ids, geodesics)
+    if candidate == "learned":
+        selected_id, selected_value = _candidate_decision(learned, ids, geodesics)
+    else:
+        selected_id, selected_value = _frozen_oracle_candidate_decision(true, ids)
     return {
         "stays": False,
         "candidate_id": selected_id,
@@ -221,7 +297,7 @@ def exp016_decision_diagnostics(
         if ids != learned_ids:
             raise ValueError(f"EXP014/cache candidate IDs disagree for {episode_id}")
         learned_id, _ = _candidate_decision(learned_values, ids, distances)
-        oracle_id, _ = _candidate_decision(true_values, ids, distances)
+        oracle_id, _ = _frozen_oracle_candidate_decision(true_values, ids)
         learned_is_stay = max(learned_values) <= 0.0
         oracle_is_stay = max(true_values) <= 0.0
         total += 1
