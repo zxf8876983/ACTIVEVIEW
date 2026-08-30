@@ -1,0 +1,26 @@
+experiment_id: EXP021
+experiment_name: contextual_bandit_joint_second_step_policy
+split:
+  train: train
+  evaluation: val
+  test_used: false
+model:
+  architecture: contextual_encoders_transformer_action_head
+  stay_score: 0.0
+  action_set: [Stay, p2, p3]
+loss:
+  objective: negative_mean_expected_train_reward
+  entropy_used: false
+optimizer:
+  name: Adam
+  learning_rate: 0.001
+training:
+  seed: 42
+  epochs: 30
+  batch_size: 256
+protocol:
+  first_step_frozen: true
+  p1_frozen: true
+  true_u2_model_input: false
+  val_used_for_selection: false
+  test_used: false
