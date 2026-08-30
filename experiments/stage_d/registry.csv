@@ -1,3 +1,3 @@
 id,name,status,code_commit,val_accuracy,val_macro_f1,val_mean_regret,val_p90_regret,decision,notes
-EXP014,two_step_sequential,COMPLETED,95a22c32365ddea372f77ca1f71f2694eca764fb,0.664331164652892,0.6151512398729742,1.3972870421395316,5.403128390407073,INCONCLUSIVE,"Val-only; selected epoch 24; no Test; modest gain with added second-step movement cost"
-EXP015,budget_oracle_analysis,COMPLETED,95a22c32365ddea372f77ca1f71f2694eca764fb,,,,,INCONCLUSIVE,"Val-only analysis-only; no training/Test; fixed-first second-step oracle and initial-Stay ceiling"
+EXP014,two_step_sequential,COMPLETED,7f6e7aed1a705aa2aaade998e60dcb57b02346ff,0.6582540930864375,0.6101526052247462,1.4224626188609946,5.515662515163418,REJECT,"Corrected Val-only rerun with Stage A radial azimuth semantics; pre-fix runtime archived"
+EXP015,budget_oracle_analysis,COMPLETED,7f6e7aed1a705aa2aaade998e60dcb57b02346ff,,,,,INCONCLUSIVE,"Corrected Val-only budget/oracle analysis over rebuilt EXP014 cache; pre-fix runtime archived"

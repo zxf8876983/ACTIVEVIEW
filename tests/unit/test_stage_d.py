@@ -3,7 +3,7 @@ import torch
 from torch import nn
 
 from activeview.active_view.stage_d_evaluation import build_fixed_first_oracle, summarize_trajectory_rows
-from activeview.active_view.stage_d_dataset import second_step_geometry
+from activeview.active_view.stage_d_dataset import _wrap_relative_azimuth, second_step_geometry
 from activeview.active_view.stage_d_policy import (
     SequentialObservationRanker,
     schema_metadata,
@@ -60,14 +60,31 @@ def test_second_step_geometry_changes_when_current_view_changes():
     first = second_step_geometry(
         s1_position=[0.0, 0.0, 0.0], s1_rotation_wxyz=[1.0, 0.0, 0.0, 0.0],
         target_position=[1.0, 0.0, 0.0], target_snapped_position=[1.0, 0.0, 0.0],
-        target_geodesic=1.0, placement_position=[0.0, 0.0, 0.0],
+        target_geodesic=1.0, placement_position=[0.0, 0.0, 0.0], relative_azimuth_deg=90.0,
     )
     second = second_step_geometry(
         s1_position=[0.0, 0.0, 1.0], s1_rotation_wxyz=[1.0, 0.0, 0.0, 0.0],
         target_position=[1.0, 0.0, 0.0], target_snapped_position=[1.0, 0.0, 0.0],
-        target_geodesic=1.0, placement_position=[0.0, 0.0, 0.0],
+        target_geodesic=1.0, placement_position=[0.0, 0.0, 0.0], relative_azimuth_deg=90.0,
     )
     assert not np.allclose(first, second)
+
+
+def test_second_step_geometry_uses_stage_a_radial_relative_azimuth():
+    geometry = second_step_geometry(
+        s1_position=[0.0, 0.0, 0.0], s1_rotation_wxyz=[1.0, 0.0, 0.0, 0.0],
+        target_position=[1.0, 0.0, 0.0], target_snapped_position=[1.0, 0.0, 0.0],
+        target_geodesic=1.0, placement_position=[0.0, 0.0, 0.0],
+        relative_azimuth_deg=90.0,
+    )
+    assert np.isclose(geometry[5], 1.0, atol=1e-6)
+    assert np.isclose(geometry[6], 0.0, atol=1e-6)
+
+
+def test_stage_a_radial_relative_azimuth_wraps_to_half_open_range():
+    assert _wrap_relative_azimuth(0.0, 270.0) == 90.0
+    assert _wrap_relative_azimuth(270.0, 0.0) == -90.0
+    assert _wrap_relative_azimuth(180.0, 0.0) == -180.0
 
 
 def test_second_step_geometry_model_is_candidate_aligned_and_permutation_equivariant():

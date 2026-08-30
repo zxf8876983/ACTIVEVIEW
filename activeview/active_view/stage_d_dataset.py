@@ -71,14 +71,38 @@ def _view_from_archive(path: Path, viewpoint_id: int) -> tuple[np.ndarray, float
     return skeleton, pose_confidence, positions[index], rotations[index]
 
 
-def _relative_azimuth(delta: np.ndarray, rotation_wxyz: np.ndarray) -> float:
-    quat = np.asarray(rotation_wxyz, dtype=np.float64)
-    quat = quat / np.linalg.norm(quat)
-    w, x, y, z = quat.tolist()
-    yaw = float(np.arctan2(2.0 * (w * y + x * z), 1.0 - 2.0 * (y * y + z * z)))
-    ego_x = float(np.cos(yaw) * delta[0] - np.sin(yaw) * delta[2])
-    ego_z = float(np.sin(yaw) * delta[0] + np.cos(yaw) * delta[2])
-    return float(np.degrees(np.arctan2(ego_x, ego_z)))
+def _load_viewpoint_azimuths(archive_path: Path, region: str) -> dict[int, float]:
+    """Load Stage-A radial azimuth metadata for one scene/region."""
+    scene_dir = archive_path.parents[1]
+    manifest_path = scene_dir / "candidate_metadata" / "manifest.json"
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if payload.get("version") != "semantic-region-v2":
+        raise ValueError(f"Stage D requires semantic-region-v2 metadata: {manifest_path}")
+    if str(payload.get("scene_id", scene_dir.name)) != scene_dir.name:
+        raise ValueError(f"Candidate metadata scene mismatch: {manifest_path}")
+    placements = [
+        item for item in payload.get("placements_data", [])
+        if str(item.get("region")) == str(region)
+    ]
+    if len(placements) != 1:
+        raise ValueError(f"Expected one metadata placement for {scene_dir.name}/{region}")
+    azimuths: dict[int, float] = {}
+    for view in placements[0].get("viewpoints", []):
+        viewpoint_id = int(view["viewpoint_id"])
+        azimuth = float(view["azimuth_deg"])
+        if not np.isfinite(azimuth):
+            raise ValueError(f"Non-finite azimuth in {manifest_path}: viewpoint {viewpoint_id}")
+        if viewpoint_id in azimuths:
+            raise ValueError(f"Duplicate viewpoint azimuth in {manifest_path}: {viewpoint_id}")
+        azimuths[viewpoint_id] = azimuth
+    if len(azimuths) != 32:
+        raise ValueError(f"Expected 32 viewpoint azimuths in {manifest_path}")
+    return azimuths
+
+
+def _wrap_relative_azimuth(candidate_azimuth_deg: float, current_azimuth_deg: float) -> float:
+    """Match Stage A's radial azimuth difference and [-180, 180) wrapping."""
+    return float((float(candidate_azimuth_deg) - float(current_azimuth_deg) + 180.0) % 360.0 - 180.0)
 
 
 def second_step_geometry(
@@ -89,15 +113,21 @@ def second_step_geometry(
     target_snapped_position: Sequence[float],
     target_geodesic: float,
     placement_position: Sequence[float],
+    relative_azimuth_deg: float,
 ) -> np.ndarray:
-    """Build the existing 11-D geometry schema from s1 to an unvisited view."""
+    """Build Stage C's 11-D geometry schema re-anchored at s1.
+
+    Relative azimuth is supplied from semantic-region-v2 radial metadata
+    (candidate azimuth minus s1 azimuth), exactly matching Stage A. The s1
+    rotation remains responsible only for the egocentric XYZ displacement.
+    """
     delta = np.asarray(target_position, dtype=np.float32) - np.asarray(s1_position, dtype=np.float32)
     candidate = {
         "relative_position": delta.tolist(),
         "snapped_position": np.asarray(target_snapped_position, dtype=np.float32).tolist(),
         "euclidean_distance_m": float(np.linalg.norm(delta)),
         "geodesic_distance_m": float(target_geodesic),
-        "relative_azimuth_deg": _relative_azimuth(delta, np.asarray(s1_rotation_wxyz, dtype=np.float32)),
+        "relative_azimuth_deg": float(relative_azimuth_deg),
     }
     return candidate_geometry_features(
         candidate,
@@ -230,6 +260,7 @@ def build_second_step_rows(
     stage_b = _lookup(stage_b_rows, "Stage B")
     predictions = _lookup(v0_prediction_rows, "v0 prediction")
     archive_feature_cache: dict[tuple[str, int], tuple[np.ndarray, np.ndarray, float, np.ndarray, np.ndarray, np.ndarray]] = {}
+    azimuth_cache: dict[tuple[str, str], dict[int, float]] = {}
     output: list[Dict[str, Any]] = []
     move_count = 0
     for feature in feature_rows:
@@ -257,6 +288,14 @@ def build_second_step_rows(
             continue
         p1_source = next(item for item in episode["candidate_pool"] if int(item["viewpoint_id"]) == p1_id)
         archive_path = Path(p1_source["skeleton_source_path"])
+        azimuth_key = (str(episode["scene_id"]), str(episode["region"]))
+        if azimuth_key not in azimuth_cache:
+            azimuth_cache[azimuth_key] = _load_viewpoint_azimuths(
+                archive_path, str(episode["region"])
+            )
+        azimuths = azimuth_cache[azimuth_key]
+        if p1_id not in azimuths:
+            raise ValueError(f"Missing s1 azimuth metadata for viewpoint {p1_id}: {archive_path}")
         cache_key = (str(archive_path), p1_id)
         if cache_key not in archive_feature_cache:
             skeleton, confidence, position, rotation = _view_from_archive(archive_path, p1_id)
@@ -281,10 +320,13 @@ def build_second_step_rows(
             distance = float(pairwise[p1_id][candidate_id])
             if not np.isfinite(distance):
                 continue
+            if candidate_id not in azimuths:
+                raise ValueError(f"Missing candidate azimuth metadata for viewpoint {candidate_id}: {archive_path}")
             geometry = second_step_geometry(
                 s1_position=s1_position, s1_rotation_wxyz=s1_rotation,
                 target_position=source["snapped_position"], target_snapped_position=source["snapped_position"],
                 target_geodesic=distance, placement_position=placement,
+                relative_azimuth_deg=_wrap_relative_azimuth(azimuths[candidate_id], azimuths[p1_id]),
             )
             valid_remaining.append(candidate_id)
             geometries.append(geometry)
@@ -333,7 +375,7 @@ def build_cache_summary(
     summary = {
         "protocol": "ACTIVEVIEW Stage D two-step sequential cache",
         "status": "generated", "built_splits": ["train", "val"], "test_built": False,
-        "schema": {"s0_feature_dim": CURRENT_DIM, "s1_feature_dim": CURRENT_DIM, "delta_semantic_dim": DELTA_SEMANTIC_DIM, "candidate_geometry_dim": GEOMETRY_DIM, "proposal_top_k": TOP_K},
+        "schema": {"s0_feature_dim": CURRENT_DIM, "s1_feature_dim": CURRENT_DIM, "delta_semantic_dim": DELTA_SEMANTIC_DIM, "candidate_geometry_dim": GEOMETRY_DIM, "proposal_top_k": TOP_K, "relative_azimuth_reference": "semantic-region-v2 radial azimuth_deg difference (candidate - current), wrapped to [-180, 180)"},
         "feature_files": {split: str((feature_dir / f"{split}.jsonl").resolve()) for split in all_rows},
         "feature_file_sha256": hashes, "feature_file_counts": counts,
         "feature_stats": str(stats_path.resolve()), "feature_stats_sha256": file_sha256(stats_path),

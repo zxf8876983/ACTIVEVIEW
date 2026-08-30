@@ -140,3 +140,31 @@ candidate hit. The fixed-first second-step oracle reached Accuracy 0.771502,
 Macro-F1 0.725081, mean regret 0.586204 and P90 regret 1.699901. EXP015 is an
 analysis-only **INCONCLUSIVE** result. Both experiments used `test_used=false`;
 no Test, Habitat, RGB, YOLO, VideoPose3D or ST-GCN retraining was performed.
+
+## Stage D geometry-semantics audit
+
+2026-08-30: post-run review identified that Stage D `second_step_geometry()`
+had populated the Stage C sixth/seventh features using an s1-camera-frame
+displacement bearing. This is not Stage A's radial
+`candidate_azimuth_deg - current_azimuth_deg` definition. The correction now
+loads the existing semantic-region-v2 candidate metadata, computes the radial
+azimuth difference with the exact [-180°, 180°) wrap, and retains s1 rotation
+only for egocentric XYZ. A focused regression test covers 90° semantics and
+wrapping. No Stage A/B/C-v0 or perception artifact changed. EXP014/EXP015
+runtime outputs were generated pre-fix and are preserved for traceability; no
+Test was used.
+
+## Stage D corrected geometry rerun
+
+2026-08-30: archived the pre-fix EXP014 runtime, rebuilt the Stage D cache
+using the existing semantic-region-v2 radial azimuth metadata, and reran
+EXP014 Train→Val plus EXP015 Val-only analysis. Corrected EXP014 selected epoch
+11 and achieved Accuracy 0.658254, Macro-F1 0.610153, mean regret 1.422463,
+P90 regret 5.515663 and aggregate positive headroom capture 0.783313. Relative
+to frozen v0, mean regret improved 1.93% and Accuracy improved 0.915 points;
+the recorded reject thresholds were met, so EXP014 is REJECT. EXP015's
+fixed-first second-step oracle remained Accuracy 0.771502 / Macro-F1 0.725081 /
+mean regret 0.586204 / P90 1.699901 / headroom 0.890887; corrected EXP014
+second-step action match was 46.33% and move-only exact hit 17.07%. Both runs
+used Val only (`test_used=false`); no Stage A/B/C-v0, perception or ST-GCN
+artifact changed.

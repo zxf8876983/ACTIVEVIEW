@@ -1,6 +1,6 @@
 # EXP015 — Sequential Budget / Oracle Analysis
 
-**Status: COMPLETED (Val-only; analysis-only; no Test evaluation).**
+**Status: COMPLETED (corrected Val-only analysis; no Test evaluation).**
 
 ## Scientific question
 
@@ -26,20 +26,25 @@ Habitat rendering or perception rerun is allowed.
 
 ## Execution record
 
-EXP015 was executed on 2026-08-30 using the completed EXP014 Val predictions
-and frozen v0 Val predictions. It performed no training and did not access
-Test. The full machine-readable result is `result.json`; the runtime output
-is under `ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP015_budget_oracle_analysis/`.
+EXP015 was rerun on 2026-08-30 using the corrected EXP014 Val predictions and
+frozen v0 Val predictions. It performed no training and did not access Test.
+The full machine-readable result is `result.json`; the runtime output is under
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP015_budget_oracle_analysis/`.
 
 Key findings on 13,987 Val episodes:
 
 - Frozen-v0 Stay episodes: 4,245; 2,926 of these (68.93%) would move under
   SafeOracle, with mean missed-move utility 1.732.
-- EXP014 second-step action match: 46.73% over 9,742 eligible episodes;
-  move-only candidate exact hit: 22.42%.
+- EXP014 second-step action match: 46.33% over 9,742 eligible episodes;
+  move-only candidate exact hit: 17.07%.
 - Fixed-first Second-Step Oracle: Accuracy 0.771502, Macro-F1 0.725081,
   mean regret 0.586204, P90 regret 1.699901, aggregate headroom capture
   0.890887.
 
 This is an analysis-only upper-bound study; it does not accept a deployable
 policy. See `analysis.md` for the controlled interpretation and decision.
+
+**Validity note (2026-08-30):** The corrected analysis consumes the rebuilt
+EXP014 cache. The pre-fix EXP014 runtime remains archived at
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential_pre_geometry_fix/`
+for traceability.

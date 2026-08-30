@@ -111,18 +111,20 @@ is selected.
 The v2 experiments test current representation and candidate-conditioned
 reasoning, not new losses, samplers, utility targets or perception data.
 
-## Stage D results
+## Stage D results (corrected Val-only rerun)
 
 The one-shot Stage C-v0 ranking phase is frozen. EXP011–EXP013 showed moderate
 online utility predictability but strong Top-K proposal coverage. Execution
 records for the approved sequential study are in `experiments/stage_d/`:
 
-- EXP014 completed Train→Val: Accuracy 0.664331, Macro-F1 0.615151, mean
-  regret 1.397287, P90 regret 5.403128, headroom 0.783344. The preregistered
-  strong-success thresholds were not met; decision **INCONCLUSIVE**.
-- EXP015 completed a Val-only no-training fixed-first budget/oracle analysis:
-  initial-Stay missed-move rate 0.689282 and second-step action match 0.467255;
-  decision **INCONCLUSIVE**.
+- The pre-fix cache used a displacement-bearing implementation for the Stage A
+  relative-azimuth fields and is archived for traceability.
+- The corrected cache reads existing semantic-region-v2 radial `azimuth_deg`
+  metadata and computes `candidate_azimuth - s1_azimuth` with Stage A's
+  wrapping rule. EXP014 and EXP015 were rerun Val-only against this cache.
+- Corrected EXP014: Accuracy 0.658254, Macro-F1 0.610153, mean regret
+  1.422463, P90 regret 5.515663, headroom 0.783313; decision REJECT under the
+  recorded thresholds. EXP015 remains an analysis-only INCONCLUSIVE diagnostic.
 
 Both used only Train/Val. Test, Habitat/perception regeneration and ST-GCN
 retraining remain prohibited until separately authorized.

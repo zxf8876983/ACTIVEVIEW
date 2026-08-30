@@ -2,6 +2,8 @@
   "experiment_id": "EXP015",
   "experiment_name": "budget_oracle_analysis",
   "status": "COMPLETED",
+  "validity": "VALID_AFTER_GEOMETRY_FIX",
+  "validity_reason": "EXP015 consumed the rebuilt EXP014 cache with Stage A-compatible semantic-region-v2 radial relative-azimuth semantics.",
   "split": "val",
   "test_used": false,
   "episode_count": 13987,
@@ -13,13 +15,13 @@
   },
   "second_step_quality": {
     "eligible_episode_count": 9742,
-    "action_match_rate": 0.467255183740505,
+    "action_match_rate": 0.4632518989940464,
     "oracle_stay_rate": 0.43779511393964277,
-    "predicted_stay_rate": 0.6845616916444262,
-    "predicted_move_rate": 0.3154383083555738,
-    "stay_precision": 0.49842555105713,
-    "stay_recall": 0.7793669402110199,
-    "candidate_exact_hit_rate_move_only": 0.2242103341245207
+    "predicted_stay_rate": 0.7581605419831656,
+    "predicted_move_rate": 0.24183945801683432,
+    "stay_precision": 0.4844300027078256,
+    "stay_recall": 0.8389214536928488,
+    "candidate_exact_hit_rate_move_only": 0.17071389446777432
   },
   "fixed_first_second_step_oracle": {
     "accuracy": 0.7715021091013083,
@@ -31,11 +33,17 @@
     "average_moves": 1.0880817902337885
   },
   "provenance": {
-    "code_commit": "95a22c32365ddea372f77ca1f71f2694eca764fb",
-    "cache_summary_sha256": "2b433b7ae92aedabc7018bdf6502f0e7923c9c030bf6c0ada769c1ae7abb98f4",
+    "code_commit": "7f6e7aed1a705aa2aaade998e60dcb57b02346ff",
+    "cache_summary_sha256": "5ada9ca595aca421b77c507ee6ea3ccd19eda0008fda943f4483e5a41837adfb",
     "stage_b_val_sha256": "34f1d55724940a150ce55cf3babefdc2fcb700f6074093948916552958527729",
     "v0_val_predictions_sha256": "232c5c366799f73459856974872d35a67121cf36a744e6cfdc73dbbe7ed136d8",
-    "exp014_val_predictions_sha256": "4efb75dbcff78c99590c919faf5b85854e777d8a447285b3ffd7ab851a0c1d5b"
+    "exp014_val_predictions_sha256": "afc6d727df5047818e95fe00851852058b4556f936b761b0112a8760878d2294"
+  },
+  "rerun": {
+    "date": "2026-08-30",
+    "geometry_semantics": "Stage A semantic-region-v2 radial azimuth difference",
+    "pre_fix_runtime_archive": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential_pre_geometry_fix",
+    "code_worktree_dirty_at_run": true
   },
   "decision": "INCONCLUSIVE"
 }

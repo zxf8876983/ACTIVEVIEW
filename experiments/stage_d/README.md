@@ -25,7 +25,7 @@ future run, `build_pairwise_viewpoint_geodesic.py` must create one JSON matrix
 per scene/region using only Habitat Pathfinder shortest-path queries. It must
 not create sensors, RGB/depth, humanoids or perception outputs.
 
-## Planned experiments
+## Experiment definitions
 
 - **EXP014** asks whether one observed intermediate state improves final
   recognition beyond the one-shot plateau. It trains only a small
@@ -36,6 +36,17 @@ not create sensors, RGB/depth, humanoids or perception outputs.
   quantify remaining budget and initial-Stay ceilings.
 
 Execution outcomes are recorded in each experiment's `result.json` and
-`analysis.md`. EXP014 is **INCONCLUSIVE** after a modest Val improvement;
-EXP015 is an analysis-only **INCONCLUSIVE** budget/oracle diagnostic. No Test
-evaluation was performed and no frozen upstream artifact was changed.
+`analysis.md`. After the geometry correction and Val-only rerun, EXP014 is
+**REJECT** under its recorded thresholds; EXP015 remains an analysis-only
+**INCONCLUSIVE** budget/oracle diagnostic. No Test evaluation was performed and
+no frozen upstream artifact was changed.
+
+## Geometry-semantics audit status
+
+Post-run review found that the pre-fix Stage D cache populated the sixth and
+seventh geometry features with an s1-camera displacement bearing rather than
+Stage A's radial `azimuth_deg` difference. The implementation now uses the
+existing semantic-region-v2 metadata and the exact Stage A wrapping rule. The
+cache was rebuilt and both approved Val-only experiments were rerun. The
+pre-fix runtime is archived under the corresponding
+`*_pre_geometry_fix` directory and is not used for the corrected decisions.

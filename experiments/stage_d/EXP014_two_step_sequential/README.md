@@ -1,6 +1,6 @@
 # EXP014 — Two-Step Sequential Policy
 
-**Status: COMPLETED (Val-only; no Test evaluation).**
+**Status: COMPLETED (corrected Val-only run; no Test evaluation).**
 
 ## Scientific question
 
@@ -48,23 +48,29 @@ evaluation. It does not expose a Test option.
 
 ## Execution record
 
-EXP014 was executed on 2026-08-30 with the frozen Stage A/B/C-v0 inputs and
-CUDA (`cuda:0`, RTX 4090). The selected checkpoint was epoch 24. Compact
-metrics are recorded in `result.json`; the full Val output and predictions
-remain under `ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/`.
+EXP014 was rerun on 2026-08-30 with the frozen Stage A/B/C-v0 inputs and CUDA
+(`cuda:0`, RTX 4090), after rebuilding the cache with Stage A-compatible radial
+azimuth semantics. The selected checkpoint was epoch 11. Compact metrics are
+recorded in `result.json`; the full Val output and predictions remain under
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/`.
 
 | Metric | Frozen Stage C-v0 | EXP014 | Delta (EXP014 − v0) |
 |---|---:|---:|---:|
-| Accuracy | 0.649103 | 0.664331 | +0.015228 |
-| Macro-F1 | 0.598042 | 0.615151 | +0.017109 |
-| Mean regret | 1.450498 | 1.397287 | −0.053211 |
-| Median regret | 0.005143 | 0.003567 | −0.001576 |
-| P90 regret | 5.607818 | 5.403128 | −0.204689 |
-| Aggregate positive headroom capture | 0.777965 | 0.783344 | +0.005379 |
+| Accuracy | 0.649103 | 0.658254 | +0.009151 |
+| Macro-F1 | 0.598042 | 0.610153 | +0.012111 |
+| Mean regret | 1.450498 | 1.422463 | −0.028035 |
+| Median regret | 0.005143 | 0.003526 | −0.001618 |
+| P90 regret | 5.607818 | 5.515663 | −0.092155 |
+| Aggregate positive headroom capture | 0.777965 | 0.783313 | +0.005347 |
 
-The policy made an average of 0.916 moves per episode (v0: 0.697), with
-mean trajectory geodesic cost 2.562 m (v0: 2.201 m). The preregistered strong
-success thresholds (Accuracy ≥ 0.68 and ≥10% mean-regret reduction) were not
-met; the explicit reject thresholds were also not both met. The controlled
-decision is therefore **INCONCLUSIVE**, pending human scientific review.
+The policy made an average of 0.865 moves per episode (v0: 0.697), with mean
+trajectory geodesic cost 2.522 m (v0: 2.201 m). The preregistered strong-success
+thresholds (Accuracy ≥ 0.68 and ≥10% mean-regret reduction) were not met. The
+recorded reject thresholds (Accuracy < 0.66 and mean-regret reduction <5%) were
+both met; the controlled decision is **REJECT**.
 See `analysis.md` for the observation/interpretation/decision record.
+
+**Validity note (2026-08-30):** The pre-fix cache and runtime are archived at
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential_pre_geometry_fix/`.
+The canonical runtime and metrics above were generated after rebuilding with
+the corrected Stage A radial-azimuth semantics.

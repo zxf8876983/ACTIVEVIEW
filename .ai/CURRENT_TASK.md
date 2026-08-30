@@ -1,15 +1,15 @@
 # Current Task
 
-## Stage D experiments completed
+## Stage D geometry-semantics correction and Val rerun complete
 
 Stage C-v0 one-shot ranking is frozen. EXP011–EXP013 diagnostics indicate
 moderate online utility predictability but strong Top-K proposal coverage, so
-the approved sequential active view selection study has been executed on Val.
+the approved sequential active view selection study exposed a geometry semantic
+issue during post-run audit.
 
-EXP014 (two-step sequential policy) and EXP015 (fixed-first budget/oracle
-analysis) are **COMPLETED** with `test_used=false`. Their compact results and
-controlled conclusions are in `experiments/stage_d/EXP014_two_step_sequential/`
-and `experiments/stage_d/EXP015_budget_oracle_analysis/`.
+EXP014 and EXP015 were rerun with `test_used=false` after rebuilding the cache
+with the Stage A-compatible radial-azimuth correction. The pre-fix outputs are
+archived for traceability and are not used for the corrected results.
 
 ## Frozen
 
@@ -39,16 +39,21 @@ perception data remain frozen.
 - [x] Added focused Stage D unit tests and compile check.
 - [x] Executed EXP014 Train→Val and EXP015 Val-only analysis under the frozen
       Stage A/B/C-v0 protocol.
-- [x] Recorded compact metrics, provenance and Observation/Interpretation/
-      Decision/Next notes.
+- [x] Audited Stage D geometry semantics and identified the pre-fix azimuth
+      mismatch.
+- [x] Corrected the cache builder to use Stage A radial metadata without
+      changing model, loss, protocol or perception artifacts.
+- [x] Rebuild Stage D cache and rerun approved Val-only experiments.
 - [ ] Await human scientific review before any follow-up experiment or Test.
 
 ## Current state
 
-EXP014 selected epoch 24 and achieved Val Accuracy 0.664331, Macro-F1
-0.615151, mean regret 1.397287, P90 regret 5.403128 and aggregate positive
-headroom capture 0.783344. EXP015 found a 68.93% initial-Stay missed-move
-rate under SafeOracle and a 0.467255 second-step action-match rate. Both
-experiments used only Train/Val; no Test, Habitat, RGB, YOLO, VideoPose3D or
-ST-GCN retraining was run. The current decision for both records is
-**INCONCLUSIVE**, pending human review.
+The pre-fix EXP014/EXP015 metrics are retained in their compact records but
+are not used for the corrected final interpretation because Stage D sixth/seventh
+geometry features used the wrong relative-azimuth semantics. The corrected run
+loads existing semantic-region-v2 `azimuth_deg` metadata and applies
+`candidate_azimuth - s1_azimuth` wrapped to [-180°, 180°). Corrected EXP014
+reached Accuracy 0.658254, Macro-F1 0.610153, mean regret 1.422463, P90 regret
+5.515663 and headroom 0.783313; its recorded decision is REJECT. EXP015 is an
+analysis-only INCONCLUSIVE diagnostic. No Stage A/B/C-v0, perception, model or
+loss artifact was changed, and the pre-fix runtime remains archived.
