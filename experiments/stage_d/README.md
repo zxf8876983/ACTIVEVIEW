@@ -34,15 +34,16 @@ not create sensors, RGB/depth, humanoids or perception outputs.
 - **EXP015** performs no training. It compares the fixed-first second-step
   oracle with NoMove, frozen v0, EXP014, CandidateOracle and SafeOracle to
   quantify remaining budget and initial-Stay ceilings.
-- **EXP016** is prepared as a no-training, Val-only error decomposition. It
+- **EXP016** is a completed no-training, Val-only error decomposition. It
   keeps the frozen v0 first decision fixed and separately replaces the
   second-step gate and p2/p3 candidate identity with offline oracle choices.
 
 Execution outcomes are recorded in each experiment's `result.json` and
 `analysis.md`. After the geometry correction and Val-only rerun, EXP014 is
 **REJECT** under its recorded thresholds; EXP015 remains an analysis-only
-**INCONCLUSIVE** budget/oracle diagnostic. No Test evaluation was performed and
-no frozen upstream artifact was changed.
+**INCONCLUSIVE** budget/oracle diagnostic; EXP016 is an analysis-only
+**INCONCLUSIVE** decomposition. No Test evaluation was performed and no
+frozen upstream artifact was changed.
 
 ## Geometry-semantics audit status
 

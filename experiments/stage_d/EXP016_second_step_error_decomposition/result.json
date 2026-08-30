@@ -1,24 +1,152 @@
 {
   "experiment_id": "EXP016",
   "experiment_name": "second_step_error_decomposition",
-  "status": "PREPARED",
+  "status": "COMPLETED",
   "split": "val",
   "test_used": false,
   "training_performed": false,
   "perception_regenerated": false,
   "habitat_rendering_performed": false,
   "stgcn_retrained": false,
-  "real_val_analysis_executed": false,
-  "source_contract": {
-    "stage_c_v0_predictions": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl",
-    "corrected_exp014_predictions": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/runtime/val_second_step_predictions.jsonl",
-    "corrected_stage_d_cache": "ACTIVEVIEW_DATA_ROOT/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential",
-    "stage_b_val_utility": "ACTIVEVIEW_DATA_ROOT/datasets/policy_v11_5/stage_b/utility_labels/val.jsonl"
+  "real_val_analysis_executed": true,
+  "episode_count": 13987,
+  "v0_move_eligible_episode_count": 9742,
+  "episode_alignment": {
+    "stage_b_episode_count": 13987,
+    "v0_episode_count": 13987,
+    "expected_second_step_episode_count": 9742,
+    "stage_d_cache_episode_count": 9742,
+    "exp014_prediction_episode_count": 9742
   },
-  "protocol": {
-    "first_step_frozen": true,
-    "true_u2_used_only_for_offline_oracle": true,
+  "metrics_table": [
+    {
+      "variant": "EXP014",
+      "gate": "learned",
+      "candidate": "learned",
+      "accuracy": 0.6582540930864375,
+      "macro_f1": 0.6101526052247462,
+      "mean_regret": 1.4224626188609946,
+      "median_regret": 0.003525762353092432,
+      "p90_regret": 5.515662515163418,
+      "headroom_capture": 0.7833127000367449,
+      "average_moves": 0.8649460213054979,
+      "mean_geodesic_cost_m": 2.5220799648630496
+    },
+    {
+      "variant": "OracleGate + LearnedCandidate",
+      "gate": "oracle",
+      "candidate": "learned",
+      "accuracy": 0.7200257381854579,
+      "macro_f1": 0.6701903958101036,
+      "mean_regret": 0.9691383557931994,
+      "median_regret": 2.8847988687630277e-05,
+      "p90_regret": 3.7780685422476346,
+      "headroom_capture": 0.8427746119239373,
+      "average_moves": 1.0880817902337885,
+      "mean_geodesic_cost_m": 2.8321747418050642
+    },
+    {
+      "variant": "LearnedGate + OracleCandidate",
+      "gate": "learned",
+      "candidate": "oracle",
+      "accuracy": 0.6837777936655466,
+      "macro_f1": 0.638848242017513,
+      "mean_regret": 1.235322170472746,
+      "median_regret": 0.0015941151286824606,
+      "p90_regret": 4.830733373761175,
+      "headroom_capture": 0.8039081459061891,
+      "average_moves": 0.8649460213054979,
+      "mean_geodesic_cost_m": 2.4926731748220243
+    },
+    {
+      "variant": "Fixed-first Second-Step Oracle",
+      "gate": "oracle",
+      "candidate": "oracle",
+      "accuracy": 0.7715021091013083,
+      "macro_f1": 0.725081382409528,
+      "mean_regret": 0.5862035541860805,
+      "median_regret": 0.0,
+      "p90_regret": 1.6999013550579545,
+      "headroom_capture": 0.8908871486261597,
+      "average_moves": 1.0880817902337885,
+      "mean_geodesic_cost_m": 2.8595771753818675
+    }
+  ],
+  "headroom_decomposition": {
+    "accuracy": {
+      "delta_gate": 0.061771645099020445,
+      "delta_candidate": 0.025523700579109132,
+      "delta_joint": 0.11324801601487089,
+      "gate_recovery_fraction": 0.5454545454545451,
+      "candidate_recovery_fraction": 0.22537878787878765,
+      "descriptive_interaction": 0.025952670336741313
+    },
+    "mean_regret": {
+      "total_gap": 0.8362590646749141,
+      "gate_reduction": 0.45332426306779516,
+      "candidate_reduction": 0.18714044838824861,
+      "gate_recovery_fraction": 0.5420859183679159,
+      "candidate_recovery_fraction": 0.22378286381983467
+    }
+  },
+  "decision_diagnostics": {
+    "eligible_v0_move_episode_count": 9742,
+    "learned_second_step_stay_rate": 0.7581605419831656,
+    "oracle_second_step_stay_rate": 0.43779511393964277,
+    "stay_precision": 0.4844300027078256,
+    "stay_recall": 0.8389214536928488,
+    "move_precision": 0.7084040747028862,
+    "move_recall": 0.30472886616761,
+    "stay_move_confusion": {
+      "learned_stay_oracle_stay": 3578,
+      "learned_stay_oracle_move": 3808,
+      "learned_move_oracle_stay": 687,
+      "learned_move_oracle_move": 1669
+    },
+    "candidate_exact_hit": {
+      "oracle_gate_move_denominator": 5477,
+      "oracle_gate_move_rate": 0.5899214898667153,
+      "learned_gate_move_denominator": 2356,
+      "learned_gate_move_rate": 0.5589983022071308
+    }
+  },
+  "trajectory_groups": {
+    "A_v0_stay": {
+      "count": 4245,
+      "accuracy": 0.7413427561837456,
+      "mean_regret": 1.1936314736939642
+    },
+    "B_v0_move_learned_second_stay": {
+      "count": 7386,
+      "accuracy": 0.6422962361223937,
+      "mean_regret": 1.348446301572673
+    },
+    "C_v0_move_learned_second_move": {
+      "count": 2356,
+      "accuracy": 0.5585738539898133,
+      "mean_regret": 2.0668058831757588
+    }
+  },
+  "reference_checks": {
+    "EXP014_frozen_reference_match": true,
+    "FixedFirstSecondStepOracle_frozen_reference_match": true,
+    "absolute_tolerance": 1e-05
+  },
+  "provenance": {
+    "stage_c_v0_val_predictions": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl",
+    "stage_c_v0_val_predictions_sha256": "232c5c366799f73459856974872d35a67121cf36a744e6cfdc73dbbe7ed136d8",
+    "exp014_val_predictions": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/runtime/val_second_step_predictions.jsonl",
+    "exp014_val_predictions_sha256": "afc6d727df5047818e95fe00851852058b4556f936b761b0112a8760878d2294",
+    "stage_d_cache_summary": "ACTIVEVIEW_DATA_ROOT/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/stage_d_feature_summary.json",
+    "stage_d_cache_summary_sha256": "5ada9ca595aca421b77c507ee6ea3ccd19eda0008fda943f4483e5a41837adfb",
+    "stage_d_val_features_sha256": "4e78731acc35d356fcfa89e20c6cb119ec68da38b37342f45ef2d6336f36a72d",
+    "stage_b_val_utility_sha256": "34f1d55724940a150ce55cf3babefdc2fcb700f6074093948916552958527729",
+    "full_runtime_result": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP016_second_step_error_decomposition/exp016_analysis.json"
+  },
+  "validity": {
+    "first_step_protocol_frozen": true,
+    "gt_true_u2_used_only_for_offline_oracle_branches": true,
+    "future_perception_used_as_learned_input": false,
     "test_split_accepted": false
-  },
-  "note": "Preparation artifact only. EXP016 real Val analysis has NOT been executed."
+  }
 }

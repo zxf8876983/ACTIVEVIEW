@@ -1,6 +1,6 @@
 # EXP016 — Second-Step Decision Error Decomposition
 
-**Status: PREPARED (analysis-only; real Val run not authorized).**
+**Status: COMPLETED (analysis-only Val run; no deployable policy accepted).**
 
 ## Scientific question
 
@@ -45,6 +45,6 @@ first-step protocol are unchanged.  Test is not accepted by the CLI.
 
 ## Execution contract
 
-`run.sh` is provided for a separately authorized Val analysis.  This task only
-implements and tests the code with synthetic fixtures; the real Val analysis
-has **not** been executed.
+`run.sh` executed the authorized Val-only analysis. The full runtime result is
+stored under `ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP016_second_step_error_decomposition/exp016_analysis.json`; the compact result and
+analysis are versioned in this directory. Test remains locked.

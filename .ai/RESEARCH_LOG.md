@@ -184,3 +184,14 @@ including cached-order ties; learned selection remains utility/geodesic/ID
 ordered. The Val analyzer now fails closed unless Stage B and frozen-v0 IDs
 match exactly and the Stage D cache plus EXP014 predictions equal the frozen-v0
 Move subset. No real Val analysis or Test access was performed.
+
+2026-08-30: executed the authorized EXP016 Val-only second-step error
+decomposition. The 13,987-episode run reproduced frozen EXP014 and
+Fixed-first Oracle references exactly. OracleGate + LearnedCandidate reached
+0.720026 Accuracy / 0.670190 Macro-F1 / 0.969138 mean regret, while LearnedGate
++ OracleCandidate reached 0.683778 / 0.638848 / 1.235322; the fixed-first
+oracle reached 0.771502 / 0.725081 / 0.586204. Gate correction recovered
+54.55% of the joint Accuracy gap and 54.21% of the joint mean-regret gap;
+candidate correction recovered 22.54% and 22.38%. EXP016 is analysis-only
+**INCONCLUSIVE**; Test was not read and no training or upstream artifact was
+modified.

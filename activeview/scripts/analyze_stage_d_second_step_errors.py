@@ -52,7 +52,17 @@ def _categories(path: Path) -> list[str]:
 
 
 def _assert_val_rows(rows: Sequence[Mapping[str, Any]], name: str) -> None:
-    invalid = sorted({str(row.get("policy_split")) for row in rows if str(row.get("policy_split")) != "val"})
+    # EXP014's second-step prediction artifact predates the split field.  Its
+    # Val scope is established by the explicit input path and the exact
+    # Stage-B/v0 episode-ID alignment check below.  Explicit non-Val labels
+    # remain rejected.
+    invalid = sorted(
+        {
+            str(row["policy_split"])
+            for row in rows
+            if "policy_split" in row and str(row["policy_split"]) != "val"
+        }
+    )
     if invalid:
         raise ValueError(f"{name} contains non-Val rows: {invalid}")
 
