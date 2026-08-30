@@ -1,0 +1,8 @@
+{
+  "experiment_id": "EXP020",
+  "status": "PREPARED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": false,
+  "exp014_frozen": true
+}
