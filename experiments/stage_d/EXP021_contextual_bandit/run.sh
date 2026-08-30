@@ -10,6 +10,7 @@ CACHE_ROOT="${DATASET_ROOT}/stage_d/EXP014_two_step_sequential"
 STAGE_B_ROOT="${DATASET_ROOT}/stage_b"
 EXP014_ROOT="${DATA_ROOT}/experiments/stage_d/EXP014_two_step_sequential"
 EXP019_ROOT="${REPO_ROOT}/experiments/stage_d/EXP019_executed_candidate_gate"
+EXP020_RESULT="${REPO_ROOT}/experiments/stage_d/EXP020_contextual_latent_gate/result.json"
 OUT="${DATA_ROOT}/experiments/stage_d/EXP021_contextual_bandit"
 V0_PREDICTIONS="${EXP014_ROOT}/v0_predictions/val_predictions.jsonl"
 EXP019_RESULT="${EXP019_ROOT}/result.json"
@@ -18,6 +19,10 @@ LABEL_MAPPING="${DATA_ROOT}/datasets/stgcn_babel_selected16_habitat_pure_stumble
 test -f "${V0_PREDICTIONS}"
 test -f "${EXP019_RESULT}"
 mkdir -p "${OUT}"
+EXTRA_ARGS=()
+if test -f "${EXP020_RESULT}" && grep -q '"status": "COMPLETED"' "${EXP020_RESULT}"; then
+  EXTRA_ARGS+=(--exp020-result "${EXP020_RESULT}")
+fi
 (cd "${REPO_ROOT}" && python -m activeview.scripts.train_stage_d_contextual_bandit \
   --cache-root "${CACHE_ROOT}" \
   --stage-b-root "${STAGE_B_ROOT}" \
@@ -27,4 +32,5 @@ mkdir -p "${OUT}"
   --output "${SCRIPT_DIR}/result.json" \
   --runtime-dir "${OUT}" \
   --seed 42 \
-  --device cuda:0)
+  --device cuda:0 \
+  "${EXTRA_ARGS[@]}")

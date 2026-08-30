@@ -1,8 +1,241 @@
 {
   "experiment_id": "EXP020",
-  "status": "PREPARED",
+  "experiment_name": "contextual_latent_executed_gate",
+  "status": "COMPLETED",
+  "decision": "INCONCLUSIVE",
   "split": "val",
   "test_used": false,
-  "training_performed": false,
-  "exp014_frozen": true
+  "training_performed": true,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": false,
+  "stgcn_retrained": false,
+  "exp014_frozen": true,
+  "episode_count": 13987,
+  "v0_move_eligible_episode_count": 9742,
+  "train": {
+    "experiment_id": "EXP020",
+    "split": "train",
+    "episode_count": 29133,
+    "positive_count": 12877,
+    "negative_count": 16256,
+    "final_loss": 0.626942502954317,
+    "loss_history": [
+      0.6613129162990531,
+      0.6541664333089481,
+      0.6512234578400076,
+      0.6513517831682328,
+      0.6489925543082565,
+      0.6484441682238561,
+      0.6475351831737288,
+      0.6477093256756029,
+      0.6455374596678126,
+      0.6453166665870645,
+      0.6445591366978894,
+      0.6436518145852299,
+      0.6434381309230112,
+      0.6413079180150495,
+      0.6406959029094806,
+      0.639194305273792,
+      0.6405416809538261,
+      0.6385687647832188,
+      0.6368642836513518,
+      0.6365651979863949,
+      0.6352371944685705,
+      0.6350988865275137,
+      0.6338030878802642,
+      0.6325962760501405,
+      0.6324765980458508,
+      0.6307802454301545,
+      0.6296309721079921,
+      0.6288015114079747,
+      0.6274595451179847,
+      0.626942502954317
+    ],
+    "epochs": 30,
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "selection": "final_epoch_fixed_30",
+    "val_used_for_selection": false,
+    "test_used": false,
+    "exp014_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP014_two_step_sequential/checkpoints/sequential_observation_ranker_best.pth",
+    "exp014_checkpoint_sha256": "0f7318520305ef058f2005d0029a0f35999e0ba8a5faf82fa3aed44605700458"
+  },
+  "model": {
+    "input_dim": 129,
+    "hidden_dim": 64,
+    "activation": "GELU",
+    "frozen_contextual_token_dim": 128,
+    "token_extracted_before": "EXP014.utility_head",
+    "parameters_trained": "EXP020 gate only"
+  },
+  "val_gate_metrics_against_y_exec": {
+    "tau": 0.0,
+    "episode_count": 9742,
+    "accuracy": 0.5990556353931431,
+    "move_rate": 0.39817285978238554,
+    "stay_rate": 0.6018271402176144,
+    "move_precision": 0.5483372003093581,
+    "move_recall": 0.4968465311843027,
+    "move_f1": 0.5213235294117647,
+    "stay_precision": 0.6326112911478765,
+    "stay_recall": 0.6791796374290423,
+    "balanced_accuracy": 0.5880130843066725,
+    "confusion": {
+      "learned_stay_oracle_stay": 3709,
+      "learned_stay_oracle_move": 2154,
+      "learned_move_oracle_stay": 1752,
+      "learned_move_oracle_move": 2127
+    },
+    "positive_prevalence": 0.43943748716895914,
+    "roc_auc": 0.6413437006184433,
+    "pr_auc": 0.5546101188934538
+  },
+  "metrics_table": [
+    {
+      "variant": "EXP014",
+      "gate": "predicted utility > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6582540930864375,
+      "macro_f1": 0.6101526052247462,
+      "mean_regret": 1.4224626188609946,
+      "median_regret": 0.003525762353092432,
+      "p90_regret": 5.515662515163418,
+      "headroom_capture": 0.7833127000367449,
+      "average_moves": 0.8649460213054979,
+      "mean_geodesic_cost_m": 2.5220799648630496
+    },
+    {
+      "variant": "EXP019",
+      "gate": "learned gate p > 0.5",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6566812039751198,
+      "macro_f1": 0.6079356740211243,
+      "mean_regret": 1.4298510192590126,
+      "median_regret": 0.0038414369337260723,
+      "p90_regret": 5.532554797409101,
+      "headroom_capture": 0.7803254948896093,
+      "average_moves": 0.9172088367770073,
+      "mean_geodesic_cost_m": 2.5548388554803245
+    },
+    {
+      "variant": "EXP020",
+      "gate": "contextual gate p > 0.5",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6617573461070995,
+      "macro_f1": 0.6129556495552765,
+      "mean_regret": 1.4538680739650913,
+      "median_regret": 0.0027265878161415458,
+      "p90_regret": 5.63581036664982,
+      "headroom_capture": 0.7786250822404412,
+      "average_moves": 0.9738328447844427,
+      "mean_geodesic_cost_m": 2.6409468722388616
+    },
+    {
+      "variant": "ExecutedCandidateOracle",
+      "gate": "true U2(c_hat) > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.7431186101379853,
+      "macro_f1": 0.6932308383305563,
+      "mean_regret": 0.7613394852938011,
+      "median_regret": 2.3841559766424325e-05,
+      "p90_regret": 2.8315601035952533,
+      "headroom_capture": 0.8651930233295314,
+      "average_moves": 1.0025738185457924,
+      "mean_geodesic_cost_m": 2.692687738263054
+    }
+  ],
+  "headroom_recovery": {
+    "accuracy_gain": 0.0035032530206620116,
+    "accuracy_oracle_gap": 0.08486451705154785,
+    "accuracy_recovery": 0.04128053917438885,
+    "regret_reduction": -0.03140545510409676,
+    "regret_oracle_gap": 0.6611231335671934,
+    "regret_recovery": -0.047503185881038086
+  },
+  "action_change": {
+    "stay_to_move": {
+      "count": 1855,
+      "positive_count": 994,
+      "nonpositive_count": 861,
+      "mean_true_utility": -0.2245641875670047,
+      "median_true_utility": 0.0007765799769003934
+    },
+    "move_to_stay": {
+      "count": 332,
+      "positive_count": 145,
+      "nonpositive_count": 187,
+      "mean_true_utility": 0.06837811025364048,
+      "median_true_utility": -0.0006978351449333786
+    },
+    "both_stay": {
+      "count": 5531,
+      "positive_count": 2009,
+      "nonpositive_count": 3522,
+      "mean_true_utility": -1.4657639175177843,
+      "median_true_utility": -0.01976623386144638
+    },
+    "both_move": {
+      "count": 2024,
+      "positive_count": 1133,
+      "nonpositive_count": 891,
+      "mean_true_utility": 0.18252208789610463,
+      "median_true_utility": 0.01564074805992277
+    }
+  },
+  "candidate_identity_mismatch_count": 0,
+  "frozen_exp014_candidate_identity_mismatch_count": 0,
+  "episode_alignment": {
+    "stage_b_episode_count": 13987,
+    "v0_episode_count": 13987,
+    "expected_second_step_episode_count": 9742,
+    "stage_d_cache_episode_count": 9742,
+    "exp014_prediction_episode_count": 9742
+  },
+  "representation_comparison": {
+    "EXP019": {
+      "representation": "normalized 11-D candidate geometry + predicted utility",
+      "roc_auc": 0.6154751273828423,
+      "pr_auc": 0.5354903177315492,
+      "trajectory_accuracy": 0.6566812039751198
+    },
+    "EXP020": {
+      "representation": "frozen EXP014 contextual token + predicted utility",
+      "roc_auc": 0.6413437006184433,
+      "pr_auc": 0.5546101188934538,
+      "trajectory_accuracy": 0.6617573461070995
+    }
+  },
+  "provenance": {
+    "source_commit": "5ac32695b91cf7c1808a16aa8a937e8a28cb2a4c",
+    "exp014_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP014_two_step_sequential/checkpoints/sequential_observation_ranker_best.pth",
+    "exp014_checkpoint_sha256": "0f7318520305ef058f2005d0029a0f35999e0ba8a5faf82fa3aed44605700458",
+    "stage_d_feature_summary": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/stage_d_feature_summary.json",
+    "stage_d_feature_summary_sha256": "5ada9ca595aca421b77c507ee6ea3ccd19eda0008fda943f4483e5a41837adfb",
+    "stage_d_feature_stats": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/stage_d_feature_stats.json",
+    "stage_d_feature_stats_sha256": "35f81dfc5eadb79e85a435b932ff6b89006d5089bff6eb60ef9e6c25626ec0df",
+    "stage_d_train_features": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/features/train.jsonl",
+    "stage_d_train_features_sha256": "eb97b380da6ecd6a121144f8c29af523b6848eb7eaaf00573b7fa8b982516817",
+    "stage_d_val_features": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/features/val.jsonl",
+    "stage_d_val_features_sha256": "4e78731acc35d356fcfa89e20c6cb119ec68da38b37342f45ef2d6336f36a72d",
+    "train_predictions": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP017_second_step_gate_calibration/runtime/train_second_step_predictions.jsonl",
+    "train_predictions_sha256": "7089359ae1a0ba4a711ea2ee44d09eb6c19ad2afdae68c09a651b508aa70a8e7",
+    "val_predictions": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP017_second_step_gate_calibration/runtime/val_second_step_predictions.jsonl",
+    "val_predictions_sha256": "96aef4b1d11fc8f0e82910a2a9585c3f13aef1a59d563a6ac8ff763da4bf0bf5",
+    "v0_val_predictions": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl",
+    "stage_b_val_utility": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_b/utility_labels/val.jsonl",
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP020_contextual_latent_gate/checkpoints/contextual_executed_gate_final.pth",
+    "checkpoint_sha256": "6b20329bf91711d0366333c3bcf8037ba55de11e65a3bdf4573352091519daeb"
+  },
+  "validity": {
+    "candidate_ranking_frozen": true,
+    "first_step_protocol_frozen": true,
+    "contextual_token_before_utility_head": true,
+    "exp014_parameters_frozen": true,
+    "true_u2_used_only_as_train_target": true,
+    "true_u2_used_as_model_input": false,
+    "val_used_for_selection": false,
+    "fixed_threshold_probability": 0.5,
+    "final_epoch_used": true,
+    "test_split_accepted": false
+  }
 }
