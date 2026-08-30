@@ -1,36 +1,32 @@
 # Current Task
 
-## EXP017 — second-step gate calibration completed
+## EXP018 — executed-candidate gate alignment completed
 
-Stage C-v0, corrected EXP014, corrected EXP015 and EXP016 remain frozen.
-EXP017 applied exactly one intervention: selecting a strict scalar
-`gate_score > tau` threshold on Train from frozen EXP014 predictions, then
-applying that frozen threshold once to Val. The learned p2/p3 candidate ranking
-and the Stage C-v0 first action/p1 proposal were unchanged.
+Stage C-v0, corrected EXP014, EXP015, EXP016 and EXP017 remain frozen. EXP018
+was a Val-only, no-training audit that froze the Stage C-v0 first action/p1
+and the corrected EXP014 learned p2/p3 ranking. It compared
+`y_any=max(true U2)>0` with `y_exec=true U2(c_hat)>0`, where `c_hat` is the
+candidate selected by the frozen learned ranking.
 
 ## Result
 
-Train selected `tau=-0.08218251913785934` from 29,133 episodes. On 13,987 Val
-episodes, EXP014 tau=0 achieved Accuracy 0.658254, Macro-F1 0.610153 and mean
-regret 1.422463; EXP017 achieved 0.650962, 0.598102 and 1.477153. Headroom
-decreased from 0.783313 to 0.777146. The threshold changed 2,838 second-step
-Stay decisions to Move, with no Move-to-Stay changes. Candidate identity was
-unchanged in all 2,356 episodes where both policies moved.
-
-Train calibration improved gate balanced accuracy on Val (0.571825 →
-0.609873) and Move recall (0.304729 → 0.629359), but the trajectory metrics
-worsened. A single global threshold is therefore rejected as a deployable
-intervention; see the EXP017 `analysis.md` and runtime result under
-`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP017_second_step_gate_calibration/`.
+On 13,987 Val episodes (9,742 v0-Move), `y_any` was positive for 5,477 and
+`y_exec` for 4,281. The ranking-induced mismatch count was 1,196 (21.84% of
+any-positive episodes). The executed-candidate oracle reached Accuracy
+0.743119 / Macro-F1 0.693231 / mean regret 0.761339, compared with the
+any-positive oracle 0.720026 / 0.670190 / 0.969138 and EXP014 0.658254 /
+0.610153 / 1.422463. EXP017's 2,838 extra moves contained 1,497
+executed-nonpositive cases.
 
 ## Protocol boundaries
 
-- EXP017 used Train for threshold fitting and Val for one evaluation only.
-- Test was not read or used.
+- EXP018 read frozen Val artifacts only; Test was not read or used.
 - No training, Habitat rendering, perception regeneration, ST-GCN retraining,
-  Stage A/B/C-v0 modification or EXP014/EXP015/EXP016 rerun was performed.
+  or Stage A/B/C-v0/EXP014/EXP015/EXP016/EXP017 modification was performed.
+- EXP018 is an offline diagnostic with decision **INCONCLUSIVE**; no policy
+  was accepted and EXP019 was not started.
 
 ## Status
 
-EXP017 is **REJECTED** as a scalar-threshold policy and remains a completed
-diagnostic. Do not start another experiment automatically.
+EXP018 completed. Await human scientific review before authorizing a next
+experiment.

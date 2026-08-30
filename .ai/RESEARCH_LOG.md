@@ -223,3 +223,19 @@ where both policies moved. Gate balanced accuracy improved on Val from
 **REJECTED** as a deployable global-threshold intervention. Test was not read;
 no training, perception regeneration, Habitat rendering or upstream artifact
 modification was performed.
+
+## EXP018 — executed-candidate gate alignment audit
+
+2026-08-31: executed the authorized EXP018 Val-only offline audit without
+training or new perception. The Stage C-v0 first decision/p1 and corrected
+EXP014 learned p2/p3 ranking were frozen. Among 9,742 v0-Move episodes,
+`y_any=max(true U2)>0` was positive for 5,477 while the true utility of the
+frozen learned candidate (`y_exec`) was positive for 4,281. The ranking-induced
+mismatch count was 1,196 (21.84% of any-positive episodes); the impossible
+`y_any=Stay,y_exec=Move` case was zero. ExecutedCandidateOracleGate + learned
+candidate reached Accuracy 0.743119 / Macro-F1 0.693231 / mean regret 0.761339,
+versus AnyPositiveOracleGate 0.720026 / 0.969138 mean regret and EXP014
+0.658254 / 1.422463. Of EXP017's 2,838 additional Stay→Move decisions, 1,497
+were non-positive for the candidate actually selected by EXP014. EXP018 is an
+analysis-only **INCONCLUSIVE** diagnostic; Test was not read and no upstream
+artifact was modified.

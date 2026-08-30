@@ -2,17 +2,20 @@
 
 Status: CLEAN
 
-EXP017 second-step gate calibration is complete under the Train→Val protocol
-and is **REJECTED** as a deployable global-threshold intervention. Train chose
-`tau=-0.08218251913785934`; Val trajectory performance worsened despite better
-gate balanced accuracy and Move recall. Candidate identity was unchanged when
-both tau variants moved, and the frozen EXP014/OracleGate references matched.
+EXP018 executed-candidate gate alignment is complete as a Val-only,
+no-training diagnostic and is **INCONCLUSIVE**. It froze the Stage C-v0 first
+action/p1 and corrected EXP014 candidate ranking, then compared an
+any-positive true-U2 gate with the true utility of the candidate that EXP014
+would actually execute. There were 1,196 ranking-induced gate mismatches among
+9,742 v0-Move episodes; the executed-candidate oracle reached 0.743119
+Accuracy / 0.761339 mean regret.
 
-Runtime result and calibration artifact:
-`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP017_second_step_gate_calibration/`.
+Runtime result:
+`ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP018_executed_candidate_gate_alignment/`.
 Compact experiment record:
-`experiments/stage_d/EXP017_second_step_gate_calibration/`.
+`experiments/stage_d/EXP018_executed_candidate_gate_alignment/`.
 
-Test remains locked and was not read. No Stage A/B/C-v0, EXP014/015/016,
-perception or Habitat artifact was modified. No follow-up experiment has been
-started automatically; human review is required before any next intervention.
+Test remains locked and was not read. No training, perception regeneration,
+Habitat rendering, ST-GCN retraining or Stage A/B/C-v0/EXP014/EXP015/EXP016/
+EXP017 modification was performed. EXP019 has not been started; human review
+is required before any next experiment.

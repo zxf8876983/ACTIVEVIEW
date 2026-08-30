@@ -42,6 +42,10 @@ not create sensors, RGB/depth, humanoids or perception outputs.
   then applies it once to Val while retaining the learned candidate ordering.
   The scalar threshold worsened Val trajectory metrics and is rejected; see
   its `analysis.md`.
+- **EXP018** is a completed no-training, Val-only target-alignment audit. It
+  compares the any-positive gate with a gate aligned to the candidate frozen
+  by EXP014. The latter exposes 1,196 ranking-induced gate mismatches and is
+  an offline diagnostic, not a deployable policy; see its `analysis.md`.
 
 Execution outcomes are recorded in each experiment's `result.json` and
 `analysis.md`. After the geometry correction and Val-only rerun, EXP014 is
