@@ -111,19 +111,21 @@ is selected.
 The v2 experiments test current representation and candidate-conditioned
 reasoning, not new losses, samplers, utility targets or perception data.
 
-## Stage D queue
+## Stage D results
 
 The one-shot Stage C-v0 ranking phase is frozen. EXP011–EXP013 showed moderate
-online utility predictability but strong Top-K proposal coverage. Preparation
-records for the next approved sequential study are in `experiments/stage_d/`:
+online utility predictability but strong Top-K proposal coverage. Execution
+records for the approved sequential study are in `experiments/stage_d/`:
 
-- EXP014 is a planned two-step policy: frozen v0 Top-3 first proposal, one
-  visited s1 observation, then a second Stay/p2/p3 decision using s1-relative
-  geometry and observable s0/s1 state transition.
-- EXP015 is a planned no-training fixed-first sequential budget/oracle analysis.
+- EXP014 completed Train→Val: Accuracy 0.664331, Macro-F1 0.615151, mean
+  regret 1.397287, P90 regret 5.403128, headroom 0.783344. The preregistered
+  strong-success thresholds were not met; decision **INCONCLUSIVE**.
+- EXP015 completed a Val-only no-training fixed-first budget/oracle analysis:
+  initial-Stay missed-move rate 0.689282 and second-step action match 0.467255;
+  decision **INCONCLUSIVE**.
 
-Both are Train/Val-only designs. Test, Habitat/perception regeneration and
-ST-GCN retraining remain prohibited until separately authorized.
+Both used only Train/Val. Test, Habitat/perception regeneration and ST-GCN
+retraining remain prohibited until separately authorized.
 
 ## Runtime roots
 

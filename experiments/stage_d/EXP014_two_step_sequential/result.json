@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP014",
+  "experiment_name": "two_step_sequential",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "episode_count": 13987,
+  "selected_epoch": 24,
+  "checkpoint": "ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/checkpoints/sequential_observation_ranker_best.pth",
+  "checkpoint_sha256": "776c29267a3795f3639adf8401a8e10307d82319021e1e30ba9e98835ca707fa",
+  "metrics": {
+    "frozen_stage_c_v0": {
+      "accuracy": 0.6491027382569529,
+      "macro_f1": 0.5980419794734363,
+      "mean_regret": 1.4504976684431725,
+      "median_regret": 0.0051433994667604566,
+      "p90_regret": 5.607817676663398,
+      "aggregate_positive_headroom_capture": 0.7779652640409261
+    },
+    "exp014": {
+      "accuracy": 0.664331164652892,
+      "macro_f1": 0.6151512398729742,
+      "mean_regret": 1.3972870421395316,
+      "median_regret": 0.0035674904684128705,
+      "p90_regret": 5.403128390407073,
+      "aggregate_positive_headroom_capture": 0.783343810717517
+    }
+  },
+  "deltas_exp014_minus_v0": {
+    "accuracy": 0.015228426395939132,
+    "macro_f1": 0.017109260399537862,
+    "mean_regret": -0.05321062630364093,
+    "median_regret": -0.0015759089983475865,
+    "p90_regret": -0.20468928625632543,
+    "aggregate_positive_headroom_capture": 0.0053785466765908785
+  },
+  "movement": {
+    "average_moves": 0.9162079073425323,
+    "mean_trajectory_geodesic_cost_m": 2.561853267434089,
+    "p90_trajectory_geodesic_cost_m": 5.7780725955963135
+  },
+  "provenance": {
+    "code_commit": "95a22c32365ddea372f77ca1f71f2694eca764fb",
+    "cache_summary_sha256": "2b433b7ae92aedabc7018bdf6502f0e7923c9c030bf6c0ada769c1ae7abb98f4",
+    "cache_val_sha256": "7bd80c6723978f5953a129ce23100229e3c3a87a09c1579ea1f276671a638178",
+    "cache_stats_sha256": "28a60ce72ad9c6ca79e4b04ca94e41d1a458c83baa7a78c872e0636e33d1b397",
+    "stgcn_checkpoint_sha256": "362ac23195688988d637244eb2a13fa0e7b563b21d143846c671a5cec6b0d0ce"
+  },
+  "decision": "INCONCLUSIVE"
+}

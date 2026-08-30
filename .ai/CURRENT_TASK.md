@@ -1,14 +1,15 @@
 # Current Task
 
-## Stage D preparation
+## Stage D experiments completed
 
 Stage C-v0 one-shot ranking is frozen. EXP011–EXP013 diagnostics indicate
 moderate online utility predictability but strong Top-K proposal coverage, so
-the next approved preparation is sequential active view selection.
+the approved sequential active view selection study has been executed on Val.
 
-This change prepares EXP014 (two-step sequential policy) and EXP015
-(fixed-first budget/oracle analysis). Both remain **PLANNED** pending human
-review. No formal experiment has been run.
+EXP014 (two-step sequential policy) and EXP015 (fixed-first budget/oracle
+analysis) are **COMPLETED** with `test_used=false`. Their compact results and
+controlled conclusions are in `experiments/stage_d/EXP014_two_step_sequential/`
+and `experiments/stage_d/EXP015_budget_oracle_analysis/`.
 
 ## Frozen
 
@@ -36,9 +37,18 @@ perception data remain frozen.
       Fixed-first Second-Step Oracle analysis.
 - [x] Added EXP014/EXP015 README, config, run scripts and registry entries.
 - [x] Added focused Stage D unit tests and compile check.
-- [ ] Await human review before any execution.
+- [x] Executed EXP014 Train→Val and EXP015 Val-only analysis under the frozen
+      Stage A/B/C-v0 protocol.
+- [x] Recorded compact metrics, provenance and Observation/Interpretation/
+      Decision/Next notes.
+- [ ] Await human scientific review before any follow-up experiment or Test.
 
 ## Current state
 
-Preparation is complete. No training, Val evaluation, Test evaluation or data
-generation was performed in this task.
+EXP014 selected epoch 24 and achieved Val Accuracy 0.664331, Macro-F1
+0.615151, mean regret 1.397287, P90 regret 5.403128 and aggregate positive
+headroom capture 0.783344. EXP015 found a 68.93% initial-Stay missed-move
+rate under SafeOracle and a 0.467255 second-step action-match rate. Both
+experiments used only Train/Val; no Test, Habitat, RGB, YOLO, VideoPose3D or
+ST-GCN retraining was run. The current decision for both records is
+**INCONCLUSIVE**, pending human review.

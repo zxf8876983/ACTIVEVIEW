@@ -4,9 +4,9 @@ Stage C-v0 is frozen as a first-stage Top-3 proposal model. Stage D studies
 whether one real intermediate observation allows a second decision without
 exposing unvisited candidate perception.
 
-This directory contains preparation records only. EXP014 and EXP015 are
-planned and must be reviewed before execution. Test, Habitat rendering and
-perception regeneration are outside the preparation protocol.
+This directory contains controlled Stage D experiment records. EXP014 and
+EXP015 have completed their authorized Val-only runs; Test, Habitat rendering
+and perception regeneration remain outside the protocol.
 
 ## Causal contract
 
@@ -35,4 +35,7 @@ not create sensors, RGB/depth, humanoids or perception outputs.
   oracle with NoMove, frozen v0, EXP014, CandidateOracle and SafeOracle to
   quantify remaining budget and initial-Stay ceilings.
 
-Neither experiment has been run in this preparation change.
+Execution outcomes are recorded in each experiment's `result.json` and
+`analysis.md`. EXP014 is **INCONCLUSIVE** after a modest Val improvement;
+EXP015 is an analysis-only **INCONCLUSIVE** budget/oracle diagnostic. No Test
+evaluation was performed and no frozen upstream artifact was changed.

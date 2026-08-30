@@ -1,6 +1,6 @@
 # EXP014 — Two-Step Sequential Policy
 
-**Status: PLANNED. No training or evaluation has been run.**
+**Status: COMPLETED (Val-only; no Test evaluation).**
 
 ## Scientific question
 
@@ -45,3 +45,26 @@ not automatic evaluator output.
 `run.sh` will (when explicitly authorized) generate/load frozen v0 Train/Val
 proposal predictions, build the Stage D cache, train, and run Val trajectory
 evaluation. It does not expose a Test option.
+
+## Execution record
+
+EXP014 was executed on 2026-08-30 with the frozen Stage A/B/C-v0 inputs and
+CUDA (`cuda:0`, RTX 4090). The selected checkpoint was epoch 24. Compact
+metrics are recorded in `result.json`; the full Val output and predictions
+remain under `ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP014_two_step_sequential/`.
+
+| Metric | Frozen Stage C-v0 | EXP014 | Delta (EXP014 − v0) |
+|---|---:|---:|---:|
+| Accuracy | 0.649103 | 0.664331 | +0.015228 |
+| Macro-F1 | 0.598042 | 0.615151 | +0.017109 |
+| Mean regret | 1.450498 | 1.397287 | −0.053211 |
+| Median regret | 0.005143 | 0.003567 | −0.001576 |
+| P90 regret | 5.607818 | 5.403128 | −0.204689 |
+| Aggregate positive headroom capture | 0.777965 | 0.783344 | +0.005379 |
+
+The policy made an average of 0.916 moves per episode (v0: 0.697), with
+mean trajectory geodesic cost 2.562 m (v0: 2.201 m). The preregistered strong
+success thresholds (Accuracy ≥ 0.68 and ≥10% mean-regret reduction) were not
+met; the explicit reject thresholds were also not both met. The controlled
+decision is therefore **INCONCLUSIVE**, pending human scientific review.
+See `analysis.md` for the observation/interpretation/decision record.

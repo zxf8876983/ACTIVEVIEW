@@ -119,3 +119,24 @@ analysis. The preparation adds only navigation-only pairwise geodesic cache
 support, frozen s1 ST-GCN feature reconstruction and a new second-step head;
 it does not run training/evaluation or alter Stage A/B/C-v0 artifacts. Test
 remains locked pending human review.
+
+## EXP014–EXP015 — Stage D Val-only execution
+
+2026-08-30: executed the authorized Stage D study without changing frozen
+Stage A/B/C-v0 artifacts. EXP014 trained the two-step sequential ranker on
+Train and selected epoch 24 by complete Val trajectory Macro-F1. On 13,987 Val
+episodes it achieved Accuracy 0.664331, Macro-F1 0.615151, mean regret 1.397287,
+P90 regret 5.403128 and aggregate positive headroom capture 0.783344, versus
+frozen v0 values 0.649103, 0.598042, 1.450498, 5.607818 and 0.777965. Mean
+regret improved 3.67%, below the preregistered strong-success threshold; the
+controlled decision is **INCONCLUSIVE**. The policy averaged 0.916 moves and
+2.562 m trajectory cost.
+
+EXP015 then performed the fixed-first second-step budget/oracle analysis on
+the same Val split. Of 4,245 frozen-v0 Stay episodes, 2,926 (68.93%) would
+move under SafeOracle. Among 9,742 v0-move episodes, EXP014 matched the
+second-step oracle action 46.73% of the time and had 22.42% move-only exact
+candidate hit. The fixed-first second-step oracle reached Accuracy 0.771502,
+Macro-F1 0.725081, mean regret 0.586204 and P90 regret 1.699901. EXP015 is an
+analysis-only **INCONCLUSIVE** result. Both experiments used `test_used=false`;
+no Test, Habitat, RGB, YOLO, VideoPose3D or ST-GCN retraining was performed.

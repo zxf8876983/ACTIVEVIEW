@@ -1,6 +1,6 @@
 # EXP015 — Sequential Budget / Oracle Analysis
 
-**Status: PLANNED. No execution has been run.**
+**Status: COMPLETED (Val-only; analysis-only; no Test evaluation).**
 
 ## Scientific question
 
@@ -23,3 +23,23 @@ match and the A/B/C trajectory decomposition.
 
 If EXP014 Val output is missing, the command fails clearly. No training, Test,
 Habitat rendering or perception rerun is allowed.
+
+## Execution record
+
+EXP015 was executed on 2026-08-30 using the completed EXP014 Val predictions
+and frozen v0 Val predictions. It performed no training and did not access
+Test. The full machine-readable result is `result.json`; the runtime output
+is under `ACTIVEVIEW_DATA_ROOT/experiments/stage_d/EXP015_budget_oracle_analysis/`.
+
+Key findings on 13,987 Val episodes:
+
+- Frozen-v0 Stay episodes: 4,245; 2,926 of these (68.93%) would move under
+  SafeOracle, with mean missed-move utility 1.732.
+- EXP014 second-step action match: 46.73% over 9,742 eligible episodes;
+  move-only candidate exact hit: 22.42%.
+- Fixed-first Second-Step Oracle: Accuracy 0.771502, Macro-F1 0.725081,
+  mean regret 0.586204, P90 regret 1.699901, aggregate headroom capture
+  0.890887.
+
+This is an analysis-only upper-bound study; it does not accept a deployable
+policy. See `analysis.md` for the controlled interpretation and decision.

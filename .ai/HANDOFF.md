@@ -2,13 +2,19 @@
 
 Status: CLEAN
 
-Stage C-v0 and EXP001–EXP013 remain frozen/recorded. The repository now
-contains preparation-only Stage D EXP014/EXP015 code and experiment records.
-No Stage D training or Val evaluation was run; Test, Habitat, YOLO,
-VideoPose3D and ST-GCN retraining were not run. Await human review and explicit
-authorization before executing either experiment.
+Stage C-v0 and EXP001–EXP013 remain frozen/recorded. Stage D EXP014/EXP015
+have completed their authorized Val-only work. EXP014 is INCONCLUSIVE after a
+modest two-step gain; EXP015 is an INCONCLUSIVE analysis-only budget/oracle
+diagnostic. Await human review and explicit authorization before any follow-up
+experiment or final Test.
 
-The Stage D cache requires a navigation-only pairwise 32×32 geodesic matrix
-per scene/region. The builder uses frozen Stage A/B/C-v0 rows and cached s1
-skeletons, reconstructs s1 through the frozen ST-GCN, and never uses unvisited
-candidate perception as policy input.
+The Stage D cache was built with a navigation-only pairwise 32×32 geodesic
+matrix per scene/region. The builder used frozen Stage A/B/C-v0 rows and
+cached s1 skeletons, reconstructed s1 through the frozen ST-GCN, and never
+used unvisited candidate perception as policy input. Runtime results and
+provenance are under `ACTIVEVIEW_DATA_ROOT/experiments/stage_d/`; compact
+source records are under `experiments/stage_d/`.
+
+No Test, Habitat rendering, RGB, YOLO, VideoPose3D or ST-GCN retraining was
+performed. The working tree may contain unrelated pre-existing untracked files;
+they are not part of the Stage D result.
