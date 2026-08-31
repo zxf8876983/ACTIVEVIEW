@@ -67,9 +67,22 @@ Three-way imitation accuracy was 0.493841 and binary Move/Stay accuracy was
 0.644837. Harmful moves numbered 2,442 and missed beneficial oracle moves
 1,803. Test remained locked and no upstream or perception artifact changed.
 
-## Status
+## EXP028 — Oracle Action Predictability / Representation Sufficiency Audit
 
-EXP027 is complete and ready for human scientific review. Full source summary
-is in `experiments/stage_d/EXP027_spatial_rgb_oracle_behavior_cloning/`; runtime
-predictions/checkpoint remain external under `/home/zxf/MG08/robot/ActiveView/`.
-Do not start EXP028 automatically.
+EXP028 completed its authorized Val-only diagnostic over the frozen Stage-D
+eligible population (29,133 Train / 9,742 Val). The observable vector used
+Train-only normalization and a Train-only cosine nearest-neighbor index over
+normalized current observations, legal candidate geometry and visited s0/s1
+spatial RGB. No policy was trained and no Test was read.
+
+Val NN 3-way agreement was 0.454527 (1-NN), 0.449497 (5-NN), 0.451139
+(10-NN), and 0.444570 (25-NN); 25-NN mean three-way entropy was 0.870910.
+EXP027 three-way imitation accuracy increased from 0.4730 in the smallest
+margin bin to 0.5623 for margin >=2.0, while the >=1.0 subset reached
+0.5376. Cross-motion oracle action switch rate for matching quantized
+scene/region/geometry contexts was 0.551969 on Val. The audit is
+**INCONCLUSIVE** pending human scientific interpretation (Case A/B/C); it
+does not establish intrinsic unpredictability. Full summary is in
+`experiments/stage_d/EXP028_oracle_action_predictability/`.
+
+Test remains locked. Do not start EXP029 automatically.

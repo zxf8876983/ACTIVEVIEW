@@ -252,6 +252,23 @@ were non-positive for the candidate actually selected by EXP014. EXP018 is an
 analysis-only **INCONCLUSIVE** diagnostic; Test was not read and no upstream
 artifact was modified.
 
+## EXP028 — Oracle Action Predictability / Representation Sufficiency Audit
+
+2026-08-31: completed the authorized Val-only diagnostic on the frozen
+Stage-D second-step eligible population (29,133 Train / 9,742 Val). The
+observable vector concatenated Train-statistics-normalized s0/s1/delta and
+candidate geometry with Train-statistics-normalized pooled visited s0/s1
+EXP025 spatial RGB. A cosine NN index was built from Train only; Val was never
+added to the index or used for normalization. EXP027 three-way imitation
+accuracy was 0.4730 in the smallest top-1-margin bin and 0.5623 for margin
+>=2.0 (0.5376 for >=1.0). NN 3-way agreement was 0.454527/0.449497/0.451139/
+0.444570 for k=1/5/10/25, with 25-NN mean three-way entropy 0.870910.
+Quantized same-context cross-motion oracle-action switching was 0.551969 on
+Val. Decision: **INCONCLUSIVE** pending human Case A/B/C review. This only
+assesses predictability under the frozen legal representation and held-out
+motion protocol; it does not claim intrinsic unpredictability. Test was not
+read, no policy was trained, and no future-candidate observation was used.
+
 ## EXP027 — Spatial-RGB Oracle Behavior Cloning
 
 2026-08-31: trained an unweighted three-action CrossEntropy behavior-cloning

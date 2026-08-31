@@ -1,0 +1,13 @@
+experiment_id: EXP028
+name: oracle_action_predictability
+split: val
+training_performed: false
+test_used: false
+nearest_neighbor:
+  metric: cosine
+  index_split: train
+margin_bins: [[0.0, 0.05], [0.05, 0.1], [0.1, 0.25], [0.25, 0.5], [0.5, 1.0], [1.0, 2.0], [2.0, inf]]
+context_quantization_precision: 3
+future_candidate_rgb_used: false
+future_candidate_depth_used: false
+future_candidate_skeleton_used: false
