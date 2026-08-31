@@ -392,3 +392,16 @@ mean regret worsened by 0.0287345. Decision: **INCONCLUSIVE**; depth adds no
 evidence beyond spatial RGB in this pilot. Candidate mismatch was zero. Test
 remained locked and no Stage A/B/C, skeleton, RGB, perception or ST-GCN
 artifact was modified.
+
+## EXP029 — Observed Local Semantic BEV Sufficiency Audit
+
+2026-08-31: completed the authorized Train/Val-only semantic BEV audit. A
+real Stage-D s0/s1 smoke passed, followed by full BEV generation for 29,133
+Train and 9,742 Val episodes. The representation used 77,750 unique visited
+observations, exact s1-centered world projection, metric-depth ray occupancy,
+and 15-channel `[15,80,80]` uint8 BEV features. Train-only cosine kNN reached
+Val three-way/binary agreement of 0.426709/0.559844 at k=25; the compact probe
+reached 0.477725 three-way and 0.631390 binary Val accuracy. Decision:
+**INCONCLUSIVE** as a policy sufficiency result; no trajectory rollout was
+performed. Only s0/s1 observations were rendered, p2/p3 and Test were never
+accessed, and skeleton/RGB/perception/ST-GCN artifacts were untouched.
