@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP031",
+  "body_view_feature_names": [
+    "candidate_human_distance",
+    "candidate_human_azimuth",
+    "candidate_human_elevation",
+    "camera_forward_root_cosine",
+    "shoulder_plane_view_angle",
+    "hip_plane_view_angle",
+    "body_facing_cosine",
+    "front_view",
+    "back_view",
+    "left_side_view",
+    "right_side_view",
+    "projected_bbox_width",
+    "projected_bbox_height",
+    "projected_bbox_area",
+    "projected_aspect_ratio",
+    "mean_projected_bone_length",
+    "min_projected_bone_length",
+    "foreshortening_mean",
+    "pairwise_projected_overlap",
+    "left_right_limb_overlap",
+    "upper_lower_overlap",
+    "joint_inframe_fraction",
+    "image_center_offset"
+  ],
+  "pose_quality_feature_names": [
+    "mean_pose_confidence",
+    "valid_joint_fraction",
+    "skeleton_spread",
+    "temporal_motion_energy"
+  ],
+  "method_c_status": "METHOD_C_NOT_AVAILABLE",
+  "train_records": 29133,
+  "val_records": 9742
+}

@@ -1,0 +1,14 @@
+experiment_id: EXP031
+split: val
+frame_index: 15
+method_a: body_view_geometry
+method_b: privileged_future_pose_quality
+method_c: recognition_quality_if_artifact_available
+method_d:
+  epochs: 20
+  batch_size: 512
+  learning_rate: 0.001
+  loss: SmoothL1Loss
+seed: 42
+test_used: false
+perception_regeneration: false
