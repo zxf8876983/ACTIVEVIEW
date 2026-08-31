@@ -264,7 +264,7 @@ def _probe(train_x: np.ndarray, train_bev: np.ndarray, train_y: np.ndarray, val_
         logits = model(torch.from_numpy(val_x.astype(np.float32)).to(device), torch.from_numpy(val_bev.astype(np.float32)).to(device)).cpu().numpy()
     predicted = logits.argmax(axis=1); confusion = np.zeros((3, 3), dtype=np.int64)
     for actual, guess in zip(val_y, predicted): confusion[int(actual), int(guess)] += 1
-    return {"architecture": "BEV Conv(15→32→64)+GELU+AdaptiveAvgPool; base Linear→64; head Linear(128→64→3)", "epochs": 20, "batch_size": 256, "learning_rate": 1e-3, "loss": "CrossEntropyLoss", "train_final_cross_entropy": history[-1]["cross_entropy"], "train_final_accuracy": history[-1]["accuracy"], "train_history": history, "val_three_way_accuracy": float(np.mean(predicted == val_y)), "val_binary_move_stay_accuracy": float(np.mean((predicted > 0) == (val_y > 0))), "val_confusion": confusion.tolist(), "val_predicted_actions": predicted.tolist()}
+    return {"architecture": "BEV Conv(15→32→64)+GELU+AdaptiveAvgPool; base Linear→64; head Linear(128→64→3)", "epochs": 20, "batch_size": 256, "learning_rate": 1e-3, "loss": "CrossEntropyLoss", "train_final_cross_entropy": history[-1]["cross_entropy"], "train_final_accuracy": history[-1]["accuracy"], "train_history": history, "val_three_way_accuracy": float(np.mean(predicted == val_y)), "val_binary_move_stay_accuracy": float(np.mean((predicted > 0) == (val_y > 0))), "val_confusion": confusion.tolist(), "_val_predicted_actions": predicted.tolist()}
 
 
 def analyze(*, cache_root: Path, stage_b_root: Path, spatial_cache: Path, v0_val_predictions: Path, exp027_result: Path, output: Path, runtime: Path, source_root: Path, motion_root: Path, scene_root: Path, config_path: Path, workers: int = WORKERS, train_limit: int | None = None, val_limit: int | None = None) -> dict[str, Any]:
@@ -299,7 +299,7 @@ def analyze(*, cache_root: Path, stage_b_root: Path, spatial_cache: Path, v0_val
     consistency = np.asarray([np.max(np.bincount(row, minlength=3)) / 25.0 for row in neighbor_labels], dtype=np.float64)
     margin_values = np.asarray([float(oracle_margin(row["second_step_utility_targets"])["margin_1"]) for row in val_rows], dtype=np.float64)
     nn25_pred = np.asarray([majority_action(row.tolist()) for row in neighbor_labels[:, :25]], dtype=np.int64)
-    probe_pred = np.asarray(probe["val_predicted_actions"], dtype=np.int64)
+    probe_pred = np.asarray(probe.pop("_val_predicted_actions"), dtype=np.int64)
     high_margin: dict[str, Any] = {}
     for threshold in (0.25, 0.5, 1.0, 2.0):
         mask = margin_values >= threshold
