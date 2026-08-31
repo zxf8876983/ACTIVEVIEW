@@ -150,15 +150,20 @@ def _quality_summary(train_rows: Sequence[Mapping[str, Any]], val_rows: Sequence
         if len(ids) == 2 and oracle_action_index(targets) > 0:
             q = [float(np.mean(row["pose_quality_features"][str(candidate_id)])) for candidate_id in ids]; winner_hits.append(int(np.argmax(q)) == int(np.argmax(np.asarray(targets))))
     winner_by_feature: dict[str, list[bool]] = {name: [] for name in QUALITY_NAMES}
+    winner_by_margin: dict[str, dict[str, list[bool]]] = {name: {str(t): [] for t in (0.25, 0.5, 1.0, 2.0)} for name in QUALITY_NAMES}
     for row in val_rows:
         targets = np.asarray(row["second_step_utility_targets"], dtype=np.float64)
         if len(row["remaining_candidate_ids"]) == 2 and oracle_action_index(targets) > 0:
             for index, name in enumerate(QUALITY_NAMES):
                 q = [float(row["pose_quality_features"][str(cid)][index]) for cid in row["remaining_candidate_ids"]]
                 winner_by_feature[name].append(int(np.argmax(q)) == int(np.argmax(targets)))
+                margin = oracle_margin(targets)["margin_1"]
+                for threshold in (0.25, 0.5, 1.0, 2.0):
+                    if margin >= threshold:
+                        winner_by_margin[name][str(threshold)].append(int(np.argmax(q)) == int(np.argmax(targets)))
     for name in QUALITY_NAMES:
         correlations[name] = _corr(values[name], utilities)
-    return {"available": True, "feature_names": QUALITY_NAMES, "feature_correlations": correlations, "oracle_move_winner_accuracy": float(np.mean(winner_hits)) if winner_hits else None, "oracle_move_winner_accuracy_by_feature": {name: float(np.mean(hits)) if hits else None for name, hits in winner_by_feature.items()}, "oracle_move_episode_count": len(winner_hits), "future_candidate_skeleton_used": True, "oracle_perception_quality_upper_bound": True, "deployable": False, "source_artifact_granularity": "viewpoint-level mean sequence confidence; per-joint confidence is unavailable; valid_joint_fraction is derived from finite 3D pose values"}
+    return {"available": True, "feature_names": QUALITY_NAMES, "feature_correlations": correlations, "oracle_move_winner_accuracy": float(np.mean(winner_hits)) if winner_hits else None, "oracle_move_winner_accuracy_by_feature": {name: float(np.mean(hits)) if hits else None for name, hits in winner_by_feature.items()}, "high_margin_winner_accuracy_by_feature": {name: {threshold: float(np.mean(hits)) if hits else None for threshold, hits in margins.items()} for name, margins in winner_by_margin.items()}, "oracle_move_episode_count": len(winner_hits), "future_candidate_skeleton_used": True, "oracle_perception_quality_upper_bound": True, "deployable": False, "source_artifact_granularity": "viewpoint-level mean sequence confidence; per-joint confidence is unavailable; valid_joint_fraction is derived from finite 3D pose values"}
 
 
 def analyze(*, cache_root: Path, output: Path, runtime: Path, source_root: Path, motion_root: Path, train_limit: int | None = None, val_limit: int | None = None) -> dict[str, Any]:

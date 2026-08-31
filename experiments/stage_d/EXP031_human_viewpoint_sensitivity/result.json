@@ -198,6 +198,32 @@
       "skeleton_spread": 0.4904470768055025,
       "temporal_motion_energy": 0.4912113106610623
     },
+    "high_margin_winner_accuracy_by_feature": {
+      "mean_pose_confidence": {
+        "0.25": 0.5884057971014492,
+        "0.5": 0.5923076923076923,
+        "1.0": 0.5949820788530465,
+        "2.0": 0.588646288209607
+      },
+      "valid_joint_fraction": {
+        "0.25": 0.5619047619047619,
+        "0.5": 0.5682692307692307,
+        "1.0": 0.5698924731182796,
+        "2.0": 0.5615720524017467
+      },
+      "skeleton_spread": {
+        "0.25": 0.5055900621118012,
+        "0.5": 0.5076923076923077,
+        "1.0": 0.5113500597371565,
+        "2.0": 0.5048034934497817
+      },
+      "temporal_motion_energy": {
+        "0.25": 0.5225672877846791,
+        "0.5": 0.5264423076923077,
+        "1.0": 0.5364396654719236,
+        "2.0": 0.5388646288209606
+      }
+    },
     "oracle_move_episode_count": 5234,
     "future_candidate_skeleton_used": true,
     "oracle_perception_quality_upper_bound": true,
@@ -275,7 +301,7 @@
     "test_used": false
   },
   "provenance": {
-    "source_commit": "933bb84d01006f642e5fc2405e66d0ed2771d285",
+    "source_commit": "77a3158d303687328423041c6e9ffddecf00fd43",
     "stage_d_train_features_sha256": "eb97b380da6ecd6a121144f8c29af523b6848eb7eaaf00573b7fa8b982516817",
     "stage_d_val_features_sha256": "4e78731acc35d356fcfa89e20c6cb119ec68da38b37342f45ef2d6336f36a72d",
     "runtime": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/experiments/stage_d/EXP031_human_viewpoint_sensitivity"
