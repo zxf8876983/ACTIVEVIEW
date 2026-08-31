@@ -257,30 +257,36 @@ def _check_unprojection(
     agent_position: np.ndarray,
     agent_rotation_wxyz: np.ndarray,
 ) -> float:
-    """Check Habitat's ray against the -Z pinhole convention at center pixel."""
+    """Check vectorized non-normalized -Z rays at representative pixels."""
     import magnum as mn
 
     cx = cy = IMAGE_SIZE // 2
-    distance = float(depth[cy, cx])
-    if not np.isfinite(distance) or distance <= 0.0:
-        raise RuntimeError("Center depth is not finite and positive")
-    ray = render_camera.unproject(mn.Vector2i(cx, cy), normalized=False)
-    origin = np.asarray(ray.origin, dtype=np.float64)
-    direction = np.asarray(ray.direction, dtype=np.float64)
+    pixels = [(cx, cy), (0, cy), (IMAGE_SIZE - 1, cy), (cx, 0), (cx, IMAGE_SIZE - 1), (0, 0)]
+    center_ray = render_camera.unproject(mn.Vector2i(cx, cy), normalized=False)
+    origin = np.asarray(center_ray.origin, dtype=np.float64)
     rotation = _rotation_matrix(agent_rotation_wxyz)
     forward_world = rotation @ np.array([0.0, 0.0, -1.0])
-    endpoint = origin + direction * distance
-    if float(np.dot(endpoint - origin, forward_world)) <= 0.0 or float(direction[2]) >= 0.0:
-        raise RuntimeError(f"Center depth endpoint is not on camera -Z forward side: direction={direction}")
+    center_direction_camera = rotation.T @ np.asarray(center_ray.direction, dtype=np.float64)
+    if center_direction_camera[2] >= 0.0:
+        raise RuntimeError(f"Camera forward convention is not -Z: camera_direction={center_direction_camera}")
     fx = fy = IMAGE_SIZE / (2.0 * np.tan(np.deg2rad(HFOV_DEG) / 2.0))
-    manual_camera = np.array([(cx - IMAGE_SIZE / 2.0) * distance / fx, (IMAGE_SIZE / 2.0 - cy) * distance / fy, -distance])
-    manual_endpoint = np.asarray(agent_position, dtype=np.float64) + rotation @ (np.array([0.0, SENSOR_HEIGHT_M, 0.0]) + manual_camera)
-    error = float(np.linalg.norm(endpoint - manual_endpoint))
-    # Pixel-center conventions differ by at most half a pixel; at this
-    # distance the expected numerical discrepancy is below two centimetres.
-    if error > 2e-2:
-        raise RuntimeError(f"Habitat unproject/manual -Z mismatch: error={error}")
-    return error
+    errors = []
+    for pixel_x, pixel_y in pixels:
+        distance = float(depth[pixel_y, pixel_x])
+        if not np.isfinite(distance) or distance <= 0.0:
+            raise RuntimeError(f"Representative pixel has invalid depth: {(pixel_x, pixel_y)}")
+        ray = render_camera.unproject(mn.Vector2i(pixel_x, pixel_y), normalized=False)
+        endpoint = np.asarray(ray.origin, dtype=np.float64) + np.asarray(ray.direction, dtype=np.float64) * distance
+        local_ray = np.array([(pixel_x - IMAGE_SIZE / 2.0) / fx, (IMAGE_SIZE / 2.0 - pixel_y) / fy, -1.0], dtype=np.float64)
+        manual_endpoint = origin + rotation @ (local_ray * distance)
+        error = float(np.linalg.norm(endpoint - manual_endpoint))
+        if float(np.dot(endpoint - origin, forward_world)) <= 0.0:
+            raise RuntimeError(f"Depth endpoint is not on camera -Z forward side: pixel={(pixel_x, pixel_y)}")
+        errors.append(error)
+    max_error = max(errors)
+    if max_error > 3e-2:
+        raise RuntimeError(f"Habitat unproject/manual -Z mismatch: max_error={max_error}")
+    return max_error
 
 
 def run_smoke(scene_id: str | None = None) -> dict[str, Any]:

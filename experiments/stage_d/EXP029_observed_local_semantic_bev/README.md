@@ -10,3 +10,9 @@ The Habitat smoke gate is executed before the 4-worker Train/Val cache build
 (the host cannot safely keep 16 annotated Habitat simulators resident).
 Large BEV caches and checkpoints live under `ACTIVEVIEW_DATA_ROOT` and are not
 tracked by Git.
+
+EXP029-R1 removed the prior normalized-ray cache, validated six representative
+pixels against Habitat's non-normalized `-Z` unprojection, and regenerated the
+full Train/Val cache. The corrected audit is **CASE B**: coarse observed
+semantic BEV does not resolve the representation insufficiency identified by
+EXP028.

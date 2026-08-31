@@ -405,3 +405,17 @@ reached 0.477725 three-way and 0.631390 binary Val accuracy. Decision:
 **INCONCLUSIVE** as a policy sufficiency result; no trajectory rollout was
 performed. Only s0/s1 observations were rendered, p2/p3 and Test were never
 accessed, and skeleton/RGB/perception/ST-GCN artifacts were untouched.
+
+### EXP029-R1 correction
+
+2026-08-31: replaced normalized depth rays with the exact non-normalized
+Habitat `-Z` pinhole ray and validated center/left/right/top/bottom/corner
+endpoints (maximum error 0.019115 m). Old Train/Val BEV caches were deleted
+and regenerated with the same 4-worker, s0/s1-only protocol: 29,133 Train and
+9,742 Val episodes. Corrected k=25 agreement was 0.430404 three-way / 0.559639
+binary; local consistency mean/median were 0.499893/0.48, with 5.52% of
+neighborhoods at least 0.8-consistent. Fixed-margin audits showed k=25
+three-way agreement 0.481699/0.499669/0.515572/0.548125 at margins
+≥0.25/0.5/1.0/2.0. Relative to EXP028's frozen 0.444570 k=25 agreement,
+EXP029-R1 is **CASE B**: coarse observed semantic BEV does not resolve the
+representation insufficiency. Test remained locked.
