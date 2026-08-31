@@ -419,3 +419,22 @@ three-way agreement 0.481699/0.499669/0.515572/0.548125 at margins
 ≥0.25/0.5/1.0/2.0. Relative to EXP028's frozen 0.444570 k=25 agreement,
 EXP029-R1 is **CASE B**: coarse observed semantic BEV does not resolve the
 representation insufficiency. Test remained locked.
+
+## EXP032--EXP034 — Overnight quality decomposition campaign
+
+2026-09-01: completed the frozen Train/Val-only overnight audit on 29,133
+Train and 9,742 Val Stage-D episodes. EXP032-A pose error decomposition is
+blocked because the repository exposes no canonical GT-to-H36M17 mapping;
+EXP032-B reused only frozen Stage-B/ST-GCN diagnostics and is therefore a
+privileged, utility-definition-level sanity bound. Future CE correlated with
+candidate utility at Pearson -0.728750 / Spearman -0.609646, while correctness
+correlated at 0.477016 / 0.492565. EXP033 legal-input predictors reached Val
+candidate CE Pearson/Spearman 0.465552/0.434138 (winner accuracy 0.566679)
+and direct-utility 0.411064/0.277805 (winner accuracy 0.550057), showing weak
+predictability from current state plus geometry alone. EXP034 Ridge R² was
+0.121033 for the legal base and 0.555201 after adding privileged future
+recognition quality (delta R² 0.434168); only ten rounded duplicate contexts
+were available and neither three-way nor binary switch rates were nonzero.
+This is CASE B as a definition-level recognition-quality signal, not causal
+evidence; pose branches and Test remain locked, with no perception or Habitat
+rerun.

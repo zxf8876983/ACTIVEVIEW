@@ -1,0 +1,7 @@
+experiment_id: EXP032
+split: val
+train_episodes: 29133
+val_episodes: 9742
+pose_error_status: BLOCKED_without_canonical_GT_H36M17_mapping
+recognition_source: frozen_stage_b_stgcn_diagnostics
+test_used: false

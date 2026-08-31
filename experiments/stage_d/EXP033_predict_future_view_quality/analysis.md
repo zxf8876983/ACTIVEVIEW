@@ -1,0 +1,121 @@
+# EXP033 overnight audit
+
+```json
+{
+  "experiment_id": "EXP033",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": false,
+  "stgcn_retrained": false,
+  "input": {
+    "features": "legal Stage-D current state + candidate geometry",
+    "future_candidate_skeleton_used_at_inference": false,
+    "future_recognition_output_used_at_inference": false,
+    "true_utility_used_as_input": false
+  },
+  "pose_error_prediction": {
+    "status": "SKIPPED_DEPENDS_ON_EXP032_A"
+  },
+  "recognition_ce_prediction": {
+    "model": {
+      "architecture": "Linear(580,128)->GELU->Linear(128,64)->GELU->Linear(64,1)",
+      "epochs": 20,
+      "batch_size": 512,
+      "learning_rate": 0.001,
+      "loss": "SmoothL1Loss",
+      "train_final_loss": 2.0960143664175597
+    },
+    "candidate_level": {
+      "n": 18648,
+      "mae": 2.9742047786712646,
+      "rmse": 4.430744171142578,
+      "pearson": 0.4655519071314749,
+      "spearman": 0.43413756220041355
+    },
+    "oracle_move_winner": {
+      "overall": 0.5666794038975926,
+      "episode_count": 5234,
+      "high_margin": {
+        "0.25": {
+          "count": 2415,
+          "accuracy": 0.5734989648033126
+        },
+        "0.5": {
+          "count": 2080,
+          "accuracy": 0.5778846153846153
+        },
+        "1.0": {
+          "count": 1674,
+          "accuracy": 0.5722819593787336
+        },
+        "2.0": {
+          "count": 1145,
+          "accuracy": 0.5720524017467249
+        }
+      }
+    }
+  },
+  "multi_task": {
+    "status": "SKIPPED_DEPENDS_ON_EXP032_A"
+  },
+  "direct_utility_prediction": {
+    "model": {
+      "architecture": "Linear(580,128)->GELU->Linear(128,64)->GELU->Linear(64,1)",
+      "epochs": 20,
+      "batch_size": 512,
+      "learning_rate": 0.001,
+      "loss": "SmoothL1Loss",
+      "train_final_loss": 2.142048112386795
+    },
+    "candidate_level": {
+      "n": 18648,
+      "mae": 3.0530974864959717,
+      "rmse": 4.592617988586426,
+      "pearson": 0.4110638089977873,
+      "spearman": 0.2778049961384364
+    },
+    "oracle_move_winner": {
+      "overall": 0.550057317539167,
+      "episode_count": 5234,
+      "high_margin": {
+        "0.25": {
+          "count": 2415,
+          "accuracy": 0.5540372670807453
+        },
+        "0.5": {
+          "count": 2080,
+          "accuracy": 0.5620192307692308
+        },
+        "1.0": {
+          "count": 1674,
+          "accuracy": 0.5591397849462365
+        },
+        "2.0": {
+          "count": 1145,
+          "accuracy": 0.5580786026200873
+        }
+      }
+    },
+    "selected_candidate_mean_true_utility": -0.9083675146102905
+  },
+  "leakage_flags": {
+    "future_candidate_rgb_used": false,
+    "future_candidate_depth_used": false,
+    "future_candidate_semantic_used": false,
+    "future_candidate_skeleton_used_at_inference": false,
+    "future_recognition_output_used_at_inference": false,
+    "future_candidate_skeleton_used_as_train_target": true,
+    "future_recognition_quality_used_as_train_target": true,
+    "test_used": false
+  },
+  "provenance": {
+    "source_commit": "88d7ca8af7ca339f5cf116d5fa8dcaf22fdec479",
+    "stage_d_feature_summary_sha256": "5ada9ca595aca421b77c507ee6ea3ccd19eda0008fda943f4483e5a41837adfb",
+    "stage_b_train_utility_sha256": "c6f78582bcbeae5780ed3fde34f6a8a279ef73f495a57f2bea79f85b68b545c4",
+    "stage_b_val_utility_sha256": "34f1d55724940a150ce55cf3babefdc2fcb700f6074093948916552958527729"
+  }
+}
+```

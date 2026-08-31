@@ -1,0 +1,7 @@
+experiment_id: EXP033
+split: val
+input: legal_stage_d_state_plus_candidate_geometry
+epochs: 20
+batch_size: 512
+learning_rate: 0.001
+test_used: false

@@ -1,0 +1,6 @@
+{
+  "experiment_id": "EXP034",
+  "train_episodes": 29133,
+  "val_episodes": 9742,
+  "test_used": false
+}
