@@ -126,18 +126,17 @@ def _project_observation_to_bev(
     depth: np.ndarray,
     semantic: np.ndarray,
     *,
-    agent_position: np.ndarray,
-    agent_rotation_wxyz: np.ndarray,
+    render_camera: Any,
     s1_position: np.ndarray,
     s1_rotation_wxyz: np.ndarray,
 ) -> np.ndarray:
-    """Project aligned depth rays through camera/world/s1 frames into BEV."""
+    """Project Habitat-unprojected depth rays through world/s1 frames into BEV."""
+    import magnum as mn
+
     bev = np.zeros((15, 80, 80), dtype=np.uint8)
     valid = np.isfinite(depth) & (depth > 0.0)
-    fx = fy = IMAGE_SIZE / (2.0 * np.tan(np.deg2rad(HFOV_DEG) / 2.0))
-    camera_offset = np.array([0.0, SENSOR_HEIGHT_M, 0.0], dtype=np.float64)
-    agent_rotation = _rotation_matrix(agent_rotation_wxyz)
-    camera_world = np.asarray(agent_position, dtype=np.float64) + agent_rotation @ camera_offset
+    center_ray = render_camera.unproject(mn.Vector2i(IMAGE_SIZE // 2, IMAGE_SIZE // 2), normalized=False)
+    camera_world = np.asarray(center_ray.origin, dtype=np.float64)
     camera_s1 = _world_to_s1(camera_world, s1_position, s1_rotation_wxyz)
     camera_cell = _bev_cell(camera_s1)
     if camera_cell is None:
@@ -148,8 +147,8 @@ def _project_observation_to_bev(
     free_cells: set[tuple[int, int]] = set()
     for y, x in zip(rows * 8, cols * 8):
         distance = float(depth[y, x])
-        camera_xyz = np.array([(x - IMAGE_SIZE / 2.0) * distance / fx, (IMAGE_SIZE / 2.0 - y) * distance / fy, distance])
-        endpoint_world = camera_world + agent_rotation @ camera_xyz
+        ray = render_camera.unproject(mn.Vector2i(int(x), int(y)), normalized=False)
+        endpoint_world = np.asarray(ray.origin, dtype=np.float64) + np.asarray(ray.direction, dtype=np.float64) * distance
         endpoint_s1 = _world_to_s1(endpoint_world, s1_position, s1_rotation_wxyz)
         endpoint_cell = _bev_cell(endpoint_s1)
         if endpoint_cell is None:
@@ -209,6 +208,39 @@ def _save_debug_bev(bev: np.ndarray, path: Path) -> None:
     plt.imsave(path, image, vmin=0.0, vmax=1.0)
 
 
+def _check_unprojection(
+    depth: np.ndarray,
+    *,
+    render_camera: Any,
+    agent_position: np.ndarray,
+    agent_rotation_wxyz: np.ndarray,
+) -> float:
+    """Check Habitat's ray against the -Z pinhole convention at center pixel."""
+    import magnum as mn
+
+    cx = cy = IMAGE_SIZE // 2
+    distance = float(depth[cy, cx])
+    if not np.isfinite(distance) or distance <= 0.0:
+        raise RuntimeError("Center depth is not finite and positive")
+    ray = render_camera.unproject(mn.Vector2i(cx, cy), normalized=False)
+    origin = np.asarray(ray.origin, dtype=np.float64)
+    direction = np.asarray(ray.direction, dtype=np.float64)
+    rotation = _rotation_matrix(agent_rotation_wxyz)
+    forward_world = rotation @ np.array([0.0, 0.0, -1.0])
+    endpoint = origin + direction * distance
+    if float(np.dot(endpoint - origin, forward_world)) <= 0.0 or float(direction[2]) >= 0.0:
+        raise RuntimeError(f"Center depth endpoint is not on camera -Z forward side: direction={direction}")
+    fx = fy = IMAGE_SIZE / (2.0 * np.tan(np.deg2rad(HFOV_DEG) / 2.0))
+    manual_camera = np.array([(cx - IMAGE_SIZE / 2.0) * distance / fx, (IMAGE_SIZE / 2.0 - cy) * distance / fy, -distance])
+    manual_endpoint = np.asarray(agent_position, dtype=np.float64) + rotation @ (np.array([0.0, SENSOR_HEIGHT_M, 0.0]) + manual_camera)
+    error = float(np.linalg.norm(endpoint - manual_endpoint))
+    # Pixel-center conventions differ by at most half a pixel; at this
+    # distance the expected numerical discrepancy is below two centimetres.
+    if error > 2e-2:
+        raise RuntimeError(f"Habitat unproject/manual -Z mismatch: error={error}")
+    return error
+
+
 def run_smoke(scene_id: str | None = None) -> dict[str, Any]:
     habitat_root, skeleton_root, _, config_path, assets = discover_assets()
     selected_scene = scene_id or assets[0].scene_id
@@ -257,11 +289,19 @@ def run_smoke(scene_id: str | None = None) -> dict[str, Any]:
         apply_humanoid_pose(human, joints[FRAME_INDEX], roots[FRAME_INDEX], base_position=base, scene_yaw_deg=0.0, floor_y=float(base[1]), grounding_offset=float(offsets[FRAME_INDEX]))
         viewpoint_ids = {"s0": int(feature["s0_viewpoint_id"]), "s1": int(feature["s1_viewpoint_id"]), "p2": int(feature["remaining_candidate_ids"][0]), "p3": int(feature["remaining_candidate_ids"][1])}
         observations_by_view: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+        unprojection_error = None
         for name in ("s0", "s1"):
             viewpoint_id = viewpoint_ids[name]
             _set_agent_state(sim.get_agent(0), metadata["viewpoint_agent_positions"][viewpoint_id], metadata["viewpoint_rotations_wxyz"][viewpoint_id])
             observation = sim.get_sensor_observations([0])[0]
             observations_by_view[name] = (np.asarray(observation["depth"]), np.asarray(observation["semantic"]))
+            if name == "s1":
+                unprojection_error = _check_unprojection(
+                    observations_by_view[name][0],
+                    render_camera=sim._sensors["depth"]._sensor_object.render_camera,
+                    agent_position=metadata["viewpoint_agent_positions"][viewpoint_id],
+                    agent_rotation_wxyz=metadata["viewpoint_rotations_wxyz"][viewpoint_id],
+                )
         depth, semantic = observations_by_view["s1"]
         if sim.semantic_scene is None or len(sim.semantic_scene.objects) <= 0:
             raise RuntimeError("semantic_scene is empty")
@@ -278,7 +318,7 @@ def run_smoke(scene_id: str | None = None) -> dict[str, Any]:
         if float(valid_depth.mean()) <= 0.0:
             raise RuntimeError("Depth has no finite positive pixels")
         s1_id = viewpoint_ids["s1"]
-        bev = _project_observation_to_bev(depth, semantic, agent_position=metadata["viewpoint_agent_positions"][s1_id], agent_rotation_wxyz=metadata["viewpoint_rotations_wxyz"][s1_id], s1_position=metadata["viewpoint_agent_positions"][s1_id], s1_rotation_wxyz=metadata["viewpoint_rotations_wxyz"][s1_id])
+        bev = _project_observation_to_bev(depth, semantic, render_camera=sim._sensors["depth"]._sensor_object.render_camera, s1_position=metadata["viewpoint_agent_positions"][s1_id], s1_rotation_wxyz=metadata["viewpoint_rotations_wxyz"][s1_id])
         human_world = np.asarray(human.translation, dtype=np.float64)
         marker_world = {
             "s0": metadata["viewpoint_agent_positions"][viewpoint_ids["s0"]],
@@ -315,6 +355,9 @@ def run_smoke(scene_id: str | None = None) -> dict[str, Any]:
             "semantic_mappings": [{"semantic_id": int(value), "object_id": obj, "category": cat} for value, (obj, cat) in zip(nonzero[:10], mappings)],
             "depth_shape": list(depth.shape),
             "depth_valid_ratio": float(valid_depth.mean()),
+            "unprojection_manual_error_m": unprojection_error,
+            "center_ray_forward_convention": "Habitat camera -Z",
+            "center_ray_negative_z_sanity": True,
             "bev_shape": list(bev.shape),
             "bev_observed_cells": int(bev[0].sum()),
             "bev_occupied_cells": int(bev[1].sum()),
