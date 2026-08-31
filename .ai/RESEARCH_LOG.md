@@ -333,3 +333,29 @@ policy improvement: regret improved slightly while Accuracy declined, so this
 does not support escalating automatically to spatial RGB features. Test was
 not read, no future-candidate RGB was accessed, and no upstream or RGB dataset
 artifact was modified.
+
+## EXP025 — DINOv2 Spatial RGB Utility Regression
+
+2026-08-31: completed the authorized fixed Train-to-Val pilot using frozen
+`facebook/dinov2-base` patch tokens from only visited Stage-D `s0`/`s1` RGB
+observations. The deduplicated cache contains 77,750 observations (58,266
+Train; 19,484 Val), with no future-candidate RGB. EXP025 reached Val Accuracy
+0.659898, Macro-F1 0.607331, mean regret 1.378650, P90 5.330633 and headroom
+0.784692; utility MAE/RMSE were 2.839231/4.311770, Pearson 0.439911 and
+Spearman 0.266806. Relative to EXP024, mean regret improved by 0.035703 but
+Macro-F1 declined by 0.002172. Decision: **INCONCLUSIVE**. Candidate mismatch
+was zero; Test and all upstream artifacts remained untouched.
+
+## EXP026 — Spatial RGB-D Utility Regression
+
+2026-08-31: completed the authorized fixed Train-to-Val pilot with Habitat
+metric depth rendered only for the same 77,750 visited `s0`/`s1` observations at
+frame 15. Depth was pooled to `[16,4]` float16 features using 16 workers and
+four-camera batching; no p2/p3 depth was rendered or loaded. EXP026 reached Val
+Accuracy 0.657325, Macro-F1 0.606847, mean regret 1.407385, P90 5.423377 and
+headroom 0.783227; utility MAE/RMSE were 2.838240/4.305187, Pearson 0.428920
+and Spearman 0.248698. Relative to EXP025, Accuracy declined by 0.002574 and
+mean regret worsened by 0.0287345. Decision: **INCONCLUSIVE**; depth adds no
+evidence beyond spatial RGB in this pilot. Candidate mismatch was zero. Test
+remained locked and no Stage A/B/C, skeleton, RGB, perception or ST-GCN
+artifact was modified.

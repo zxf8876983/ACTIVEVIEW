@@ -33,7 +33,27 @@ Runtime cache and experiment outputs remain external under
 `/home/zxf/MG08/robot/ActiveView/`; Test was not read. No Stage A/B/C artifact,
 RGB dataset, perception pipeline or Habitat rendering was modified.
 
+## EXP025 — DINOv2 Spatial RGB Utility Regression
+
+EXP025 completed its fixed Train-to-Val run using only visited `s0`/`s1` RGB
+observations. The 77,750-observation spatial patch cache is external under
+`/home/zxf/MG08/robot/ActiveView/`; no p2/p3 RGB was accessed. Val Accuracy was
+0.659898, Macro-F1 0.607331, mean regret 1.378650, P90 5.330633 and headroom
+0.784692. Relative to EXP024, mean regret improved by 0.0357029 but Macro-F1
+declined by 0.002172; decision INCONCLUSIVE. Candidate mismatch was zero.
+
+## EXP026 — Spatial RGB-D Utility Regression
+
+EXP026 completed its fixed Train-to-Val run. Metric depth was rendered only
+for the same 77,750 visited `s0`/`s1` observations at frame 15, with 16
+workers and four-camera batching; compact cache is external under
+`/home/zxf/MG08/robot/ActiveView/`. Val Accuracy was 0.657325, Macro-F1
+0.606847, mean regret 1.407385, P90 5.423377 and headroom 0.783227.
+Relative to EXP025, mean regret worsened by 0.0287345 and Accuracy declined
+by 0.002574; decision INCONCLUSIVE. Candidate mismatch was zero.
+
 ## Status
 
-EXP024 is complete and ready for human scientific review. Do not start
-EXP025 or add spatial RGB features automatically.
+EXP025 and EXP026 are complete and ready for human scientific review. Test
+remained locked; no Stage A/B/C artifact, skeleton/RGB dataset, perception
+pipeline or ST-GCN artifact was modified. Do not start EXP027 automatically.

@@ -1,0 +1,42 @@
+experiment_id: EXP025
+name: dinov2_spatial_rgb_utility_regression
+split:
+  train: train
+  evaluation: val
+  test_used: false
+rgb:
+  root: /home/zxf/MG08/robot/ActiveView/datasets/offline/hm3d-train
+  encoder: facebook/dinov2-base
+  embedding: patch_tokens_adaptive_avg_pool
+  patch_grid: [16, 16]
+  pooled_grid: [4, 4]
+  embedding_shape: [16, 768]
+  output_dtype: float16
+  requested_roles: [s0, s1]
+  future_candidate_rgb_used: false
+model:
+  exp014_contextual_token_dim: 128
+  predicted_utility_dim: 1
+  spatial_projector: Linear(768,128)->GELU(shared)
+  spatial_encoder: TransformerEncoder(d_model=128,nhead=4,num_layers=1,dim_feedforward=256,dropout=0.1,shared)
+  input_dim: 513
+  regression_head: Linear(513,128)->GELU->Linear(128,64)->GELU->Linear(64,1)
+  exp014_frozen: true
+loss:
+  name: SmoothL1Loss
+  target: raw_true_U2_of_frozen_c_hat
+training:
+  seed: 42
+  epochs: 30
+  batch_size: 256
+  optimizer: Adam
+  learning_rate: 0.001
+  selection: final_epoch
+decision:
+  strict_rule: predicted_U_exec > 0
+protocol:
+  candidate_ranking: frozen_exp014_predicted_utility_geodesic_viewpoint_id
+  first_step: frozen_stage_c_v0
+  true_u2_as_model_input: false
+  p2_p3_rgb_used: false
+  test_used: false

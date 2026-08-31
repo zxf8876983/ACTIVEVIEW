@@ -1,0 +1,44 @@
+experiment_id: EXP026
+name: spatial_rgbd_utility_regression
+split:
+  train: train
+  evaluation: val
+  test_used: false
+frozen:
+  stage_c_v0: true
+  exp014_candidate_ranking: true
+  rgb_observation_version: activeview-rgb-observation-v1
+  frame_index: 15
+rgb:
+  source: EXP025_spatial_cache
+  encoder: facebook/dinov2-base
+  embedding: spatial_tokens_4x4
+  embedding_shape: [16, 768]
+  projector: Linear(768,128)->GELU(shared)
+  future_candidate_rgb_used: false
+depth:
+  source: Habitat metric depth sensor
+  resolution: [256, 256]
+  representation: [mean_depth, min_depth, std_depth, valid_ratio]
+  pooled_shape: [16, 4]
+  dtype: float16
+  clip_range_m: [0.0, 10.0]
+  future_candidate_depth_used: false
+  encoder: Linear(4,32)->GELU(shared), mean_pool
+model:
+  input_dim: 609
+  head: Linear(609,128)->GELU->Linear(128,64)->GELU->Linear(64,1)
+  loss: SmoothL1Loss
+  target: raw_true_U2_of_frozen_c_hat
+training:
+  seed: 42
+  epochs: 30
+  batch_size: 256
+  optimizer: Adam
+  learning_rate: 0.001
+  selection: final_epoch
+protocol:
+  observed_view_roles: [s0, s1]
+  true_u2_as_model_input: false
+  candidate_identity_source: frozen_exp014_ranking
+  test_used: false

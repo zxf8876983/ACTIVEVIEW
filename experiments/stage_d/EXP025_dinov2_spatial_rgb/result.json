@@ -1,0 +1,277 @@
+{
+  "experiment_id": "EXP025",
+  "experiment_name": "dinov2_spatial_rgb_utility_regression",
+  "status": "COMPLETED",
+  "decision": "INCONCLUSIVE",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": false,
+  "stgcn_retrained": false,
+  "exp014_frozen": true,
+  "val_episode_count": 13987,
+  "v0_move_eligible_episode_count": 9742,
+  "train": {
+    "experiment_id": "EXP025",
+    "split": "train",
+    "episode_count": 29133,
+    "target_mean": -0.8050224184989929,
+    "final_loss": 1.5622809906229769,
+    "loss_history": [
+      2.4633732523915044,
+      2.393928097478844,
+      2.369937767866437,
+      2.346395428073569,
+      2.3248331395137676,
+      2.3106117269649356,
+      2.2919608616572766,
+      2.2717913578619933,
+      2.2484589557063708,
+      2.2195515696217503,
+      2.1977922129867555,
+      2.1689263091160833,
+      2.1451528750548494,
+      2.1090711581532275,
+      2.0837885826479305,
+      2.0507989305548526,
+      2.020210966818226,
+      1.9836771798110118,
+      1.95273857747179,
+      1.9118353236950385,
+      1.8716485586020055,
+      1.8476211581536075,
+      1.8181442162552983,
+      1.7730098025616217,
+      1.7436302679229037,
+      1.6975870128190713,
+      1.6690613958898044,
+      1.6316642416938099,
+      1.5903669868934471,
+      1.5622809906229769
+    ],
+    "epochs": 30,
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "loss": "SmoothL1Loss",
+    "selection": "final_epoch_fixed_30",
+    "val_used_for_selection": false,
+    "test_used": false
+  },
+  "model": {
+    "dino_model": "facebook/dinov2-base",
+    "dino_frozen": true,
+    "patch_grid": [
+      16,
+      16
+    ],
+    "pooled_grid": [
+      4,
+      4
+    ],
+    "spatial_tokens": [
+      16,
+      768
+    ],
+    "input_dim": 513,
+    "spatial_projector": "Linear(768,128) -> GELU (shared)",
+    "spatial_encoder": "TransformerEncoder(d_model=128,nhead=4,num_layers=1,dim_feedforward=256,dropout=0.1,shared)",
+    "regression_head": "Linear(513,128) -> GELU -> Linear(128,64) -> GELU -> Linear(64,1)",
+    "loss": "SmoothL1Loss",
+    "target": "raw true_U2(c_hat)"
+  },
+  "rgb_audit": {
+    "unique_train_rgb_observations": 58266,
+    "unique_val_rgb_observations": 19484,
+    "unique_union_rgb_observations": 77750,
+    "cache_hit_count": 0,
+    "cache_miss_count": 77750,
+    "extraction_time_sec": 983.4749855450355,
+    "cache_reused": false,
+    "cache_disk_bytes": 1932995537,
+    "cache_summary_sha256": "8a941e2868567721b36bf844a79b51b2a5d3c74f0b0936222a46b6a950539d6a",
+    "cache_manifest": "/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4/manifest.jsonl",
+    "future_candidate_rgb_used": false,
+    "requested_view_roles": [
+      "s0",
+      "s1"
+    ]
+  },
+  "val_regression_metrics": {
+    "mae": 2.8392310747957077,
+    "rmse": 4.311769530339861,
+    "pearson": 0.43991097933414436,
+    "spearman": 0.266806005395525
+  },
+  "val_sign_gate_metrics_against_y_exec": {
+    "tau": 0.0,
+    "episode_count": 9742,
+    "accuracy": 0.5868404845001026,
+    "move_rate": 0.3360706220488606,
+    "stay_rate": 0.6639293779511394,
+    "move_precision": 0.5390959071472206,
+    "move_recall": 0.4122868488670871,
+    "move_f1": 0.46724023825281275,
+    "stay_precision": 0.6110080395794681,
+    "stay_recall": 0.7236769822376854,
+    "balanced_accuracy": 0.5679819155523862,
+    "confusion": {
+      "learned_stay_oracle_stay": 3952,
+      "learned_stay_oracle_move": 2516,
+      "learned_move_oracle_stay": 1509,
+      "learned_move_oracle_move": 1765
+    },
+    "roc_auc": 0.6131504100277259,
+    "pr_auc": 0.5399971622055755,
+    "positive_prevalence": 0.43943748716895914
+  },
+  "metrics_table": [
+    {
+      "variant": "EXP014",
+      "gate": "predicted utility > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6582540930864375,
+      "macro_f1": 0.6101526052247462,
+      "mean_regret": 1.4224626188609946,
+      "median_regret": 0.003525762353092432,
+      "p90_regret": 5.515662515163418,
+      "headroom_capture": 0.7833127000367449,
+      "average_moves": 0.8649460213054979,
+      "mean_geodesic_cost_m": 2.5220799648630496
+    },
+    {
+      "variant": "EXP022",
+      "gate": "predicted executed utility > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6598984771573604,
+      "macro_f1": 0.6116873093844604,
+      "mean_regret": 1.4164954268521743,
+      "median_regret": 0.003512641414999962,
+      "p90_regret": 5.494912771711094,
+      "headroom_capture": 0.7823521235005074,
+      "average_moves": 0.9080574819475227,
+      "mean_geodesic_cost_m": 2.5605221080364116
+    },
+    {
+      "variant": "EXP024",
+      "gate": "predicted U_exec > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6576821334095946,
+      "macro_f1": 0.6095029918001829,
+      "mean_regret": 1.4143529555441186,
+      "median_regret": 0.004255207983078435,
+      "p90_regret": 5.431195160001515,
+      "headroom_capture": 0.7824340190113096,
+      "average_moves": 0.9921355544434117,
+      "mean_geodesic_cost_m": 2.689527819634268
+    },
+    {
+      "variant": "EXP025",
+      "gate": "predicted U_exec > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6598984771573604,
+      "macro_f1": 0.6073314610987366,
+      "mean_regret": 1.37865007085843,
+      "median_regret": 0.004016191654955037,
+      "p90_regret": 5.330633373564342,
+      "headroom_capture": 0.7846922046454643,
+      "average_moves": 0.9305783942232073,
+      "mean_geodesic_cost_m": 2.5836455968733367
+    },
+    {
+      "variant": "ExecutedCandidateOracle",
+      "gate": "true U2(c_hat) > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.7431186101379853,
+      "macro_f1": 0.6932308383305563,
+      "mean_regret": 0.7613394852938011,
+      "median_regret": 2.3841559766424325e-05,
+      "p90_regret": 2.8315601035952533,
+      "headroom_capture": 0.8651930233295314,
+      "average_moves": 1.0025738185457924,
+      "mean_geodesic_cost_m": 2.692687738263054
+    }
+  ],
+  "exp025_vs_exp024_delta": {
+    "accuracy": 0.0022163437477658032,
+    "macro_f1": -0.002171530701446267,
+    "mean_regret": -0.03570288468568861,
+    "p90_regret": -0.10056178643717306
+  },
+  "headroom_recovery": {
+    "accuracy_gain": 0.001644384070922933,
+    "accuracy_oracle_gap": 0.08486451705154785,
+    "accuracy_recovery": 0.019376579612467623,
+    "regret_reduction": 0.04381254800256462,
+    "regret_oracle_gap": 0.6611231335671934,
+    "regret_recovery": 0.06626987587950092
+  },
+  "action_change": {
+    "candidate_identity_mismatch_count": 0,
+    "stay_to_move": {
+      "count": 2112,
+      "positive_count": 1077,
+      "nonpositive_count": 1035,
+      "mean_true_utility": 0.1219148786314307,
+      "median_true_utility": 2.056115727100405e-05,
+      "sum_true_utility": 257.48422366958164
+    },
+    "move_to_stay": {
+      "count": 1194,
+      "positive_count": 590,
+      "nonpositive_count": 604,
+      "mean_true_utility": -0.29758951862838473,
+      "median_true_utility": -3.754940598810208e-05,
+      "sum_true_utility": -355.3218852422914
+    },
+    "both_stay": {
+      "count": 5274,
+      "positive_count": 1926,
+      "nonpositive_count": 3348,
+      "mean_true_utility": -1.664996401099211,
+      "median_true_utility": -0.0305078414385207,
+      "sum_true_utility": -8781.19101939724
+    },
+    "both_move": {
+      "count": 1162,
+      "positive_count": 688,
+      "nonpositive_count": 474,
+      "mean_true_utility": 0.6432427915217003,
+      "median_true_utility": 0.03845588723220317,
+      "sum_true_utility": 747.4481237482157
+    }
+  },
+  "episode_alignment": {
+    "stage_b_episode_count": 13987,
+    "v0_episode_count": 13987,
+    "expected_second_step_episode_count": 9742,
+    "stage_d_cache_episode_count": 9742,
+    "exp014_prediction_episode_count": 9742
+  },
+  "provenance": {
+    "source_commit": "44d94010c0a6ec3bc065051f4995a68291453bfe",
+    "exp014_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP014_two_step_sequential/checkpoints/sequential_observation_ranker_best.pth",
+    "exp014_checkpoint_sha256": "0f7318520305ef058f2005d0029a0f35999e0ba8a5faf82fa3aed44605700458",
+    "train_predictions_sha256": "7089359ae1a0ba4a711ea2ee44d09eb6c19ad2afdae68c09a651b508aa70a8e7",
+    "val_predictions_sha256": "96aef4b1d11fc8f0e82910a2a9585c3f13aef1a59d563a6ac8ff763da4bf0bf5",
+    "v0_val_predictions_sha256": "232c5c366799f73459856974872d35a67121cf36a744e6cfdc73dbbe7ed136d8",
+    "exp022_result_sha256": "45326eebe0b27ed6cf5c4b0db33ebf536bdf882629b8176dcb515316293a5655",
+    "exp024_result_sha256": "7dfe5438e6677c753370e82cfac001ad40c91c86967ccffd8a7538194069f36b",
+    "rgb_dataset_summary_sha256": "20d8f4aea475196709ab8431725a31008587645d5e6c9ef0d9b1fe9a9c6c0424",
+    "spatial_cache_summary_sha256": "8a941e2868567721b36bf844a79b51b2a5d3c74f0b0936222a46b6a950539d6a",
+    "checkpoint": "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP025_dinov2_spatial_rgb/checkpoints/spatial_rgb_utility_gate_final.pth",
+    "checkpoint_sha256": "e2471258c48e8ef5d0bda3167547fdfa0b78368eee840201db5bf21af96d564d"
+  },
+  "validity": {
+    "candidate_ranking_frozen": true,
+    "first_step_protocol_frozen": true,
+    "exp014_parameters_frozen": true,
+    "dino_parameters_frozen": true,
+    "true_u2_used_only_as_train_target": true,
+    "true_u2_used_as_model_input": false,
+    "future_candidate_rgb_used": false,
+    "val_used_for_selection": false,
+    "test_split_accepted": false,
+    "candidate_identity_mismatch_count": 0
+  }
+}

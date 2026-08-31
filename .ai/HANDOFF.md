@@ -2,15 +2,18 @@
 
 Status: CLEAN
 
-EXP024 DINOv2 RGB Context Utility Regression Pilot is complete. Runtime cache,
-checkpoint and predictions are under
-`/home/zxf/MG08/robot/ActiveView/`; source summaries are under
-`experiments/stage_d/EXP024_dinov2_rgb_context/`. The cache uses 77,750 unique
-visited `s0`/`s1` RGB observations (58,266 Train; 19,484 Val), float16 768-D
-DINOv2 global CLS embeddings, and no future-candidate RGB.
+EXP025 and EXP026 are complete. Runtime caches, checkpoints and predictions
+are under `/home/zxf/MG08/robot/ActiveView/`; source summaries are under
+`experiments/stage_d/EXP025_dinov2_spatial_rgb/` and
+`experiments/stage_d/EXP026_spatial_rgbd_utility_regression/`.
 
-Val EXP024: Accuracy 0.657682, Macro-F1 0.609503, mean regret 1.414353,
-P90 5.431195, headroom 0.782434; candidate identity mismatches = 0. Relative
-to EXP022, Accuracy delta = -0.002216 and mean-regret delta = -0.002142.
-Test remained locked. No upstream artifact, RGB dataset, perception pipeline
-or Habitat rendering was modified. Do not start EXP025 automatically.
+EXP025 used 77,750 unique visited `s0`/`s1` RGB observations (58,266 Train;
+19,484 Val) with frozen DINOv2 spatial tokens. Val: Accuracy 0.659898,
+Macro-F1 0.607331, mean regret 1.378650, P90 5.330633, headroom 0.784692.
+EXP026 used the same keys with frame-15 Habitat metric depth and 16 workers.
+Val: Accuracy 0.657325, Macro-F1 0.606847, mean regret 1.407385, P90
+5.423377, headroom 0.783227. Candidate identity mismatches were zero in both.
+
+Test remained locked. No Stage A/B/C artifact, skeleton/RGB dataset,
+perception pipeline or ST-GCN artifact was modified. Do not start EXP027
+automatically.
