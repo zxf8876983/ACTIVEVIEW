@@ -252,6 +252,22 @@ were non-positive for the candidate actually selected by EXP014. EXP018 is an
 analysis-only **INCONCLUSIVE** diagnostic; Test was not read and no upstream
 artifact was modified.
 
+## EXP027 — Spatial-RGB Oracle Behavior Cloning
+
+2026-08-31: trained an unweighted three-action CrossEntropy behavior-cloning
+policy for 30 fixed Train-only epochs using legal Stage-D skeleton/delta and
+visited s0/s1 EXP025 spatial RGB features. Train labels exactly matched the
+frozen Fixed-first Second-Step Oracle; no future candidate RGB/depth/skeleton
+was accessed and the Stage C-v0 first action remained frozen. On 9,742 Val
+second-step episodes, EXP027 predicted Stay/p2/p3 at 4,411/2,923/2,408,
+three-way imitation accuracy 0.493841 and binary Move/Stay accuracy 0.644837.
+Trajectory Accuracy was 0.657039, Macro-F1 0.608384, mean regret 1.486694,
+P90 regret 5.751852 and headroom 0.769306, below EXP014 (0.658254 / 1.422463)
+and EXP023 (0.660470 / 1.374664). Decision: **INCONCLUSIVE** negative
+diagnostic; direct unweighted action cloning did not improve trajectory
+performance under this representation. Test remained locked and no upstream,
+RGB or perception artifact was modified.
+
 ## EXP020 — Frozen EXP014 Contextual-Latent Executed Gate
 
 2026-08-31: trained a fixed 129-D binary gate using the frozen EXP014

@@ -52,8 +52,24 @@ workers and four-camera batching; compact cache is external under
 Relative to EXP025, mean regret worsened by 0.0287345 and Accuracy declined
 by 0.002574; decision INCONCLUSIVE. Candidate mismatch was zero.
 
+## EXP027 — Spatial-RGB Oracle Behavior Cloning
+
+EXP027 completed its authorized fixed 30-epoch Train-only three-action
+behavior-cloning run and one Val evaluation. It used only visited s0/s1
+EXP025 spatial RGB cache and legal Stage-D skeleton/delta/candidate geometry;
+the frozen Stage C-v0 first action and p1 remained unchanged. Train oracle
+labels exactly matched the frozen Fixed-first Second-Step Oracle.
+
+Val EXP027 BC: Accuracy 0.657039, Macro-F1 0.608384, mean regret 1.486694,
+P90 regret 5.751852 and headroom 0.769306. It underperformed EXP014,
+EXP023 and EXP025; decision is INCONCLUSIVE as a diagnostic negative result.
+Three-way imitation accuracy was 0.493841 and binary Move/Stay accuracy was
+0.644837. Harmful moves numbered 2,442 and missed beneficial oracle moves
+1,803. Test remained locked and no upstream or perception artifact changed.
+
 ## Status
 
-EXP025 and EXP026 are complete and ready for human scientific review. Test
-remained locked; no Stage A/B/C artifact, skeleton/RGB dataset, perception
-pipeline or ST-GCN artifact was modified. Do not start EXP027 automatically.
+EXP027 is complete and ready for human scientific review. Full source summary
+is in `experiments/stage_d/EXP027_spatial_rgb_oracle_behavior_cloning/`; runtime
+predictions/checkpoint remain external under `/home/zxf/MG08/robot/ActiveView/`.
+Do not start EXP028 automatically.

@@ -1,0 +1,40 @@
+experiment_id: EXP027
+name: spatial_rgb_oracle_behavior_cloning
+split:
+  train: train
+  evaluation: val
+  test_used: false
+frozen:
+  stage_c_v0_first_step: true
+  exp014_candidate_ranking: true
+  rgb_observation_version: activeview-rgb-observation-v1
+  spatial_cache: EXP025_dinov2_vitb14_spatial4x4
+representation:
+  skeleton_current_dims: [275, 275, 19]
+  rgb_roles: [s0, s1]
+  rgb_spatial_tokens: [16, 768]
+  rgb_projector: Linear(768,128)->GELU(shared)
+  rgb_transformer: TransformerEncoder(d_model=128,nhead=4,num_layers=1,dim_feedforward=256,dropout=0.1,shared)
+  candidate_geometry_dim: 11
+  future_candidate_rgb_used: false
+  future_candidate_depth_used: false
+  future_candidate_skeleton_used: false
+model:
+  action_set: [Stay, p2, p3]
+  stay_head: learnable
+  candidate_head: shared
+  loss: CrossEntropyLoss
+  class_weights: null
+  true_utility_used_as_input: false
+training:
+  seed: 42
+  epochs: 30
+  batch_size: 256
+  optimizer: Adam
+  learning_rate: 0.001
+  selection: final_epoch
+protocol:
+  oracle_label: argmax([0,true_U2(p2),true_U2(p3)])
+  tie_break: frozen_fixed_first_oracle_cache_order_with_stay_first
+  val_used_for_selection: false
+  test_used: false

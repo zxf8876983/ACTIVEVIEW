@@ -1,0 +1,279 @@
+{
+  "experiment_id": "EXP027",
+  "experiment_name": "spatial_rgb_oracle_behavior_cloning",
+  "status": "COMPLETED",
+  "decision": "INCONCLUSIVE",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": false,
+  "stgcn_retrained": false,
+  "first_step_protocol_frozen": true,
+  "train_episode_count": 29133,
+  "val_episode_count": 13987,
+  "v0_move_episode_count": 9742,
+  "train": {
+    "episode_count": 29133,
+    "oracle_distribution": {
+      "Stay": {
+      "count": 12572,
+      "rate": 0.4315558002269718
+      },
+      "p2": {
+      "count": 9363,
+      "rate": 0.3214933199420135
+      },
+      "p3": {
+      "count": 7198,
+      "rate": 0.2469508798310147
+      }
+    },
+    "final_ce_loss": 0.13040576323877584,
+    "loss_history": [
+      1.0088324574720715,
+      0.9741675084881911,
+      0.95119381118491,
+      0.934371620871865,
+      0.9087000578336022,
+      0.8860565761240218,
+      0.8583785840834272,
+      0.8309435184070748,
+      0.7924357008067356,
+      0.7535360693804731,
+      0.7098638428921713,
+      0.6632316342278431,
+      0.619474024719122,
+      0.5693052819512292,
+      0.5157016902886823,
+      0.46798199897641785,
+      0.419184534733153,
+      0.38312412225999193,
+      0.3371133730114703,
+      0.3053696964588109,
+      0.2737257762778224,
+      0.24892764850661694,
+      0.23674863749669467,
+      0.20711719777611656,
+      0.18894633507921305,
+      0.1768632617044804,
+      0.1525184743596626,
+      0.146736769185508,
+      0.15388439991437078,
+      0.13040576323877584
+    ],
+    "epochs": 30,
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "class_weights": null,
+    "val_used_for_selection": false
+  },
+  "model": {
+    "architecture": "state encoders + shared spatial RGB projector/Transformer + learnable Stay head + shared candidate head",
+    "action_set": [
+      "Stay",
+      "p2",
+      "p3"
+    ],
+    "loss": "CrossEntropyLoss",
+    "dino_frozen": true,
+    "spatial_tokens": [
+      16,
+      768
+    ],
+    "true_utility_used_as_model_input": false
+  },
+  "val_action_diagnostics": {
+    "episode_count": 9742,
+    "oracle_distribution": {
+      "Stay": {
+        "count": 4265,
+        "rate": 0.43779511393964277
+      },
+      "p2": {
+        "count": 3185,
+        "rate": 0.32693492096078836
+      },
+      "p3": {
+        "count": 2292,
+        "rate": 0.23526996509956888
+      }
+    },
+    "learned_distribution": {
+      "Stay": {
+        "count": 4411,
+        "rate": 0.4527817696571546
+      },
+      "p2": {
+        "count": 2923,
+        "rate": 0.3000410593307329
+      },
+      "p3": {
+        "count": 2408,
+        "rate": 0.2471771710121125
+      }
+    },
+    "exact_imitation_accuracy": 0.4938411003900636,
+    "confusion_matrix_oracle_rows_pred_columns": [
+      [
+        2608,
+        928,
+        729
+      ],
+      [
+        1105,
+        1302,
+        778
+      ],
+      [
+        698,
+        693,
+        901
+      ]
+    ],
+    "binary_move_stay": {
+      "accuracy": 0.6448367891603367,
+      "balanced_accuracy": 0.6411470240787382,
+      "move_precision": 0.6891765147251923,
+      "move_recall": 0.6708051853204309,
+      "move_f1": 0.6798667653589934,
+      "stay_precision": 0.5912491498526411,
+      "stay_recall": 0.6114888628370457,
+      "confusion": {
+        "stay_stay": 2608,
+        "stay_move": 1803,
+        "move_stay": 1657,
+        "move_move": 3674
+      }
+    },
+    "selected_action_mean_true_utility": -0.051969039486740996,
+    "harmful_move": {
+      "count": 2442,
+      "rate": 0.2506672141244098,
+      "mean_true_utility": -2.882539840018058,
+      "median_true_utility": -1.5166483782231808,
+      "summed_negative_utility": 7039.162289324101
+    },
+    "missed_beneficial_move": {
+      "count": 1803,
+      "rate": 0.18507493327858757,
+      "mean_oracle_utility": 2.109892952995668,
+      "median_oracle_utility": 0.4940667152404785,
+      "summed_missed_positive_utility": 3804.1369942511888
+    },
+    "both_move_count": 3674,
+    "candidate_exact_hit_count": 2203,
+    "candidate_exact_hit_rate": 0.5996189439303212
+  },
+  "metrics_table": [
+    {
+      "variant": "EXP014",
+      "gate": "frozen Stage-D learned action",
+      "candidate": "frozen learned candidate",
+      "accuracy": 0.6582540930864375,
+      "macro_f1": 0.6101526052247462,
+      "mean_regret": 1.4224626188609946,
+      "median_regret": 0.003525762353092432,
+      "p90_regret": 5.515662515163418,
+      "headroom_capture": 0.7833127000367449,
+      "average_moves": 0.8649460213054979,
+      "mean_geodesic_cost_m": 2.5220799648630496
+    },
+    {
+      "variant": "EXP023",
+      "accuracy": 0.6604704368342031,
+      "macro_f1": 0.6085657457589277,
+      "mean_regret": 1.3746635965289113,
+      "median_regret": 0.003706232899276074,
+      "p90_regret": 5.294162066862918,
+      "headroom_capture": 0.7867312289639564,
+      "average_moves": 0.899478086794881,
+      "mean_geodesic_cost_m": 2.5976654816012186,
+      "gate": "argmax([0,q2,q3])",
+      "candidate": "model-selected p2/p3"
+    },
+    {
+      "variant": "EXP025",
+      "gate": "predicted U_exec > 0",
+      "candidate": "frozen learned c_hat",
+      "accuracy": 0.6598984771573604,
+      "macro_f1": 0.6073314610987366,
+      "mean_regret": 1.37865007085843,
+      "median_regret": 0.004016191654955037,
+      "p90_regret": 5.330633373564342,
+      "headroom_capture": 0.7846922046454643,
+      "average_moves": 0.9305783942232073,
+      "mean_geodesic_cost_m": 2.5836455968733367
+    },
+    {
+      "variant": "EXP027 BC",
+      "gate": "CrossEntropy oracle action",
+      "candidate": "model-selected p2/p3",
+      "accuracy": 0.6570386787731465,
+      "macro_f1": 0.6083842322168898,
+      "mean_regret": 1.486694306941766,
+      "median_regret": 0.0027306152042001486,
+      "p90_regret": 5.751851892471312,
+      "headroom_capture": 0.7693056098868197,
+      "average_moves": 1.0776435261314077,
+      "mean_geodesic_cost_m": 2.8651791496943173
+    },
+    {
+      "variant": "Fixed-first Second-Step Oracle",
+      "gate": "argmax([0,true_U2(p2),true_U2(p3)])",
+      "candidate": "oracle",
+      "accuracy": 0.7715021091013083,
+      "macro_f1": 0.725081382409528,
+      "mean_regret": 0.5862035541860805,
+      "median_regret": 0.0,
+      "p90_regret": 1.6999013550579545,
+      "headroom_capture": 0.8908871486261597,
+      "average_moves": 1.0880817902337885,
+      "mean_geodesic_cost_m": 2.8595771753818675
+    }
+  ],
+  "comparison_deltas": {
+    "vs_EXP014": {"accuracy": -0.0012154143132909745, "macro_f1": -0.0017683730078564, "mean_regret": 0.0642316880807714, "p90_regret": 0.236189377307894, "headroom_capture": -0.0140070901499259},
+    "vs_EXP023": {"accuracy": -0.0034317580610566, "macro_f1": -0.0001815135420379, "mean_regret": 0.112030710412854, "p90_regret": 0.457689815807894, "headroom_capture": -0.0174256190771365},
+    "vs_EXP025": {"accuracy": -0.0028597983842139, "macro_f1": 0.0010527711181530, "mean_regret": 0.108044236083336, "p90_regret": 0.421218518906970, "headroom_capture": -0.0153865947586443}
+  },
+  "headroom_recovery": {
+    "accuracy_oracle_gap": 0.11324801601487089,
+    "accuracy_gain": -0.0012154143132909745,
+    "accuracy_recovery": -0.010732323232323782,
+    "regret_oracle_gap": 0.8362590646749141,
+    "regret_reduction": -0.0642316880807714,
+    "regret_recovery": -0.0768083609422407
+  },
+  "rgb_audit": {
+    "unique_train_rgb_observations": 58266,
+    "unique_val_rgb_observations": 19484,
+    "spatial_cache_path": "/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4",
+    "spatial_cache_sha256": "8a941e2868567721b36bf844a79b51b2a5d3c74f0b0936222a46b6a950539d6a",
+    "future_candidate_rgb_used": false,
+    "future_candidate_depth_used": false,
+    "future_candidate_skeleton_used": false
+  },
+  "provenance": {
+    "source_commit": "adeaac7c6151d105139830c5aa40976dba455516",
+    "stage_d_feature_summary_sha256": "5ada9ca595aca421b77c507ee6ea3ccd19eda0008fda943f4483e5a41837adfb",
+    "stage_d_train_features_sha256": "eb97b380da6ecd6a121144f8c29af523b6848eb7eaaf00573b7fa8b982516817",
+    "stage_d_val_features_sha256": "4e78731acc35d356fcfa89e20c6cb119ec68da38b37342f45ef2d6336f36a72d",
+    "stage_b_train_sha256": "c6f78582bcbeae5780ed3fde34f6a8a279ef73f495a57f2bea79f85b68b545c4",
+    "stage_b_val_sha256": "34f1d55724940a150ce55cf3babefdc2fcb700f6074093948916552958527729",
+    "v0_train_predictions_sha256": "733e0afab63ca9f1da3c31e55f0cc29ffe7ae06dfb3b57d7cb9aaf5671d35abb",
+    "v0_val_predictions_sha256": "232c5c366799f73459856974872d35a67121cf36a744e6cfdc73dbbe7ed136d8",
+    "checkpoint": "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP027_spatial_rgb_oracle_behavior_cloning/checkpoints/spatial_rgb_behavior_cloner_final.pth",
+    "checkpoint_sha256": "d75b07326b40e7716886ed813a062e186f4f75242fcc926ef438bc01915d2371"
+  },
+  "validity": {
+    "oracle_labels_match_frozen_fixed_first": true,
+    "candidate_ids_remain_independent": true,
+    "true_utility_used_as_input": false,
+    "future_candidate_rgb_used": false,
+    "future_candidate_depth_used": false,
+    "future_candidate_skeleton_used": false,
+    "candidate_identity_mismatch_count": 0,
+    "test_split_accepted": false
+  }
+}
