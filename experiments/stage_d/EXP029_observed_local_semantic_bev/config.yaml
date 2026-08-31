@@ -1,0 +1,20 @@
+experiment_id: EXP029
+split: val
+frame_index: 15
+map_size_m: 8.0
+cell_size_m: 0.1
+bev_shape: [15, 80, 80]
+pool_grid: [10, 10]
+semantic_channels: [observed, occupied, free, human, wall, table, chair, bed, couch, cabinet, other_object, s0_position, s1_position, p2_position, p3_position]
+sensor: habitat_metric_depth_and_visible_semantic
+workers: 4
+observations: [s0, s1]
+future_candidate_rgb_used: false
+future_candidate_semantic_used: false
+future_candidate_depth_used: false
+future_candidate_skeleton_used: false
+full_unobserved_semantic_map_used: false
+true_utility_used_as_model_input: false
+val_used_for_normalization: false
+val_used_for_neighbor_index: false
+test_used: false

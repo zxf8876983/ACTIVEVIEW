@@ -85,6 +85,41 @@ def _category_for_id(objects: list[Any], semantic_id: int) -> tuple[str, str]:
     raise RuntimeError(f"No semantic descriptor/category mapping for ID {semantic_id}")
 
 
+_SEMANTIC_CHANNELS = {
+    "wall": 4,
+    "table": 5,
+    "chair": 6,
+    "bed": 7,
+    "couch": 8,
+    "cabinet": 9,
+    "other_object": 10,
+}
+
+
+def _normalize_category_name(name: str) -> str:
+    """Map Habitat category labels to the fixed EXP029 channels."""
+    value = " ".join(str(name).strip().lower().replace("_", " ").split())
+    if value == "sofa":
+        return "couch"
+    if value == "kitchen cabinet":
+        return "cabinet"
+    return value if value in _SEMANTIC_CHANNELS else "other_object"
+
+
+def _semantic_channel_map(objects: list[Any]) -> dict[int, int]:
+    """Build rendered semantic-id -> EXP029 BEV channel mapping."""
+    mapping: dict[int, int] = {}
+    for obj in objects:
+        object_id = str(getattr(obj, "id", ""))
+        suffix = object_id.rsplit("_", 1)[-1]
+        if not suffix.isdigit():
+            continue
+        category = getattr(obj, "category", None)
+        name = category.name() if category is not None else ""
+        mapping[int(suffix)] = _SEMANTIC_CHANNELS[_normalize_category_name(str(name))]
+    return mapping
+
+
 def _rotation_matrix(rotation_wxyz: np.ndarray) -> np.ndarray:
     import quaternion
 
@@ -129,6 +164,7 @@ def _project_observation_to_bev(
     render_camera: Any,
     s1_position: np.ndarray,
     s1_rotation_wxyz: np.ndarray,
+    semantic_channels: dict[int, int] | None = None,
 ) -> np.ndarray:
     """Project Habitat-unprojected depth rays through world/s1 frames into BEV."""
     import magnum as mn
@@ -144,6 +180,7 @@ def _project_observation_to_bev(
     rows, cols = np.where(valid[::8, ::8])
     occupied_cells: set[tuple[int, int]] = set()
     semantic_cells: set[tuple[int, int]] = set()
+    semantic_endpoint_channels: dict[tuple[int, int], int] = {}
     free_cells: set[tuple[int, int]] = set()
     for y, x in zip(rows * 8, cols * 8):
         distance = float(depth[y, x])
@@ -155,9 +192,13 @@ def _project_observation_to_bev(
             continue
         ray = _bresenham(camera_cell, endpoint_cell)
         free_cells.update(ray[:-1])
-        if int(semantic[y, x]) > 0:
+        semantic_id = int(semantic[y, x])
+        if semantic_id > 0:
             occupied_cells.add(endpoint_cell)
             semantic_cells.add(endpoint_cell)
+            semantic_endpoint_channels[endpoint_cell] = int(
+                (semantic_channels or {}).get(semantic_id, 10)
+            )
         else:
             free_cells.add(endpoint_cell)
     free_cells.difference_update(occupied_cells)
@@ -168,7 +209,8 @@ def _project_observation_to_bev(
     for row, col in occupied_cells:
         bev[1, row, col] = 1  # endpoint surface
         if (row, col) in semantic_cells:
-            bev[10, row, col] = 1  # other_object semantic endpoint
+            channel = semantic_endpoint_channels.get((row, col), 10)
+            bev[channel, row, col] = 1
         bev[2, row, col] = 0
     return bev
 
@@ -318,7 +360,8 @@ def run_smoke(scene_id: str | None = None) -> dict[str, Any]:
         if float(valid_depth.mean()) <= 0.0:
             raise RuntimeError("Depth has no finite positive pixels")
         s1_id = viewpoint_ids["s1"]
-        bev = _project_observation_to_bev(depth, semantic, render_camera=sim._sensors["depth"]._sensor_object.render_camera, s1_position=metadata["viewpoint_agent_positions"][s1_id], s1_rotation_wxyz=metadata["viewpoint_rotations_wxyz"][s1_id])
+        semantic_channels = _semantic_channel_map(sim.semantic_scene.objects)
+        bev = _project_observation_to_bev(depth, semantic, render_camera=sim._sensors["depth"]._sensor_object.render_camera, s1_position=metadata["viewpoint_agent_positions"][s1_id], s1_rotation_wxyz=metadata["viewpoint_rotations_wxyz"][s1_id], semantic_channels=semantic_channels)
         human_world = np.asarray(human.translation, dtype=np.float64)
         marker_world = {
             "s0": metadata["viewpoint_agent_positions"][viewpoint_ids["s0"]],
@@ -331,6 +374,9 @@ def run_smoke(scene_id: str | None = None) -> dict[str, Any]:
         if marker_cells["s1"] != expected_s1:
             raise RuntimeError(f"s1 marker transform mismatch: {marker_cells['s1']} != {expected_s1}")
         human_cell = _bev_cell(_world_to_s1(human_world, metadata["viewpoint_agent_positions"][s1_id], metadata["viewpoint_rotations_wxyz"][s1_id]))
+        if human_cell is None:
+            raise RuntimeError("Human marker is outside the 8m s1-centered BEV")
+        bev[3, human_cell[0], human_cell[1]] = 1
         if bev.shape != (15, 80, 80) or int(bev[0].sum()) <= 0 or int(bev[1].sum()) <= 0 or int(bev[2].sum()) <= 0:
             raise RuntimeError(f"BEV smoke failed: shape={bev.shape}, observed={int(bev[0].sum())}, occupied={int(bev[1].sum())}, free={int(bev[2].sum())}")
         if np.any((bev[1] > 0) & (bev[2] > 0)):
@@ -362,7 +408,7 @@ def run_smoke(scene_id: str | None = None) -> dict[str, Any]:
             "bev_observed_cells": int(bev[0].sum()),
             "bev_occupied_cells": int(bev[1].sum()),
             "bev_free_cells": int(bev[2].sum()),
-            "bev_semantic_cells": int(bev[10].sum()),
+            "bev_semantic_cells": int(bev[4:11].sum()),
             "marker_cells_s1_centered": {key: list(value) for key, value in marker_cells.items()},
             "human_world_position": human_world.tolist(),
             "human_bev_cell": list(human_cell) if human_cell is not None else None,
