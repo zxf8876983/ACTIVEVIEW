@@ -226,7 +226,7 @@
     "val_used_for_neighbor_index": false
   },
   "provenance": {
-    "source_commit": "c0c99b481b4624c3924c6f93c629f2a7ad1e8713",
+    "source_commit": "13f9f3cd5c5a1eece59277e83af8e6c4beb9e4d0",
     "stage_d_train_features_sha256": "eb97b380da6ecd6a121144f8c29af523b6848eb7eaaf00573b7fa8b982516817",
     "stage_d_val_features_sha256": "4e78731acc35d356fcfa89e20c6cb119ec68da38b37342f45ef2d6336f36a72d",
     "spatial_cache_summary_sha256": "8a941e2868567721b36bf844a79b51b2a5d3c74f0b0936222a46b6a950539d6a",
