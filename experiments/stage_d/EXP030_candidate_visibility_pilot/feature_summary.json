@@ -1,0 +1,35 @@
+{
+  "experiment_id": "EXP030",
+  "feature_names": [
+    "visible_joint_fraction",
+    "inframe_joint_fraction",
+    "blocked_joint_fraction",
+    "upper_body_visible_fraction",
+    "lower_body_visible_fraction",
+    "left_body_visible_fraction",
+    "right_body_visible_fraction",
+    "mean_ray_clearance",
+    "min_ray_clearance",
+    "mean_occluder_gap",
+    "target_distance",
+    "projected_bbox_width",
+    "projected_bbox_height",
+    "normalized_bbox_area",
+    "target_center_offset",
+    "candidate_azimuth",
+    "candidate_elevation"
+  ],
+  "feature_dim": 17,
+  "pixel_stride": 8,
+  "ray_block_radius_m": 0.12,
+  "eligible_episode_counts": {
+    "train": 29133,
+    "val": 9742
+  },
+  "runtime_visibility_paths": {
+    "train": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/experiments/stage_d/EXP030_candidate_visibility_pilot/train_visibility.jsonl",
+    "val": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/experiments/stage_d/EXP030_candidate_visibility_pilot/val_visibility.jsonl"
+  },
+  "future_candidate_observation_used": false,
+  "oracle_human_geometry_used": true
+}

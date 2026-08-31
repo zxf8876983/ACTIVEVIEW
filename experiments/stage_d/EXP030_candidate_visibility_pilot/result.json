@@ -1,0 +1,171 @@
+{
+  "experiment_id": "EXP030",
+  "experiment_name": "fast_candidate_conditioned_visibility_utility_pilot",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": true,
+  "stgcn_retrained": false,
+  "eligible_episode_counts": {
+    "train": 29133,
+    "val": 9742
+  },
+  "method_a0_observed_visibility": {
+    "episode_count": 5234,
+    "winner_accuracy": 0.5097439816583874,
+    "visibility_utility_correlation": {
+      "pearson": 0.02668069680798664,
+      "spearman": 0.009913366994770502
+    },
+    "high_margin": {
+      "0.25": {
+        "count": 2415,
+        "winner_accuracy": 0.5432712215320911
+      },
+      "0.5": {
+        "count": 2080,
+        "winner_accuracy": 0.55
+      },
+      "1.0": {
+        "count": 1674,
+        "winner_accuracy": 0.568100358422939
+      },
+      "2.0": {
+        "count": 1145,
+        "winner_accuracy": 0.5807860262008734
+      }
+    }
+  },
+  "method_b_utility_regression": {
+    "model": {
+      "architecture": "base Linear(569,128) + candidate Linear(17,64) -> concat(192) -> Linear(192,128)->GELU->Linear(128,64)->GELU->Linear(64,1)",
+      "epochs": 20,
+      "batch_size": 512,
+      "learning_rate": 0.001,
+      "loss": "SmoothL1Loss",
+      "train_final_mae": 2.153484344482422
+    },
+    "candidate_level": {
+      "n": 18648,
+      "mae": 3.034123022626331,
+      "rmse": 4.606810734462215,
+      "pearson": 0.4205229509278023,
+      "spearman": 0.299330247057709
+    },
+    "episode_level": {
+      "episode_count": 9742,
+      "three_way_accuracy": 0.4557585711352905,
+      "binary_move_stay_accuracy": 0.5668240607678094,
+      "selected_action_mean_true_utility": 0.04248581008722099,
+      "harmful_move_count": 1858,
+      "missed_beneficial_move_count": 2886,
+      "both_oracle_and_model_move_count": 2591,
+      "both_move_candidate_hit": 0.5824006175221922,
+      "action_counts": {
+        "stay": 5817,
+        "p2": 2314,
+        "p3": 1611
+      },
+      "margin_ge_0.25": {
+        "count": 5109,
+        "three_way_accuracy": 0.5061655901350558,
+        "candidate_hit": 0.6124542124542125
+      },
+      "margin_ge_0.5": {
+        "count": 4529,
+        "three_way_accuracy": 0.5199823360565247,
+        "candidate_hit": 0.6259351620947631
+      },
+      "margin_ge_1.0": {
+        "count": 3821,
+        "three_way_accuracy": 0.5372939021198639,
+        "candidate_hit": 0.6394763343403826
+      },
+      "margin_ge_2.0": {
+        "count": 2826,
+        "three_way_accuracy": 0.5711252653927813,
+        "candidate_hit": 0.6580829756795422
+      }
+    }
+  },
+  "method_c_candidate_ranking": {
+    "model": {
+      "architecture": "Linear(620,128)->GELU->Linear(128,64)->GELU->Linear(64,1)",
+      "epochs": 20,
+      "learning_rate": 0.001,
+      "loss": "BCEWithLogitsLoss"
+    },
+    "val_episode_count": 5234,
+    "winner_accuracy": 0.5596102407336645,
+    "balanced_accuracy": 0.5477563767558364,
+    "margin_conditioned": {
+      "0.25": {
+        "count": 2415,
+        "winner_accuracy": 0.5498964803312629
+      },
+      "0.5": {
+        "count": 2080,
+        "winner_accuracy": 0.5480769230769231
+      },
+      "1.0": {
+        "count": 1674,
+        "winner_accuracy": 0.5501792114695341
+      },
+      "2.0": {
+        "count": 1145,
+        "winner_accuracy": 0.5475982532751091
+      }
+    },
+    "positive_train_count": 15794
+  },
+  "method_d_full_scene_visibility": {
+    "available": true,
+    "candidate_count": 18648,
+    "mean_visible_joint_fraction": 0.811596260125672,
+    "winner_accuracy_on_oracle_move": 0.5590370653419946,
+    "visibility_utility_correlation": {
+      "pearson": 0.3671566878990849,
+      "spearman": 0.19301985864813198
+    },
+    "full_unobserved_scene_geometry_used": true,
+    "oracle_visibility_upper_bound": true
+  },
+  "comparison_references": {
+    "exp029_r1_knn_k25_three_way": 0.430404,
+    "exp028_knn_k25_three_way": 0.44457,
+    "exp027_both_move_candidate_hit": 0.5996
+  },
+  "decision": "CASE_C",
+  "leakage_flags": {
+    "future_candidate_rgb_used": false,
+    "future_candidate_depth_used": false,
+    "future_candidate_semantic_used": false,
+    "future_candidate_skeleton_used": false,
+    "full_unobserved_scene_geometry_used_method_a_b_c": false,
+    "full_unobserved_scene_geometry_used_method_d": true,
+    "oracle_visibility_upper_bound": true,
+    "oracle_human_geometry_used": true,
+    "test_used": false
+  },
+  "provenance": {
+    "source_commit": "b5250b6abd05ce9932858281de8770a23346ee81",
+    "stage_d_train_features_sha256": "eb97b380da6ecd6a121144f8c29af523b6848eb7eaaf00573b7fa8b982516817",
+    "stage_d_val_features_sha256": "4e78731acc35d356fcfa89e20c6cb119ec68da38b37342f45ef2d6336f36a72d",
+    "runtime_train_visibility": {
+      "count": 29133,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/experiments/stage_d/EXP030_candidate_visibility_pilot/train_visibility.jsonl",
+      "sha256": "058cf06220b7626cb438af855dd75612a533d23dfe978bc6b65f1b5f7276ad81",
+      "generation_time_sec": 0.0,
+      "resumed": true
+    },
+    "runtime_val_visibility": {
+      "count": 9742,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/experiments/stage_d/EXP030_candidate_visibility_pilot/val_visibility.jsonl",
+      "sha256": "bfec23f432a9a6f45d313cfbea290bd418ab3e6b1ad386c2c3ba63a1aadf1c10",
+      "generation_time_sec": 0.0,
+      "resumed": true
+    }
+  }
+}

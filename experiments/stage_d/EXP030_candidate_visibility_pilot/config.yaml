@@ -1,0 +1,15 @@
+experiment_id: EXP030
+split: val
+workers: 4
+pixel_stride: 8
+ray_block_radius_m: 0.12
+human_geometry: oracle_body_anchors_frame_15
+method_b:
+  epochs: 20
+  batch_size: 512
+  learning_rate: 0.001
+method_c:
+  epochs: 20
+  learning_rate: 0.001
+test_used: false
+future_candidate_observation_used: false
