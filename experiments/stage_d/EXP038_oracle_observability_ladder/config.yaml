@@ -1,0 +1,9 @@
+experiment_id: EXP038
+split: [train, val]
+seed: 42
+epochs: 20
+batch_size: 1024
+learning_rate: 0.001
+loss: SmoothL1Loss
+test_used: false
+future_candidate_quality_used_as_input: false

@@ -474,3 +474,21 @@ the best non-privileged Thompson method reached Accuracy 0.591335 (Macro-F1
 0.520750), while frozen Stay reproduced Stage-C-v0. The old EXP035--EXP037
 CASE E is therefore invalid due to identity collapse; R1 does not establish a
 ranking or downstream HAR improvement over EXP014. Test remained locked.
+
+## EXP038--EXP040 — Oracle observability and belief-space active HAR
+
+2026-09-02: completed the authorized Train/Val-only campaign using canonical
+dense recognition-quality fields and frozen ST-GCN observations. EXP038 legal
+L0 reached Accuracy 0.656467 / Macro-F1 0.609065 / mean regret 1.419867; the
+GT-label privileged L1 upper bound reached 0.702581 / 0.643642 / 1.139196,
+while canonical GT motion mapping was unavailable and recorded as
+GT_MOTION_STATE_BLOCKED. EXP039 current-belief Top-3 expected-risk was the
+best legal view-risk method (Accuracy 0.647959, mean regret 1.484942), below
+the frozen Stage-C-v0 trajectory; the GT-label head remained privileged.
+EXP040 belief-space graph planning did not improve the legal baseline: the best
+legal fused HAR was correctness-greedy H=2 at Accuracy 0.661114, whereas the
+true-CE graph oracle H=3 reached terminal Accuracy 0.827197. Candidate heads
+used the initial legal Stage-D state and beliefs were updated only after
+visited transitions; this rapid-pilot approximation is recorded in result.json.
+Test was not read and no perception/Habitat/ST-GCN training or regeneration
+was performed.

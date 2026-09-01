@@ -1,0 +1,5 @@
+{
+  "latest": "last visited q",
+  "mean": "arithmetic mean then normalize",
+  "geometric": "mean log posterior, eps=1e-8"
+}

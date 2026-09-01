@@ -1,0 +1,9 @@
+experiment_id: EXP039
+split: [train, val]
+seed: 42
+epochs: 20
+batch_size: 1024
+learning_rate: 0.001
+loss: masked_SmoothL1_and_BCE
+test_used: false
+gt_label_used_in_legal_inference: false

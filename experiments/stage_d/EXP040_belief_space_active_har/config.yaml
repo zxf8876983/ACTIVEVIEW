@@ -1,0 +1,8 @@
+experiment_id: EXP040
+split: val
+horizons: [1, 2, 3]
+belief_updates: [latest, mean, geometric]
+graph: 4_radii_x_8_azimuth
+random_seed: 42
+test_used: false
+training_performed: false

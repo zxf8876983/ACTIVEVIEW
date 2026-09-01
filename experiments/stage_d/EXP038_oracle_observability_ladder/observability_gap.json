@@ -1,0 +1,6 @@
+{
+  "label_delta_accuracy": null,
+  "motion_delta_accuracy": null,
+  "joint_delta_accuracy": null,
+  "motion_status": "GT_MOTION_STATE_BLOCKED"
+}
