@@ -1,0 +1,12 @@
+seed: 42
+epochs: 12
+batch_size: 256
+optimizer: AdamW
+learning_rate: 0.001
+weight_decay: 0.0001
+variants: [WM_A_SKELETON, WM_B_SKELETON_BELIEF, WM_C_SKELETON_BELIEF_RGB]
+target_scope: stage_d_remaining_p2_p3
+future_candidate_skeleton_used_as_input: false
+future_candidate_rgb_used: false
+gt_label_used_as_input: false
+test_used: false

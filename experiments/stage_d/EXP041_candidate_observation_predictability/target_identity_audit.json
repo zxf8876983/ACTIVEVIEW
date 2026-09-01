@@ -1,0 +1,1 @@
+{"status":"PASS","train_contexts":29133,"val_contexts":9742,"train_skeleton_targets":932256,"val_skeleton_targets":311744,"missing_targets":0,"duplicate_viewpoint_ids":0,"identity_mismatches":0}

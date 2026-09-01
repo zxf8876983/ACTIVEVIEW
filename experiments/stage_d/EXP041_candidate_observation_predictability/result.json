@@ -1,0 +1,10 @@
+{
+  "experiment_id": "EXP041",
+  "status": "AUDIT_COMPLETED_TRAINING_NOT_EXECUTED",
+  "split": ["train", "val"],
+  "target_is_frozen_perceived_skeleton": true,
+  "target_is_ground_truth_pose": false,
+  "evaluator_gate": {"status": "PASS", "accuracy": 0.6582540931, "macro_f1": 0.6101526052, "test_used": false},
+  "identity_audit": "target_identity_audit.json",
+  "test_used": false
+}

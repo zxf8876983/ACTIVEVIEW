@@ -1,0 +1,11 @@
+{
+  "shape": [
+    3,
+    30,
+    17
+  ],
+  "joint_order": "frozen H36M-17 order from source archives",
+  "coordinate_semantics": "frozen perceived normalized skeleton; no GT mapping assumed",
+  "target_is_frozen_perceived_skeleton": true,
+  "target_is_ground_truth_pose": false
+}

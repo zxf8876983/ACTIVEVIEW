@@ -1,0 +1,9 @@
+{
+  "experiment_id": "EXP042",
+  "status": "PREPARED_NOT_EXECUTED",
+  "variants": ["WM_A_SKELETON", "WM_B_SKELETON_BELIEF", "WM_C_SKELETON_BELIEF_RGB"],
+  "training_protocol": {"epochs": 12, "batch_size": 256, "optimizer": "AdamW", "learning_rate": 0.001, "weight_decay": 0.0001, "seed": 42},
+  "target_scope": "Stage-D remaining p2/p3 candidates for the rapid pilot; all-32 audit remains available via target_scope=all",
+  "test_used": false,
+  "training_performed": false
+}

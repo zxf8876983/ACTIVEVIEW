@@ -1,0 +1,7 @@
+{
+  "experiment_id": "EXP043",
+  "status": "BLOCKED_UNTIL_EXP042_TRAINING",
+  "split": "val",
+  "test_used": false,
+  "training_performed": false
+}
