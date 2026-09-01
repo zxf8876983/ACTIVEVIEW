@@ -109,71 +109,71 @@ Val-only graph rollout diagnostic; original Stage-D protocol unchanged.
     },
     "GMRFMean": {
       "1": {
-        "terminal_true_ce": 2.362404152847801,
-        "best_seen_true_ce": 1.0061501831626523,
-        "ce_improvement": 0.3340200897374144,
-        "path_length": 0.6883340005947248,
-        "gain_per_meter": 0.5357242188205311
+        "terminal_true_ce": 2.793854580684557,
+        "best_seen_true_ce": 0.9654221660023736,
+        "ce_improvement": 0.3747481068976929,
+        "path_length": 0.7584849075617524,
+        "gain_per_meter": 0.875941933364779
       },
       "2": {
-        "terminal_true_ce": 2.4344330386650888,
-        "best_seen_true_ce": 0.8563740948058343,
-        "ce_improvement": 0.48379617809423237,
-        "path_length": 1.07693445198427,
-        "gain_per_meter": 0.360122239551287
+        "terminal_true_ce": 2.249448213854317,
+        "best_seen_true_ce": 0.7337851020392775,
+        "ce_improvement": 0.606385170860789,
+        "path_length": 1.4119045037000917,
+        "gain_per_meter": 0.5565246207936283
       },
       "3": {
-        "terminal_true_ce": 2.469006858508517,
-        "best_seen_true_ce": 0.8552707023585522,
-        "ce_improvement": 0.4848995705415144,
-        "path_length": 1.208038713650655,
-        "gain_per_meter": 0.32467423128054035
+        "terminal_true_ce": 2.7557435425114214,
+        "best_seen_true_ce": 0.7241271365479854,
+        "ce_improvement": 0.6160431363520812,
+        "path_length": 1.8363084256043893,
+        "gain_per_meter": 0.4289816278580942
       }
     },
     "GMRFLCB": {
       "1": {
-        "terminal_true_ce": 2.612203506575278,
-        "best_seen_true_ce": 0.831700856298995,
-        "ce_improvement": 0.5084694166010715,
-        "path_length": 0.9844867210400287,
-        "gain_per_meter": 0.5608230118944084
+        "terminal_true_ce": 2.338701297903798,
+        "best_seen_true_ce": 0.9062455090198981,
+        "ce_improvement": 0.4339247638801685,
+        "path_length": 0.7757790596957134,
+        "gain_per_meter": 0.49234611457720306
       },
       "2": {
-        "terminal_true_ce": 2.566830336045236,
-        "best_seen_true_ce": 0.7514719068554943,
-        "ce_improvement": 0.5886983660445724,
-        "path_length": 1.2814405990887414,
-        "gain_per_meter": 0.4510377085683927
+        "terminal_true_ce": 1.966070476574912,
+        "best_seen_true_ce": 0.7583133305650485,
+        "ce_improvement": 0.5818569423350181,
+        "path_length": 1.392793437929323,
+        "gain_per_meter": 0.3556013300475143
       },
       "3": {
-        "terminal_true_ce": 2.8198451093894694,
-        "best_seen_true_ce": 0.7504049224797033,
-        "ce_improvement": 0.5897653504203634,
-        "path_length": 1.446682280922299,
-        "gain_per_meter": 0.4314671447004789
+        "terminal_true_ce": 2.4474922320507098,
+        "best_seen_true_ce": 0.7138601210364243,
+        "ce_improvement": 0.6263101518636424,
+        "path_length": 2.0188626613713763,
+        "gain_per_meter": 0.2857967251712277
       }
     },
     "Thompson": {
       "1": {
-        "terminal_true_ce": 2.612203506575278,
-        "best_seen_true_ce": 0.831700856298995,
-        "ce_improvement": 0.5084694166010715,
-        "path_length": 0.9844867210400287,
-        "gain_per_meter": 0.5608230118944084
+        "terminal_true_ce": 2.322304016736439,
+        "best_seen_true_ce": 0.9795493828424437,
+        "ce_improvement": 0.3606208900576228,
+        "path_length": 0.6733717574232121,
+        "gain_per_meter": 0.4347147499065627
       },
       "2": {
-        "terminal_true_ce": 2.566830336045236,
-        "best_seen_true_ce": 0.7514719068554943,
-        "ce_improvement": 0.5886983660445724,
-        "path_length": 1.2814405990887414,
-        "gain_per_meter": 0.4510377085683927
+        "terminal_true_ce": 1.9576839737225609,
+        "best_seen_true_ce": 0.8513532147774582,
+        "ce_improvement": 0.48881705812260834,
+        "path_length": 1.2312773969875375,
+        "gain_per_meter": 0.3457938223665877
       },
       "3": {
-        "terminal_true_ce": 2.8198451093894694,
-        "best_seen_true_ce": 0.7504049224797033,
-        "ce_improvement": 0.5897653504203634,
-        "path_length": 1.446682280922299,
-        "gain_per_meter": 0.4314671447004789
+        "terminal_true_ce": 2.3592341136119948,
+        "best_seen_true_ce": 0.8087476679612482,
+        "ce_improvement": 0.5314226049388184,
+        "path_length": 1.7966065327376883,
+        "gain_per_meter": 0.2996382269636221
       }
     },
     "Entropy": {
@@ -226,8 +226,41 @@ Val-only graph rollout diagnostic; original Stage-D protocol unchanged.
   "movement_cost_source": "EUCLIDEAN_DIAGNOSTIC",
   "oracle_multistep_upper_bound": true,
   "deployable": false,
+  "ce_proxy_calibrator": {
+    "alpha": 1.0,
+    "input": [
+      "entropy",
+      "top1_probability",
+      "top1_top2_margin"
+    ],
+    "train_observations": 18848,
+    "val_observations": 6304,
+    "val_metrics": {
+      "mae": 4.471155886078848,
+      "rmse": 5.388200029417526,
+      "pearson": 0.349323747119888,
+      "spearman": 0.5347127186402847
+    },
+    "uses_gt_label_as_input": false,
+    "_coefficients": [
+      5.188393244016223,
+      -1.1890696379578547,
+      0.8403564636863782,
+      -2.7418179411550505
+    ],
+    "_mean": [
+      0.42512412381291487,
+      0.8472736673761658,
+      3.7684378717063036
+    ],
+    "_std": [
+      0.429294017115148,
+      0.17846080851347818,
+      3.2759779029052867
+    ]
+  },
   "provenance": {
-    "source_commit": "7a2136b63138441794fd232605883b388386086a",
+    "source_commit": "46e0da21e9ced1004be50b9bb509d02f30450bc0",
     "stage_b_summary_sha256": "3cb52e01e1a36de6ec580c075d39345d01737820fe7313a4e6fe8312136b295f"
   }
 }

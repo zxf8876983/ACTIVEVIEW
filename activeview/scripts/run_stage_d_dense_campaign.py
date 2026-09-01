@@ -170,6 +170,21 @@ def _full_selection(predictions: dict[str, np.ndarray], fields: dict[str, dict[s
     return output
 
 
+def _fit_ce_proxy(train_fields: dict[str, dict[str, Any]], val_fields: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Train-only observable-statistics calibration for sequential updates."""
+    def matrix(fields: dict[str, dict[str, Any]]) -> tuple[np.ndarray, np.ndarray]:
+        x = []; y = []
+        for field in fields.values():
+            x.extend(np.c_[field["entropy"], field["top1_probability"], field["top1_top2_margin"]]); y.extend(field["ce"])
+        return np.c_[np.ones(len(x)), np.asarray(x, dtype=np.float64)], np.asarray(y, dtype=np.float64)
+    train_x, train_y = matrix(train_fields); val_x, val_y = matrix(val_fields)
+    mean = train_x[:, 1:].mean(0); std = train_x[:, 1:].std(0); std[std < 1e-6] = 1.0
+    train_x[:, 1:] = (train_x[:, 1:] - mean) / std; val_x[:, 1:] = (val_x[:, 1:] - mean) / std
+    beta = np.linalg.solve(train_x.T @ train_x + np.eye(train_x.shape[1]), train_x.T @ train_y)
+    prediction = val_x @ beta
+    return {"alpha": 1.0, "input": ["entropy", "top1_probability", "top1_top2_margin"], "train_observations": int(len(train_y)), "val_observations": int(len(val_y)), "val_metrics": {"mae": float(np.mean(np.abs(prediction - val_y))), "rmse": float(np.sqrt(np.mean((prediction - val_y) ** 2))), **_corr(prediction, val_y)}, "uses_gt_label_as_input": False, "_coefficients": beta.tolist(), "_mean": mean.tolist(), "_std": std.tolist()}
+
+
 def _write(directory: Path, result: dict[str, Any], readme: str) -> None:
     directory.mkdir(parents=True, exist_ok=True); (directory / "result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8"); (directory / "analysis.md").write_text(f"# {result['experiment_id']}\n\n{readme}\n\n```json\n{json.dumps(result, indent=2, ensure_ascii=False)}\n```\n", encoding="utf-8")
 
@@ -204,14 +219,16 @@ def run(data_root: Path) -> dict[str, Any]:
         sample_w = rng.multivariate_normal(bayes.weights, covariance); thompson.append(np.c_[np.ones(len(val_x)), val_x] @ sample_w)
     predictions["ThompsonMean"] = np.mean(thompson, axis=0)
     stage036 = {"experiment_id": "EXP036", "status": "COMPLETED", "split": "val", "test_used": False, "training_performed": True, "methods": {"DenseRegression": {"train_final_loss": dense_loss, "model": "legal state + 9-D viewpoint descriptor"}, "BradleyTerry": {"train_final_loss": bt_loss, "pair_count": len(pair_y)}, "GMRF": {"lambda": 0.25}, "BayesianMean": {"alpha": 1.0, "beta": 1.0}, "BayesianLCB": {"beta_uncertainty": 1.0}, "Thompson": {"samples": 20, "seeds": list(range(20))}, "Kernel": "METHOD_E_SKIPPED_FOR_SCALE"}, "p2_p3": _single_step(predictions, stage_d_val, val_fields), "full_32_view": _full_selection(predictions, val_fields, stage_d_val), "dense_supervision_record_count": len(train_fields), "legal_future_input": False, "leakage_flags": {"future_candidate_skeleton_used_at_inference": False, "future_true_ce_used_at_inference": False, "test_used": False}}
-    stage037 = _multistep(stage_d_val, val_fields, predictions)
+    proxy = _fit_ce_proxy(train_fields, val_fields)
+    stage037 = _multistep(stage_d_val, val_fields, predictions, proxy)
+    stage037["ce_proxy_calibrator"] = proxy
     provenance = {"source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO_ROOT, text=True).strip(), "stage_b_summary_sha256": file_sha256(data_root / "datasets/policy_v11_5/stage_b/stage_b_summary.json")}
     for directory, result, text in ((EXP035, stage035, "Frozen 32-view ST-GCN quality field and topology audit."), (EXP036, stage036, "Legal single-step dense, pairwise, graph and Bayesian diagnostics."), (EXP037, stage037, "Val-only graph rollout diagnostic; original Stage-D protocol unchanged.")):
         result["provenance"] = provenance; _write(directory, result, text)
     print(json.dumps({"elapsed_seconds": time.perf_counter() - started, "EXP035": stage035["status"], "EXP036": stage036["status"], "EXP037": stage037["status"]}, ensure_ascii=False)); return {"EXP035": stage035, "EXP036": stage036, "EXP037": stage037}
 
 
-def _multistep(val_rows: list[dict[str, Any]], fields: dict[str, dict[str, Any]], predictions: dict[str, np.ndarray]) -> dict[str, Any]:
+def _multistep(val_rows: list[dict[str, Any]], fields: dict[str, dict[str, Any]], predictions: dict[str, np.ndarray], proxy: dict[str, Any] | None = None) -> dict[str, Any]:
     """Run deterministic graph rollouts using legal static fields and observable feedback."""
     representatives = _record_index(val_rows); offset = {key: i for i, key in enumerate(sorted(fields))}; result: dict[str, Any] = {"experiment_id": "EXP037", "status": "COMPLETED", "protocol": "MULTISTEP_DIAGNOSTIC", "original_stage_d_protocol_unchanged": True, "split": "val", "test_used": False, "training_performed": False, "future_candidate_skeleton_used": False, "future_true_ce_used": False, "visited_view_skeleton_used": True, "methods": {}}
     graph = __import__('activeview.active_view.stage_d_dense_campaign', fromlist=['graph_edges']).graph_edges(); neighbors = {i: [] for i in range(VIEW_COUNT)}
@@ -230,6 +247,12 @@ def _multistep(val_rows: list[dict[str, Any]], fields: dict[str, dict[str, Any]]
                     else:
                         method_prediction = {"Greedy": "DenseRegression", "StaticDP": "GMRF", "GMRFMean": "GMRF", "GMRFLCB": "BayesianLCB", "Thompson": "ThompsonMean", "Entropy": "BayesianMean"}.get(method, "DenseRegression")
                         values = predictions[method_prediction][offset[record_id] * 32 : offset[record_id] * 32 + 32]
+                        if method in ("GMRFMean", "GMRFLCB", "Thompson") and proxy is not None:
+                            features = np.asarray([field["entropy"][node], field["top1_probability"][node], field["top1_top2_margin"][node]], dtype=np.float64)
+                            normalized = (features - np.asarray(proxy["_mean"])) / np.asarray(proxy["_std"])
+                            observed_proxy = float(np.dot(np.asarray(proxy["_coefficients"])[1:], normalized) + np.asarray(proxy["_coefficients"])[0])
+                            adjusted = values.copy(); adjusted[node] = (adjusted[node] + 4.0 * observed_proxy) / 5.0
+                            values = gmrf_smooth(adjusted)
                         if method == "StaticDP":
                             def value(next_node: int, remaining: int) -> float:
                                 if remaining == 0:
