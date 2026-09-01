@@ -260,7 +260,7 @@ Val-only graph rollout diagnostic; original Stage-D protocol unchanged.
     ]
   },
   "provenance": {
-    "source_commit": "46e0da21e9ced1004be50b9bb509d02f30450bc0",
+    "source_commit": "d9b45782a247e9b863094258e14a0cafb70ce213",
     "stage_b_summary_sha256": "3cb52e01e1a36de6ec580c075d39345d01737820fe7313a4e6fe8312136b295f"
   }
 }
