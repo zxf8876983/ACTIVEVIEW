@@ -1,0 +1,26 @@
+{
+  "matched_episode_count": 29133,
+  "matched_candidate_count": 217475,
+  "identity_mismatch_count": 0,
+  "scene_mismatch_count": 0,
+  "region_mismatch_count": 0,
+  "source_path_mismatch_count": 0,
+  "candidate_missing_count": 0,
+  "max_abs_logp_error": 0.007377147674560547,
+  "mean_abs_logp_error": 0.0007388058380255981,
+  "p99_abs_logp_error": 0.0043125152587890625,
+  "status": "PASS",
+  "val": {
+    "matched_episode_count": 9742,
+    "matched_candidate_count": 72784,
+    "identity_mismatch_count": 0,
+    "scene_mismatch_count": 0,
+    "region_mismatch_count": 0,
+    "source_path_mismatch_count": 0,
+    "candidate_missing_count": 0,
+    "max_abs_logp_error": 0.007377147674560547,
+    "mean_abs_logp_error": 0.0007152688989941897,
+    "p99_abs_logp_error": 0.00433349609375,
+    "status": "PASS"
+  }
+}

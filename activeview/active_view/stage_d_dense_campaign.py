@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from pathlib import Path
+from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 
@@ -11,6 +12,29 @@ import numpy as np
 VIEW_COUNT = 32
 RADIUS_COUNT = 4
 AZIMUTH_COUNT = 8
+
+ContextKey = tuple[str, str, str]
+
+
+def context_key(row: Mapping[str, Any]) -> ContextKey:
+    """Return the canonical scene/region/record identity for one row."""
+    return (str(row["scene_id"]), str(row["region"]), str(row["record_id"]))
+
+
+def canonical_realpath(value: str | Path) -> str:
+    """Resolve a source path without requiring it to exist."""
+    return str(Path(value).expanduser().resolve(strict=False))
+
+
+def index_by_context(rows: Sequence[Mapping[str, Any]], name: str = "rows") -> dict[ContextKey, Mapping[str, Any]]:
+    """Index rows by context and reject duplicate context identities."""
+    result: dict[ContextKey, Mapping[str, Any]] = {}
+    for row in rows:
+        key = context_key(row)
+        if key in result:
+            raise ValueError(f"Duplicate {name} context key: {key}")
+        result[key] = row
+    return result
 
 
 def viewpoint_radius(viewpoint_id: int) -> float:

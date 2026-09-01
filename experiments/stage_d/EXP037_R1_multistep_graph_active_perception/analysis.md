@@ -1,0 +1,393 @@
+# EXP037-R1
+
+R1 multistep graph diagnostics with terminal HAR metrics.
+
+```json
+{
+  "experiment_id": "EXP037-R1",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": false,
+  "methods": {
+    "Stay": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 2.2163263016440027,
+        "best_seen_true_ce": 2.2163263016440027,
+        "ce_improvement": 0.0,
+        "path_length": 0.0,
+        "gain_per_meter": 0.0,
+        "terminal_har_accuracy": 0.6491027382569529,
+        "terminal_har_macro_f1": 0.5980419794734364,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 2.2163263016440027,
+        "best_seen_true_ce": 2.2163263016440027,
+        "ce_improvement": 0.0,
+        "path_length": 0.0,
+        "gain_per_meter": 0.0,
+        "terminal_har_accuracy": 0.6491027382569529,
+        "terminal_har_macro_f1": 0.5980419794734364,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 2.2163263016440027,
+        "best_seen_true_ce": 2.2163263016440027,
+        "ce_improvement": 0.0,
+        "path_length": 0.0,
+        "gain_per_meter": 0.0,
+        "terminal_har_accuracy": 0.6491027382569529,
+        "terminal_har_macro_f1": 0.5980419794734364,
+        "privileged": false
+      }
+    },
+    "Random": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.825763950474457,
+        "best_seen_true_ce": 1.3309434596064185,
+        "ce_improvement": 0.8853828420375845,
+        "path_length": 0.9398453702813263,
+        "gain_per_meter": 1.1537295405484027,
+        "terminal_har_accuracy": 0.5598055337098734,
+        "terminal_har_macro_f1": 0.49514872773445534,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 4.6766207179412245,
+        "best_seen_true_ce": 1.0640895420253673,
+        "ce_improvement": 1.1522367596186356,
+        "path_length": 2.0517413390968993,
+        "gain_per_meter": 0.6396881937253687,
+        "terminal_har_accuracy": 0.5302066204332595,
+        "terminal_har_macro_f1": 0.47375202384950305,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 5.323792597732673,
+        "best_seen_true_ce": 0.9305677334177219,
+        "ce_improvement": 1.285758568226281,
+        "path_length": 3.234811936162322,
+        "gain_per_meter": 0.4270702543021712,
+        "terminal_har_accuracy": 0.48924000857939515,
+        "terminal_har_macro_f1": 0.4405253877765856,
+        "privileged": false
+      }
+    },
+    "Greedy": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.015422744182254,
+        "best_seen_true_ce": 1.638485051243548,
+        "ce_improvement": 0.5778412504004552,
+        "path_length": 0.6313962207105622,
+        "gain_per_meter": 0.7028307715075327,
+        "terminal_har_accuracy": 0.6034889540287409,
+        "terminal_har_macro_f1": 0.5320170244090219,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.3887244390318303,
+        "best_seen_true_ce": 1.518018581132139,
+        "ce_improvement": 0.6983077205118641,
+        "path_length": 0.9677593679593414,
+        "gain_per_meter": 0.5957862740435071,
+        "terminal_har_accuracy": 0.5866876385214842,
+        "terminal_har_macro_f1": 0.5182483876341274,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.399677199711682,
+        "best_seen_true_ce": 1.4794786866281784,
+        "ce_improvement": 0.7368476150158245,
+        "path_length": 1.1068064902709394,
+        "gain_per_meter": 0.5749100154168868,
+        "terminal_har_accuracy": 0.5846142846929292,
+        "terminal_har_macro_f1": 0.5159615559608961,
+        "privileged": false
+      }
+    },
+    "StaticDP": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.0455713644800997,
+        "best_seen_true_ce": 1.614810147543426,
+        "ce_improvement": 0.6015161541005771,
+        "path_length": 0.6564681492095805,
+        "gain_per_meter": 0.7068844583189671,
+        "terminal_har_accuracy": 0.6029884893115035,
+        "terminal_har_macro_f1": 0.5315057137003512,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.4841523490052446,
+        "best_seen_true_ce": 1.4653950854675084,
+        "ce_improvement": 0.7509312161764947,
+        "path_length": 1.0546618006452655,
+        "gain_per_meter": 0.5762148443764795,
+        "terminal_har_accuracy": 0.5824694359047687,
+        "terminal_har_macro_f1": 0.5135221587470625,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.488386913384088,
+        "best_seen_true_ce": 1.4174098777842343,
+        "ce_improvement": 0.7989164238597688,
+        "path_length": 1.2362004538000053,
+        "gain_per_meter": 0.5437349453777953,
+        "terminal_har_accuracy": 0.5817544863087153,
+        "terminal_har_macro_f1": 0.5123923256230394,
+        "privileged": false
+      }
+    },
+    "GMRFMean": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.1543051608752,
+        "best_seen_true_ce": 1.4500249386876263,
+        "ce_improvement": 0.7663013629563767,
+        "path_length": 0.7823023811239673,
+        "gain_per_meter": 0.9833338226546544,
+        "terminal_har_accuracy": 0.5925502252091227,
+        "terminal_har_macro_f1": 0.5227186555626431,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.4315741722040585,
+        "best_seen_true_ce": 1.2651359247752414,
+        "ce_improvement": 0.9511903768687615,
+        "path_length": 1.4823731149194426,
+        "gain_per_meter": 0.6299732707916071,
+        "terminal_har_accuracy": 0.5811825266318724,
+        "terminal_har_macro_f1": 0.5135926673231124,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.599146573626554,
+        "best_seen_true_ce": 1.2094856366644942,
+        "ce_improvement": 1.006840664979509,
+        "path_length": 2.0862820891868874,
+        "gain_per_meter": 0.48384074383185105,
+        "terminal_har_accuracy": 0.568956888539358,
+        "terminal_har_macro_f1": 0.5027051813878048,
+        "privileged": false
+      }
+    },
+    "GMRFLCB": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 2.8842302654306735,
+        "best_seen_true_ce": 1.5126490404671935,
+        "ce_improvement": 0.7036772611768095,
+        "path_length": 0.650155570706782,
+        "gain_per_meter": 0.9845406803710176,
+        "terminal_har_accuracy": 0.606992207049403,
+        "terminal_har_macro_f1": 0.5401159998267886,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.145177142612284,
+        "best_seen_true_ce": 1.3759140292728091,
+        "ce_improvement": 0.8404122723711938,
+        "path_length": 1.195632553174694,
+        "gain_per_meter": 0.6582137452865168,
+        "terminal_har_accuracy": 0.5961249731893902,
+        "terminal_har_macro_f1": 0.5270901847296383,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.2280859733766936,
+        "best_seen_true_ce": 1.3402692996413348,
+        "ce_improvement": 0.8760570020026685,
+        "path_length": 1.6424798884854834,
+        "gain_per_meter": 0.5348509157576482,
+        "terminal_har_accuracy": 0.5907628512189891,
+        "terminal_har_macro_f1": 0.5196192403120239,
+        "privileged": false
+      }
+    },
+    "Thompson": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 2.871930564670251,
+        "best_seen_true_ce": 1.5268210052030122,
+        "ce_improvement": 0.6895052964409908,
+        "path_length": 0.6388629877940203,
+        "gain_per_meter": 0.9604505812305633,
+        "terminal_har_accuracy": 0.6072066919282191,
+        "terminal_har_macro_f1": 0.5404798697097775,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.122157437041981,
+        "best_seen_true_ce": 1.3922415288811654,
+        "ce_improvement": 0.8240847727628375,
+        "path_length": 1.1698966615792616,
+        "gain_per_meter": 0.6450489307249583,
+        "terminal_har_accuracy": 0.5968399227854436,
+        "terminal_har_macro_f1": 0.528324457830293,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.206324796907881,
+        "best_seen_true_ce": 1.3586635061602097,
+        "ce_improvement": 0.8576627954837933,
+        "path_length": 1.6027548230656394,
+        "gain_per_meter": 0.5249979312784728,
+        "terminal_har_accuracy": 0.5913348108958318,
+        "terminal_har_macro_f1": 0.5207506209326921,
+        "privileged": false
+      }
+    },
+    "Entropy": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 2.969709281777217,
+        "best_seen_true_ce": 1.622749549502517,
+        "ce_improvement": 0.593576752141486,
+        "path_length": 0.6188518775600632,
+        "gain_per_meter": 0.7249507430454992,
+        "terminal_har_accuracy": 0.6054908128976907,
+        "terminal_har_macro_f1": 0.5379278924569204,
+        "privileged": false
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.3922070800104436,
+        "best_seen_true_ce": 1.46312586010954,
+        "ce_improvement": 0.7532004415344631,
+        "path_length": 1.0677815901310175,
+        "gain_per_meter": 0.5754118774622818,
+        "terminal_har_accuracy": 0.5859726889254308,
+        "terminal_har_macro_f1": 0.517045509513014,
+        "privileged": false
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 3.407568737504223,
+        "best_seen_true_ce": 1.4091793118843536,
+        "ce_improvement": 0.8071469897596493,
+        "path_length": 1.3107145715746176,
+        "gain_per_meter": 0.5367977405993001,
+        "terminal_har_accuracy": 0.5876170729963538,
+        "terminal_har_macro_f1": 0.5208085588448583,
+        "privileged": false
+      }
+    },
+    "Oracle": {
+      "1": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 0.7618285181639737,
+        "best_seen_true_ce": 0.7618285181639737,
+        "ce_improvement": 1.4544977834800292,
+        "path_length": 0.42485655818667606,
+        "gain_per_meter": 1.8911466788751745,
+        "terminal_har_accuracy": 0.7992421534281833,
+        "terminal_har_macro_f1": 0.7513255661314735,
+        "privileged": true
+      },
+      "2": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 0.5892393178796725,
+        "best_seen_true_ce": 0.5892393178796725,
+        "ce_improvement": 1.6270869837643307,
+        "path_length": 0.5247996193935184,
+        "gain_per_meter": 1.7398827157045638,
+        "terminal_har_accuracy": 0.8226925001787374,
+        "terminal_har_macro_f1": 0.7817694476175575,
+        "privileged": true
+      },
+      "3": {
+        "eligible_episode_count": 9742,
+        "har_episode_count": 13987,
+        "terminal_true_ce": 0.5561617515073914,
+        "best_seen_true_ce": 0.5561617515073914,
+        "ce_improvement": 1.6601645501366118,
+        "path_length": 0.5456672638785297,
+        "gain_per_meter": 1.7268346040046816,
+        "terminal_har_accuracy": 0.8269107027954529,
+        "terminal_har_macro_f1": 0.7871124606880071,
+        "privileged": true
+      }
+    }
+  },
+  "ce_proxy_calibrator": {
+    "input": [
+      "entropy",
+      "top1_probability",
+      "top1_top2_margin"
+    ],
+    "train_observations": 932256,
+    "val_observations": 311744,
+    "val_metrics": {
+      "mae": 5.0294003238088365,
+      "rmse": 5.948167780726225,
+      "pearson": 0.26869482493575286,
+      "spearman": 0.33440621129267295
+    },
+    "uses_gt_label_as_input": false,
+    "_coefficients": [
+      6.405483161728203,
+      -2.929577508383008,
+      -0.6062193073677754,
+      -2.0543841886437466
+    ],
+    "_mean": [
+      0.4292126650716037,
+      0.8448194301980263,
+      3.6228989952798862
+    ],
+    "_std": [
+      0.4306143863528279,
+      0.1799457981576012,
+      3.0553685642128925
+    ]
+  },
+  "provenance": {
+    "source_commit": "78e2fc414dc03ec8ec9b782bbf43a4bfe07df3c8",
+    "stage_b_summary_sha256": "3cb52e01e1a36de6ec580c075d39345d01737820fe7313a4e6fe8312136b295f"
+  }
+}
+```

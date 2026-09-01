@@ -456,3 +456,21 @@ supervision, pairwise ranking and fixed graph/Bayesian priors therefore did
 not resolve the representation bottleneck (CASE E). All methods are offline
 diagnostics, Test remained locked, and no perception/Habitat/ST-GCN training
 or regeneration was performed.
+
+## EXP035--EXP037-R1 — Context identity repair and HAR evaluation
+
+2026-09-01: invalidated the prior record-id-only campaign and reran with the
+canonical `(scene_id, region, record_id)` identity. The audit found 589/197
+motion IDs expanding to 29,133/9,742 Train/Val context keys; Train/Val episode
+and context overlaps were zero. All 217,475 Train and 72,784 Val Stage-B
+candidate values passed full reproduction with maximum absolute log-probability
+error 0.007377 (<1e-2), and the frozen EXP014 unified evaluator gate reproduced
+Accuracy 0.6582540931 and Macro-F1 0.6101526052. EXP036-R1 final HAR Accuracy
+for Dense/Bradley--Terry/GMRF/BayesianMean/BayesianLCB/Thompson was
+0.645099/0.559091/0.647315/0.648388/0.648245/0.648388; corresponding mean
+regrets were 1.478509/2.568556/1.473572/1.460368/1.462354/1.461173.
+EXP037-R1 included all 13,987 episodes in terminal HAR evaluation; at H=3,
+the best non-privileged Thompson method reached Accuracy 0.591335 (Macro-F1
+0.520750), while frozen Stay reproduced Stage-C-v0. The old EXP035--EXP037
+CASE E is therefore invalid due to identity collapse; R1 does not establish a
+ranking or downstream HAR improvement over EXP014. Test remained locked.

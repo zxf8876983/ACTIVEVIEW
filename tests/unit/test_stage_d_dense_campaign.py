@@ -5,6 +5,7 @@ import pytest
 
 from activeview.active_view.stage_d_dense_campaign import (
     VIEW_COUNT,
+    context_key,
     fit_bayesian_linear,
     gmrf_smooth,
     graph_edges,
@@ -13,6 +14,17 @@ from activeview.active_view.stage_d_dense_campaign import (
     viewpoint_azimuth,
     viewpoint_radius,
 )
+
+
+def test_context_key_keeps_same_record_in_distinct_scenes_and_regions() -> None:
+    left = {"scene_id": "scene-a", "region": "bedroom", "record_id": "motion-1"}
+    right = {"scene_id": "scene-b", "region": "kitchen", "record_id": "motion-1"}
+    assert context_key(left) != context_key(right)
+
+
+def test_context_key_is_deterministic() -> None:
+    row = {"scene_id": "scene-a", "region": "bedroom", "record_id": "motion-1"}
+    assert context_key(row) == ("scene-a", "bedroom", "motion-1")
 
 
 def test_fixed_4x8_graph_has_wrap_and_radial_edges() -> None:

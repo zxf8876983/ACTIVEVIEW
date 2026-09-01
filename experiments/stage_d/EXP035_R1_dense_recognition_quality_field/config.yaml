@@ -1,0 +1,6 @@
+experiment_id: EXP035-R1
+identity: [scene_id, region, record_id]
+split: [train, val]
+test_used: false
+training_performed: false
+stgcn_retrained: false
