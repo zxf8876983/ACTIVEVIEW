@@ -1,0 +1,6 @@
+experiment_id: EXP035
+field_views: 32
+topology: 4x8
+split: train,val
+test_used: false
+stgcn_frozen: true

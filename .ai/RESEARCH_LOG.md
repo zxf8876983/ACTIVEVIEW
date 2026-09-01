@@ -438,3 +438,21 @@ were available and neither three-way nor binary switch rates were nonzero.
 This is CASE B as a definition-level recognition-quality signal, not causal
 evidence; pose branches and Test remain locked, with no perception or Habitat
 rerun.
+
+## EXP035--EXP037 — Dense field and graph active-perception campaign
+
+2026-09-01: completed the authorized frozen Train/Val-only campaign. EXP035
+generated 589 Train and 197 Val 32-view fields with Stage-B smoke PASS (device
+reproduction tolerance 1e-2). Val CE field mean/std were 4.906191/5.746398;
+angular-neighbor and radial-neighbor correlations were only 0.283706 and
+0.441162 (Pearson), indicating weak local smoothness. On 5,234 Val
+Oracle-Move p2/p3 episodes, EXP036 winner accuracies were Dense 0.520443,
+Bradley--Terry 0.503439, GMRF 0.529041, Bayesian mean/LCB 0.536301 and
+Thompson mean 0.537639; the 32-view dense selection Top-1 hit was 0.040609.
+EXP037 graph rollouts were completed for H=1/2/3 with Euclidean diagnostic
+movement costs; the best non-privileged terminal CE was StaticDP H=3 at
+1.637608, while the privileged Oracle H=3 terminal CE was 0.239832. Dense
+supervision, pairwise ranking and fixed graph/Bayesian priors therefore did
+not resolve the representation bottleneck (CASE E). All methods are offline
+diagnostics, Test remained locked, and no perception/Habitat/ST-GCN training
+or regeneration was performed.

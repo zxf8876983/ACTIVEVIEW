@@ -1,0 +1,5 @@
+experiment_id: EXP037
+protocol: MULTISTEP_DIAGNOSTIC
+horizons: [1, 2, 3]
+movement_cost_source: EUCLIDEAN_DIAGNOSTIC
+test_used: false

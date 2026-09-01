@@ -1,0 +1,234 @@
+# EXP037
+
+Val-only graph rollout diagnostic; original Stage-D protocol unchanged.
+
+```json
+{
+  "experiment_id": "EXP037",
+  "status": "COMPLETED",
+  "protocol": "MULTISTEP_DIAGNOSTIC",
+  "original_stage_d_protocol_unchanged": true,
+  "split": "val",
+  "test_used": false,
+  "training_performed": false,
+  "future_candidate_skeleton_used": false,
+  "future_true_ce_used": false,
+  "visited_view_skeleton_used": true,
+  "methods": {
+    "Stay": {
+      "1": {
+        "terminal_true_ce": 1.3401702729000666,
+        "best_seen_true_ce": 1.3401702729000666,
+        "ce_improvement": 0.0,
+        "path_length": 0.0,
+        "gain_per_meter": 0.0
+      },
+      "2": {
+        "terminal_true_ce": 1.3401702729000666,
+        "best_seen_true_ce": 1.3401702729000666,
+        "ce_improvement": 0.0,
+        "path_length": 0.0,
+        "gain_per_meter": 0.0
+      },
+      "3": {
+        "terminal_true_ce": 1.3401702729000666,
+        "best_seen_true_ce": 1.3401702729000666,
+        "ce_improvement": 0.0,
+        "path_length": 0.0,
+        "gain_per_meter": 0.0
+      }
+    },
+    "Random": {
+      "1": {
+        "terminal_true_ce": 2.922552715173761,
+        "best_seen_true_ce": 0.7152944231788996,
+        "ce_improvement": 0.624875849721167,
+        "path_length": 1.0562069176266036,
+        "gain_per_meter": 0.6144633918053254
+      },
+      "2": {
+        "terminal_true_ce": 2.31049544676017,
+        "best_seen_true_ce": 0.5813911116924518,
+        "ce_improvement": 0.7587791612076148,
+        "path_length": 2.1186092673673245,
+        "gain_per_meter": 0.3634582554904903
+      },
+      "3": {
+        "terminal_true_ce": 3.3380054400281507,
+        "best_seen_true_ce": 0.5668340420900246,
+        "ce_improvement": 0.7733362308100419,
+        "path_length": 3.1333618193562263,
+        "gain_per_meter": 0.2494277897619852
+      }
+    },
+    "Greedy": {
+      "1": {
+        "terminal_true_ce": 2.1355461344920466,
+        "best_seen_true_ce": 0.8826888322746577,
+        "ce_improvement": 0.45748144062540885,
+        "path_length": 0.6369414287170178,
+        "gain_per_meter": 1.1405568927540546
+      },
+      "2": {
+        "terminal_true_ce": 1.982650128611393,
+        "best_seen_true_ce": 0.7858782542135458,
+        "ce_improvement": 0.5542920186865208,
+        "path_length": 0.8969310891961083,
+        "gain_per_meter": 0.9798347346539422
+      },
+      "3": {
+        "terminal_true_ce": 2.02379998382615,
+        "best_seen_true_ce": 0.7851558191486164,
+        "ce_improvement": 0.5550144537514502,
+        "path_length": 0.9783526496384954,
+        "gain_per_meter": 0.9639019313134121
+      }
+    },
+    "StaticDP": {
+      "1": {
+        "terminal_true_ce": 2.362404152847801,
+        "best_seen_true_ce": 1.0061501831626523,
+        "ce_improvement": 0.3340200897374144,
+        "path_length": 0.6883340005947248,
+        "gain_per_meter": 0.5357242188205311
+      },
+      "2": {
+        "terminal_true_ce": 2.095989677035686,
+        "best_seen_true_ce": 1.0550886233177033,
+        "ce_improvement": 0.2850816495823633,
+        "path_length": 0.6153588056715612,
+        "gain_per_meter": 0.2205457085986614
+      },
+      "3": {
+        "terminal_true_ce": 1.6376074664300369,
+        "best_seen_true_ce": 1.1550227390105314,
+        "ce_improvement": 0.1851475338895351,
+        "path_length": 0.34024274409724975,
+        "gain_per_meter": 0.24715119795526388
+      }
+    },
+    "GMRFMean": {
+      "1": {
+        "terminal_true_ce": 2.362404152847801,
+        "best_seen_true_ce": 1.0061501831626523,
+        "ce_improvement": 0.3340200897374144,
+        "path_length": 0.6883340005947248,
+        "gain_per_meter": 0.5357242188205311
+      },
+      "2": {
+        "terminal_true_ce": 2.4344330386650888,
+        "best_seen_true_ce": 0.8563740948058343,
+        "ce_improvement": 0.48379617809423237,
+        "path_length": 1.07693445198427,
+        "gain_per_meter": 0.360122239551287
+      },
+      "3": {
+        "terminal_true_ce": 2.469006858508517,
+        "best_seen_true_ce": 0.8552707023585522,
+        "ce_improvement": 0.4848995705415144,
+        "path_length": 1.208038713650655,
+        "gain_per_meter": 0.32467423128054035
+      }
+    },
+    "GMRFLCB": {
+      "1": {
+        "terminal_true_ce": 2.612203506575278,
+        "best_seen_true_ce": 0.831700856298995,
+        "ce_improvement": 0.5084694166010715,
+        "path_length": 0.9844867210400287,
+        "gain_per_meter": 0.5608230118944084
+      },
+      "2": {
+        "terminal_true_ce": 2.566830336045236,
+        "best_seen_true_ce": 0.7514719068554943,
+        "ce_improvement": 0.5886983660445724,
+        "path_length": 1.2814405990887414,
+        "gain_per_meter": 0.4510377085683927
+      },
+      "3": {
+        "terminal_true_ce": 2.8198451093894694,
+        "best_seen_true_ce": 0.7504049224797033,
+        "ce_improvement": 0.5897653504203634,
+        "path_length": 1.446682280922299,
+        "gain_per_meter": 0.4314671447004789
+      }
+    },
+    "Thompson": {
+      "1": {
+        "terminal_true_ce": 2.612203506575278,
+        "best_seen_true_ce": 0.831700856298995,
+        "ce_improvement": 0.5084694166010715,
+        "path_length": 0.9844867210400287,
+        "gain_per_meter": 0.5608230118944084
+      },
+      "2": {
+        "terminal_true_ce": 2.566830336045236,
+        "best_seen_true_ce": 0.7514719068554943,
+        "ce_improvement": 0.5886983660445724,
+        "path_length": 1.2814405990887414,
+        "gain_per_meter": 0.4510377085683927
+      },
+      "3": {
+        "terminal_true_ce": 2.8198451093894694,
+        "best_seen_true_ce": 0.7504049224797033,
+        "ce_improvement": 0.5897653504203634,
+        "path_length": 1.446682280922299,
+        "gain_per_meter": 0.4314671447004789
+      }
+    },
+    "Entropy": {
+      "1": {
+        "terminal_true_ce": 2.612203506575278,
+        "best_seen_true_ce": 0.831700856298995,
+        "ce_improvement": 0.5084694166010715,
+        "path_length": 0.9844867210400287,
+        "gain_per_meter": 0.5608230118944084
+      },
+      "2": {
+        "terminal_true_ce": 2.566830336045236,
+        "best_seen_true_ce": 0.7514719068554943,
+        "ce_improvement": 0.5886983660445724,
+        "path_length": 1.2814405990887414,
+        "gain_per_meter": 0.4510377085683927
+      },
+      "3": {
+        "terminal_true_ce": 2.8198451093894694,
+        "best_seen_true_ce": 0.7504049224797033,
+        "ce_improvement": 0.5897653504203634,
+        "path_length": 1.446682280922299,
+        "gain_per_meter": 0.4314671447004789
+      }
+    },
+    "Oracle": {
+      "1": {
+        "terminal_true_ce": 0.3569433297435481,
+        "best_seen_true_ce": 0.3569433297435481,
+        "ce_improvement": 0.9832269431565185,
+        "path_length": 0.25472815614666433,
+        "gain_per_meter": 2.0122416337063505
+      },
+      "2": {
+        "terminal_true_ce": 0.24272057890761425,
+        "best_seen_true_ce": 0.24272057890761425,
+        "ce_improvement": 1.0974496939924523,
+        "path_length": 0.3358590701207292,
+        "gain_per_meter": 1.913996995108317
+      },
+      "3": {
+        "terminal_true_ce": 0.23983169734876877,
+        "best_seen_true_ce": 0.23983169734876877,
+        "ce_improvement": 1.1003385755512978,
+        "path_length": 0.3383489518903839,
+        "gain_per_meter": 1.914880623474693
+      }
+    }
+  },
+  "movement_cost_source": "EUCLIDEAN_DIAGNOSTIC",
+  "oracle_multistep_upper_bound": true,
+  "deployable": false,
+  "provenance": {
+    "source_commit": "7a2136b63138441794fd232605883b388386086a",
+    "stage_b_summary_sha256": "3cb52e01e1a36de6ec580c075d39345d01737820fe7313a4e6fe8312136b295f"
+  }
+}
+```
