@@ -9,6 +9,7 @@ Train/Val-only analysis. Test was not read.
   "split": "val",
   "test_used": false,
   "training_performed": false,
+  "state_scoring": "candidate heads use the initial legal Stage-D state; beliefs update only after visited transitions",
   "methods": {
     "Stay": {
       "1": {
@@ -322,7 +323,8 @@ Train/Val-only analysis. Test was not read.
   },
   "leakage_flags": {
     "unvisited_viewpoint_output_used": false,
-    "visited_viewpoint_output_after_transition_only": true,
+    "planner_reads_only_selected_visited_belief": true,
+    "belief_cache_materialized_before_rollout": true,
     "gt_label_planner_input": true,
     "true_ce_planner_input_for_privileged_oracle": true,
     "true_ce_evaluator_only_for_legal_methods": true,
