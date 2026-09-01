@@ -319,7 +319,8 @@
   },
   "leakage_flags": {
     "unvisited_viewpoint_output_used": false,
-    "visited_viewpoint_output_after_transition_only": true,
+    "planner_reads_only_selected_visited_belief": true,
+    "belief_cache_materialized_before_rollout": true,
     "gt_label_planner_input": true,
     "true_ce_planner_input_for_privileged_oracle": true,
     "true_ce_evaluator_only_for_legal_methods": true,

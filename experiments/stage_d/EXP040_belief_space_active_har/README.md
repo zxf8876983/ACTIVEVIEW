@@ -7,3 +7,5 @@ HAR and cumulative fused-belief HAR are reported separately for H=1/2/3.
 For this rapid pilot, candidate risk/correctness heads are scored from the
 initial legal Stage-D state; only the ST-GCN belief is updated after each
 visited transition. This approximation is recorded explicitly in result.json.
+Frozen ST-GCN outputs are materialized in a Val-only cache before the rollout
+for throughput, but planner scoring reads only the selected/visited viewpoint.
