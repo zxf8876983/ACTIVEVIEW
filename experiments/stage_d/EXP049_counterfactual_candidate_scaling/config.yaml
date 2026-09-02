@@ -1,0 +1,7 @@
+experiment_id: EXP049
+split: val
+candidate_budgets: [2, 4, 8, 16, ALL_LEGAL]
+proposal_order: [geodesic, absolute_radial_azimuth, viewpoint_id]
+seed: 42
+test_used: false
+training_performed: false

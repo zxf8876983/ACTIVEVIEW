@@ -1,0 +1,9 @@
+{
+  "train_contexts": 29133,
+  "val_contexts": 9742,
+  "train_legal_mean": 28.322383551299215,
+  "val_legal_mean": 28.303428454116197,
+  "proposal_order": "geodesic, absolute radial azimuth, viewpoint_id",
+  "visited_excluded": true,
+  "test_used": false
+}

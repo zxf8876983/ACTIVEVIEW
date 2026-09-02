@@ -100,3 +100,14 @@ A/B/C training and EXP043 frozen-ST-GCN Val diagnostics completed. EXP044 is
 explicitly skipped because a validated recurrent multi-step trajectory
 evaluator/history-rollout entry point is not implemented. Test, Habitat
 rendering, perception and ST-GCN retraining were not performed.
+
+## EXP049–EXP051 counterfactual view-revision campaign
+
+EXP049 and EXP050 completed with frozen WM-E/ST-GCN and Train/Val-only data.
+EXP049 legal candidate scaling was non-monotonic. EXP050 JOINT_REVISION at
+ALL_LEGAL reached Accuracy 0.686566 / Macro-F1 0.646064 and exceeded the
+independent CF_CORRECTNESS_MLP by 0.009938 Accuracy (paired bootstrap,
+10,000, seed 42), so the EXP051 gate passed. EXP051 H=2 is blocked because
+the frozen WM-E requires RGB history for newly visited p2/p3 views and the
+approved cache has no such embeddings; no substitute inputs were used.
+Test remains locked and no perception or upstream model was retrained.

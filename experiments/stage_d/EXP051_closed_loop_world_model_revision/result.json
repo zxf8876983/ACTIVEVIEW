@@ -1,0 +1,13 @@
+{
+  "experiment_id": "EXP051",
+  "status": "BLOCKED_MISSING_RECURRENT_RGB_HISTORY_ARTIFACT",
+  "gate": {
+    "exp049_monotonic_three_steps": false,
+    "exp050_joint_threshold": true,
+    "exp051_authorized": true
+  },
+  "test_used": false,
+  "training_performed": false,
+  "rolling_two_view_history": true,
+  "reason": "Frozen WM-E requires RGB history for newly visited views, but the approved EXP046 cache contains no RGB embeddings for p2/p3; no substitute inputs were used."
+}

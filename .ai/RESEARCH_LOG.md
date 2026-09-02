@@ -506,3 +506,14 @@ validated recurrent multi-step trajectory evaluator/history-rollout entry
 point and records explicit `SKIPPED_REQUIRES_RECURRENT_WORLD_MODEL_ROLLOUT`
 rather than fabricating metrics. Test remained locked; no Habitat/perception/
 ST-GCN retraining was performed.
+
+2026-09-03: completed EXP049/EXP050 counterfactual view-revision analysis in
+the external habitat CUDA environment (RTX 4090), using frozen EXP046 cache
+and no Test access. Legal candidate scaling was non-monotonic; JOINT_REVISION
+at ALL_LEGAL reached Accuracy 0.686566 / Macro-F1 0.646064 versus independent
+CF_CORRECTNESS_MLP 0.676628 / 0.629705, with paired ΔAccuracy 0.009938 (95%
+CI [0.005148, 0.014728]) and ΔMacro-F1 0.016359 (95% CI [0.009153, 0.023854]).
+The EXP051 authorization gate passed, but H=2 was blocked because frozen WM-E
+requires RGB history for newly visited views and the approved cache lacks those
+embeddings; no substitute inputs were used. Test, perception and upstream
+model retraining remained disabled.
