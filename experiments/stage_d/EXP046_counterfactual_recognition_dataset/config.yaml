@@ -1,0 +1,9 @@
+experiment_id: EXP046
+split: [train, val]
+wm_e_variant: E
+wm_e_recognition_aware: true
+wm_e_residual: false
+stgcn_frozen: true
+view_count: 32
+test_used: false
+training_performed: false

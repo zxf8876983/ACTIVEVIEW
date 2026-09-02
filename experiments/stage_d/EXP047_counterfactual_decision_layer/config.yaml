@@ -1,0 +1,9 @@
+experiment_id: EXP047
+split: [train, val]
+posterior_epochs: 20
+binary_mlp_epochs: 20
+batch_size: 2048
+seed: 42
+test_used: false
+wm_e_frozen: true
+stgcn_frozen: true

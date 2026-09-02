@@ -1,0 +1,268 @@
+{
+  "train": {
+    "split": "train",
+    "viewpoints": 932256,
+    "stgcn_top1_agreement": 0.6093111763292486,
+    "kl_mean": 0.9669351577758789,
+    "probability_l1_mean": 0.8692164421081543,
+    "true_label_logp_pearson": 0.7406819159451176,
+    "true_label_logp_spearman": 0.7847746471197621,
+    "p2_p3_sign_agreement": 0.6221938104012334,
+    "conditional": {
+      "current_correct": {
+        "CURRENT_CORRECT": {
+          "contexts": 16336,
+          "imagined_true_agreement": 0.6606899638834476,
+          "true_label_logp_pearson": 0.761430141085804
+        },
+        "CURRENT_WRONG": {
+          "contexts": 12797,
+          "imagined_true_agreement": 0.5437236266312417,
+          "true_label_logp_pearson": 0.6976802698635913
+        }
+      },
+      "entropy_quartiles_train_thresholds": [
+        0.016225425526499748,
+        0.1931028813123703,
+        0.693772554397583
+      ],
+      "entropy_quartiles": {
+        "Q1": {
+          "contexts": 7283,
+          "imagined_true_agreement": 0.6907095290402306,
+          "true_label_logp_pearson": 0.7592455033917132
+        },
+        "Q2": {
+          "contexts": 7283,
+          "imagined_true_agreement": 0.6255835507345874,
+          "true_label_logp_pearson": 0.7431662009609319
+        },
+        "Q3": {
+          "contexts": 7283,
+          "imagined_true_agreement": 0.5834220101606481,
+          "true_label_logp_pearson": 0.7329988914106947
+        },
+        "Q4": {
+          "contexts": 7284,
+          "imagined_true_agreement": 0.5375394700713894,
+          "true_label_logp_pearson": 0.717874646462574
+        }
+      }
+    },
+    "per_class": {
+      "0": {
+        "support": 79264,
+        "agreement": 0.7496089018974565,
+        "true_label_logp_pearson": 0.7780096946124654
+      },
+      "1": {
+        "support": 10720,
+        "agreement": 0.6164179104477612,
+        "true_label_logp_pearson": 0.764698037041178
+      },
+      "2": {
+        "support": 18240,
+        "agreement": 0.6010964912280702,
+        "true_label_logp_pearson": 0.6167229142205148
+      },
+      "3": {
+        "support": 18432,
+        "agreement": 0.5482855902777778,
+        "true_label_logp_pearson": 0.37651722919302627
+      },
+      "4": {
+        "support": 19808,
+        "agreement": 0.6899232633279483,
+        "true_label_logp_pearson": 0.5689080769777997
+      },
+      "5": {
+        "support": 62656,
+        "agreement": 0.6610859295199183,
+        "true_label_logp_pearson": 0.7866769948629176
+      },
+      "6": {
+        "support": 61280,
+        "agreement": 0.5056135770234987,
+        "true_label_logp_pearson": 0.555788537080689
+      },
+      "7": {
+        "support": 91360,
+        "agreement": 0.7253612084063047,
+        "true_label_logp_pearson": 0.46387340133031196
+      },
+      "8": {
+        "support": 90624,
+        "agreement": 0.5213519597457628,
+        "true_label_logp_pearson": 0.6529849464264242
+      },
+      "9": {
+        "support": 74016,
+        "agreement": 0.6063283614353653,
+        "true_label_logp_pearson": 0.8184385171505356
+      },
+      "10": {
+        "support": 80032,
+        "agreement": 0.7184501199520192,
+        "true_label_logp_pearson": 0.7279389130582079
+      },
+      "11": {
+        "support": 102624,
+        "agreement": 0.5248772217025257,
+        "true_label_logp_pearson": 0.8423911194080416
+      },
+      "12": {
+        "support": 108160,
+        "agreement": 0.5722355769230769,
+        "true_label_logp_pearson": 0.7357289421828064
+      },
+      "13": {
+        "support": 44096,
+        "agreement": 0.5765829100145138,
+        "true_label_logp_pearson": 0.5323704442512309
+      },
+      "14": {
+        "support": 20992,
+        "agreement": 0.7285632621951219,
+        "true_label_logp_pearson": 0.8067145379760104
+      },
+      "15": {
+        "support": 49952,
+        "agreement": 0.45039237668161436,
+        "true_label_logp_pearson": 0.6669176551790714
+      }
+    }
+  },
+  "val": {
+    "split": "val",
+    "viewpoints": 311744,
+    "stgcn_top1_agreement": 0.6059009956887703,
+    "kl_mean": 0.9981846213340759,
+    "probability_l1_mean": 0.8847729563713074,
+    "true_label_logp_pearson": 0.7452398711538486,
+    "true_label_logp_spearman": 0.7759031772920354,
+    "p2_p3_sign_agreement": 0.6108241634852908,
+    "conditional": {
+      "current_correct": {
+        "CURRENT_CORRECT": {
+          "contexts": 5932,
+          "imagined_true_agreement": 0.6574669167228591,
+          "true_label_logp_pearson": 0.7672800685538655
+        },
+        "CURRENT_WRONG": {
+          "contexts": 3810,
+          "imagined_true_agreement": 0.525615157480315,
+          "true_label_logp_pearson": 0.6935810915741355
+        }
+      },
+      "entropy_quartiles_train_thresholds": [
+        0.016225425526499748,
+        0.1931028813123703,
+        0.693772554397583
+      ],
+      "entropy_quartiles": {
+        "Q1": {
+          "contexts": 2640,
+          "imagined_true_agreement": 0.6880445075757575,
+          "true_label_logp_pearson": 0.7620892196517867
+        },
+        "Q2": {
+          "contexts": 2493,
+          "imagined_true_agreement": 0.6279457480946651,
+          "true_label_logp_pearson": 0.7425574932489966
+        },
+        "Q3": {
+          "contexts": 2446,
+          "imagined_true_agreement": 0.5670354660670482,
+          "true_label_logp_pearson": 0.7391940880635789
+        },
+        "Q4": {
+          "contexts": 2163,
+          "imagined_true_agreement": 0.5241851595006934,
+          "true_label_logp_pearson": 0.7259188112042337
+        }
+      }
+    },
+    "per_class": {
+      "0": {
+        "support": 27648,
+        "agreement": 0.7302155671296297,
+        "true_label_logp_pearson": 0.7777669191312127
+      },
+      "1": {
+        "support": 3296,
+        "agreement": 0.6080097087378641,
+        "true_label_logp_pearson": 0.7136718702251926
+      },
+      "2": {
+        "support": 5440,
+        "agreement": 0.6494485294117647,
+        "true_label_logp_pearson": 0.5989682896605241
+      },
+      "3": {
+        "support": 7264,
+        "agreement": 0.5112885462555066,
+        "true_label_logp_pearson": 0.2878012737695135
+      },
+      "4": {
+        "support": 5856,
+        "agreement": 0.6658128415300546,
+        "true_label_logp_pearson": 0.5708434167412394
+      },
+      "5": {
+        "support": 19680,
+        "agreement": 0.6827235772357724,
+        "true_label_logp_pearson": 0.8045806271024777
+      },
+      "6": {
+        "support": 20384,
+        "agreement": 0.5042189952904239,
+        "true_label_logp_pearson": 0.5834003011251178
+      },
+      "7": {
+        "support": 30080,
+        "agreement": 0.746309840425532,
+        "true_label_logp_pearson": 0.46033369762631976
+      },
+      "8": {
+        "support": 30912,
+        "agreement": 0.516983695652174,
+        "true_label_logp_pearson": 0.6580435580661188
+      },
+      "9": {
+        "support": 25952,
+        "agreement": 0.5920545622688039,
+        "true_label_logp_pearson": 0.8333721433932919
+      },
+      "10": {
+        "support": 26496,
+        "agreement": 0.7020682367149759,
+        "true_label_logp_pearson": 0.7193275262439686
+      },
+      "11": {
+        "support": 35264,
+        "agreement": 0.4973060344827586,
+        "true_label_logp_pearson": 0.8443801008869583
+      },
+      "12": {
+        "support": 35328,
+        "agreement": 0.592193161231884,
+        "true_label_logp_pearson": 0.7342068331383638
+      },
+      "13": {
+        "support": 16352,
+        "agreement": 0.5412181996086106,
+        "true_label_logp_pearson": 0.5760329205132784
+      },
+      "14": {
+        "support": 6048,
+        "agreement": 0.7817460317460317,
+        "true_label_logp_pearson": 0.17745391259357635
+      },
+      "15": {
+        "support": 15744,
+        "agreement": 0.47002032520325204,
+        "true_label_logp_pearson": 0.6160418317370019
+      }
+    }
+  }
+}

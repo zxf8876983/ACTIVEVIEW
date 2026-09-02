@@ -1,0 +1,5 @@
+experiment_id: EXP048
+split: [train, val]
+selection_rule: accuracy_then_macro_f1
+test_used: false
+deployable: false

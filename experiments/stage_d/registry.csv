@@ -17,3 +17,6 @@ EXP037-R1,multistep_graph_active_perception_context_safe,COMPLETED,,0.605491,0.5
 EXP042-R1,dense_cross_view_world_model,COMPLETED,, , , , ,INCONCLUSIVE,"Dense all-32 candidate-observation world-model rerun with corrected temporal/bone metrics; Train/Val only; see EXP042_R1_dense_cross_view_world_model/analysis.md"
 EXP043-R1,model_based_single_step_selection,COMPLETED,, , , , ,INCONCLUSIVE,"Val-only selector/HAR diagnostics for EXP042-R1 A-F models; privileged selector non-deployable; no Test"
 EXP045,recognition_aware_world_model,COMPLETED,, , , , ,INCONCLUSIVE,"Frozen ST-GCN recognition-aware world-model variants E/F; Train/Val only; no Test"
+EXP046,counterfactual_recognition_dataset,COMPLETED,,,,,INCONCLUSIVE,"Frozen WM-E/ST-GCN Train/Val recognition-state cache; 29,133 Train / 9,742 Val; no Test; see EXP046 analysis.md"
+EXP047,counterfactual_decision_layer,COMPLETED,,0.664403,0.616854,1.502970,5.923024,INCONCLUSIVE,"Train-only imagined-recognition decision layers; CF correctness MLP best Accuracy but regret worsened; no Test; see EXP047 analysis.md"
+EXP048,observation_decision_gap_decomposition,COMPLETED,,,,,INCONCLUSIVE,"Val-only imagined/true-observation and GT-label gap audit with subgroup, rescue/harm and paired statistics; no Test; see EXP048 analysis.md"

@@ -1,0 +1,18 @@
+{
+  "train": {
+    "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP046_counterfactual_recognition_dataset/train_cache.npz",
+    "sha256": "640a07f42b97c81671a9618000b38e661dcce477e75ff78cc4824c36182f3606",
+    "contexts": 29133,
+    "viewpoints": 932256
+  },
+  "val": {
+    "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP046_counterfactual_recognition_dataset/val_cache.npz",
+    "sha256": "f2de9c26bf5aa2c1de124cf69d93bfd4710ae7d94c5465a105f242d6f7b19188",
+    "contexts": 9742,
+    "viewpoints": 311744
+  },
+  "wm_e_checkpoint": "/tmp/activeview_exp042r1_E/last.pth",
+  "wm_e_checkpoint_sha256": "db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6",
+  "rgb_future_candidate_used": false,
+  "test_used": false
+}
