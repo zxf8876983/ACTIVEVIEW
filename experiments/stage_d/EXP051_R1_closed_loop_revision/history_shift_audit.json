@@ -1,0 +1,7 @@
+{
+  "status": "NOT_RUN_BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
+  "executed": false,
+  "step2_world_model_recomputed": false,
+  "step2_candidate_graph_recomputed": false,
+  "rolling_two_view_history": false
+}

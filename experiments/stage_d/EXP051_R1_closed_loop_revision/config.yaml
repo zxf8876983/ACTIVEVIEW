@@ -1,0 +1,10 @@
+experiment_id: EXP051-R1
+status: BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT
+split: train_val_only
+test_used: false
+training_performed: false
+wm_e_frozen: true
+joint_revision_frozen: true
+stgcn_frozen: true
+habitat_rendering_performed: false
+joint_revision_checkpoint: null

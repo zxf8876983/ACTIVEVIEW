@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP051-R1",
+  "status": "BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
+  "checkpoint_candidates_checked": [
+    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_best.pth",
+    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/checkpoint.pth",
+    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/model.pth",
+    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_best.pth",
+    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/checkpoint.pth",
+    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/model.pth",
+    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_best.pth",
+    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/checkpoint.pth",
+    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/model.pth"
+  ],
+  "joint_revision_checkpoint_paths_found": [],
+  "test_used": false,
+  "training_performed": false,
+  "wm_e_frozen": true,
+  "joint_revision_frozen": true,
+  "stgcn_frozen": true,
+  "habitat_rendering_performed": false,
+  "perception_regenerated": false,
+  "history_shift_executed": false,
+  "h2_rollout_executed": false,
+  "reason": "EXP050 Joint Revision checkpoint is required for exact H1 reproduction; it is absent, and retraining is forbidden."
+}
