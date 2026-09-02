@@ -234,7 +234,7 @@ def _exp043(data_root: Path, val_rows: Sequence[Mapping[str, Any]], val_sources:
         for row, candidate in zip(val_rows, selected):
             pred = {"episode_id": str(row["episode_id"]), "remaining_candidate_ids": row["remaining_candidate_ids"], "predicted_utilities": [0.0, 0.0], "predicted_stays": candidate is None, "predicted_candidate_viewpoint_id": None if candidate is None else int(candidate), "max_predicted_utility": 0.0 if candidate is None else 1.0}; decisions.append(pred)
         trajectories[name] = summarize_trajectory_rows(build_stage_d_trajectories(stage_b, v0, stage_d, decisions), categories)
-    return {"selectors": {name: {"trajectory": value, "deployable": True} for name, value in trajectories.items()}, "predicted_observation_quality_rows": quality_rows, "gt_label_used_for_scoring": False, "deployable": True, "classes": classes}
+    return {"selectors": {name: {"trajectory": value, "deployable": name != "PREDICTED_OBSERVATION_GT_LABEL_ORACLE"} for name, value in trajectories.items()}, "predicted_observation_quality_rows": quality_rows, "gt_label_used_for_scoring": True, "deployable": True, "classes": classes}
 
 
 def run(data_root: Path, *, epochs: int = 12, batch_size: int = 256, workers: int = 4, variants: Sequence[str] = ("A", "B", "C"), train_limit: int | None = None, val_limit: int | None = None, rgb_root: Path | None = None, device_name: str = "cuda:0") -> dict[str, Any]:

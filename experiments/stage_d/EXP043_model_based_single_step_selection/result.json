@@ -119,7 +119,7 @@
             }
           }
         },
-        "deployable": true
+        "deployable": false
       },
       "PREDICTED_ENTROPY": {
         "trajectory": {
@@ -474,7 +474,7 @@
       }
     },
     "predicted_observation_quality_row_count": 9742,
-    "gt_label_used_for_scoring": false,
+    "gt_label_used_for_scoring": true,
     "deployable": true,
     "classes": 16
   },
