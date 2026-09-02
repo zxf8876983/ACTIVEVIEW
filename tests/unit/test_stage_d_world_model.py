@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 import torch
 
-from activeview.active_view.stage_d_world_model import CandidateObservationWorldModel, world_model_loss
+from activeview.active_view.stage_d_world_model import CandidateObservationWorldModel, collate_world_model_context, world_model_loss
 from activeview.scripts.run_stage_d_exp041_044 import _rows
 
 
@@ -44,6 +44,24 @@ def test_fixed_velocity_loss_is_nonnegative() -> None:
     total, pose, velocity = world_model_loss(prediction, target)
     assert float(total) >= float(pose) >= 0.0
     assert float(velocity) >= 0.0
+
+
+def test_context_collate_pads_variable_candidate_counts() -> None:
+    def item(count: int, key: str) -> dict[str, object]:
+        return {
+            "history_skeleton": torch.zeros(2, 3, 30, 17),
+            "history_descriptor": torch.zeros(2, 9),
+            "candidate_descriptor": torch.zeros(count, 9),
+            "target_skeleton": torch.zeros(count, 3, 30, 17),
+            "candidate_ids": torch.arange(count),
+            "context_key": (key, "region", "record"),
+            "label_id": 0,
+        }
+
+    result = collate_world_model_context([item(1, "a"), item(2, "b")])
+    assert tuple(result["candidate_descriptor"].shape) == (2, 2, 9)
+    assert result["candidate_mask"].tolist() == [[True, False], [True, True]]
+    assert result["candidate_ids"].tolist() == [[0, -1], [0, 1]]
 
 
 def test_test_split_is_locked(tmp_path) -> None:

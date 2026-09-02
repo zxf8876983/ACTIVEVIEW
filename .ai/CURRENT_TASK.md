@@ -95,8 +95,8 @@ world-model module and Train/Val-only campaign entry point were added together
 with EXP041–EXP044 experiment records and focused tests.  The source/target
 identity audit passes for 29,133 Train and 9,742 Val contexts (32 unique
 viewpoints per archive, missing/duplicate/mismatch counts all zero).  The
-active environment currently exposes no CUDA device; fixed Transformer
-training for the full campaign was therefore not started or silently
-downscaled.  EXP042 training and downstream EXP043/EXP044 results remain
-pending explicit runtime capacity.  Test, Habitat rendering, perception and
-ST-GCN retraining were not performed.
+external conda `habitat` now exposes an RTX 4090 (CUDA 12.4); fixed EXP042
+A/B/C training and EXP043 frozen-ST-GCN Val diagnostics completed. EXP044 is
+explicitly skipped because a validated recurrent multi-step trajectory
+evaluator/history-rollout entry point is not implemented. Test, Habitat
+rendering, perception and ST-GCN retraining were not performed.

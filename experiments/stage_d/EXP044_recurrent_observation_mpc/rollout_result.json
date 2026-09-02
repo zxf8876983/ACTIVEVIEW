@@ -1,1 +1,11 @@
-{"status":"BLOCKED_UNTIL_EXP042_TRAINING","test_used":false}
+{
+  "experiment_id": "EXP044",
+  "status": "SKIPPED_REQUIRES_RECURRENT_WORLD_MODEL_ROLLOUT",
+  "split": "val",
+  "reason": "The fixed campaign implementation preserves scope by requiring explicit recurrent-history rollout validation before materializing MPC results.",
+  "test_used": false,
+  "leakage_flags": {
+    "visited_true_skeleton_used_after_transition": false,
+    "predicted_future_skeleton_used_for_internal_imagination": false
+  }
+}

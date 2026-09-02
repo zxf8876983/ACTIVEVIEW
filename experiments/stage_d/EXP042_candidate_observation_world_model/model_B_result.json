@@ -1,1 +1,78 @@
-{"variant":"WM_B_SKELETON_BELIEF","status":"PREPARED_NOT_EXECUTED","test_used":false}
+{
+  "train": {
+    "variant": "B",
+    "train_contexts": 29133,
+    "train_skeleton_targets": 58266,
+    "target_scope": "Stage-D remaining p2/p3 candidates",
+    "final_loss": 0.025404936474196286,
+    "history": [
+      {
+        "epoch": 1,
+        "loss": 0.10192177696616737
+      },
+      {
+        "epoch": 2,
+        "loss": 0.0401403596492065
+      },
+      {
+        "epoch": 3,
+        "loss": 0.0364524474135348
+      },
+      {
+        "epoch": 4,
+        "loss": 0.03380076449980894
+      },
+      {
+        "epoch": 5,
+        "loss": 0.032386889881787034
+      },
+      {
+        "epoch": 6,
+        "loss": 0.03154704866489237
+      },
+      {
+        "epoch": 7,
+        "loss": 0.03011195371792826
+      },
+      {
+        "epoch": 8,
+        "loss": 0.028942349098216934
+      },
+      {
+        "epoch": 9,
+        "loss": 0.02786806382995099
+      },
+      {
+        "epoch": 10,
+        "loss": 0.026756995592121954
+      },
+      {
+        "epoch": 11,
+        "loss": 0.026191747468249402
+      },
+      {
+        "epoch": 12,
+        "loss": 0.025404936474196286
+      }
+    ],
+    "elapsed_seconds": 113.25128170801327,
+    "checkpoint": "/tmp/activeview_exp042_WM_B/last.pth"
+  },
+  "val": {
+    "variant": "B",
+    "prediction_scope": "Stage-D remaining p2/p3 candidates",
+    "p2_p3": {
+      "mae": 0.12129923036765919,
+      "rmse": 0.18799253634188748,
+      "velocity_rmse": 0.1852573697986213,
+      "bone_length_distortion": 0.09339931087347858
+    },
+    "prediction_count": 18648
+  },
+  "leakage_flags": {
+    "future_candidate_skeleton_used_as_input": false,
+    "future_candidate_rgb_used": false,
+    "gt_label_used_as_input": false,
+    "test_used": false
+  }
+}

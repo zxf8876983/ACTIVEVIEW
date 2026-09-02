@@ -308,7 +308,18 @@ def collate_world_model(batch: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
 def collate_world_model_context(batch: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     if not batch:
         raise ValueError("empty world-model batch")
-    result: dict[str, Any] = {"history_skeleton": torch.stack([item["history_skeleton"] for item in batch]), "history_descriptor": torch.stack([item["history_descriptor"] for item in batch]), "candidate_descriptor": torch.stack([item["candidate_descriptor"] for item in batch]), "target_skeleton": torch.stack([item["target_skeleton"] for item in batch]), "candidate_ids": torch.stack([item["candidate_ids"] for item in batch]), "context_key": [item["context_key"] for item in batch], "label_id": torch.tensor([item["label_id"] for item in batch], dtype=torch.long)}
+    max_candidates = max(int(item["candidate_descriptor"].shape[0]) for item in batch)
+    candidate_descriptor = torch.zeros((len(batch), max_candidates, 9), dtype=torch.float32)
+    target_skeleton = torch.zeros((len(batch), max_candidates, *SKELETON_SHAPE), dtype=torch.float32)
+    candidate_ids = torch.full((len(batch), max_candidates), -1, dtype=torch.long)
+    candidate_mask = torch.zeros((len(batch), max_candidates), dtype=torch.bool)
+    for index, item in enumerate(batch):
+        count = int(item["candidate_descriptor"].shape[0])
+        candidate_descriptor[index, :count] = item["candidate_descriptor"]
+        target_skeleton[index, :count] = item["target_skeleton"]
+        candidate_ids[index, :count] = item["candidate_ids"]
+        candidate_mask[index, :count] = True
+    result: dict[str, Any] = {"history_skeleton": torch.stack([item["history_skeleton"] for item in batch]), "history_descriptor": torch.stack([item["history_descriptor"] for item in batch]), "candidate_descriptor": candidate_descriptor, "target_skeleton": target_skeleton, "candidate_ids": candidate_ids, "candidate_mask": candidate_mask, "context_key": [item["context_key"] for item in batch], "label_id": torch.tensor([item["label_id"] for item in batch], dtype=torch.long)}
     if "history_belief" in batch[0]: result["history_belief"] = torch.stack([item["history_belief"] for item in batch])
     if "history_rgb" in batch[0]: result["history_rgb"] = torch.stack([item["history_rgb"] for item in batch])
     return result

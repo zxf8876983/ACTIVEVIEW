@@ -492,3 +492,17 @@ used the initial legal Stage-D state and beliefs were updated only after
 visited transitions; this rapid-pilot approximation is recorded in result.json.
 Test was not read and no perception/Habitat/ST-GCN training or regeneration
 was performed.
+
+## EXP041--EXP044 CUDA execution follow-up
+
+2026-09-02: executed the fixed EXP042 A/B/C Train/Val campaign in the external
+conda `habitat` environment on an RTX 4090 (CUDA 12.4). A/B/C used 29,133
+Train contexts and 9,742 Val contexts; Val p2/p3 reconstruction MAE was
+0.120761/0.121299/0.114823, with final Train losses 0.025537/0.025405/0.022301.
+EXP043 frozen-ST-GCN selectors gave Accuracy 0.683921 (privileged label
+diagnostic), 0.637878 (entropy), 0.638307 (top-1 confidence), and 0.643669
+(belief cross-entropy). EXP044 was not executed: the current code has no
+validated recurrent multi-step trajectory evaluator/history-rollout entry
+point and records explicit `SKIPPED_REQUIRES_RECURRENT_WORLD_MODEL_ROLLOUT`
+rather than fabricating metrics. Test remained locked; no Habitat/perception/
+ST-GCN retraining was performed.

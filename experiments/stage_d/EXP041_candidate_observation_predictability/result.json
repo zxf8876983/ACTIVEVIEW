@@ -1,10 +1,91 @@
 {
   "experiment_id": "EXP041",
-  "status": "AUDIT_COMPLETED_TRAINING_NOT_EXECUTED",
-  "split": ["train", "val"],
-  "target_is_frozen_perceived_skeleton": true,
-  "target_is_ground_truth_pose": false,
-  "evaluator_gate": {"status": "PASS", "accuracy": 0.6582540931, "macro_f1": 0.6101526052, "test_used": false},
-  "identity_audit": "target_identity_audit.json",
-  "test_used": false
+  "status": "COMPLETED",
+  "split": [
+    "train",
+    "val"
+  ],
+  "evaluator_gate": {
+    "accuracy": 0.6582540931,
+    "macro_f1": 0.6101526052,
+    "status": "PASS",
+    "test_used": false
+  },
+  "audit": {
+    "train_contexts": 29133,
+    "val_contexts": 9742,
+    "target_is_frozen_perceived_skeleton": true,
+    "target_is_ground_truth_pose": false,
+    "target_shape": [
+      3,
+      30,
+      17
+    ],
+    "viewpoint_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "missing_targets": 0,
+    "duplicate_viewpoint_ids": 0,
+    "identity_mismatches": 0,
+    "train_skeleton_targets": 932256,
+    "val_skeleton_targets": 311744,
+    "status": "PASS"
+  },
+  "baselines": {
+    "COPY_CURRENT": {
+      "mae": 0.24732067516208162,
+      "rmse": 0.41207067130812075,
+      "velocity_rmse": 0.07708138458539177,
+      "bone_length_distortion": 0.21549788002107156
+    },
+    "MEAN_TWO_VIEW": {
+      "mae": 0.21908693008504607,
+      "rmse": 0.3562767821774129,
+      "velocity_rmse": 0.0734242756490467,
+      "bone_length_distortion": 0.2092814017536057
+    },
+    "NEAREST_OBSERVED_VIEW": {
+      "mae": 0.2187821217189099,
+      "rmse": 0.38574924581313874,
+      "velocity_rmse": 0.07912152837449025,
+      "bone_length_distortion": 0.2017312380400154
+    },
+    "split": "val",
+    "geometry_baseline": "BLOCKED_BY_REPRESENTATION"
+  },
+  "test_used": false,
+  "device": "cuda:0",
+  "environment": "conda:habitat",
+  "training_performed": false
 }

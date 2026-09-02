@@ -1,9 +1,248 @@
 {
   "experiment_id": "EXP042",
-  "status": "PREPARED_NOT_EXECUTED",
-  "variants": ["WM_A_SKELETON", "WM_B_SKELETON_BELIEF", "WM_C_SKELETON_BELIEF_RGB"],
-  "training_protocol": {"epochs": 12, "batch_size": 256, "optimizer": "AdamW", "learning_rate": 0.001, "weight_decay": 0.0001, "seed": 42},
-  "target_scope": "Stage-D remaining p2/p3 candidates for the rapid pilot; all-32 audit remains available via target_scope=all",
+  "status": "COMPLETED",
+  "split": [
+    "train",
+    "val"
+  ],
+  "models": {
+    "WM_A": {
+      "train": {
+        "variant": "A",
+        "train_contexts": 29133,
+        "train_skeleton_targets": 58266,
+        "target_scope": "Stage-D remaining p2/p3 candidates",
+        "final_loss": 0.025536886918816063,
+        "history": [
+          {
+            "epoch": 1,
+            "loss": 0.0883759263080303
+          },
+          {
+            "epoch": 2,
+            "loss": 0.04002305145458835
+          },
+          {
+            "epoch": 3,
+            "loss": 0.03636611975703635
+          },
+          {
+            "epoch": 4,
+            "loss": 0.03411275735771018
+          },
+          {
+            "epoch": 5,
+            "loss": 0.032606879655719706
+          },
+          {
+            "epoch": 6,
+            "loss": 0.031259888391745504
+          },
+          {
+            "epoch": 7,
+            "loss": 0.030182962371154372
+          },
+          {
+            "epoch": 8,
+            "loss": 0.02877627037247167
+          },
+          {
+            "epoch": 9,
+            "loss": 0.02775477085942687
+          },
+          {
+            "epoch": 10,
+            "loss": 0.027098720986738132
+          },
+          {
+            "epoch": 11,
+            "loss": 0.026205016925375503
+          },
+          {
+            "epoch": 12,
+            "loss": 0.025536886918816063
+          }
+        ],
+        "elapsed_seconds": 109.66217942512594,
+        "checkpoint": "/tmp/activeview_exp042_WM_A/last.pth"
+      },
+      "val": {
+        "variant": "A",
+        "prediction_scope": "Stage-D remaining p2/p3 candidates",
+        "p2_p3": {
+          "mae": 0.12076128125126764,
+          "rmse": 0.18532074523679742,
+          "velocity_rmse": 0.1815431058010888,
+          "bone_length_distortion": 0.09432421711100492
+        },
+        "prediction_count": 18648
+      },
+      "leakage_flags": {
+        "future_candidate_skeleton_used_as_input": false,
+        "future_candidate_rgb_used": false,
+        "gt_label_used_as_input": false,
+        "test_used": false
+      }
+    },
+    "WM_B": {
+      "train": {
+        "variant": "B",
+        "train_contexts": 29133,
+        "train_skeleton_targets": 58266,
+        "target_scope": "Stage-D remaining p2/p3 candidates",
+        "final_loss": 0.025404936474196286,
+        "history": [
+          {
+            "epoch": 1,
+            "loss": 0.10192177696616737
+          },
+          {
+            "epoch": 2,
+            "loss": 0.0401403596492065
+          },
+          {
+            "epoch": 3,
+            "loss": 0.0364524474135348
+          },
+          {
+            "epoch": 4,
+            "loss": 0.03380076449980894
+          },
+          {
+            "epoch": 5,
+            "loss": 0.032386889881787034
+          },
+          {
+            "epoch": 6,
+            "loss": 0.03154704866489237
+          },
+          {
+            "epoch": 7,
+            "loss": 0.03011195371792826
+          },
+          {
+            "epoch": 8,
+            "loss": 0.028942349098216934
+          },
+          {
+            "epoch": 9,
+            "loss": 0.02786806382995099
+          },
+          {
+            "epoch": 10,
+            "loss": 0.026756995592121954
+          },
+          {
+            "epoch": 11,
+            "loss": 0.026191747468249402
+          },
+          {
+            "epoch": 12,
+            "loss": 0.025404936474196286
+          }
+        ],
+        "elapsed_seconds": 113.25128170801327,
+        "checkpoint": "/tmp/activeview_exp042_WM_B/last.pth"
+      },
+      "val": {
+        "variant": "B",
+        "prediction_scope": "Stage-D remaining p2/p3 candidates",
+        "p2_p3": {
+          "mae": 0.12129923036765919,
+          "rmse": 0.18799253634188748,
+          "velocity_rmse": 0.1852573697986213,
+          "bone_length_distortion": 0.09339931087347858
+        },
+        "prediction_count": 18648
+      },
+      "leakage_flags": {
+        "future_candidate_skeleton_used_as_input": false,
+        "future_candidate_rgb_used": false,
+        "gt_label_used_as_input": false,
+        "test_used": false
+      }
+    },
+    "WM_C": {
+      "train": {
+        "variant": "C",
+        "train_contexts": 29133,
+        "train_skeleton_targets": 58266,
+        "target_scope": "Stage-D remaining p2/p3 candidates",
+        "final_loss": 0.022301341638672825,
+        "history": [
+          {
+            "epoch": 1,
+            "loss": 0.12490796969013479
+          },
+          {
+            "epoch": 2,
+            "loss": 0.03756360813256183
+          },
+          {
+            "epoch": 3,
+            "loss": 0.03280375177940339
+          },
+          {
+            "epoch": 4,
+            "loss": 0.030867827221149193
+          },
+          {
+            "epoch": 5,
+            "loss": 0.028793522189094607
+          },
+          {
+            "epoch": 6,
+            "loss": 0.027716003008762497
+          },
+          {
+            "epoch": 7,
+            "loss": 0.02649318716886364
+          },
+          {
+            "epoch": 8,
+            "loss": 0.02540952338099682
+          },
+          {
+            "epoch": 9,
+            "loss": 0.024387406465756236
+          },
+          {
+            "epoch": 10,
+            "loss": 0.02359769678851517
+          },
+          {
+            "epoch": 11,
+            "loss": 0.022815770247588442
+          },
+          {
+            "epoch": 12,
+            "loss": 0.022301341638672825
+          }
+        ],
+        "elapsed_seconds": 115.88450122694485,
+        "checkpoint": "/tmp/activeview_exp042_WM_C/last.pth"
+      },
+      "val": {
+        "variant": "C",
+        "prediction_scope": "Stage-D remaining p2/p3 candidates",
+        "p2_p3": {
+          "mae": 0.11482288337573207,
+          "rmse": 0.17819985444894418,
+          "velocity_rmse": 0.17622895498753252,
+          "bone_length_distortion": 0.09201645266561534
+        },
+        "prediction_count": 18648
+      },
+      "leakage_flags": {
+        "future_candidate_skeleton_used_as_input": false,
+        "future_candidate_rgb_used": false,
+        "gt_label_used_as_input": false,
+        "test_used": false
+      }
+    }
+  },
   "test_used": false,
-  "training_performed": false
+  "device": "cuda:0",
+  "environment": "conda:habitat",
+  "training_performed": true
 }

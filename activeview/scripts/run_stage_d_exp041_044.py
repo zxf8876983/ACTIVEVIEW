@@ -151,7 +151,9 @@ def _train_model(data_root: Path, rows: Sequence[Mapping[str, Any]], sources: Ma
             if use_belief: kwargs["history_belief"] = batch["history_belief"].to(device)
             if use_rgb: kwargs["history_rgb"] = batch["history_rgb"].to(device)
             target = batch["target_skeleton"].to(device)
-            prediction = model(**kwargs); loss, pose, velocity = world_model_loss(prediction.reshape(-1, 3, 30, 17), target.reshape(-1, 3, 30, 17))
+            prediction = model(**kwargs)
+            valid = batch["candidate_mask"].to(device).reshape(-1)
+            loss, pose, velocity = world_model_loss(prediction.reshape(-1, 3, 30, 17)[valid], target.reshape(-1, 3, 30, 17)[valid])
             optimizer.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); optimizer.step()
             total += float(loss.detach()) * len(batch["context_key"]); count += len(batch["context_key"])
         final_loss = total / max(count, 1); history.append({"epoch": epoch, "loss": final_loss});
@@ -171,8 +173,9 @@ def _predict_model(model: CandidateObservationWorldModel, dataset: LazyWorldMode
             if "history_belief" in batch: kwargs["history_belief"] = batch["history_belief"].to(device)
             if "history_rgb" in batch: kwargs["history_rgb"] = batch["history_rgb"].to(device)
             values = model(**kwargs).cpu().numpy()
+            valid = batch["candidate_mask"].numpy()
             for index, key in enumerate(batch["context_key"]):
-                output[tuple(key)] = {int(batch["candidate_ids"][index, view]): values[index, view] for view in range(values.shape[1])}
+                output[tuple(key)] = {int(batch["candidate_ids"][index, view]): values[index, view] for view in range(values.shape[1]) if valid[index, view]}
     return output
 
 
@@ -190,30 +193,30 @@ def _evaluate_world_model(model: CandidateObservationWorldModel, rows: Sequence[
     return {"variant": variant, "prediction_scope": "Stage-D remaining p2/p3 candidates", "p2_p3": {name: mean(errors, name) for name in ("mae", "rmse", "velocity_rmse", "bone_length_distortion")}, "prediction_count": len(errors)}, predictions
 
 
-def _load_stgcn(data_root: Path) -> tuple[STGCN, torch.device, int]:
-    summary = json.loads((data_root / "datasets/policy_v11_5/stage_b/stage_b_summary.json").read_text(encoding="utf-8")); mapping = json.loads(Path(summary["label_mapping"]).read_text(encoding="utf-8")); model, device = _load_model(Path(summary["stgcn_checkpoint"]), len(mapping), "cpu"); return model, device, len(mapping)
+def _load_stgcn(data_root: Path, device: torch.device) -> tuple[STGCN, torch.device, int]:
+    summary = json.loads((data_root / "datasets/policy_v11_5/stage_b/stage_b_summary.json").read_text(encoding="utf-8")); mapping = json.loads(Path(summary["label_mapping"]).read_text(encoding="utf-8")); model, loaded_device = _load_model(Path(summary["stgcn_checkpoint"]), len(mapping), str(device)); return model, loaded_device, len(mapping)
 
 
-def _stgcn_log_probs(model: STGCN, skeletons: np.ndarray, batch_size: int = 256) -> np.ndarray:
+def _stgcn_log_probs(model: STGCN, skeletons: np.ndarray, device: torch.device, batch_size: int = 256) -> np.ndarray:
     outputs: list[np.ndarray] = []
     with torch.inference_mode():
         for start in range(0, len(skeletons), batch_size):
-            batch = torch.from_numpy(skeletons[start:start + batch_size]).float().unsqueeze(-1)
-            outputs.append(torch.log_softmax(model(batch), dim=-1).numpy())
+            batch = torch.from_numpy(skeletons[start:start + batch_size]).float().unsqueeze(-1).to(device)
+            outputs.append(torch.log_softmax(model(batch), dim=-1).cpu().numpy())
     return np.concatenate(outputs, axis=0)
 
 
-def _exp043(data_root: Path, val_rows: Sequence[Mapping[str, Any]], val_sources: Mapping[tuple[str, str, str], str], wm_predictions: Mapping[tuple[str, str, str], Mapping[int, np.ndarray]], categories: Sequence[str]) -> dict[str, Any]:
-    model, _, classes = _load_stgcn(data_root); stage_b = load_jsonl(data_root / "datasets/policy_v11_5/stage_b/utility_labels/val.jsonl"); v0 = load_jsonl(data_root / "experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl"); stage_d = list(val_rows)
+def _exp043(data_root: Path, val_rows: Sequence[Mapping[str, Any]], val_sources: Mapping[tuple[str, str, str], str], wm_predictions: Mapping[tuple[str, str, str], Mapping[int, np.ndarray]], categories: Sequence[str], device: torch.device) -> dict[str, Any]:
+    model, _, classes = _load_stgcn(data_root, device); stage_b = load_jsonl(data_root / "datasets/policy_v11_5/stage_b/utility_labels/val.jsonl"); v0 = load_jsonl(data_root / "experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl"); stage_d = list(val_rows)
     selector_names = ("PREDICTED_OBSERVATION_GT_LABEL_ORACLE", "PREDICTED_ENTROPY", "PREDICTED_TOP1_CONFIDENCE", "PREDICTED_BELIEF_CROSS_ENTROPY")
     selectors = {name: [] for name in selector_names}; quality_rows: list[dict[str, Any]] = []
     pred_map: dict[str, dict[str, Any]] = {}
     for row in val_rows:
-        key = context_key(row); candidates = [int(v) for v in row["remaining_candidate_ids"]]; skeletons = np.stack([wm_predictions[key][v] for v in candidates]); logs = _stgcn_log_probs(model, skeletons); probs = np.exp(logs); belief = np.exp(np.asarray(row["s1_feature"][256:272], dtype=np.float64)); belief /= belief.sum()
+        key = context_key(row); candidates = [int(v) for v in row["remaining_candidate_ids"]]; skeletons = np.stack([wm_predictions[key][v] for v in candidates]); logs = _stgcn_log_probs(model, skeletons, device); probs = np.exp(logs); belief = np.exp(np.asarray(row["s1_feature"][256:272], dtype=np.float64)); belief /= belief.sum()
         source = Path(val_sources[key])
         with np.load(source, allow_pickle=False) as archive:
             ids = np.asarray(archive["viewpoint_ids"], dtype=np.int64); skeleton = np.asarray(archive["skeleton"], dtype=np.float32)
-        index = {int(v): i for i, v in enumerate(ids.tolist())}; current_logs = _stgcn_log_probs(model, skeleton[index[int(row["s1_viewpoint_id"])]][None])[0:1]; current_prob = np.exp(current_logs[0])
+        index = {int(v): i for i, v in enumerate(ids.tolist())}; current_logs = _stgcn_log_probs(model, skeleton[index[int(row["s1_viewpoint_id"])]][None], device)[0:1]; current_prob = np.exp(current_logs[0])
         # Scores are minimized.  Index 0 is Stay/current and wins exact ties.
         all_logs = np.vstack([current_logs, logs]); all_probs = np.exp(all_logs)
         score_values = {
@@ -234,7 +237,7 @@ def _exp043(data_root: Path, val_rows: Sequence[Mapping[str, Any]], val_sources:
     return {"selectors": {name: {"trajectory": value, "deployable": True} for name, value in trajectories.items()}, "predicted_observation_quality_rows": quality_rows, "gt_label_used_for_scoring": False, "deployable": True, "classes": classes}
 
 
-def run(data_root: Path, *, epochs: int = 12, batch_size: int = 256, workers: int = 4, variants: Sequence[str] = ("A", "B", "C"), train_limit: int | None = None, val_limit: int | None = None, rgb_root: Path | None = None) -> dict[str, Any]:
+def run(data_root: Path, *, epochs: int = 12, batch_size: int = 256, workers: int = 4, variants: Sequence[str] = ("A", "B", "C"), train_limit: int | None = None, val_limit: int | None = None, rgb_root: Path | None = None, device_name: str = "cuda:0") -> dict[str, Any]:
     _seed(42); started = time.perf_counter(); train_rows = _rows(data_root, "train"); val_rows = _rows(data_root, "val"); train_sources = _episode_sources(data_root, "train"); val_sources = _episode_sources(data_root, "val")
     if train_limit is not None: train_rows = train_rows[: int(train_limit)]
     if val_limit is not None: val_rows = val_rows[: int(val_limit)]
@@ -252,7 +255,9 @@ def run(data_root: Path, *, epochs: int = 12, batch_size: int = 256, workers: in
     rgb_lookup = None; rgb_summary = None
     resolved_rgb_root = rgb_root or (Path(os.environ["ACTIVEVIEW_RGB_FEATURE_ROOT"]) if os.environ.get("ACTIVEVIEW_RGB_FEATURE_ROOT") else None)
     if resolved_rgb_root is not None and resolved_rgb_root.is_dir(): rgb_lookup, rgb_summary = _load_rgb_lookup(resolved_rgb_root)
-    device = torch.device("cpu"); model_results: dict[str, Any] = {}; model_predictions: dict[str, dict[tuple[str, str, str], dict[int, np.ndarray]]] = {}
+    if device_name.startswith("cuda") and not torch.cuda.is_available():
+        raise RuntimeError("requested CUDA device is unavailable")
+    device = torch.device(device_name); model_results: dict[str, Any] = {}; model_predictions: dict[str, dict[tuple[str, str, str], dict[int, np.ndarray]]] = {}
     for variant in variants:
         if variant not in {"A", "B", "C"}: raise ValueError(f"unknown model variant {variant}")
         if variant == "C" and rgb_lookup is None:
@@ -263,7 +268,7 @@ def run(data_root: Path, *, epochs: int = 12, batch_size: int = 256, workers: in
         model_predictions[f"WM_{variant}"] = predictions
     wm_b = model_predictions.get("WM_B") or model_predictions.get("WM_A")
     categories = json.loads(Path(json.loads((data_root / "datasets/policy_v11_5/stage_b/stage_b_summary.json").read_text())["label_mapping"]).read_text()); categories = [name for name, _ in sorted(categories.items(), key=lambda item: int(item[1]))]
-    exp043 = _exp043(data_root, val_rows, val_sources, wm_b, categories) if wm_b else {"status": "BLOCKED"}
+    exp043 = _exp043(data_root, val_rows, val_sources, wm_b, categories, device) if wm_b else {"status": "BLOCKED"}
     (exp042_root / "model_A_result.json").write_text(json.dumps(model_results.get("WM_A", {}), indent=2), encoding="utf-8"); (exp042_root / "model_B_result.json").write_text(json.dumps(model_results.get("WM_B", {}), indent=2), encoding="utf-8"); (exp042_root / "model_C_result.json").write_text(json.dumps(model_results.get("WM_C", {}), indent=2), encoding="utf-8")
     exp042_result = {"experiment_id": "EXP042", "status": "COMPLETED", "split": ["train", "val"], "models": model_results, "test_used": False}; (exp042_root / "result.json").write_text(json.dumps(exp042_result, indent=2), encoding="utf-8"); (exp042_root / "analysis.md").write_text("# EXP042\n\nCandidate perceived-skeleton world-model results. Test was not read.\n", encoding="utf-8")
     (exp043_root / "selector_comparison.json").write_text(json.dumps(exp043, indent=2), encoding="utf-8"); (exp043_root / "result.json").write_text(json.dumps({"experiment_id": "EXP043", "status": "COMPLETED" if wm_b else "BLOCKED", "split": "val", "selectors": exp043, "test_used": False}, indent=2), encoding="utf-8"); (exp043_root / "analysis.md").write_text("# EXP043\n\nModel-based single-step selectors. Test was not read.\n", encoding="utf-8")
@@ -276,10 +281,11 @@ def run(data_root: Path, *, epochs: int = 12, batch_size: int = 256, workers: in
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--data-root", type=Path, default=get_data_root()); parser.add_argument("--rgb-root", type=Path, default=None); parser.add_argument("--epochs", type=int, default=12); parser.add_argument("--batch-size", type=int, default=256); parser.add_argument("--workers", type=int, default=4); parser.add_argument("--variants", nargs="+", default=["A", "B", "C"]); parser.add_argument("--train-limit", type=int, default=None); parser.add_argument("--val-limit", type=int, default=None); parser.add_argument("--no-run", action="store_true", help="only materialize no-learning audit artifacts")
+    parser.add_argument("--device", default="cuda:0", help="torch device; CUDA is required for the authorized campaign")
     args = parser.parse_args(); data_root = args.data_root.resolve()
     if args.no_run:
         train_rows = _rows(data_root, "train"); val_rows = _rows(data_root, "val"); audit = _audit(data_root, train_rows, val_rows, _episode_sources(data_root, "train"), _episode_sources(data_root, "val")); print(json.dumps(audit, indent=2)); return
-    print(json.dumps(run(data_root, epochs=args.epochs, batch_size=args.batch_size, workers=args.workers, variants=args.variants, train_limit=args.train_limit, val_limit=args.val_limit, rgb_root=args.rgb_root), indent=2, ensure_ascii=False))
+    print(json.dumps(run(data_root, epochs=args.epochs, batch_size=args.batch_size, workers=args.workers, variants=args.variants, train_limit=args.train_limit, val_limit=args.val_limit, rgb_root=args.rgb_root, device_name=args.device), indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
