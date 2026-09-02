@@ -40,10 +40,11 @@ def _temporal_token_encoder() -> nn.Module:
 class CandidateObservationWorldModel(nn.Module):
     """Small history/candidate-conditioned perceived-skeleton predictor."""
 
-    def __init__(self, *, use_belief: bool = False, use_rgb: bool = False) -> None:
+    def __init__(self, *, use_belief: bool = False, use_rgb: bool = False, residual: bool = False) -> None:
         super().__init__()
         self.use_belief = bool(use_belief)
         self.use_rgb = bool(use_rgb)
+        self.residual = bool(residual)
         self.frame_encoder = nn.Linear(17 * 3, 128)
         self.temporal_position = nn.Parameter(torch.zeros(30, 128))
         self.temporal_encoder = _temporal_token_encoder()
@@ -147,7 +148,8 @@ class CandidateObservationWorldModel(nn.Module):
             condition = history_state + self.candidate_encoder(candidate_descriptor)
             queries = self.decoder_queries.unsqueeze(0).expand(batch, -1, -1)
             decoded = self.decoder(queries, condition.unsqueeze(1))
-            return self.output_head(decoded).reshape(batch, 3, 30, 17)
+            output = self.output_head(decoded).reshape(batch, 3, 30, 17)
+            return output + history_skeleton[:, -1] if self.residual else output
         if candidate_descriptor.ndim != 3 or candidate_descriptor.shape[0] != batch or candidate_descriptor.shape[-1] != 9:
             raise ValueError("candidate_descriptor must have shape [B,K,9]")
         candidate_count = candidate_descriptor.size(1)
@@ -155,7 +157,8 @@ class CandidateObservationWorldModel(nn.Module):
         condition = condition.reshape(batch * candidate_count, 128)
         queries = self.decoder_queries.unsqueeze(0).expand(batch * candidate_count, -1, -1)
         decoded = self.decoder(queries, condition.unsqueeze(1))
-        return self.output_head(decoded).reshape(batch, candidate_count, 3, 30, 17)
+        output = self.output_head(decoded).reshape(batch, candidate_count, 3, 30, 17)
+        return output + history_skeleton[:, -1].unsqueeze(1) if self.residual else output
 
 
 @dataclass(frozen=True)

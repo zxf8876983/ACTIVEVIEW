@@ -1,0 +1,13 @@
+experiment_id: EXP045
+split: [train, val]
+epochs: 12
+micro_batch_contexts: 128
+gradient_accumulation: 2
+effective_batch_contexts: 256
+optimizer: AdamW
+learning_rate: 0.001
+weight_decay: 0.0001
+recognition_loss: frozen_stgcn_kl
+recognition_loss_weight: 0.10
+seed: 42
+test_used: false

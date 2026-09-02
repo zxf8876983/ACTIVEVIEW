@@ -14,3 +14,6 @@ EXP028,oracle_action_predictability,COMPLETED,8b67eb7,,,,,INCONCLUSIVE,"Val-only
 EXP035-R1,dense_recognition_quality_field_context_safe,COMPLETED,,,,,,INCONCLUSIVE,"Context-key repaired rerun; 29,133 Train / 9,742 Val contexts; full Stage-B reproduction PASS; old EXP035 invalid archive"
 EXP036-R1,single_step_view_optimization_context_safe,COMPLETED,,0.648388,0.597157,1.460368,5.646013,INCONCLUSIVE,"Context-key repaired single-step diagnostics; final HAR remains below EXP014; no Test; see EXP036-R1 analysis.md"
 EXP037-R1,multistep_graph_active_perception_context_safe,COMPLETED,,0.605491,0.537928,,,INCONCLUSIVE,"Context-key repaired multistep diagnostic; terminal HAR reported for H=1/2/3; no Test; see EXP037-R1 analysis.md"
+EXP042-R1,dense_cross_view_world_model,COMPLETED,, , , , ,INCONCLUSIVE,"Dense all-32 candidate-observation world-model rerun with corrected temporal/bone metrics; Train/Val only; see EXP042_R1_dense_cross_view_world_model/analysis.md"
+EXP043-R1,model_based_single_step_selection,COMPLETED,, , , , ,INCONCLUSIVE,"Val-only selector/HAR diagnostics for EXP042-R1 A-F models; privileged selector non-deployable; no Test"
+EXP045,recognition_aware_world_model,COMPLETED,, , , , ,INCONCLUSIVE,"Frozen ST-GCN recognition-aware world-model variants E/F; Train/Val only; no Test"

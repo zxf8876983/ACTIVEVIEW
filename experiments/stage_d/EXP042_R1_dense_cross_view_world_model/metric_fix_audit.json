@@ -1,0 +1,31 @@
+{
+  "COPY_CURRENT": {
+    "coordinate_mae": 0.24732067516208162,
+    "coordinate_rmse": 0.3783008514787022,
+    "velocity_mae": 0.03586398978411416,
+    "velocity_rmse": 0.06123651170436417,
+    "acceleration_rmse": 0.08263206016577469,
+    "bone_length_mae": 0.12314366725988368,
+    "bone_length_relative_error": 0.3248475199672292
+  },
+  "MEAN_TWO_VIEW": {
+    "coordinate_mae": 0.21908693008504607,
+    "coordinate_rmse": 0.3308435033742598,
+    "velocity_mae": 0.03432916457634245,
+    "velocity_rmse": 0.057712655932863316,
+    "acceleration_rmse": 0.08109866162866612,
+    "bone_length_mae": 0.11968049287584247,
+    "bone_length_relative_error": 0.2745852893312717
+  },
+  "NEAREST_OBSERVED_VIEW": {
+    "coordinate_mae": 0.2187821217189099,
+    "coordinate_rmse": 0.3350095750834887,
+    "velocity_mae": 0.03521655809630672,
+    "velocity_rmse": 0.05989029525889693,
+    "acceleration_rmse": 0.08283993357678578,
+    "bone_length_mae": 0.11013123773619715,
+    "bone_length_relative_error": 0.27544171873661855
+  },
+  "split": "val",
+  "metric_definition": "corrected_axis1_velocity_axis1_acceleration_h36m17_edges"
+}

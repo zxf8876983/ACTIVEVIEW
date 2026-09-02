@@ -6,6 +6,7 @@ import pytest
 import torch
 
 from activeview.active_view.stage_d_world_model import CandidateObservationWorldModel, collate_world_model_context, world_model_loss
+from activeview.scripts.run_stage_d_exp042r1_045 import _corrected_metrics
 from activeview.scripts.run_stage_d_exp041_044 import _rows
 
 
@@ -30,6 +31,22 @@ def test_world_model_rgb_variant_uses_visited_tokens_only() -> None:
     rgb = torch.zeros(1, 2, 16, 768)
     output = model(history, descriptor, candidate, history_rgb=rgb)
     assert tuple(output.shape) == (1, 3, 30, 17)
+
+
+def test_residual_world_model_adds_last_observation() -> None:
+    history, descriptor, candidate = _inputs(1)
+    model = CandidateObservationWorldModel(residual=True)
+    output = model(history, descriptor, candidate)
+    assert tuple(output.shape) == (1, 3, 30, 17)
+
+
+def test_corrected_metrics_use_temporal_axis_and_edges() -> None:
+    target = torch.arange(3 * 30 * 17, dtype=torch.float32).reshape(3, 30, 17).numpy()
+    prediction = target.copy(); prediction[:, 1:] += 1.0; prediction[:, :, 1] += 0.5
+    metrics = _corrected_metrics(prediction, target, [(0, 1)])
+    assert metrics["velocity_rmse"] > 0.0
+    assert metrics["acceleration_rmse"] > 0.0
+    assert metrics["bone_length_mae"] > 0.0
 
 
 def test_world_model_rejects_wrong_skeleton_shape() -> None:

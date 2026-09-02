@@ -1,0 +1,9 @@
+{
+  "teacher": "frozen ST-GCN",
+  "teacher_parameters_frozen": true,
+  "teacher_targets_generated_on_the_fly": true,
+  "target_split": ["train", "val"],
+  "test_used": false,
+  "gt_pose_used": false,
+  "note": "Recognition distributions are computed from frozen perceived-skeleton targets; no teacher fine-tuning or Test access."
+}

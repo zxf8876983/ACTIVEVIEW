@@ -1,0 +1,16 @@
+experiment_id: EXP042-R1
+split: [train, val]
+target_scope: all_32
+epochs: 12
+micro_batch_contexts: 32
+gradient_accumulation: 8
+effective_batch_contexts: 256
+optimizer: AdamW
+learning_rate: 0.001
+weight_decay: 0.0001
+seed: 42
+corrected_metrics:
+  velocity_axis: 1
+  acceleration_axis: 1
+  bone_definition: h36m_17
+test_used: false
