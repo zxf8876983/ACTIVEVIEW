@@ -8,7 +8,7 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
-from activeview.active_view.stage_c_features import candidate_geometry_features
+from activeview.active_view.policy_features import candidate_geometry_features
 
 VIEW_COUNT = 32
 TOP_K = 3

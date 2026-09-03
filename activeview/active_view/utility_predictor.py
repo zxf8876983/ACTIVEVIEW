@@ -7,8 +7,10 @@ from typing import Optional
 import torch
 from torch import nn
 
-from activeview.active_view.stage_c_features import CANDIDATE_GEOMETRY_DIM, CURRENT_FEATURE_DIM
-from activeview.active_view.stage_c_v2_features import JOINT_TOKEN_DIM, SEMANTIC_CONTEXT_DIM
+from activeview.active_view.policy_features import CANDIDATE_GEOMETRY_DIM, CURRENT_FEATURE_DIM
+
+JOINT_TOKEN_DIM = 256
+SEMANTIC_CONTEXT_DIM = 19
 
 
 class CurrentContextEncoder(nn.Module):

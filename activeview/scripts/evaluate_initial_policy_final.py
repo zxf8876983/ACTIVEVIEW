@@ -20,9 +20,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from activeview.active_view.stage_c_dataset import EpisodeFeatureDataset, collate_episode_batch, load_feature_statistics
-from activeview.active_view.stage_c_evaluation import evaluate_predictions, load_stage_b_lookup, predict_dataset
-from activeview.active_view.stage_c_features import schema_metadata
+from activeview.active_view.policy_data import EpisodeFeatureDataset, collate_episode_batch, load_feature_statistics
+from activeview.active_view.initial_policy import evaluate_predictions, load_stage_b_lookup, predict_dataset
+from activeview.active_view.policy_features import schema_metadata
 from activeview.active_view.utility_label_builder import file_sha256
 from activeview.active_view.utility_predictor import build_utility_predictor
 from activeview.core.paths import get_data_root

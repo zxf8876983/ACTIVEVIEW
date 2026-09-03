@@ -1,4 +1,4 @@
-"""Stage D second-step cache, dataset and navigation-only geometry helpers."""
+"""Second-step cache, dataset and navigation-only geometry helpers."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import Dataset, Sampler
 
 from activeview.action_recognition.st_gcn_model import STGCN
-from activeview.active_view.stage_c_features import current_state_features, frozen_current_features
+from activeview.active_view.policy_features import current_state_features, frozen_current_features
 from activeview.active_view.geometry import (
     CURRENT_DIM,
     DELTA_SEMANTIC_DIM,
@@ -34,7 +34,7 @@ def load_jsonl(path: Path) -> list[Dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def load_stage_d_cache(path: Path) -> dict[str, np.ndarray]:
+def load_cache(path: Path) -> dict[str, np.ndarray]:
     """Load one frozen Stage-D NPZ cache without altering its arrays."""
     with np.load(path, allow_pickle=False) as archive:
         return {name: np.asarray(archive[name]) for name in archive.files}
@@ -184,7 +184,7 @@ def _load_viewpoint_azimuths(archive_path: Path, region: str) -> dict[int, float
     return azimuths
 
 
-def compute_stage_d_statistics(rows: Sequence[Mapping[str, Any]]) -> Dict[str, np.ndarray]:
+def compute_feature_statistics(rows: Sequence[Mapping[str, Any]]) -> Dict[str, np.ndarray]:
     if not rows:
         raise ValueError("Cannot compute Stage D statistics from empty rows")
     current = np.asarray([row["s0_feature"] for row in rows] + [row["s1_feature"] for row in rows], dtype=np.float64)
@@ -200,17 +200,17 @@ def compute_stage_d_statistics(rows: Sequence[Mapping[str, Any]]) -> Dict[str, n
     return result
 
 
-def save_stage_d_statistics(path: Path, statistics: Mapping[str, np.ndarray]) -> None:
+def save_feature_statistics(path: Path, statistics: Mapping[str, np.ndarray]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps({key: np.asarray(value).tolist() for key, value in statistics.items()}, indent=2), encoding="utf-8")
 
 
-def load_stage_d_statistics(path: Path) -> Dict[str, np.ndarray]:
+def load_feature_statistics(path: Path) -> Dict[str, np.ndarray]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     return {key: np.asarray(value, dtype=np.float32) for key, value in payload.items()}
 
 
-class StageDDataset(Dataset[Dict[str, Any]]):
+class SecondStepDataset(Dataset[Dict[str, Any]]):
     """Train/Val second-step samples with Train-only normalization stats."""
 
     def __init__(self, path: Path, statistics: Mapping[str, np.ndarray]) -> None:
@@ -236,7 +236,7 @@ class StageDDataset(Dataset[Dict[str, Any]]):
         }
 
 
-def collate_stage_d(batch: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
+def collate_second_step(batch: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     if not batch:
         raise ValueError("Cannot collate an empty batch")
     size = len(batch)
@@ -263,7 +263,7 @@ def collate_stage_d(batch: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     }
 
 
-class StageDRecordBalancedSampler(Sampler[int]):
+class SecondStepRecordBalancedSampler(Sampler[int]):
     """Sample a fixed number of second-step Episodes per eligible record."""
 
     def __init__(self, rows: Sequence[Mapping[str, Any]], episodes_per_record: int = 16, seed: int = 42) -> None:
@@ -418,7 +418,7 @@ def build_cache_summary(
         counts[split] = len(rows)
         hashes[split] = file_sha256(path)
     stats_path = output_dir / "stage_d_feature_stats.json"
-    save_stage_d_statistics(stats_path, compute_stage_d_statistics(all_rows["train"]))
+    save_feature_statistics(stats_path, compute_feature_statistics(all_rows["train"]))
     summary = {
         "protocol": "ACTIVEVIEW Stage D two-step sequential cache",
         "status": "generated", "built_splits": ["train", "val"], "test_built": False,

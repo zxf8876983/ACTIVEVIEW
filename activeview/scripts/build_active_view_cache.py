@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build Stage D Train/Val second-step samples from frozen artifacts only."""
+"""Build active-view Train/Val second-step samples from frozen artifacts only."""
 
 from __future__ import annotations
 

@@ -1,14 +1,14 @@
 import torch
 
-from activeview.active_view.stage_c_losses import stage_c_loss
-from activeview.active_view.stage_c_metrics import move_stay_metrics, regression_metrics
+from activeview.active_view.policy_training import policy_loss
+from activeview.active_view.metrics import move_stay_metrics, regression_metrics
 
 
 def test_stage_c_loss_masks_padding_and_is_finite():
     predicted = torch.tensor([[0.5, -0.2, 3.0]], requires_grad=True)
     target = torch.tensor([[0.4, -0.1, 99.0]])
     mask = torch.tensor([[True, True, False]])
-    losses = stage_c_loss(predicted, target, mask)
+    losses = policy_loss(predicted, target, mask)
     assert torch.isfinite(losses["total"])
     losses["total"].backward()
 

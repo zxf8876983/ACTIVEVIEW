@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent Stage C feature/prediction provenance and leakage validator."""
+"""Independent initial-policy feature/prediction provenance validator."""
 
 from __future__ import annotations
 
@@ -17,8 +17,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from activeview.active_view.stage_c_metrics import summarize_stage_c_predictions
-from activeview.active_view.stage_c_features import candidate_geometry_matrix, schema_metadata
+from activeview.active_view.metrics import summarize_policy_predictions
+from activeview.active_view.policy_features import candidate_geometry_matrix, schema_metadata
 from activeview.active_view.utility_label_builder import file_sha256
 from activeview.dataset.policy_split import load_policy_splits
 
@@ -325,7 +325,7 @@ def validate(*, dataset_root: Path, stage_b_root: Path, stage_c_root: Path, eval
                         errors.append(f"prediction_episode_coverage_mismatch:{model_type}:{split}")
                     if not isinstance(summary.get("evaluation_only_fields"), list):
                         errors.append(f"missing_evaluation_only_field_declaration:{model_type}")
-                    recomputed = summarize_stage_c_predictions(rows, summary["categories"])
+                    recomputed = summarize_policy_predictions(rows, summary["categories"])
                     metric_errors: List[str] = []
                     _compare(recomputed, summary["metrics"][split], f"{model_type}.{split}", metric_errors)
                     errors.extend(metric_errors)

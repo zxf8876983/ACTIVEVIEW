@@ -1,4 +1,4 @@
-"""Regression and listwise losses for Stage C Utility prediction."""
+"""Regression and listwise losses for utility prediction."""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ def utility_gap_pairwise_loss(
     return (selected_weights * pair_loss[pair_mask]).sum() / selected_weights.sum().clamp_min(float(eps))
 
 
-def stage_c_loss(
+def policy_loss(
     predicted_utility: torch.Tensor,
     target_utility: torch.Tensor,
     candidate_mask: torch.Tensor,
@@ -109,7 +109,7 @@ def move_stay_loss(
         raise ValueError("Move/Stay tensors must be finite")
     if not 0.0 <= float(lambda_move):
         raise ValueError("lambda_move must be non-negative")
-    losses = stage_c_loss(
+    losses = policy_loss(
         predicted_utility,
         target_utility,
         candidate_mask,

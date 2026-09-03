@@ -1,6 +1,6 @@
 import torch
 
-from activeview.active_view.stage_c_losses import stage_c_loss, utility_gap_pairwise_loss
+from activeview.active_view.policy_training import policy_loss, utility_gap_pairwise_loss
 
 
 def test_gap_loss_prefers_correct_ordering():
@@ -63,7 +63,7 @@ def test_stage_c_loss_zero_gap_weight_preserves_existing_objective():
     target = torch.tensor([[0.4, -0.1, 99.0]])
     mask = torch.tensor([[True, True, False]])
 
-    explicit_zero = stage_c_loss(
+    explicit_zero = policy_loss(
         predicted, target, mask, lambda_gap=0.0, tau_gap=1.0, max_gap_weight=10.0
     )
 

@@ -8,7 +8,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from activeview.scripts.validate_stage_c import validate
+from activeview.scripts.validate_initial_policy_data import validate
 
 
 DATA_ROOT = Path("/home/zxf/WorkSpace/code/data/ActiveView")

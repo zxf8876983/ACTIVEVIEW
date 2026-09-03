@@ -1,4 +1,4 @@
-"""Offline Stage D trajectory evaluation using frozen Stage A/B/C-v0 data."""
+"""Offline trajectory evaluation using frozen Stage A/B/initial-policy data."""
 
 from __future__ import annotations
 
@@ -135,7 +135,7 @@ def predict_second_step_dataset(
     return rows
 
 
-def build_stage_d_trajectories(
+def build_trajectories(
     stage_b_rows: Sequence[Mapping[str, Any]],
     v0_prediction_rows: Sequence[Mapping[str, Any]],
     cache_rows: Sequence[Mapping[str, Any]],
@@ -178,7 +178,7 @@ def build_stage_d_trajectories(
     return output
 
 
-def summarize_stage_d_methods(method_rows: Mapping[str, Sequence[Mapping[str, Any]]], categories: Sequence[str]) -> dict[str, Any]:
+def summarize_methods(method_rows: Mapping[str, Sequence[Mapping[str, Any]]], categories: Sequence[str]) -> dict[str, Any]:
     summaries = {name: summarize_trajectory_rows(rows, categories) for name, rows in method_rows.items()}
     baseline = summaries.get("NoMove", {}).get("recognition", {}).get("accuracy")
     if baseline is not None:

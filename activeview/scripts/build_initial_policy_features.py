@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build current-only Stage C features from accepted Stage A/B artifacts."""
+"""Build current-only policy features from accepted Stage A/B artifacts."""
 
 from __future__ import annotations
 
@@ -18,8 +18,8 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from activeview.action_recognition.st_gcn_model import STGCN
-from activeview.active_view.stage_c_dataset import feature_statistics, save_feature_statistics
-from activeview.active_view.stage_c_features import (
+from activeview.active_view.policy_data import feature_statistics, save_feature_statistics
+from activeview.active_view.policy_features import (
     CURRENT_FEATURE_DIM,
     candidate_geometry_matrix,
     current_state_features,

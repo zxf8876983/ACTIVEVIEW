@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train Stage C Utility predictors with Episode-level record-balanced sampling."""
+"""Train the frozen initial utility policy with record-balanced sampling."""
 
 from __future__ import annotations
 
@@ -18,9 +18,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from activeview.active_view.stage_c_dataset import HardRecordAwareSampler, EpisodeFeatureDataset, RecordBalancedSampler, collate_episode_batch, load_feature_statistics
-from activeview.active_view.stage_c_evaluation import evaluate_predictions, load_stage_b_lookup, predict_dataset
-from activeview.active_view.stage_c_losses import move_stay_loss, stage_c_loss
+from activeview.active_view.policy_data import HardRecordAwareSampler, EpisodeFeatureDataset, RecordBalancedSampler, collate_episode_batch, load_feature_statistics
+from activeview.active_view.initial_policy import evaluate_predictions, load_stage_b_lookup, predict_dataset
+from activeview.active_view.policy_training import move_stay_loss, policy_loss
 from activeview.active_view.utility_label_builder import file_sha256
 from activeview.active_view.utility_predictor import build_utility_predictor, count_parameters
 from activeview.core.paths import get_data_root
@@ -117,7 +117,7 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
                     max_gap_weight=max_gap_weight,
                 )
             else:
-                losses = stage_c_loss(predicted, target_utility, candidate_mask, lambda_reg=lambda_reg, lambda_rank=lambda_rank, tau=tau, lambda_gap=lambda_gap, tau_gap=tau_gap, max_gap_weight=max_gap_weight)
+                losses = policy_loss(predicted, target_utility, candidate_mask, lambda_reg=lambda_reg, lambda_rank=lambda_rank, tau=tau, lambda_gap=lambda_gap, tau_gap=tau_gap, max_gap_weight=max_gap_weight)
             losses["total"].backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); optimizer.step()
             for key, value in losses.items():
                 if key in loss_sums:

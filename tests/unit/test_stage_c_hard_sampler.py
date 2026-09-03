@@ -1,6 +1,6 @@
 import pytest
 
-from activeview.active_view.stage_c_dataset import HardRecordAwareSampler
+from activeview.active_view.policy_data import HardRecordAwareSampler
 
 
 def _rows(record_ids, episodes_per_record=20):

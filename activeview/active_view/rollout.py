@@ -16,7 +16,7 @@ import numpy as np
 import torch
 from scipy.stats import binom
 
-from activeview.active_view.data import episode_sources as _episode_sources, load_jsonl, load_stage_d_cache as _load_cache, load_stgcn as _load_stgcn, load_wm_e as _load_wm_e, log_probs as _log_probs, rows
+from activeview.active_view.data import episode_sources as _episode_sources, load_jsonl, load_cache as _load_cache, load_stgcn as _load_stgcn, load_wm_e as _load_wm_e, log_probs as _log_probs, rows
 from activeview.active_view.geometry import context_key, relative_view_descriptor, load_pairwise_and_azimuths as _load_pairwise_and_azimuths
 from activeview.active_view.joint_revision import JointRevision as _JointRevision, select_actions as _joint_select, tie_argmax as _tie_argmax
 from activeview.active_view.rollout_support import (

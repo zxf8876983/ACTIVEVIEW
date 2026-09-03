@@ -1,4 +1,4 @@
-"""Prediction and offline policy evaluation helpers for Stage C."""
+"""Frozen initial-policy prediction and evaluation helpers."""
 
 from __future__ import annotations
 
@@ -7,7 +7,8 @@ from typing import Any, Dict, Mapping, Sequence
 import numpy as np
 import torch
 
-from activeview.active_view.stage_c_metrics import summarize_stage_c_predictions
+from activeview.active_view.geometry import order_candidates
+from activeview.active_view.metrics import summarize_policy_predictions
 
 
 def load_stage_b_lookup(path) -> Dict[str, Mapping[str, Any]]:
@@ -16,8 +17,9 @@ def load_stage_b_lookup(path) -> Dict[str, Mapping[str, Any]]:
 
 
 def _candidate_choice(predicted: Sequence[float], ids: Sequence[int], geodesic: Sequence[float]) -> tuple[int, float]:
-    order = min(range(len(ids)), key=lambda index: (-float(predicted[index]), float(geodesic[index]), int(ids[index])))
-    return int(ids[order]), float(predicted[order])
+    ordered = order_candidates(predicted, ids, geodesic)
+    selected = int(ordered[0])
+    return selected, float(predicted[list(ids).index(selected)])
 
 
 def move_stay_decision(move_probability: float) -> bool:
@@ -100,4 +102,4 @@ def predict_dataset(
 
 
 def evaluate_predictions(rows: Sequence[Mapping[str, Any]], categories: Sequence[str]) -> Dict[str, Any]:
-    return summarize_stage_c_predictions(rows, categories)
+    return summarize_policy_predictions(rows, categories)

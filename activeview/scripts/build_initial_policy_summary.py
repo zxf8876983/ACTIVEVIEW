@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble the reproducible Stage C implementation/evaluation summary."""
+"""Assemble the reproducible initial-policy implementation summary."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from activeview.active_view.stage_c_features import schema_metadata
+from activeview.active_view.policy_features import schema_metadata
 from activeview.active_view.utility_label_builder import file_sha256
 from activeview.core.paths import get_data_root
 

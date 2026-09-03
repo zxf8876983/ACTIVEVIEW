@@ -1,4 +1,4 @@
-from activeview.scripts.validate_stage_c import CANONICAL_COUNTS, FORBIDDEN, _compare, _validate_independent_decision
+from activeview.scripts.validate_initial_policy_data import CANONICAL_COUNTS, FORBIDDEN, _compare, _validate_independent_decision
 
 
 def test_stage_c_validator_uses_frozen_policy_counts():

@@ -18,7 +18,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from activeview.active_view.baselines import _by_id, _selected_row, build_baseline_trajectories, build_single_step_oracles
 from activeview.active_view.data import load_jsonl
-from activeview.active_view.evaluation import summarize_stage_d_methods
+from activeview.active_view.evaluation import summarize_methods
 from activeview.core.paths import get_data_root
 
 N_CLASSES = 16
@@ -48,7 +48,7 @@ def _random_rows(stage_b_rows: Sequence[Mapping[str, Any]], seed: int) -> list[d
 
 
 def _metric_pair(rows: Sequence[Mapping[str, Any]]) -> dict[str, float | int]:
-    summary = summarize_stage_d_methods({"method": rows}, [str(index) for index in range(N_CLASSES)])
+    summary = summarize_methods({"method": rows}, [str(index) for index in range(N_CLASSES)])
     recognition = summary["method"]["recognition"]
     return {"accuracy": float(recognition["accuracy"]), "macro_f1": float(recognition["macro_f1"]), "count": int(recognition["n"])}
 

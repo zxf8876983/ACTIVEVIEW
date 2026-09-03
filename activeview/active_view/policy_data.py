@@ -1,4 +1,4 @@
-"""Episode-level Stage C dataset, padding collate and record-balanced sampling."""
+"""Episode-level policy data, padding collate and record-balanced sampling."""
 
 from __future__ import annotations
 

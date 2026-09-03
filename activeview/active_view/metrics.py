@@ -1,4 +1,4 @@
-"""Offline regression, ranking and recognition metrics for Stage C."""
+"""Offline regression, ranking and recognition metrics for policy evaluation."""
 
 from __future__ import annotations
 
@@ -97,7 +97,7 @@ def _recognition_summary(rows: Sequence[Mapping[str, Any]], categories: Sequence
     return recognition
 
 
-def summarize_stage_c_predictions(rows: Sequence[Mapping[str, Any]], categories: Sequence[str]) -> Dict[str, Any]:
+def summarize_policy_predictions(rows: Sequence[Mapping[str, Any]], categories: Sequence[str]) -> Dict[str, Any]:
     if not rows:
         return {"episode_count": 0, "regression": {}, "candidate_oracle_hit_rate": 0.0, "safe_action_match_rate": 0.0, "move_stay": move_stay_metrics([]), "recognition": {}, "decision_regret": {}, "positive_headroom_capture": {}}
     pred_utilities = [value for row in rows for value in row["predicted_utilities"]]

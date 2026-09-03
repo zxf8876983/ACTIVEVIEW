@@ -1,4 +1,4 @@
-"""Whitelisted current-observation and candidate-geometry features for Stage C."""
+"""Whitelisted current-observation and candidate-geometry features."""
 
 from __future__ import annotations
 
