@@ -1,0 +1,32 @@
+[
+  {
+    "seed": 42,
+    "changed_trajectories": 5037,
+    "stage_c_first_step_changed": 0,
+    "first_second_step_action_changed": 4711,
+    "second_second_step_action_changed": 3230,
+    "rescued": 925,
+    "harmful": 760,
+    "net": 165
+  },
+  {
+    "seed": 43,
+    "changed_trajectories": 5122,
+    "stage_c_first_step_changed": 0,
+    "first_second_step_action_changed": 4804,
+    "second_second_step_action_changed": 3301,
+    "rescued": 948,
+    "harmful": 773,
+    "net": 175
+  },
+  {
+    "seed": 44,
+    "changed_trajectories": 4647,
+    "stage_c_first_step_changed": 0,
+    "first_second_step_action_changed": 4376,
+    "second_second_step_action_changed": 2857,
+    "rescued": 901,
+    "harmful": 659,
+    "net": 242
+  }
+]

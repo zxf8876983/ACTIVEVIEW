@@ -1,0 +1,241 @@
+{
+  "experiment_id": "EXP056",
+  "status": "COMPLETED",
+  "split": "val",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "population": {
+    "train_contexts": 29133,
+    "val_moving_contexts": 9742,
+    "val_full_population": 13987
+  },
+  "train_objective_stats": {
+    "train_contexts": 29133,
+    "positive_contexts": 27077,
+    "multi_positive_contexts": 25362,
+    "single_positive_contexts": 1715,
+    "no_positive_contexts": 2056,
+    "mean_positive_count_on_positive_contexts": 9.812165306348561
+  },
+  "per_seed": [
+    {
+      "seed": 42,
+      "original_moving": {
+        "accuracy": 0.6660849928146171,
+        "macro_f1": 0.63709556737517
+      },
+      "multi_moving": {
+        "accuracy": 0.6830219667419422,
+        "macro_f1": 0.6473384130563523
+      },
+      "original_full": {
+        "accuracy": 0.6889254307571316,
+        "macro_f1": 0.646425318679525
+      },
+      "multi_full": {
+        "accuracy": 0.700722099092014,
+        "macro_f1": 0.6509551745708606
+      }
+    },
+    {
+      "seed": 43,
+      "original_moving": {
+        "accuracy": 0.6650585095462944,
+        "macro_f1": 0.634350714227536
+      },
+      "multi_moving": {
+        "accuracy": 0.6830219667419422,
+        "macro_f1": 0.6474429223114543
+      },
+      "original_full": {
+        "accuracy": 0.6882104811610782,
+        "macro_f1": 0.6439166148454782
+      },
+      "multi_full": {
+        "accuracy": 0.700722099092014,
+        "macro_f1": 0.6510615863906357
+      }
+    },
+    {
+      "seed": 44,
+      "original_moving": {
+        "accuracy": 0.6665982344487785,
+        "macro_f1": 0.6407788385065225
+      },
+      "multi_moving": {
+        "accuracy": 0.6914391295421884,
+        "macro_f1": 0.65735855579079
+      },
+      "original_full": {
+        "accuracy": 0.6892829055551584,
+        "macro_f1": 0.6494171524083422
+      },
+      "multi_full": {
+        "accuracy": 0.7065846857796525,
+        "macro_f1": 0.65916226566007
+      }
+    }
+  ],
+  "summary": {
+    "moving": {
+      "original_accuracy": {
+        "mean": 0.6659139122698967,
+        "std": 0.0006401247838865987
+      },
+      "multi_accuracy": {
+        "mean": 0.6858276876753576,
+        "std": 0.003967888596270202
+      },
+      "original_macro_f1": {
+        "mean": 0.6374083733697429,
+        "std": 0.0026335756592137305
+      },
+      "multi_macro_f1": {
+        "mean": 0.6507132970528655,
+        "std": 0.004699101213109534
+      },
+      "delta_accuracy": {
+        "mean": 0.01991377540546091,
+        "std": 0.003509111785962146
+      },
+      "delta_macro_f1": {
+        "mean": 0.013304923683122674,
+        "std": 0.0025913859063064334
+      }
+    },
+    "full": {
+      "original_accuracy": {
+        "mean": 0.6888062724911227,
+        "std": 0.00044584940620740556
+      },
+      "multi_accuracy": {
+        "mean": 0.7026762946545602,
+        "std": 0.002763649868082111
+      },
+      "original_macro_f1": {
+        "mean": 0.6465863619777817,
+        "std": 0.0022484705287601453
+      },
+      "multi_macro_f1": {
+        "mean": 0.6537263422071887,
+        "std": 0.0038440238212958484
+      },
+      "delta_accuracy": {
+        "mean": 0.013870022163437431,
+        "std": 0.0024441100320900717
+      },
+      "delta_macro_f1": {
+        "mean": 0.007139980229406946,
+        "std": 0.00212912282700426
+      }
+    }
+  },
+  "paired_deltas": {
+    "moving_accuracy": [
+      0.016936973927325072,
+      0.017963457195647736,
+      0.02484089509340992
+    ],
+    "moving_macro_f1": [
+      0.010242845681182278,
+      0.01309220808391831,
+      0.016579717284267437
+    ],
+    "full_accuracy": [
+      0.011796668334882354,
+      0.012511617930935803,
+      0.017301780224494134
+    ],
+    "full_macro_f1": [
+      0.004529855891335588,
+      0.007144971545157475,
+      0.009745113251727777
+    ]
+  },
+  "wins": {
+    "accuracy": 3,
+    "macro_f1": 3
+  },
+  "paired_audit": [
+    {
+      "seed": 42,
+      "changed_trajectories": 5037,
+      "stage_c_first_step_changed": 0,
+      "first_second_step_action_changed": 4711,
+      "second_second_step_action_changed": 3230,
+      "rescued": 925,
+      "harmful": 760,
+      "net": 165
+    },
+    {
+      "seed": 43,
+      "changed_trajectories": 5122,
+      "stage_c_first_step_changed": 0,
+      "first_second_step_action_changed": 4804,
+      "second_second_step_action_changed": 3301,
+      "rescued": 948,
+      "harmful": 773,
+      "net": 175
+    },
+    {
+      "seed": 44,
+      "changed_trajectories": 4647,
+      "stage_c_first_step_changed": 0,
+      "first_second_step_action_changed": 4376,
+      "second_second_step_action_changed": 2857,
+      "rescued": 901,
+      "harmful": 659,
+      "net": 242
+    }
+  ],
+  "test_used": false,
+  "training_performed": true,
+  "perception_regenerated": false,
+  "habitat_rendering_performed": false,
+  "stgcn_retrained": false,
+  "checkpoint_manifest": [
+    {
+      "objective": "ORIGINAL_JR",
+      "seed": 42,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP056_objective_stability/runtime/original_jr_seed42.pth",
+      "sha256": "21ce1129d23e144d8f8cccdd1fda27a745472e27cbd3bcebb69af9a26d8519e2"
+    },
+    {
+      "objective": "MULTI_POSITIVE_JR",
+      "seed": 42,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP056_objective_stability/runtime/multi_positive_jr_seed42.pth",
+      "sha256": "b556889a55b63e9088d25456a8a034d250d7bf27150f8e28d0735af846c6d2c9"
+    },
+    {
+      "objective": "ORIGINAL_JR",
+      "seed": 43,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP056_objective_stability/runtime/original_jr_seed43.pth",
+      "sha256": "e9dd5463a78297544c4ef3fe2b7145e928fb6a0f1332b426444ecdaad5172cbf"
+    },
+    {
+      "objective": "MULTI_POSITIVE_JR",
+      "seed": 43,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP056_objective_stability/runtime/multi_positive_jr_seed43.pth",
+      "sha256": "fb951949867e852ef1da9f3b295244c02a7061a77546c9e53b60d93663371e1d"
+    },
+    {
+      "objective": "ORIGINAL_JR",
+      "seed": 44,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP056_objective_stability/runtime/original_jr_seed44.pth",
+      "sha256": "886fda3b904410b55d8fed39807559cf08ff3884e1e4c6a3b92a0a0b678c3c31"
+    },
+    {
+      "objective": "MULTI_POSITIVE_JR",
+      "seed": 44,
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP056_objective_stability/runtime/multi_positive_jr_seed44.pth",
+      "sha256": "9db8f79228e2374ea17b4c3d8e2583f0b39e8873bc3c94333581722584ee6cc0"
+    }
+  ],
+  "case": "CASE_A",
+  "recommended_canonical": "MULTI_POSITIVE",
+  "recommended_fixed_seed": 42,
+  "recommended_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP056_objective_stability/runtime/multi_positive_jr_seed42.pth"
+}

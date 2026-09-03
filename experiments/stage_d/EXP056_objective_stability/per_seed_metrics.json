@@ -1,0 +1,59 @@
+[
+  {
+    "seed": 42,
+    "original_moving": {
+      "accuracy": 0.6660849928146171,
+      "macro_f1": 0.63709556737517
+    },
+    "multi_moving": {
+      "accuracy": 0.6830219667419422,
+      "macro_f1": 0.6473384130563523
+    },
+    "original_full": {
+      "accuracy": 0.6889254307571316,
+      "macro_f1": 0.646425318679525
+    },
+    "multi_full": {
+      "accuracy": 0.700722099092014,
+      "macro_f1": 0.6509551745708606
+    }
+  },
+  {
+    "seed": 43,
+    "original_moving": {
+      "accuracy": 0.6650585095462944,
+      "macro_f1": 0.634350714227536
+    },
+    "multi_moving": {
+      "accuracy": 0.6830219667419422,
+      "macro_f1": 0.6474429223114543
+    },
+    "original_full": {
+      "accuracy": 0.6882104811610782,
+      "macro_f1": 0.6439166148454782
+    },
+    "multi_full": {
+      "accuracy": 0.700722099092014,
+      "macro_f1": 0.6510615863906357
+    }
+  },
+  {
+    "seed": 44,
+    "original_moving": {
+      "accuracy": 0.6665982344487785,
+      "macro_f1": 0.6407788385065225
+    },
+    "multi_moving": {
+      "accuracy": 0.6914391295421884,
+      "macro_f1": 0.65735855579079
+    },
+    "original_full": {
+      "accuracy": 0.6892829055551584,
+      "macro_f1": 0.6494171524083422
+    },
+    "multi_full": {
+      "accuracy": 0.7065846857796525,
+      "macro_f1": 0.65916226566007
+    }
+  }
+]

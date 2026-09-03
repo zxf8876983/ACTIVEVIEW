@@ -1,0 +1,12 @@
+experiment_id: EXP056
+objectives: [ORIGINAL_JR, MULTI_POSITIVE_JR]
+seeds: [42, 43, 44]
+epochs: 20
+batch_size: 512
+optimizer: AdamW
+learning_rate: 0.001
+weight_decay: 0.0001
+correctness_bce_weight: 0.25
+posterior_ce_weight: 0.05
+split: train_then_val
+test_used: false
