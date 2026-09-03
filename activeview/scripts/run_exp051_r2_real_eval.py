@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""EXP051-R2: paired real-observation H1/H2 evaluation (Val only)."""
+"""EXP051-R2: paired real-observation H1/H2 evaluation.
+
+The evaluator remains frozen for Val and accepts ``split="test"`` only for
+the explicitly unlocked EXP057 final runner.
+"""
 
 from __future__ import annotations
 
@@ -28,6 +32,34 @@ from activeview.scripts.run_exp051_r1_closed_loop import (
 REPO_ROOT = Path(__file__).resolve().parents[2]
 N_CLASSES = 16
 VIEW_COUNT = 32
+
+
+def _split_rows(data_root: Path, split: str) -> list[dict[str, Any]]:
+    """Load an explicitly labelled split; Test is only opened by EXP057."""
+    if split == "test":
+        path = data_root / "datasets/policy_v11_5/stage_d/EXP014_two_step_sequential/features/test.jsonl"
+        rows = load_jsonl(path)
+        if any(str(row.get("policy_split", "")).lower() != "test" for row in rows):
+            raise ValueError(f"explicit policy_split=test required: {path}")
+        return rows
+    return _rows(data_root, split)
+
+
+def _split_sources(data_root: Path, split: str) -> dict[tuple[str, str, str], str]:
+    if split == "test":
+        path = data_root / "datasets/policy_v11_5/episodes/test_episodes.jsonl"
+        episodes = load_jsonl(path)
+        result: dict[tuple[str, str, str], str] = {}
+        for episode in episodes:
+            if str(episode.get("policy_split", "")).lower() != "test":
+                raise ValueError(f"explicit policy_split=test required: {path}")
+            key = context_key(episode)
+            source = str(episode["current_view"]["skeleton_source_path"])
+            if key in result and Path(result[key]).resolve() != Path(source).resolve():
+                raise ValueError(f"source path mismatch for {key}")
+            result[key] = source
+        return result
+    return _episode_sources(data_root, split)
 
 
 def _macro_f1(pred: Sequence[int], target: Sequence[int]) -> float:
@@ -78,11 +110,13 @@ def _paired(pred_h1: Sequence[int], pred_h2: Sequence[int], labels: Sequence[int
     return {"n": int(len(y)), "rescued": rescued, "harmful": harmful, "net": rescued - harmful, "mcnemar_p": p_value, "delta_accuracy": float(np.mean(acc_delta)), "delta_macro_f1": float(_macro_f1(p2, y) - _macro_f1(p1, y)), "accuracy_ci95": [float(np.quantile(boot_acc, .025)), float(np.quantile(boot_acc, .975))], "macro_f1_ci95": [float(np.quantile(boot_f1, .025)), float(np.quantile(boot_f1, .975))], "bootstrap_replicates": 10000, "seed": 42}
 
 
-def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: Path, output_dir: Path | None = None) -> dict[str, Any]:
-    rows = _rows(data_root, "val"); sources = _episode_sources(data_root, "val")
-    if len(rows) != 9742: raise RuntimeError("canonical moving Val population mismatch")
-    cache = _load_cache(data_root / "experiments/stage_d/EXP046_counterfactual_recognition_dataset/val_cache.npz")
-    v0_rows = load_jsonl(data_root / "experiments/stage_d/EXP014_two_step_sequential/v0_predictions/val_predictions.jsonl"); v0 = {str(r["episode_id"]): r for r in v0_rows}
+def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: Path, output_dir: Path | None = None, split: str = "val") -> dict[str, Any]:
+    if split not in {"val", "test"}:
+        raise ValueError(f"unsupported split: {split}")
+    rows = _split_rows(data_root, split); sources = _split_sources(data_root, split)
+    if split == "val" and len(rows) != 9742: raise RuntimeError("canonical moving Val population mismatch")
+    cache = _load_cache(data_root / f"experiments/stage_d/EXP046_counterfactual_recognition_dataset/{split}_cache.npz")
+    v0_rows = load_jsonl(data_root / f"experiments/stage_d/EXP014_two_step_sequential/v0_predictions/{split}_predictions.jsonl"); v0 = {str(r["episode_id"]): r for r in v0_rows}
     pairwise, azimuths = _load_pairwise_and_azimuths(data_root, rows, sources)
     orders = {str(r["episode_id"]): ([] if bool(v0[str(r["episode_id"])] ["predicted_stays"]) else _candidate_order(r, int(r["s1_viewpoint_id"]), {int(r["s0_viewpoint_id"]), int(r["s1_viewpoint_id"])}, pairwise[(str(r["scene_id"]), str(r["region"]))], azimuths[(str(r["scene_id"]), str(r["region"]))])) for r in rows}
     joint_payload = torch.load(checkpoint, map_location=device, weights_only=False); joint = _JointRevision().to(device); joint.load_state_dict(joint_payload["model_state_dict"]); joint.eval()
@@ -141,9 +175,11 @@ def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: 
             index = by_id[episode_id]
             full_h1.append(int(h1_terminal[index])); full_h2.append(int(h2_terminal[index]))
             full_fused_h1.append(int(h1_fused[index])); full_fused_h2.append(int(h2_fused[index]))
-    if len(full_labels) != 13987 or stay_count != 4245:
+    if split == "val" and (len(full_labels) != 13987 or stay_count != 4245):
         raise RuntimeError(f"canonical full Val population mismatch: {len(full_labels)} rows, {stay_count} v0 stays")
     result = {"experiment_id": "EXP051-R2", "status": "COMPLETED", "split": "val", "test_used": False, "training_performed": False, "terminal_recognition_source": "frozen EXP046 true_logp from archived skeleton through frozen ST-GCN", "first_step_policy_source": "frozen EXP050-R1/Stage C-v0", "population": {"full": len(full_labels), "moving_subset": len(rows), "v0_stay": stay_count}, "h1_real": {"full": _classification(full_h1, full_labels), "moving_subset": _classification(h1_terminal, labels)}, "h2_real": {"full": _classification(full_h2, full_labels), "moving_subset": _classification(h2_terminal, labels)}, "fused": {"h1_full": _classification(full_fused_h1, full_labels), "h1_moving_subset": _classification(h1_fused, labels), "h2_full": _classification(full_fused_h2, full_labels), "h2_moving_subset": _classification(h2_fused, labels)}, "paired_moving_subset": _paired(h1_terminal, h2_terminal, labels), "paired_fused_moving_subset": _paired(h1_fused, h2_fused, labels), "history_shift_fidelity": {"h0": _fidelity(h0_imag, h0_true, h0_labels), "h1": _fidelity(h1_imag, h1_true, h1_labels), "recurrent_episode_count": len(h1_imag)}, "motion": {"h1_average_moves": float(np.mean(h1_moves)), "h2_average_moves": float(np.mean(h2_moves))}, "h2_action_signatures_moving": h2_action_signatures, "h2_terminal_predictions_moving": [int(value) for value in h2_terminal], "moving_labels": [int(value) for value in labels], "rgb_history_artifact_audit": rgb_audit, "leakage_flags": {"future_rgb_access_before_execution": False, "future_skeleton_access_before_execution": False, "visited_rgb_revealed_only_after_execution": True, "visited_skeleton_revealed_only_after_execution": True, "habitat_rendering_performed": False, "perception_regenerated": False, "wm_e_frozen": True, "joint_revision_frozen": True, "stgcn_frozen": True}}
+    result["split"] = split
+    result["test_used"] = split == "test"
     out = output_dir or (REPO_ROOT / "experiments/stage_d/EXP051_R2_real_observation_evaluation")
     out.mkdir(parents=True, exist_ok=True)
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
@@ -153,9 +189,9 @@ def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: 
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(); parser.add_argument("--data-root", type=Path, required=True); parser.add_argument("--checkpoint", type=Path, required=True); parser.add_argument("--wm-checkpoint", type=Path, default=Path("/tmp/activeview_exp042r1_E/last.pth")); parser.add_argument("--output-dir", type=Path); parser.add_argument("--device", default="cuda:0"); args = parser.parse_args(); device = torch.device(args.device)
+    parser = argparse.ArgumentParser(); parser.add_argument("--data-root", type=Path, required=True); parser.add_argument("--checkpoint", type=Path, required=True); parser.add_argument("--wm-checkpoint", type=Path, default=Path("/tmp/activeview_exp042r1_E/last.pth")); parser.add_argument("--output-dir", type=Path); parser.add_argument("--device", default="cuda:0"); parser.add_argument("--split", choices=("val", "test"), default="val"); args = parser.parse_args(); device = torch.device(args.device)
     if device.type == "cuda" and not torch.cuda.is_available(): raise RuntimeError("CUDA unavailable")
-    print(json.dumps(run(args.data_root.resolve(), args.checkpoint.resolve(), device, args.wm_checkpoint.resolve(), args.output_dir.resolve() if args.output_dir else None), indent=2))
+    print(json.dumps(run(args.data_root.resolve(), args.checkpoint.resolve(), device, args.wm_checkpoint.resolve(), args.output_dir.resolve() if args.output_dir else None, split=args.split), indent=2))
 
 
 if __name__ == "__main__": main()

@@ -4,7 +4,7 @@
   "canonical_method_name": "WM-E + Multi-Positive Joint Revision + Closed-Loop H2",
   "recommended_canonical": "MULTI_POSITIVE_H2",
   "wm_e": {
-    "path": "/tmp/activeview_exp042r1_E/last.pth",
+    "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP057_final_method_freeze/runtime/wm_e_frozen.pth",
     "sha256": "db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6",
     "frozen": true
   },
