@@ -1,0 +1,13 @@
+experiment_id: EXP053
+description: Full-history counterfactual recognition world model
+history_types: [canonical_s0_s1, rollout_s0_s1_v1]
+samples_per_history: 4
+seed: 42
+epochs: 15
+batch_size: 256
+optimizer: AdamW
+learning_rate: 0.001
+weight_decay: 0.0001
+loss: kl_plus_0.1_logprob_mse
+test_used: false
+future_candidate_rgb_used: false

@@ -26,3 +26,4 @@ EXP051,closed_loop_world_model_revision,BLOCKED,,,,,INCONCLUSIVE,"Pre-registered
 EXP051-R1,closed_loop_world_model_revision_r1,COMPLETED_PARTIAL,,,,,INCONCLUSIVE,"H1/H2 legal Val rollout completed with recurrent recomputation; privileged controls and paired rescue/harm/regret audit not run; no Test used"
 EXP051-R2,real_observation_evaluation,COMPLETED,,,,,INCONCLUSIVE,"Val-only paired real-observation H1/H2 evaluation; moving/full populations, real-view fusion, paired bootstrap and WM-E history fidelity; no Test used"
 EXP052,diverse_history_world_model,COMPLETED,,,,,REJECT,"Train-only diverse-history WM-E (15 epochs) plus Val closed-loop audit; h0/h1 fidelity and H2 recognition degraded, no Test used"
+EXP053,counterfactual_recognition_world_model,COMPLETED_PARTIAL,,,,,INCONCLUSIVE,"Train-only direct recognition-space world model; existing Train RGB cache omitted 10,093 rollout histories, observed h0/h1 fidelity and H2 recognition degraded, no Test used"

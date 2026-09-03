@@ -1,0 +1,34 @@
+{
+  "original_wm_e_h0": {
+    "count": 275732,
+    "top1_agreement": 0.5960642943147694,
+    "true_label_logp_pearson": 0.7383127318484158,
+    "true_label_logp_spearman": 0.7670079323178789,
+    "kl_true_to_imagined": 1.027693510055542,
+    "probability_l1": 0.905417263507843
+  },
+  "exp053_h0": {
+    "count": 275732,
+    "top1_agreement": 0.43560776406075463,
+    "true_label_logp_pearson": 0.41899411507901374,
+    "true_label_logp_spearman": 0.47960433591464713,
+    "kl_true_to_imagined": 2.417142868041992,
+    "probability_l1": 1.144040822982788
+  },
+  "original_wm_e_h1": {
+    "count": 95529,
+    "top1_agreement": 0.4985711145306661,
+    "true_label_logp_pearson": 0.6458013527640245,
+    "true_label_logp_spearman": 0.6763674959289379,
+    "kl_true_to_imagined": 1.3028435707092285,
+    "probability_l1": 1.0663200616836548
+  },
+  "exp053_h1": {
+    "count": 95529,
+    "top1_agreement": 0.37417956850799233,
+    "true_label_logp_pearson": 0.39747654306906827,
+    "true_label_logp_spearman": 0.4333480600119375,
+    "kl_true_to_imagined": 2.6011202335357666,
+    "probability_l1": 1.246926188468933
+  }
+}

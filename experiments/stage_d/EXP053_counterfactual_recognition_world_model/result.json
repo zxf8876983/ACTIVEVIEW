@@ -1,0 +1,151 @@
+{
+  "experiment_id": "EXP053",
+  "status": "COMPLETED_PARTIAL",
+  "split": [
+    "train",
+    "val"
+  ],
+  "test_used": false,
+  "training_performed": true,
+  "device": "cpu",
+  "cuda_requested": false,
+  "cuda_available_in_conda_habitat": false,
+  "train": {
+    "epochs": 15,
+    "batch_size": 256,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "samples": 124520,
+    "final_loss": 5.364165197366922,
+    "history": [
+      {
+        "epoch": 1,
+        "loss": 6.512074996526701
+      },
+      {
+        "epoch": 2,
+        "loss": 5.9975909085125165
+      },
+      {
+        "epoch": 3,
+        "loss": 5.887539311539809
+      },
+      {
+        "epoch": 4,
+        "loss": 5.806340038925744
+      },
+      {
+        "epoch": 5,
+        "loss": 5.73781331019734
+      },
+      {
+        "epoch": 6,
+        "loss": 5.684004170098873
+      },
+      {
+        "epoch": 7,
+        "loss": 5.6332368736745
+      },
+      {
+        "epoch": 8,
+        "loss": 5.587696744206248
+      },
+      {
+        "epoch": 9,
+        "loss": 5.54552497784118
+      },
+      {
+        "epoch": 10,
+        "loss": 5.5126604434956015
+      },
+      {
+        "epoch": 11,
+        "loss": 5.477976657844149
+      },
+      {
+        "epoch": 12,
+        "loss": 5.4480753905054
+      },
+      {
+        "epoch": 13,
+        "loss": 5.416792886172159
+      },
+      {
+        "epoch": 14,
+        "loss": 5.388576047121043
+      },
+      {
+        "epoch": 15,
+        "loss": 5.364165197366922
+      }
+    ],
+    "contexts": 29133,
+    "canonical_samples": 116532,
+    "rollout_contexts": 1997,
+    "rollout_samples": 7988,
+    "total_samples": 124520,
+    "rollout_v1_selected_original": 12090,
+    "rollout_v1_rgb_available": 1997,
+    "rollout_v1_rgb_missing_skipped": 10093,
+    "resumed_from_existing_checkpoint": true
+  },
+  "rgb_history": {
+    "cache_sources": [
+      "/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4",
+      "/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_exp052_train",
+      "/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_allview_exp051_r1"
+    ],
+    "new_extraction_performed": false,
+    "future_candidate_rgb_used": false
+  },
+  "checkpoint": {
+    "path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP053_counterfactual_recognition_world_model/runtime/counterfactual_recognition_model.pth",
+    "sha256": "4d33ce2795ca63ce8f1a8846bcbe08d240ad0ba6f70cdc578a6c327010fcb0a2"
+  },
+  "h0_fidelity": {
+    "count": 275732,
+    "top1_agreement": 0.43560776406075463,
+    "true_label_logp_pearson": 0.41899411507901374,
+    "true_label_logp_spearman": 0.47960433591464713,
+    "kl_true_to_imagined": 2.417142868041992,
+    "probability_l1": 1.144040822982788
+  },
+  "h1_fidelity": {
+    "count": 95529,
+    "top1_agreement": 0.37417956850799233,
+    "true_label_logp_pearson": 0.39747654306906827,
+    "true_label_logp_spearman": 0.4333480600119375,
+    "kl_true_to_imagined": 2.6011202335357666,
+    "probability_l1": 1.246926188468933
+  },
+  "h2": {
+    "h2_moving": {
+      "accuracy": 0.5632313693286799,
+      "macro_f1": 0.5130488405920881
+    },
+    "h2_full": {
+      "accuracy": 0.6172874812325732,
+      "macro_f1": 0.5503692094508734
+    },
+    "h2_fused_moving": {
+      "accuracy": 0.5869431328269349,
+      "macro_f1": 0.5340550474311475
+    },
+    "h2_fused_full": {
+      "accuracy": 0.6338028169014085,
+      "macro_f1": 0.5648719278416813
+    }
+  },
+  "action_audit": {
+    "changed_trajectories": 5979,
+    "rescued": 553,
+    "harmful": 1647,
+    "net": -1094
+  },
+  "provenance": {
+    "joint_revision_frozen": true,
+    "stgcn_frozen": true,
+    "source_commit": "07a43f60a25fec0d4ad8d377efad3f31298e0041"
+  }
+}
