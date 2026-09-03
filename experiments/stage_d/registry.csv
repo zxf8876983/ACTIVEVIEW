@@ -25,3 +25,4 @@ EXP050,joint_rollout_revision,COMPLETED,,0.686566,0.646064,2.339034,8.843223,INC
 EXP051,closed_loop_world_model_revision,BLOCKED,,,,,INCONCLUSIVE,"Pre-registered gate met, but H=2 blocked because frozen WM-E RGB history artifacts for newly visited views are unavailable; no substitute or Test used"
 EXP051-R1,closed_loop_world_model_revision_r1,COMPLETED_PARTIAL,,,,,INCONCLUSIVE,"H1/H2 legal Val rollout completed with recurrent recomputation; privileged controls and paired rescue/harm/regret audit not run; no Test used"
 EXP051-R2,real_observation_evaluation,COMPLETED,,,,,INCONCLUSIVE,"Val-only paired real-observation H1/H2 evaluation; moving/full populations, real-view fusion, paired bootstrap and WM-E history fidelity; no Test used"
+EXP052,diverse_history_world_model,COMPLETED,,,,,REJECT,"Train-only diverse-history WM-E (15 epochs) plus Val closed-loop audit; h0/h1 fidelity and H2 recognition degraded, no Test used"

@@ -1,0 +1,56 @@
+{
+  "original_wm_e": {
+    "h0": {
+      "count": 275732,
+      "top1_agreement": 0.5960642943147694,
+      "true_label_logp_pearson": 0.7383127318484158,
+      "true_label_logp_spearman": 0.7670079323178789,
+      "kl_true_to_imagined": 1.027693510055542,
+      "probability_l1": 0.905417263507843
+    },
+    "h1": {
+      "count": 95529,
+      "top1_agreement": 0.4985711145306661,
+      "true_label_logp_pearson": 0.6458013527640245,
+      "true_label_logp_spearman": 0.6763674959289379,
+      "kl_true_to_imagined": 1.3028435707092285,
+      "probability_l1": 1.0663200616836548
+    },
+    "recurrent_episode_count": 3489
+  },
+  "diverse_history_wm_e": {
+    "h0": {
+      "count": 275732,
+      "top1_agreement": 0.3163760463058332,
+      "true_label_logp_pearson": 0.3026471024161186,
+      "true_label_logp_spearman": 0.34679223522763447,
+      "kl_true_to_imagined": 1.9719557762145996,
+      "probability_l1": 1.4089388847351074
+    },
+    "h1": {
+      "count": 95529,
+      "top1_agreement": 0.22785750923803244,
+      "true_label_logp_pearson": 0.24019761880171625,
+      "true_label_logp_spearman": 0.25389616940530174,
+      "kl_true_to_imagined": 2.136990547180176,
+      "probability_l1": 1.5198748111724854
+    },
+    "recurrent_episode_count": 3489
+  },
+  "delta_diverse_minus_original": {
+    "h0": {
+      "top1_agreement": -0.27968824800893616,
+      "true_label_logp_pearson": -0.43566562943229725,
+      "true_label_logp_spearman": -0.4202156970902444,
+      "kl_true_to_imagined": 0.9442622661590576,
+      "probability_l1": 0.5035216212272644
+    },
+    "h1": {
+      "top1_agreement": -0.27071360529263366,
+      "true_label_logp_pearson": -0.40560373396230825,
+      "true_label_logp_spearman": -0.4224713265236361,
+      "kl_true_to_imagined": 0.8341469764709473,
+      "probability_l1": 0.45355474948883057
+    }
+  }
+}

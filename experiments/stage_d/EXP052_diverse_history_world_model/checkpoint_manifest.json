@@ -1,0 +1,7 @@
+{
+  "control_checkpoint": "/tmp/activeview_exp042r1_E/last.pth",
+  "control_sha256": "db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6",
+  "diverse_history_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP052_diverse_history_world_model/runtime/wm_e_diverse_history.pth",
+  "diverse_history_sha256": "5cd9e3d4f172627897c5677afaa55a46da5492e864409a76aefc0593179d4640",
+  "test_used": false
+}

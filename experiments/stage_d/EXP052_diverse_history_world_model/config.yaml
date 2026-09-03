@@ -1,0 +1,11 @@
+experiment_id: EXP052
+history_pairs_per_context: 4
+candidate_targets_per_pair: 4
+seed: 42
+epochs: 15
+batch_size: 256
+optimizer: Adam
+learning_rate: 0.001
+recognition_loss_weight: 0.10
+split: train_then_val
+test_used: false
