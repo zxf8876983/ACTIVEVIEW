@@ -1,10 +1,11 @@
 # Current Task
 
-## Final source-package structure refactor
+## Refactor equivalence check completed
 
-The ActiveView source tree is being reorganized by responsibility without
-changing algorithms, checkpoints, runtime artifact paths, experiment results,
-training, validation or Test evaluation. The target layout separates
-`data/`, `simulation/`, `perception/`, `recognition/`, `methods/`,
-`evaluation/` and categorized CLI scripts. Historical experiment records and
-external runtime data remain untouched.
+The reorganized ActiveView package was re-evaluated against the frozen Test
+golden metrics using only the formal modules and existing artifacts. FULL and
+MOVING populations were 13,774 and 9,409; NoMove, Random, FrozenStageCv0,
+SafeOracle, H1_REAL, ORIGINAL_JR_H2 and MULTI_POSITIVE_JR_H2 all matched their
+golden Accuracy/Macro-F1 values within 1e-8. No training, perception
+regeneration, Habitat rendering or official Test result/manifest overwrite was
+performed.
