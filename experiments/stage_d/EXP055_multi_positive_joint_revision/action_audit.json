@@ -1,0 +1,9 @@
+{
+  "changed_trajectories": 5372,
+  "stage_c_first_step_changed": 0,
+  "first_second_step_action_changed": 4984,
+  "second_second_step_action_changed": 3626,
+  "rescued": 922,
+  "harmful": 849,
+  "net": 73
+}

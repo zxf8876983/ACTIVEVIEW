@@ -1,0 +1,246 @@
+{
+  "baseline": [
+    {
+      "class_id": 0,
+      "support": 1420,
+      "recall": 0.828169014084507
+    },
+    {
+      "class_id": 1,
+      "support": 142,
+      "recall": 0.5704225352112676
+    },
+    {
+      "class_id": 2,
+      "support": 213,
+      "recall": 0.6150234741784038
+    },
+    {
+      "class_id": 3,
+      "support": 284,
+      "recall": 0.1443661971830986
+    },
+    {
+      "class_id": 4,
+      "support": 284,
+      "recall": 0.7323943661971831
+    },
+    {
+      "class_id": 5,
+      "support": 994,
+      "recall": 0.8953722334004024
+    },
+    {
+      "class_id": 6,
+      "support": 852,
+      "recall": 0.6596244131455399
+    },
+    {
+      "class_id": 7,
+      "support": 1420,
+      "recall": 0.8288732394366197
+    },
+    {
+      "class_id": 8,
+      "support": 1420,
+      "recall": 0.6492957746478873
+    },
+    {
+      "class_id": 9,
+      "support": 1207,
+      "recall": 0.7597348798674399
+    },
+    {
+      "class_id": 10,
+      "support": 1420,
+      "recall": 0.8014084507042254
+    },
+    {
+      "class_id": 11,
+      "support": 1420,
+      "recall": 0.5816901408450704
+    },
+    {
+      "class_id": 12,
+      "support": 1420,
+      "recall": 0.6640845070422535
+    },
+    {
+      "class_id": 13,
+      "support": 639,
+      "recall": 0.672926447574335
+    },
+    {
+      "class_id": 14,
+      "support": 213,
+      "recall": 0.8826291079812206
+    },
+    {
+      "class_id": 15,
+      "support": 639,
+      "recall": 0.15336463223787167
+    }
+  ],
+  "EXP055_MULTI_POSITIVE": [
+    {
+      "class_id": 0,
+      "support": 1420,
+      "recall": 0.828169014084507
+    },
+    {
+      "class_id": 1,
+      "support": 142,
+      "recall": 0.6056338028169014
+    },
+    {
+      "class_id": 2,
+      "support": 213,
+      "recall": 0.5774647887323944
+    },
+    {
+      "class_id": 3,
+      "support": 284,
+      "recall": 0.16901408450704225
+    },
+    {
+      "class_id": 4,
+      "support": 284,
+      "recall": 0.823943661971831
+    },
+    {
+      "class_id": 5,
+      "support": 994,
+      "recall": 0.892354124748491
+    },
+    {
+      "class_id": 6,
+      "support": 852,
+      "recall": 0.6596244131455399
+    },
+    {
+      "class_id": 7,
+      "support": 1420,
+      "recall": 0.8183098591549296
+    },
+    {
+      "class_id": 8,
+      "support": 1420,
+      "recall": 0.6732394366197183
+    },
+    {
+      "class_id": 9,
+      "support": 1207,
+      "recall": 0.7870753935376967
+    },
+    {
+      "class_id": 10,
+      "support": 1420,
+      "recall": 0.8063380281690141
+    },
+    {
+      "class_id": 11,
+      "support": 1420,
+      "recall": 0.5866197183098592
+    },
+    {
+      "class_id": 12,
+      "support": 1420,
+      "recall": 0.6795774647887324
+    },
+    {
+      "class_id": 13,
+      "support": 639,
+      "recall": 0.5978090766823161
+    },
+    {
+      "class_id": 14,
+      "support": 213,
+      "recall": 0.784037558685446
+    },
+    {
+      "class_id": 15,
+      "support": 639,
+      "recall": 0.19561815336463223
+    }
+  ],
+  "delta": [
+    {
+      "class_id": 0,
+      "recall_delta": 0.0
+    },
+    {
+      "class_id": 1,
+      "recall_delta": 0.035211267605633756
+    },
+    {
+      "class_id": 2,
+      "recall_delta": -0.03755868544600938
+    },
+    {
+      "class_id": 3,
+      "recall_delta": 0.024647887323943657
+    },
+    {
+      "class_id": 4,
+      "recall_delta": 0.09154929577464788
+    },
+    {
+      "class_id": 5,
+      "recall_delta": -0.003018108651911433
+    },
+    {
+      "class_id": 6,
+      "recall_delta": 0.0
+    },
+    {
+      "class_id": 7,
+      "recall_delta": -0.010563380281690127
+    },
+    {
+      "class_id": 8,
+      "recall_delta": 0.023943661971830954
+    },
+    {
+      "class_id": 9,
+      "recall_delta": 0.027340513670256805
+    },
+    {
+      "class_id": 10,
+      "recall_delta": 0.004929577464788726
+    },
+    {
+      "class_id": 11,
+      "recall_delta": 0.004929577464788726
+    },
+    {
+      "class_id": 12,
+      "recall_delta": 0.015492957746478853
+    },
+    {
+      "class_id": 13,
+      "recall_delta": -0.07511737089201886
+    },
+    {
+      "class_id": 14,
+      "recall_delta": -0.09859154929577463
+    },
+    {
+      "class_id": 15,
+      "recall_delta": 0.04225352112676056
+    }
+  ],
+  "top5_improved": [
+    {"class_id": 4, "name": "crawl", "recall_delta": 0.09154929577464788},
+    {"class_id": 15, "name": "stumble", "recall_delta": 0.04225352112676056},
+    {"class_id": 1, "name": "cartwheel", "recall_delta": 0.035211267605633756},
+    {"class_id": 9, "name": "jog", "recall_delta": 0.027340513670256805},
+    {"class_id": 3, "name": "play instrument", "recall_delta": 0.024647887323943657}
+  ],
+  "top5_degraded": [
+    {"class_id": 14, "name": "lie", "recall_delta": -0.09859154929577463},
+    {"class_id": 13, "name": "throw", "recall_delta": -0.07511737089201886},
+    {"class_id": 2, "name": "knock", "recall_delta": -0.03755868544600938},
+    {"class_id": 7, "name": "sit", "recall_delta": -0.010563380281690127},
+    {"class_id": 5, "name": "a pose", "recall_delta": -0.003018108651911433}
+  ]
+}

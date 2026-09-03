@@ -1,0 +1,335 @@
+{
+  "experiment_id": "EXP055",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "wm_e_frozen": true,
+  "stgcn_frozen": true,
+  "h2_protocol_frozen": true,
+  "metrics": {
+    "baseline": {
+      "moving": {
+        "accuracy": 0.6755286388831861,
+        "macro_f1": 0.6426116868574479
+      },
+      "full": {
+        "accuracy": 0.6955029670408236,
+        "macro_f1": 0.6492202185207628
+      }
+    },
+    "EXP055_MULTI_POSITIVE": {
+      "moving": {
+        "terminal": {
+          "accuracy": 0.6830219667419422,
+          "macro_f1": 0.6473384130563523
+        },
+        "fused": {
+          "accuracy": 0.656641346746048,
+          "macro_f1": 0.600901622934338
+        },
+        "average_moves": 0.8352494354342024,
+        "mean_path": 1.7792059763568335
+      },
+      "full": {
+        "accuracy": 0.700722099092014,
+        "macro_f1": 0.6509551745708606
+      }
+    }
+  },
+  "training": {
+    "train_contexts": 29133,
+    "positive_contexts": 27077,
+    "multi_positive_contexts": 25362,
+    "single_positive_contexts": 1715,
+    "no_positive_contexts": 2056,
+    "mean_positive_count_on_positive_contexts": 9.812165306348561,
+    "final_loss": 0.8541343609491984,
+    "loss_history": [
+      1.3121131930434913,
+      1.1912533588576735,
+      1.148368003075583,
+      1.118227195321468,
+      1.0994290552641217,
+      1.0767683763253062,
+      1.0608936129954822,
+      1.0412938385679011,
+      1.0238273948953862,
+      1.0065910701166119,
+      0.9863563033572414,
+      0.9730164732849389,
+      0.9550359385055408,
+      0.943863614609367,
+      0.9221988613145393,
+      0.9039867959524456,
+      0.8966180075678909,
+      0.8768527748291952,
+      0.85813069552706,
+      0.8541343609491984
+    ]
+  },
+  "action_audit": {
+    "changed_trajectories": 5372,
+    "stage_c_first_step_changed": 0,
+    "first_second_step_action_changed": 4984,
+    "second_second_step_action_changed": 3626,
+    "rescued": 922,
+    "harmful": 849,
+    "net": 73
+  },
+  "class_recall": {
+    "baseline": [
+      {
+        "class_id": 0,
+        "support": 1420,
+        "recall": 0.828169014084507
+      },
+      {
+        "class_id": 1,
+        "support": 142,
+        "recall": 0.5704225352112676
+      },
+      {
+        "class_id": 2,
+        "support": 213,
+        "recall": 0.6150234741784038
+      },
+      {
+        "class_id": 3,
+        "support": 284,
+        "recall": 0.1443661971830986
+      },
+      {
+        "class_id": 4,
+        "support": 284,
+        "recall": 0.7323943661971831
+      },
+      {
+        "class_id": 5,
+        "support": 994,
+        "recall": 0.8953722334004024
+      },
+      {
+        "class_id": 6,
+        "support": 852,
+        "recall": 0.6596244131455399
+      },
+      {
+        "class_id": 7,
+        "support": 1420,
+        "recall": 0.8288732394366197
+      },
+      {
+        "class_id": 8,
+        "support": 1420,
+        "recall": 0.6492957746478873
+      },
+      {
+        "class_id": 9,
+        "support": 1207,
+        "recall": 0.7597348798674399
+      },
+      {
+        "class_id": 10,
+        "support": 1420,
+        "recall": 0.8014084507042254
+      },
+      {
+        "class_id": 11,
+        "support": 1420,
+        "recall": 0.5816901408450704
+      },
+      {
+        "class_id": 12,
+        "support": 1420,
+        "recall": 0.6640845070422535
+      },
+      {
+        "class_id": 13,
+        "support": 639,
+        "recall": 0.672926447574335
+      },
+      {
+        "class_id": 14,
+        "support": 213,
+        "recall": 0.8826291079812206
+      },
+      {
+        "class_id": 15,
+        "support": 639,
+        "recall": 0.15336463223787167
+      }
+    ],
+    "EXP055_MULTI_POSITIVE": [
+      {
+        "class_id": 0,
+        "support": 1420,
+        "recall": 0.828169014084507
+      },
+      {
+        "class_id": 1,
+        "support": 142,
+        "recall": 0.6056338028169014
+      },
+      {
+        "class_id": 2,
+        "support": 213,
+        "recall": 0.5774647887323944
+      },
+      {
+        "class_id": 3,
+        "support": 284,
+        "recall": 0.16901408450704225
+      },
+      {
+        "class_id": 4,
+        "support": 284,
+        "recall": 0.823943661971831
+      },
+      {
+        "class_id": 5,
+        "support": 994,
+        "recall": 0.892354124748491
+      },
+      {
+        "class_id": 6,
+        "support": 852,
+        "recall": 0.6596244131455399
+      },
+      {
+        "class_id": 7,
+        "support": 1420,
+        "recall": 0.8183098591549296
+      },
+      {
+        "class_id": 8,
+        "support": 1420,
+        "recall": 0.6732394366197183
+      },
+      {
+        "class_id": 9,
+        "support": 1207,
+        "recall": 0.7870753935376967
+      },
+      {
+        "class_id": 10,
+        "support": 1420,
+        "recall": 0.8063380281690141
+      },
+      {
+        "class_id": 11,
+        "support": 1420,
+        "recall": 0.5866197183098592
+      },
+      {
+        "class_id": 12,
+        "support": 1420,
+        "recall": 0.6795774647887324
+      },
+      {
+        "class_id": 13,
+        "support": 639,
+        "recall": 0.5978090766823161
+      },
+      {
+        "class_id": 14,
+        "support": 213,
+        "recall": 0.784037558685446
+      },
+      {
+        "class_id": 15,
+        "support": 639,
+        "recall": 0.19561815336463223
+      }
+    ],
+    "delta": [
+      {
+        "class_id": 0,
+        "recall_delta": 0.0
+      },
+      {
+        "class_id": 1,
+        "recall_delta": 0.035211267605633756
+      },
+      {
+        "class_id": 2,
+        "recall_delta": -0.03755868544600938
+      },
+      {
+        "class_id": 3,
+        "recall_delta": 0.024647887323943657
+      },
+      {
+        "class_id": 4,
+        "recall_delta": 0.09154929577464788
+      },
+      {
+        "class_id": 5,
+        "recall_delta": -0.003018108651911433
+      },
+      {
+        "class_id": 6,
+        "recall_delta": 0.0
+      },
+      {
+        "class_id": 7,
+        "recall_delta": -0.010563380281690127
+      },
+      {
+        "class_id": 8,
+        "recall_delta": 0.023943661971830954
+      },
+      {
+        "class_id": 9,
+        "recall_delta": 0.027340513670256805
+      },
+      {
+        "class_id": 10,
+        "recall_delta": 0.004929577464788726
+      },
+      {
+        "class_id": 11,
+        "recall_delta": 0.004929577464788726
+      },
+      {
+        "class_id": 12,
+        "recall_delta": 0.015492957746478853
+      },
+      {
+        "class_id": 13,
+        "recall_delta": -0.07511737089201886
+      },
+      {
+        "class_id": 14,
+        "recall_delta": -0.09859154929577463
+      },
+      {
+        "class_id": 15,
+        "recall_delta": 0.04225352112676056
+      }
+    ]
+  },
+  "deltas_vs_EXP051_R2": {
+    "moving_accuracy": 0.007493327858756005,
+    "moving_macro_f1": 0.004726726198904463,
+    "full_accuracy": 0.0052191320511904005,
+    "full_macro_f1": 0.001734956050097769
+  },
+  "candidate_identity_mismatch_count": 0,
+  "case": "CASE_A",
+  "provenance": {
+    "wm_e_checkpoint": "/tmp/activeview_exp042r1_E/last.pth",
+    "baseline_result": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP051_R2_real_observation_evaluation/result.json",
+    "candidate_ordering_frozen": true,
+    "candidate_identity_frozen": false,
+    "terminal_real_archived_stgcn": true,
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP055_multi_positive_joint_revision/runtime/joint_revision_multi_positive.pth",
+    "checkpoint_sha256": "8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c"
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "perception_regenerated": false,
+    "habitat_rendering_performed": false,
+    "true_future_recognition_as_input": false
+  }
+}

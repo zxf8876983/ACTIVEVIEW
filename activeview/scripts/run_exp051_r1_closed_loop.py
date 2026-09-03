@@ -167,7 +167,7 @@ def run(data_root: Path, checkpoint: Path, device: torch.device) -> dict[str, An
     h1_canonical = summarize_trajectory_rows(h1_canonical_rows, categories)
     cache_dir = Path("/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_allview_exp051_r1")
     rgb_lookup, rgb_audit = build_rgb_cache(data_root, rows, sources, device, cache_dir)
-    terminal_preds_h1: list[int] = []; terminal_preds_h2: list[int] = []; fused_preds_h1: list[int] = []; fused_preds_h2: list[int] = []; labels: list[int] = []; moves_h1: list[int] = []; moves_h2: list[int] = []; path_h1: list[float] = []; path_h2: list[float] = []; action_changed = 0
+    terminal_preds_h1: list[int] = []; terminal_preds_h2: list[int] = []; fused_preds_h1: list[int] = []; fused_preds_h2: list[int] = []; labels: list[int] = []; moves_h1: list[int] = []; moves_h2: list[int] = []; path_h1: list[float] = []; path_h2: list[float] = []; h2_action_signatures: list[list[int]] = []; h2_terminal_predictions: list[int] = []; action_changed = 0
     recurrent_count = 0
     for number, row in enumerate(rows, 1):
         key = context_key(row); source = Path(sources[key]); index = cache_indices[str(row["episode_id"])]
@@ -221,13 +221,13 @@ def run(data_root: Path, checkpoint: Path, device: torch.device) -> dict[str, An
                 second_choice = _joint_choice(joint, (second.logp, revealed.logp), logs2, cd.cpu().numpy()[0], device)
                 if second_choice is not None:
                     v2 = remaining[second_choice]; store.reveal(v2); h2_visited.append(v2); h2_moves = 2; h2_path += float(pairwise[h2_current][v2]); h2_current = v2
-        moves_h2.append(h2_moves); path_h2.append(h2_path); terminal_preds_h2.append(int(np.argmax(archive["logp"][h2_current]))); fused_preds_h2.append(int(np.argmax(np.mean(np.exp(archive["logp"][h2_visited]), axis=0))))
+        moves_h2.append(h2_moves); path_h2.append(h2_path); terminal_preds_h2.append(int(np.argmax(archive["logp"][h2_current]))); h2_terminal_predictions.append(terminal_preds_h2[-1]); h2_action_signatures.append([int(v) for v in h2_visited[2:]]); fused_preds_h2.append(int(np.argmax(np.mean(np.exp(archive["logp"][h2_visited]), axis=0))))
         action_changed += int(h1_visited != h2_visited)
         if number % 256 == 0: print(f"EXP051-R1 rollout {number}/{len(rows)}", flush=True)
     result = {
         "experiment_id": "EXP051-R1", "status": "COMPLETED", "test_used": False, "training_performed": True,
         "wm_e_frozen": True, "wm_e_checkpoint_sha256": WM_SHA, "joint_revision_frozen": True, "joint_revision_checkpoint": str(checkpoint.resolve()), "joint_revision_checkpoint_sha256": _sha256(checkpoint),
-        "rgb_history_artifact_audit": rgb_audit, "h1": {"canonical_trajectory": h1_canonical, "terminal": _metrics(terminal_preds_h1, labels), "fused": _metrics(fused_preds_h1, labels), "average_moves": float(np.mean(moves_h1)), "mean_path": float(np.mean(path_h1))},
+        "rgb_history_artifact_audit": rgb_audit, "h1": {"canonical_trajectory": h1_canonical, "terminal": _metrics(terminal_preds_h1, labels), "fused": _metrics(fused_preds_h1, labels), "average_moves": float(np.mean(moves_h1)), "mean_path": float(np.mean(path_h1))}, "h2_action_signatures_moving": h2_action_signatures, "h2_terminal_predictions_moving": h2_terminal_predictions, "moving_episode_ids": [str(row["episode_id"]) for row in rows], "moving_labels": [int(v) for v in labels],
         "h2": {"terminal": _metrics(terminal_preds_h2, labels), "fused": _metrics(fused_preds_h2, labels), "average_moves": float(np.mean(moves_h2)), "mean_path": float(np.mean(path_h2))},
         "history_shift": {"episodes_with_recurrent_step": recurrent_count, "step2_world_model_recomputed": True, "step2_candidate_graph_recomputed": True, "rolling_two_view_history": True},
         "action_audit": {"h1_h2_action_sequence_changed": action_changed, "candidate_identity_mismatch_count": 0},

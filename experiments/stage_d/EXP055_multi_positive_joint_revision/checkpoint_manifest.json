@@ -1,0 +1,9 @@
+{
+  "wm_e_checkpoint": "/tmp/activeview_exp042r1_E/last.pth",
+  "baseline_result": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP051_R2_real_observation_evaluation/result.json",
+  "candidate_ordering_frozen": true,
+  "candidate_identity_frozen": false,
+  "terminal_real_archived_stgcn": true,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP055_multi_positive_joint_revision/runtime/joint_revision_multi_positive.pth",
+  "checkpoint_sha256": "8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c"
+}
