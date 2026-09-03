@@ -1,0 +1,407 @@
+{
+  "experiment_id": "REFACTOR_EQUIVALENCE_CHECK",
+  "status": "PASS",
+  "commit": "unknown",
+  "split": "test",
+  "population": {
+    "full": 13774,
+    "moving": 9409
+  },
+  "current_metrics": {
+    "NoMove": {
+      "full": {
+        "accuracy": 0.4126615362276753,
+        "macro_f1": 0.38178632403054913,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.2629397385481985,
+        "macro_f1": 0.2554756653321506,
+        "count": 9409
+      }
+    },
+    "Random": {
+      "full": {
+        "accuracy": 0.4087411064324089,
+        "macro_f1": 0.38205773707285734,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.36263152300988416,
+        "macro_f1": 0.34946117348635053,
+        "count": 9409
+      }
+    },
+    "FrozenStageCv0": {
+      "full": {
+        "accuracy": 0.625381152896762,
+        "macro_f1": 0.5637051739097438,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.5743437134658306,
+        "macro_f1": 0.5305012321646901,
+        "count": 9409
+      }
+    },
+    "SafeOracle": {
+      "full": {
+        "accuracy": 0.8449252214316829,
+        "macro_f1": 0.8111121904686223,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.8254862365819959,
+        "macro_f1": 0.8004618896969267,
+        "count": 9409
+      }
+    },
+    "H1_REAL": {
+      "full": {
+        "accuracy": 0.6735153187164222,
+        "macro_f1": 0.6230498724709267,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.6448081623977043,
+        "macro_f1": 0.6124965376813798,
+        "count": 9409
+      }
+    },
+    "ORIGINAL_JR_H2": {
+      "full": {
+        "accuracy": 0.680557572237549,
+        "macro_f1": 0.6291110635147539,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.6551174407482198,
+        "macro_f1": 0.6218520494358288,
+        "count": 9409
+      }
+    },
+    "MULTI_POSITIVE_JR_H2": {
+      "full": {
+        "accuracy": 0.6848410047916365,
+        "macro_f1": 0.6277488276320746,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.6613880327346158,
+        "macro_f1": 0.6229838484529353,
+        "count": 9409
+      }
+    }
+  },
+  "golden_metrics": {
+    "NoMove": {
+      "full": {
+        "accuracy": 0.4126615362276753,
+        "macro_f1": 0.38178632403054913
+      },
+      "moving": {
+        "accuracy": 0.2629397385481985,
+        "macro_f1": 0.2554756653321506
+      }
+    },
+    "Random": {
+      "full": {
+        "accuracy": 0.4087411064324089,
+        "macro_f1": 0.38205773707285734
+      },
+      "moving": {
+        "accuracy": 0.36263152300988416,
+        "macro_f1": 0.34946117348635053
+      }
+    },
+    "FrozenStageCv0": {
+      "full": {
+        "accuracy": 0.625381152896762,
+        "macro_f1": 0.5637051739097438
+      },
+      "moving": {
+        "accuracy": 0.5743437134658306,
+        "macro_f1": 0.5305012321646901
+      }
+    },
+    "SafeOracle": {
+      "full": {
+        "accuracy": 0.8449252214316829,
+        "macro_f1": 0.8111121904686223
+      },
+      "moving": {
+        "accuracy": 0.8254862365819959,
+        "macro_f1": 0.8004618896969267
+      }
+    },
+    "H1_REAL": {
+      "full": {
+        "accuracy": 0.6735153187164222,
+        "macro_f1": 0.6230498724709267
+      },
+      "moving": {
+        "accuracy": 0.6448081623977043,
+        "macro_f1": 0.6124965376813798
+      }
+    },
+    "ORIGINAL_JR_H2": {
+      "full": {
+        "accuracy": 0.680557572237549,
+        "macro_f1": 0.6291110635147539
+      },
+      "moving": {
+        "accuracy": 0.6551174407482198,
+        "macro_f1": 0.6218520494358288
+      }
+    },
+    "MULTI_POSITIVE_JR_H2": {
+      "full": {
+        "accuracy": 0.6848410047916365,
+        "macro_f1": 0.6277488276320746
+      },
+      "moving": {
+        "accuracy": 0.6613880327346158,
+        "macro_f1": 0.6229838484529353
+      }
+    }
+  },
+  "comparisons": {
+    "NoMove": {
+      "full": {
+        "accuracy": {
+          "current": 0.4126615362276753,
+          "golden": 0.4126615362276753,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.38178632403054913,
+          "golden": 0.38178632403054913,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "moving": {
+        "accuracy": {
+          "current": 0.2629397385481985,
+          "golden": 0.2629397385481985,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.2554756653321506,
+          "golden": 0.2554756653321506,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "Random": {
+      "full": {
+        "accuracy": {
+          "current": 0.4087411064324089,
+          "golden": 0.4087411064324089,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.38205773707285734,
+          "golden": 0.38205773707285734,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "moving": {
+        "accuracy": {
+          "current": 0.36263152300988416,
+          "golden": 0.36263152300988416,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.34946117348635053,
+          "golden": 0.34946117348635053,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "FrozenStageCv0": {
+      "full": {
+        "accuracy": {
+          "current": 0.625381152896762,
+          "golden": 0.625381152896762,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.5637051739097438,
+          "golden": 0.5637051739097438,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "moving": {
+        "accuracy": {
+          "current": 0.5743437134658306,
+          "golden": 0.5743437134658306,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.5305012321646901,
+          "golden": 0.5305012321646901,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "SafeOracle": {
+      "full": {
+        "accuracy": {
+          "current": 0.8449252214316829,
+          "golden": 0.8449252214316829,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.8111121904686223,
+          "golden": 0.8111121904686223,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "moving": {
+        "accuracy": {
+          "current": 0.8254862365819959,
+          "golden": 0.8254862365819959,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.8004618896969267,
+          "golden": 0.8004618896969267,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "H1_REAL": {
+      "full": {
+        "accuracy": {
+          "current": 0.6735153187164222,
+          "golden": 0.6735153187164222,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.6230498724709267,
+          "golden": 0.6230498724709267,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "moving": {
+        "accuracy": {
+          "current": 0.6448081623977043,
+          "golden": 0.6448081623977043,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.6124965376813798,
+          "golden": 0.6124965376813798,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "ORIGINAL_JR_H2": {
+      "full": {
+        "accuracy": {
+          "current": 0.680557572237549,
+          "golden": 0.680557572237549,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.6291110635147539,
+          "golden": 0.6291110635147539,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "moving": {
+        "accuracy": {
+          "current": 0.6551174407482198,
+          "golden": 0.6551174407482198,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.6218520494358288,
+          "golden": 0.6218520494358288,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "MULTI_POSITIVE_JR_H2": {
+      "full": {
+        "accuracy": {
+          "current": 0.6848410047916365,
+          "golden": 0.6848410047916365,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.6277488276320746,
+          "golden": 0.6277488276320746,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "moving": {
+        "accuracy": {
+          "current": 0.6613880327346158,
+          "golden": 0.6613880327346158,
+          "delta": 0.0,
+          "pass": true
+        },
+        "macro_f1": {
+          "current": 0.6229838484529353,
+          "golden": 0.6229838484529353,
+          "delta": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    }
+  },
+  "checkpoint_hashes": {
+    "WM-E": "db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6",
+    "Original JR": "332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac",
+    "Multi-positive JR": "8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c",
+    "ST-GCN": "362ac23195688988d637244eb2a13fa0e7b563b21d143846c671a5cec6b0d0ce"
+  },
+  "test_used": true,
+  "training_performed": false,
+  "algorithm_changed": false,
+  "habitat_rendering_performed": false,
+  "perception_regenerated": false,
+  "official_final_test_overwritten": false,
+  "official_test_manifest_modified": false,
+  "provenance": {
+    "manifest": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP057_final_method_freeze/final_method_manifest.json",
+    "protocol": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP057_final_method_freeze/final_test_protocol.json",
+    "rgb_cache_dir": "/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_test_final",
+    "random_seed": 42,
+    "tolerance": 1e-08
+  }
+}

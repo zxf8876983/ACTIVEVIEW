@@ -147,6 +147,39 @@ def _load_valid_cache(cache_dir: Path, keys: Sequence[RGBObservationKey]) -> tup
     return embeddings, rows
 
 
+def _load_cache_superset(cache_dir: Path, keys: Sequence[RGBObservationKey]) -> tuple[np.ndarray, list[dict[str, Any]]] | None:
+    """Read requested keys from a larger frozen cache without rebuilding it."""
+    embeddings_path = cache_dir / "embeddings.npy"
+    manifest_path = cache_dir / "manifest.jsonl"
+    if not embeddings_path.is_file() or not manifest_path.is_file():
+        return None
+    try:
+        embeddings = np.load(embeddings_path, mmap_mode="r")
+        rows = [json.loads(line) for line in manifest_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if embeddings.ndim != 3 or embeddings.shape[1:] != (SPATIAL_TOKEN_COUNT, DINO_EMBED_DIM) or embeddings.dtype != np.float16:
+            return None
+        if len(rows) != embeddings.shape[0]:
+            return None
+        index = {
+            (str(row["scene_id"]), str(row["region"]), str(row["record_id"]), int(row["viewpoint_id"])): position
+            for position, row in enumerate(rows)
+        }
+        ordered = sorted(keys, key=lambda item: item.tuple)
+        positions = [index.get(key.tuple) for key in ordered]
+        if any(position is None for position in positions):
+            return None
+        expected_rows = _manifest_rows(ordered)
+        selected_rows = [rows[int(position)] for position in positions]
+        if selected_rows != expected_rows:
+            return None
+        selected = np.asarray(embeddings[np.asarray(positions, dtype=np.int64)])
+        if not np.isfinite(selected.astype(np.float32)).all():
+            return None
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+        return None
+    return selected, selected_rows
+
+
 def build_or_load_spatial_cache(
     *,
     rgb_root: Path,
@@ -164,6 +197,10 @@ def build_or_load_spatial_cache(
     if cached is not None:
         embeddings, rows = cached
         return embeddings, rows, {"cache_hit_count": len(ordered), "cache_miss_count": 0, "extraction_time_sec": 0.0, "cache_reused": True}
+    cached_superset = _load_cache_superset(cache_dir, ordered)
+    if cached_superset is not None:
+        embeddings, rows = cached_superset
+        return embeddings, rows, {"cache_hit_count": len(ordered), "cache_miss_count": 0, "extraction_time_sec": 0.0, "cache_reused": True, "cache_subset_read": True}
     if batch_size <= 0:
         raise ValueError("batch_size must be positive")
     cache_dir.mkdir(parents=True, exist_ok=True)
