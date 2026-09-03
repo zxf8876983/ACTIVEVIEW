@@ -1,7 +1,7 @@
 {
   "experiment_id": "REFACTOR_EQUIVALENCE_CHECK",
   "status": "PASS",
-  "commit": "unknown",
+  "commit": "f9b7ea6b37755cf07c5f2eb6cbabdb6f0daf0e64",
   "split": "test",
   "population": {
     "full": 13774,
