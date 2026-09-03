@@ -1,7 +1,7 @@
 import numpy as np
 
-from activeview.active_view.evaluation import summarize_trajectory_rows
-from activeview.active_view.geometry import (
+from activeview.evaluation.evaluator import summarize_trajectory_rows
+from activeview.methods.active_view.geometry import (
     order_candidates,
     semantic_delta,
     second_step_decision,

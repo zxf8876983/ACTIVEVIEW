@@ -55,12 +55,12 @@ ACTIVEVIEW 的研究对象是主动视角选择，而不是重新设计动作识
 唯一入口：
 
 ```bash
-python -m activeview.scripts.prepare_selected16_manifests
+python -m activeview.scripts.data.prepare_selected16_manifests
 ```
 
 实现分工：
 
-- `activeview/dataset/babel_selected16_manifest.py`：类别、过滤、采样上限和 label mapping。
+- `activeview/data/motion/babel_selected16_manifest.py`：类别、过滤、采样上限和 label mapping。
 - `babel_official150_true_skeleton.py`：读取已审计的官方 150 类映射和记录。
 - `babel_segment_utils.py`：去重、短区间过滤、冲突区间剔除及辅助标签读取。
 - `babel_source_utils.py`：BABEL 记录到本地 AMASS 源文件的解析。
@@ -84,10 +84,10 @@ BABEL interval
 
 关键实现位于：
 
-- `activeview/dataset/babel_clean_dataset_generator.py`
-- `activeview/perception/ultralytics_pose3d_estimator.py`
-- `activeview/perception/skeleton_normalizer.py`
-- `activeview/dataset/humanoid_grounding.py`
+- `activeview/data/motion/babel_clean_dataset_generator.py`
+- `activeview/perception/pose/ultralytics.py`
+- `activeview/perception/normalization.py`
+- `activeview/data/motion/humanoid_grounding.py`
 
 人体根姿态保留 AMASS 的 roll/pitch/yaw；归一化阶段只消除水平 yaw，不把躺倒/跌倒人体旋转回站立。VideoPose3D 的 Human3.6M `+Y down, +Z depth` 先翻转 Y/Z，再使用逐帧 Habitat 相机旋转；平移由 root centering 消除。贴地偏移由 URDF visual geometry 的包围盒和场景支持面计算，并缓存到同一动作的所有视点。
 
@@ -96,19 +96,19 @@ BABEL interval
 单进程入口：
 
 ```bash
-python -m activeview.scripts.generate_selected16_habitat_dataset --split train --device cuda:0
-python -m activeview.scripts.generate_selected16_habitat_dataset --split val --device cuda:0
+python -m activeview.scripts.data.generate_selected16_habitat_dataset --split train --device cuda:0
+python -m activeview.scripts.data.generate_selected16_habitat_dataset --split val --device cuda:0
 ```
 
 多进程入口 `generate_selected16_habitat_parallel.py` 将 manifest 分片，每个 worker 独立 Habitat simulator 和 CUDA pose estimator，成功后合并元数据与张量：
 
 ```bash
-python -m activeview.scripts.generate_selected16_habitat_parallel --split train --workers 2 --device cuda:0
+python -m activeview.scripts.data.generate_selected16_habitat_parallel --split train --workers 2 --device cuda:0
 ```
 
 ### 3.4 ST-GCN 训练与冻结
 
-入口：`activeview/scripts/train_selected16_habitat_stgcn.py`。
+入口：`activeview.scripts.train.train_selected16_habitat_stgcn.py`。
 
 - 输入：H36M-17、3 通道、30 帧、单人 `(N,3,30,17,1)`。
 - 模型：spatial ST-GCN，启用 edge-importance weighting。
@@ -214,13 +214,13 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 2. 开启 `validate_cached_skeletons=True` 时，对所有被最终 Episode 引用的 NPZ 做缓存级检查：skeleton 必须为 `(32,3,30,17)`，导航数组必须存在且形状为 `(32,3)/(32,4)`，viewpoint ID 唯一有效，导航字段必须有限，current/candidate viewpoint 必须对应有效骨架帧。单个 viewpoint 的骨架失败不会使整个 archive 作废；失败 viewpoint 只进入信息性计数 `nonfinite_cached_skeleton_viewpoints`，并由 Episode 级有效集合过滤。
 3. 审计还要求每个 `record_id × scene_id × region` 只有一个 Episode、`episode_id` 全局唯一，并将 Episode 中的 current/candidate 几何按 viewpoint ID 与 NPZ 中的 position、snapped position、agent position 和 rotation 做 `1e-5` 容差交叉核对。
 4. Coverage audit 同时比较目标场景集合与实际成功进入生成的场景集合，检查 `target_scene_count`、`used_scene_count`、`failed_scene_count` 和 `missing_scene_ids`；`all_target_scenes_used` 必须为 `true`，不允许场景级失败被静默移出 expected set。
-5. `validate_stage_a.py --verify-habitat` 在真实 HM3D NavMesh 上重新调用 Habitat `ShortestPath`，验证最终 Episode 的 current→candidate geodesic 与序列化代价一致。场景只加载一次，并缓存 `(scene, region, current_id, candidate_id)` 路径结果；支持 `--max-habitat-episodes` 做快速 smoke；论文级验收应运行全量模式。
+5. `validate_policy_episodes.py --verify-habitat` 在真实 HM3D NavMesh 上重新调用 Habitat `ShortestPath`，验证最终 Episode 的 current→candidate geodesic 与序列化代价一致。场景只加载一次，并缓存 `(scene, region, current_id, candidate_id)` 路径结果；支持 `--max-habitat-episodes` 做快速 smoke；论文级验收应运行全量模式。
 
 验收入口：
 
 ```bash
-python -m activeview.scripts.validate_stage_a
-conda run --no-capture-output -n habitat python -m activeview.scripts.validate_stage_a \
+python -m activeview.scripts.eval.validate_policy_episodes
+conda run --no-capture-output -n habitat python -m activeview.scripts.eval.validate_policy_episodes \
   --verify-habitat
 ```
 

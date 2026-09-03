@@ -2,7 +2,7 @@ import json
 
 import numpy as np
 
-from activeview.active_view.policy_episode_builder import (
+from activeview.data.generation.policy_episodes import (
     audit_episode_coverage,
     audit_episode_files,
     audit_scene_coverage,

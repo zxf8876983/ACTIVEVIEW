@@ -35,13 +35,13 @@ configured `robot/DATA/` root); no other disk is scanned.
 ## Main commands
 
 ```bash
-python -m activeview.scripts.prepare_selected16_manifests
-python -m activeview.scripts.generate_selected16_habitat_dataset --split train
-python -m activeview.scripts.generate_selected16_habitat_dataset --split val
-python -m activeview.scripts.train_selected16_habitat_stgcn
-python -m activeview.scripts.generate_semantic_region_candidate_metadata
-python -m activeview.scripts.generate_semantic_region_offline_views --workers 4
-python -m activeview.scripts.evaluate_semantic_region_offline
+python -m activeview.scripts.data.prepare_selected16_manifests
+python -m activeview.scripts.data.generate_selected16_habitat_dataset --split train
+python -m activeview.scripts.data.generate_selected16_habitat_dataset --split val
+python -m activeview.scripts.train.train_selected16_habitat_stgcn
+python -m activeview.scripts.data.generate_semantic_region_candidate_metadata
+python -m activeview.scripts.data.generate_semantic_region_offline_views --workers 4
+python -m activeview.scripts.eval.evaluate_semantic_region_offline
 ```
 
 ## Research experiments
@@ -73,13 +73,14 @@ H2**. Final Test has been completed on the locked protocol:
 - Multi-positive vs FrozenStageCv0: `+5.946` percentage points Accuracy and
   `+6.404` percentage points Macro-F1.
 
-The formal package surface for the final pipeline is under
-`activeview/active_view/` (`geometry`, `policy_data`, `policy_features`,
-`initial_policy`, `policy_training`, `world_model`, `joint_revision`,
-`rollout`, `baselines`, `evaluation`, `metrics`, `rgb_features`, and
-`rgb_cache`). The executable final evaluator is
-`activeview/scripts/run_final_test.py`; the frozen EXP055 training entry point
-is `activeview/scripts/train_active_view.py`. Runtime checkpoints and
-caches stay under `ACTIVEVIEW_DATA_ROOT` and are not committed. Historical
-Stage-D research implementations are removed from the active package; Git
-history and the experiment result directories remain available for audit.
+The formal package surface is organized by responsibility: data generation and
+preprocessing live under `activeview/data/`, RGB and pose processing under
+`activeview/perception/`, ST-GCN under `activeview/recognition/stgcn/`, the
+WM-E/Joint Revision/closed-loop implementation under `activeview/methods/`,
+and metrics under `activeview/evaluation/`. The executable final evaluator is
+`activeview/scripts/eval/run_final_test.py`; the frozen active-view training
+entry point is `activeview/scripts/train/train_active_view.py`. Runtime
+checkpoints and caches stay under `ACTIVEVIEW_DATA_ROOT` and are not
+committed. Historical Stage-D research implementations are removed from the
+active package; Git history and the experiment result directories remain
+available for audit.

@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from activeview.core.paths import get_data_root
-from activeview.scripts.validate_stage_b import validate
+from activeview.scripts.eval.validate_utility_labels import validate
 
 
 def test_stage_b_real_artifact_acceptance(tmp_path: Path):

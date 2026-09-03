@@ -1,6 +1,6 @@
 import torch
 
-from activeview.active_view.policy_training import policy_loss, utility_gap_pairwise_loss
+from activeview.methods.active_view.training import policy_loss, utility_gap_pairwise_loss
 
 
 def test_gap_loss_prefers_correct_ordering():

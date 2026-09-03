@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 import torch
 
-from activeview.active_view.data import rows
-from activeview.active_view.world_model import CandidateObservationWorldModel, collate_world_model_context, world_model_loss
+from activeview.data.preprocessing.cache import rows
+from activeview.methods.world_model.model import CandidateObservationWorldModel, collate_world_model_context, world_model_loss
 
 
 def _inputs(batch: int = 2) -> tuple[torch.Tensor, ...]:

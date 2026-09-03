@@ -1,6 +1,6 @@
 import numpy as np
 
-from activeview.active_view.utility_label_builder import (
+from activeview.data.generation.utility_labels import (
     build_utility_record,
     summarize_utility_records,
 )

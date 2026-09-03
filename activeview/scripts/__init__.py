@@ -1,1 +1,6 @@
-"""Command-line entry points for the v11 selected16 benchmark."""
+"""文件用途：组织 ActiveView 的数据、训练、评估和可视化 CLI 入口。
+
+主要输入：命令行参数与外部运行时数据。
+主要输出：数据缓存、模型 checkpoint、评估结果或可视化文件。
+项目角色：薄入口层，核心逻辑位于 activeview 子包中。
+"""

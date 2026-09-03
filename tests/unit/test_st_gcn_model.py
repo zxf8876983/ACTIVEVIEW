@@ -4,8 +4,8 @@ Unit test for ST-GCN network forward pass and dimension invariants.
 
 import unittest
 import torch
-from activeview.action_recognition.st_gcn_model import STGCN
-from activeview.perception.skeleton_definition import get_skeleton_definition
+from activeview.recognition.stgcn.model import STGCN
+from activeview.perception.skeleton import get_skeleton_definition
 
 
 class TestSTGCNModel(unittest.TestCase):

@@ -3,12 +3,12 @@ from pathlib import Path
 
 import numpy as np
 
-from activeview.active_view.utility_label_builder import (
+from activeview.data.generation.utility_labels import (
     build_utility_record,
     file_sha256,
     summarize_utility_records,
 )
-from activeview.scripts.validate_stage_b import validate
+from activeview.scripts.eval.validate_utility_labels import validate
 
 
 def _make_fixture(tmp_path: Path) -> tuple[Path, Path, dict]:

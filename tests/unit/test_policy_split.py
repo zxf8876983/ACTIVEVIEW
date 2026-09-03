@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from activeview.dataset.policy_split import (
+from activeview.data.splits.policy_split import (
     RATIOS,
     audit_policy_splits,
     build_policy_splits,

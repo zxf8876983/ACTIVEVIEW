@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from activeview.active_view.policy_episode_builder import (
+from activeview.data.generation.policy_episodes import (
     REGIONS,
     audit_episode_coverage,
     audit_episode_files,
@@ -129,8 +129,8 @@ def test_real_habitat_shortest_path_for_final_episode():
     if scene_root is None:
         pytest.skip(f"Habitat scene assets are unavailable for {scene_id}")
 
-    from activeview.scripts.build_policy_episodes import _make_sim
-    from activeview.scripts.evaluate_hm3d_train_dynamic_reachability import _path_cost
+    from activeview.scripts.data.build_policy_episodes import _make_sim
+    from activeview.scripts.eval.evaluate_hm3d_train_dynamic_reachability import _path_cost
 
     sim = _make_sim(scene_root, scene_id)
     try:

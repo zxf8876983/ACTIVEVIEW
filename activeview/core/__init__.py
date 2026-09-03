@@ -1,4 +1,9 @@
-"""Core path helpers for the v11 selected16 benchmark."""
+"""文件用途：暴露项目源码、运行时数据和 Habitat 资产路径解析函数。
+
+主要输入：环境变量或仓库相对路径。
+主要输出：规范化的路径对象。
+项目角色：所有数据和脚本入口共享的路径基础层。
+"""
 
 from .paths import (
     get_data_root,

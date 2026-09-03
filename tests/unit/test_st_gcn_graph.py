@@ -5,8 +5,8 @@ Unit test for ST-GCN Graph topology construction & spatial partitioning.
 import unittest
 import numpy as np
 
-from activeview.action_recognition.graph import Graph
-from activeview.perception.skeleton_definition import get_skeleton_definition
+from activeview.recognition.stgcn.graph import Graph
+from activeview.perception.skeleton import get_skeleton_definition
 
 
 class TestSTGCNGraph(unittest.TestCase):

@@ -1,6 +1,6 @@
 import numpy as np
 
-from activeview.active_view.policy_features import (
+from activeview.data.preprocessing.policy_features import (
     BASE_CANDIDATE_GEOMETRY_DIM,
     CANDIDATE_GEOMETRY_DIM,
     CURRENT_FEATURE_DIM,

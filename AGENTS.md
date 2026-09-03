@@ -105,9 +105,9 @@ Scientific validators may be run read-only when their frozen runtime artifacts
 are available:
 
 ```bash
-python -m activeview.scripts.validate_stage_a
-python -m activeview.scripts.validate_stage_b
-python -m activeview.scripts.validate_stage_c
+python -m activeview.scripts.eval.validate_policy_episodes
+python -m activeview.scripts.eval.validate_utility_labels
+python -m activeview.scripts.eval.validate_initial_policy_data
 ```
 
 Do not claim Habitat/GPU/data-heavy validation that was not run. If a required

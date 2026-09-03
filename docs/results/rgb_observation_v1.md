@@ -23,7 +23,7 @@ committed to Git.
 |---|---|
 | Source skeleton root | `/home/zxf/WorkSpace/code/data/ActiveView/datasets/offline/hm3d-train/` |
 | RGB output root | `/home/zxf/MG08/robot/ActiveView/datasets/offline/hm3d-train/` |
-| Generator | `activeview/scripts/generate_hm3d_train_rgb_observations.py` |
+| Generator | `activeview/scripts/data/generate_hm3d_train_rgb_observations.py` |
 | Motion manifest SHA256 | `c20fabd3ce11c31b2af4712b2e5e59fa743d4765419bf3b9089a0cde92227b61` |
 
 The external output root contains `dataset_summary.json` and one

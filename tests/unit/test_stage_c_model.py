@@ -1,7 +1,7 @@
 import torch
 
-from activeview.active_view.initial_policy import move_stay_decision
-from activeview.active_view.utility_predictor import (
+from activeview.methods.active_view.policy import move_stay_decision
+from activeview.methods.active_view.utility_predictor import (
     MoveStaySetUtilityRanker,
     PairwiseUtilityMLP,
     SetUtilityRanker,

@@ -1,4 +1,4 @@
-from activeview.active_view.policy_data import RecordBalancedSampler, collate_episode_batch
+from activeview.data.preprocessing.policy_data import RecordBalancedSampler, collate_episode_batch
 import torch
 
 

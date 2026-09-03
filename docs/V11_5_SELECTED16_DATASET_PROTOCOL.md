@@ -13,7 +13,7 @@
 12:walk, 13:throw, 14:lie, 15:stumble
 ```
 
-`lie`、`stumble` 是为老人安全感知保留的辅助标签；`fall` 当前不作为独立类。类别顺序来自 `activeview/dataset/babel_selected16_manifest.py`，不得从旧数据集推断。
+`lie`、`stumble` 是为老人安全感知保留的辅助标签；`fall` 当前不作为独立类。类别顺序来自 `activeview/data/motion/babel_selected16_manifest.py`，不得从旧数据集推断。
 
 ## 2. Manifest 规则
 
@@ -27,7 +27,7 @@
 入口：
 
 ```bash
-python -m activeview.scripts.prepare_selected16_manifests
+python -m activeview.scripts.data.prepare_selected16_manifests
 ```
 
 当前实际结果：Train 3,240、Val 980；类别计数和排除原因分别保存在运行时数据根目录的 `train.json`、`val.json`、`summary.json`、`excluded.json`。
@@ -52,8 +52,8 @@ AMASS/SMPL
 生成入口：
 
 ```bash
-python -m activeview.scripts.generate_selected16_habitat_dataset --split train --device cuda:0
-python -m activeview.scripts.generate_selected16_habitat_dataset --split val --device cuda:0
+python -m activeview.scripts.data.generate_selected16_habitat_dataset --split train --device cuda:0
+python -m activeview.scripts.data.generate_selected16_habitat_dataset --split val --device cuda:0
 ```
 
 默认输出形状为 `(N,3,30,17,1)`，序列统一均匀采样 30 帧。ST-GCN 只接收 RGB 估计骨架，绝不读取 AMASS/SMPL GT joints。贴地偏移使用 URDF visual geometry 和场景支持面计算，并跨候选视点缓存；归一化只移除 root、体型尺度和水平 yaw，保留重力相关 roll/pitch。
@@ -61,7 +61,7 @@ python -m activeview.scripts.generate_selected16_habitat_dataset --split val --d
 训练入口：
 
 ```bash
-python -m activeview.scripts.train_selected16_habitat_stgcn --device cuda:0
+python -m activeview.scripts.train.train_selected16_habitat_stgcn --device cuda:0
 ```
 
 训练使用 `WeightedRandomSampler(count^-0.5)`、归一化 `sqrt(N/count)` class weights、Adam 和监控全量 Train loss 的 `ReduceLROnPlateau(mode=min)`。early stopping 只使用 Train loss（最多 200 epochs、`patience=20`、`min_delta=1e-4`），保存停止 epoch 的最后模型。Val 不进入训练循环；训练结束后仅对 Val 做一次 post-hoc 性能上限诊断，之后才进入冻结 checkpoint 的主动视角评估。
@@ -81,13 +81,13 @@ data/ActiveView/datasets/offline/
 候选元数据入口：
 
 ```bash
-python -m activeview.scripts.generate_semantic_region_candidate_metadata
+python -m activeview.scripts.data.generate_semantic_region_candidate_metadata
 ```
 
 视点骨架生成入口：
 
 ```bash
-python -m activeview.scripts.generate_semantic_region_offline_views --workers 4 --device cuda:0
+python -m activeview.scripts.data.generate_semantic_region_offline_views --workers 4 --device cuda:0
 ```
 
 每个 NPZ 必须包含：场景/区域/放置点、navmesh 路径、32 个原始位置、snap 位置、实际 agent 位置、相机旋转、`is_navigable`、`is_reachable_from_placement`、路径代价，以及 32 个 `(3,30,17)` 估计骨架。离线 schema 为 `semantic-region-offline-v2`；候选 manifest 为 `semantic-region-v2`。
@@ -107,10 +107,10 @@ python -m activeview.scripts.generate_semantic_region_offline_views --workers 4 
 入口：
 
 ```bash
-python -m activeview.scripts.evaluate_semantic_region_offline
-python -m activeview.scripts.evaluate_hm3d_train_dynamic_reachability --device cuda:0
-python -m activeview.scripts.evaluate_hm3d_train_random_initializations --device cuda:0
-python -m activeview.scripts.evaluate_hm3d_train_grid_initializations --device cuda:0
+python -m activeview.scripts.eval.evaluate_semantic_region_offline
+python -m activeview.scripts.eval.evaluate_hm3d_train_dynamic_reachability --device cuda:0
+python -m activeview.scripts.eval.evaluate_hm3d_train_random_initializations --device cuda:0
+python -m activeview.scripts.eval.evaluate_hm3d_train_grid_initializations --device cuda:0
 ```
 
 策略决策不得读取候选视点未来 RGB、真实遮挡、标签或后验 ST-GCN 结果；这些信息只用于评估。场景/navmesh、预测矩阵和路径矩阵可缓存，固定场景加载时间不重复计入每个视点。

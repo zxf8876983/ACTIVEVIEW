@@ -1,7 +1,7 @@
 import torch
 
-from activeview.active_view.policy_training import policy_loss
-from activeview.active_view.metrics import move_stay_metrics, regression_metrics
+from activeview.methods.active_view.training import policy_loss
+from activeview.evaluation.metrics import move_stay_metrics, regression_metrics
 
 
 def test_stage_c_loss_masks_padding_and_is_finite():

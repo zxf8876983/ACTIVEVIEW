@@ -4,9 +4,9 @@ import math
 
 import numpy as np
 
-from activeview.perception.skeleton_definition import get_skeleton_definition
-from activeview.perception.skeleton_normalizer import SkeletonNormalizer
-from activeview.dataset.babel_clean_dataset_generator import compose_root_rotation
+from activeview.perception.skeleton import get_skeleton_definition
+from activeview.perception.normalization import SkeletonNormalizer
+from activeview.data.motion.babel_clean_dataset_generator import compose_root_rotation
 
 
 def _lying_h36m_sequence(frames: int = 9) -> np.ndarray:

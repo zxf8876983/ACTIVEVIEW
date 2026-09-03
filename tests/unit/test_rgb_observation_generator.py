@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 
-from activeview.scripts.generate_hm3d_train_rgb_observations import (
+from activeview.scripts.data.generate_hm3d_train_rgb_observations import (
     FRAME_INDEX,
     IMAGE_SIZE,
     VERSION,

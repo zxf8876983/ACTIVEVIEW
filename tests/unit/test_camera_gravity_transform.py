@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from activeview.dataset.babel_clean_dataset_generator import (
+from activeview.data.motion.babel_clean_dataset_generator import (
     transform_camera_sequence_to_gravity,
 )
-from activeview.dataset.humanoid_grounding import select_floor_height
+from activeview.data.motion.humanoid_grounding import select_floor_height
 
 
 class _Hit:
