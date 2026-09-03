@@ -1,0 +1,14 @@
+{
+  "experiment_id": "EXP054-R1",
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP054_R1_h2_ceiling_decomposition/runtime/true_future_matched_joint_revision_r1.pth",
+  "checkpoint_sha256": "b05db24c7ba8466aca9dc90cb409dbbac58b3e809d72baf6d028af97f0754227",
+  "contexts": 12091,
+  "epochs": 20,
+  "batch_size": 512,
+  "optimizer": "AdamW",
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "seed": 42,
+  "train_geometry": "v1_centered",
+  "test_used": false
+}

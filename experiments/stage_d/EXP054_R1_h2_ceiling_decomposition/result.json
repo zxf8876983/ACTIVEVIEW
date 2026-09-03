@@ -1,0 +1,123 @@
+{
+  "experiment_id": "EXP054-R1",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "h1_real": {
+    "full": {
+      "accuracy": 0.6857796525344964,
+      "macro_f1": 0.6436400650666227
+    },
+    "moving_subset": {
+      "accuracy": 0.6615684664339971,
+      "macro_f1": 0.6326987126129878
+    }
+  },
+  "episode_counts": {
+    "moving_val": 9742,
+    "full_val": 13987,
+    "train_matched_contexts": 12091
+  },
+  "methods": {
+    "CURRENT_WM_JR": {
+      "moving": {
+        "accuracy": 0.6755286388831861,
+        "macro_f1": 0.6426116868574479
+      },
+      "full": {
+        "accuracy": 0.6955029670408236,
+        "macro_f1": 0.6492202185207628
+      }
+    },
+    "TRUE_FUTURE_FROZEN_JR": {
+      "moving": {
+        "accuracy": 0.668651200985424,
+        "macro_f1": 0.6374101939888788
+      },
+      "full": {
+        "accuracy": 0.6907128047472653,
+        "macro_f1": 0.6459411517827127
+      }
+    },
+    "TRUE_FUTURE_MATCHED_JR_R1": {
+      "moving": {
+        "accuracy": 0.6765551221515089,
+        "macro_f1": 0.6662915643675182
+      },
+      "full": {
+        "accuracy": 0.6962179166368772,
+        "macro_f1": 0.6695423315342488
+      }
+    },
+    "TRUE_FUTURE_GT_ORACLE": {
+      "moving": {
+        "accuracy": 0.8379182919318415,
+        "macro_f1": 0.8252406004112556
+      },
+      "full": {
+        "accuracy": 0.8086079931364839,
+        "macro_f1": 0.7867668601123645
+      }
+    }
+  },
+  "train_matched_joint_revision": {
+    "contexts": 12091,
+    "epochs": 20,
+    "batch_size": 512,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "final_loss": 0.9833771139383316,
+    "history": [
+      2.3848442435264587,
+      1.6763122429450352,
+      1.5618976354599,
+      1.5143082191546757,
+      1.4771675219138463,
+      1.4471988826990128,
+      1.4064735074838002,
+      1.3793821583191554,
+      1.3562117765347164,
+      1.3234919061263402,
+      1.2889524896939595,
+      1.2544486671686172,
+      1.2185495297114055,
+      1.201946382721265,
+      1.1533034195502598,
+      1.1154513259728749,
+      1.0953928604722023,
+      1.059529500703017,
+      1.0126572474837303,
+      0.9833771139383316
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP054_R1_h2_ceiling_decomposition/runtime/true_future_matched_joint_revision_r1.pth",
+    "checkpoint_sha256": "b05db24c7ba8466aca9dc90cb409dbbac58b3e809d72baf6d028af97f0754227"
+  },
+  "ceiling": {
+    "world_model_recoverable_headroom": 0.0010264832683227754,
+    "decision_remaining_headroom": 0.1613631697803326,
+    "total_headroom": 0.16238965304865538,
+    "wm_fraction": 0.00632111251580308,
+    "decision_fraction": 0.993678887484197
+  },
+  "action_audit": {
+    "changed_second_action_count": 1864,
+    "rescued": 349,
+    "harmful": 339,
+    "net": 10,
+    "current_oracle_action_agreement": 0.683329911722439,
+    "matched_oracle_action_agreement": 0.692773557791008
+  },
+  "provenance": {
+    "frozen_joint_revision": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+    "true_future_cache": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP046_counterfactual_recognition_dataset/val_cache.npz",
+    "stgcn_frozen": true,
+    "first_step_frozen": true,
+    "terminal_recognition_real_archived": true,
+    "perception_regenerated": false,
+    "habitat_rendering_performed": false,
+    "test_used": false,
+    "train_geometry": "v1_centered"
+  }
+}
