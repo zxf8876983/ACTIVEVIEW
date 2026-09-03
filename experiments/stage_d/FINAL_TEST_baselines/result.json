@@ -1,0 +1,103 @@
+{
+  "experiment_id": "FINAL_TEST_BASELINES",
+  "status": "COMPLETED",
+  "split": "test",
+  "test_used": true,
+  "training_performed": false,
+  "random_seed": 42,
+  "population": {
+    "full": 13774,
+    "moving_subset": 9409,
+    "moving_definition": "frozen Stage-C-v0 predicted_stays=false"
+  },
+  "methods": {
+    "full": {
+      "NoMove": {
+        "accuracy": 0.4126615362276753,
+        "macro_f1": 0.38178632403054913,
+        "count": 13774
+      },
+      "Random": {
+        "accuracy": 0.4087411064324089,
+        "macro_f1": 0.38205773707285734,
+        "count": 13774
+      },
+      "FrozenStageCv0": {
+        "accuracy": 0.625381152896762,
+        "macro_f1": 0.5637051739097438,
+        "count": 13774
+      },
+      "SafeOracle": {
+        "accuracy": 0.8449252214316829,
+        "macro_f1": 0.8111121904686223,
+        "count": 13774
+      },
+      "Multi-positive H2": {
+        "accuracy": 0.6848410047916365,
+        "macro_f1": 0.6277488276320746
+      }
+    },
+    "moving": {
+      "NoMove": {
+        "accuracy": 0.2629397385481985,
+        "macro_f1": 0.2554756653321506,
+        "count": 9409
+      },
+      "Random": {
+        "accuracy": 0.36263152300988416,
+        "macro_f1": 0.34946117348635053,
+        "count": 9409
+      },
+      "FrozenStageCv0": {
+        "accuracy": 0.5743437134658306,
+        "macro_f1": 0.5305012321646901,
+        "count": 9409
+      },
+      "SafeOracle": {
+        "accuracy": 0.8254862365819959,
+        "macro_f1": 0.8004618896969267,
+        "count": 9409
+      },
+      "Multi-positive H2": {
+        "accuracy": 0.6613880327346158,
+        "macro_f1": 0.6229838484529353
+      }
+    }
+  },
+  "deltas": {
+    "MULTI_MINUS_FROZEN_STAGE_CV0": {
+      "full": {
+        "accuracy": 0.05945985189487446,
+        "macro_f1": 0.06404365372233078
+      },
+      "moving": {
+        "accuracy": 0.0870443192687852,
+        "macro_f1": 0.09248261628824517
+      }
+    },
+    "SAFE_ORACLE_MINUS_FROZEN_STAGE_CV0": {
+      "full": {
+        "accuracy": 0.21954406853492092,
+        "macro_f1": 0.24740701655887842
+      },
+      "moving": {
+        "accuracy": 0.25114252311616536,
+        "macro_f1": 0.2699606575322365
+      }
+    }
+  },
+  "provenance": {
+    "stage_b_test": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_v11_5/stage_b/utility_labels/test.jsonl",
+    "stage_b_test_sha256": "d99f94e2ac9625462354ea2661626bc961a2cd4b48f54279c6f062360a4ec0f7",
+    "v0_test_predictions": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP014_two_step_sequential/v0_predictions/test_predictions.jsonl",
+    "v0_test_predictions_sha256": "eeb974527565204b8e6ce7a710324bb1937e758991aa54ece0437514f1b34594",
+    "final_test_result": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/FINAL_TEST/result.json",
+    "final_test_result_sha256": "b478e36af2356cb8b611be11cb3643f3a2019f59020aa5f217ab76df0f2f1c27"
+  },
+  "leakage_flags": {
+    "habitat_rendering_performed": false,
+    "perception_regenerated": false,
+    "model_training_performed": false,
+    "test_used": true
+  }
+}
