@@ -75,7 +75,10 @@ H2**. Final Test has been completed on the locked protocol:
 
 The formal package surface for the final pipeline is under
 `activeview/active_view/` (`geometry`, `data`, `world_model`,
-`joint_revision`, `rollout`, `baselines`, and `evaluation`). The executable
-final evaluator is `activeview/scripts/run_final_test.py`; frozen training
-entry points remain under `activeview/scripts/` for reproducibility. Runtime
-checkpoints and caches stay under `ACTIVEVIEW_DATA_ROOT` and are not committed.
+`joint_revision`, `rollout`, `baselines`, `evaluation`, `rgb_features`, and
+`rgb_cache`). The executable final evaluator is
+`activeview/scripts/run_final_test.py`; the frozen EXP055 training entry point
+is `activeview/scripts/train_exp055_multi_positive.py`. Runtime checkpoints and
+caches stay under `ACTIVEVIEW_DATA_ROOT` and are not committed. Historical
+Stage-D research implementations are removed from the active package; Git
+history and the experiment result directories remain available for audit.

@@ -5,9 +5,8 @@ from __future__ import annotations
 import pytest
 import torch
 
-from activeview.active_view.stage_d_world_model import CandidateObservationWorldModel, collate_world_model_context, world_model_loss
-from activeview.scripts.run_stage_d_exp042r1_045 import _corrected_metrics
-from activeview.scripts.run_stage_d_exp041_044 import _rows
+from activeview.active_view.data import rows
+from activeview.active_view.world_model import CandidateObservationWorldModel, collate_world_model_context, world_model_loss
 
 
 def _inputs(batch: int = 2) -> tuple[torch.Tensor, ...]:
@@ -38,15 +37,6 @@ def test_residual_world_model_adds_last_observation() -> None:
     model = CandidateObservationWorldModel(residual=True)
     output = model(history, descriptor, candidate)
     assert tuple(output.shape) == (1, 3, 30, 17)
-
-
-def test_corrected_metrics_use_temporal_axis_and_edges() -> None:
-    target = torch.arange(3 * 30 * 17, dtype=torch.float32).reshape(3, 30, 17).numpy()
-    prediction = target.copy(); prediction[:, 1:] += 1.0; prediction[:, :, 1] += 0.5
-    metrics = _corrected_metrics(prediction, target, [(0, 1)])
-    assert metrics["velocity_rmse"] > 0.0
-    assert metrics["acceleration_rmse"] > 0.0
-    assert metrics["bone_length_mae"] > 0.0
 
 
 def test_world_model_rejects_wrong_skeleton_shape() -> None:
@@ -83,4 +73,4 @@ def test_context_collate_pads_variable_candidate_counts() -> None:
 
 def test_test_split_is_locked(tmp_path) -> None:
     with pytest.raises(ValueError, match="Test"):
-        _rows(tmp_path, "test")
+        rows(tmp_path, "test")

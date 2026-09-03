@@ -19,7 +19,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from activeview.active_view.stage_d_rgb_context import (
+from activeview.active_view.rgb_features import (
     DINO_EMBED_DIM,
     DINO_MODEL_NAME,
     RGB_DATASET_VERSION,

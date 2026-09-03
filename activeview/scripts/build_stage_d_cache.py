@@ -16,7 +16,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from activeview.action_recognition.st_gcn_model import STGCN
-from activeview.active_view.stage_d_dataset import (
+from activeview.active_view.data import (
     build_cache_summary,
     build_second_step_rows,
     load_jsonl,

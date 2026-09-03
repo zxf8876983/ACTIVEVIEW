@@ -16,14 +16,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from activeview.active_view.stage_d_evaluation import (
-    _by_id,
-    _selected_row,
-    build_baseline_trajectories,
-    build_single_step_oracles,
-    load_jsonl,
-    summarize_stage_d_methods,
-)
+from activeview.active_view.baselines import _by_id, _selected_row, build_baseline_trajectories, build_single_step_oracles
+from activeview.active_view.data import load_jsonl
+from activeview.active_view.evaluation import summarize_stage_d_methods
 from activeview.core.paths import get_data_root
 
 N_CLASSES = 16

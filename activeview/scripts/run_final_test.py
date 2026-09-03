@@ -57,7 +57,7 @@ def _classification(predicted: Sequence[int], labels: Sequence[int]) -> dict[str
 
 def _baseline(data_root: Path) -> dict[str, dict[str, float]]:
     """Evaluate frozen Stage-C initial predictions for FULL and MOVING."""
-    from activeview.active_view.stage_d_dataset import load_jsonl
+    from activeview.active_view.data import load_jsonl
 
     path = data_root / "experiments/stage_d/EXP014_two_step_sequential/v0_predictions/test_predictions.jsonl"
     rows = load_jsonl(path)

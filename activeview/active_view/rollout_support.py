@@ -12,8 +12,8 @@ import numpy as np
 import torch
 
 from activeview.active_view.geometry import candidate_order
-from activeview.active_view.stage_d_rgb_context import RGBObservationKey, load_dinov2
-from activeview.active_view.stage_d_rgb_spatial import build_or_load_spatial_cache
+from activeview.active_view.rgb_features import RGBObservationKey, load_dinov2
+from activeview.active_view.rgb_cache import build_or_load_spatial_cache
 
 VIEW_COUNT = 32
 

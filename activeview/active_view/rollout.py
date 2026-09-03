@@ -28,8 +28,8 @@ from activeview.active_view.rollout_support import (
 )
 
 _rows = rows
-from activeview.active_view.stage_d_rgb_context import RGBObservationKey, load_dinov2, observation_keys_from_feature_rows
-from activeview.active_view.stage_d_rgb_spatial import build_or_load_spatial_cache
+from activeview.active_view.rgb_features import RGBObservationKey, load_dinov2, observation_keys_from_feature_rows
+from activeview.active_view.rgb_cache import build_or_load_spatial_cache
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 N_CLASSES = 16
