@@ -62,3 +62,20 @@ Test is run only after the final method is explicitly selected.
 
 Historical v1–v10 documents are archived under `docs/archive/legacy/` and are
 not part of the default agent context.
+
+## Frozen final method
+
+The final frozen method is **WM-E + Multi-Positive Joint Revision + Closed-Loop
+H2**. Final Test has been completed on the locked protocol:
+
+- Full: Accuracy `0.684841`, Macro-F1 `0.627749`;
+- FrozenStageCv0: Accuracy `0.625381`, Macro-F1 `0.563705`;
+- Multi-positive vs FrozenStageCv0: `+5.946` percentage points Accuracy and
+  `+6.404` percentage points Macro-F1.
+
+The formal package surface for the final pipeline is under
+`activeview/active_view/` (`geometry`, `data`, `world_model`,
+`joint_revision`, `rollout`, `baselines`, and `evaluation`). The executable
+final evaluator is `activeview/scripts/run_final_test.py`; frozen training
+entry points remain under `activeview/scripts/` for reproducibility. Runtime
+checkpoints and caches stay under `ACTIVEVIEW_DATA_ROOT` and are not committed.

@@ -95,13 +95,13 @@ def run_final_test(*, data_root: Path, device: torch.device, manifest_path: Path
         if not path.is_file() or _sha256(path) != expected:
             raise RuntimeError(f"{label} checkpoint provenance mismatch: {path}")
 
-    # Import the evaluator only after the lock check; this path is never used in this freeze round.
-    from activeview.scripts.run_exp051_r2_real_eval import run as run_r2
+    # Import the formal frozen rollout API only after the lock check.
+    from activeview.active_view.rollout import run_real_observation_evaluation
 
     out = (output_dir or (REPO_ROOT / "experiments/stage_d/FINAL_TEST")).resolve()
     out.mkdir(parents=True, exist_ok=True)
-    original = run_r2(data_root.resolve(), jr_original, device, wm_path, out / "original_jr_h2", split="test", rgb_cache_dir=rgb_cache_dir.resolve())
-    multi = run_r2(data_root.resolve(), jr_multi, device, wm_path, out / "multi_positive_jr_h2", split="test", rgb_cache_dir=rgb_cache_dir.resolve())
+    original = run_real_observation_evaluation(data_root.resolve(), jr_original, device, wm_path, out / "original_jr_h2", split="test", rgb_cache_dir=rgb_cache_dir.resolve())
+    multi = run_real_observation_evaluation(data_root.resolve(), jr_multi, device, wm_path, out / "multi_positive_jr_h2", split="test", rgb_cache_dir=rgb_cache_dir.resolve())
     baseline = _baseline(data_root.resolve())
     methods = {"INITIAL_BASELINE": baseline, "H1_REAL": _metric_pair(original, "h1_real"), "ORIGINAL_JR_H2": _metric_pair(original, "h2_real"), "MULTI_POSITIVE_JR_H2": _metric_pair(multi, "h2_real")}
     deltas: dict[str, dict[str, dict[str, float]]] = {}

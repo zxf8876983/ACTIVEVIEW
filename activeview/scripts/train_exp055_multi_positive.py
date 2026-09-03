@@ -15,13 +15,12 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
 
-from activeview.active_view.stage_d_dataset import load_jsonl
+from activeview.active_view.data import load_jsonl
 from activeview.core.paths import get_data_root
-from activeview.scripts.run_exp051_r1_closed_loop import run as run_closed_loop
-from activeview.scripts.run_stage_d_exp041_044 import _episode_sources, _rows
-from activeview.scripts.run_stage_d_exp046_048 import _load_cache
-from activeview.scripts.run_stage_d_exp049_051 import _JointRevision, _load_pairwise_and_azimuths
-from activeview.scripts.run_exp051_r1_closed_loop import _candidate_order
+from activeview.active_view.data import episode_sources as _episode_sources, load_stage_d_cache as _load_cache, rows as _rows
+from activeview.active_view.geometry import candidate_order as _candidate_order, load_pairwise_and_azimuths as _load_pairwise_and_azimuths
+from activeview.active_view.joint_revision import JointRevision as _JointRevision
+from activeview.active_view.rollout import run_real_observation_evaluation as run_closed_loop
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SEED = 42
