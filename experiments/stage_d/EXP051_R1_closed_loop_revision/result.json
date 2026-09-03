@@ -1,29 +1,179 @@
 {
   "experiment_id": "EXP051-R1",
-  "status": "BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
-  "checkpoint_candidates_checked": [
-    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
-    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_best.pth",
-    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/checkpoint.pth",
-    "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/model.pth",
-    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
-    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_best.pth",
-    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/checkpoint.pth",
-    "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/model.pth",
-    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
-    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_best.pth",
-    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/checkpoint.pth",
-    "/home/zxf/MG08/robot/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/model.pth"
-  ],
-  "joint_revision_checkpoint_paths_found": [],
+  "status": "COMPLETED",
   "test_used": false,
-  "training_performed": false,
+  "training_performed": true,
   "wm_e_frozen": true,
+  "wm_e_checkpoint_sha256": "db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6",
   "joint_revision_frozen": true,
-  "stgcn_frozen": true,
-  "habitat_rendering_performed": false,
-  "perception_regenerated": false,
-  "history_shift_executed": false,
-  "h2_rollout_executed": false,
-  "reason": "EXP050 Joint Revision checkpoint is required for exact H1 reproduction; it is absent, and retraining is forbidden."
+  "joint_revision_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+  "joint_revision_checkpoint_sha256": "332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac",
+  "rgb_history_artifact_audit": {
+    "cache_hit_count": 311744,
+    "cache_miss_count": 0,
+    "extraction_time_sec": 0.0,
+    "cache_reused": true,
+    "contexts": 9742,
+    "views": 311744,
+    "elapsed_sec": 15.144859611988068,
+    "future_candidate_rgb_used": false
+  },
+  "h1": {
+    "canonical_trajectory": {
+      "episode_count": 13987,
+      "recognition": {
+        "n": 13987,
+        "accuracy": 0.6850647029384428,
+        "macro_f1": 0.6420021270585108,
+        "per_class": {
+          "0": {
+            "support": 1420,
+            "accuracy": 0.8577464788732394,
+            "f1": 0.7629188850610711
+          },
+          "1": {
+            "support": 142,
+            "accuracy": 0.4859154929577465,
+            "f1": 0.6418604651162791
+          },
+          "2": {
+            "support": 213,
+            "accuracy": 0.5070422535211268,
+            "f1": 0.5714285714285715
+          },
+          "3": {
+            "support": 284,
+            "accuracy": 0.13028169014084506,
+            "f1": 0.18362282878411912
+          },
+          "4": {
+            "support": 284,
+            "accuracy": 0.795774647887324,
+            "f1": 0.8354898336414048
+          },
+          "5": {
+            "support": 994,
+            "accuracy": 0.8812877263581489,
+            "f1": 0.79890560875513
+          },
+          "6": {
+            "support": 852,
+            "accuracy": 0.5727699530516432,
+            "f1": 0.6337662337662338
+          },
+          "7": {
+            "support": 1420,
+            "accuracy": 0.8232394366197183,
+            "f1": 0.8434343434343435
+          },
+          "8": {
+            "support": 1420,
+            "accuracy": 0.6204225352112676,
+            "f1": 0.6186797752808989
+          },
+          "9": {
+            "support": 1207,
+            "accuracy": 0.7274233637116818,
+            "f1": 0.6948951325682627
+          },
+          "10": {
+            "support": 1420,
+            "accuracy": 0.8161971830985916,
+            "f1": 0.8275615851481612
+          },
+          "11": {
+            "support": 1420,
+            "accuracy": 0.5380281690140845,
+            "f1": 0.572070385623362
+          },
+          "12": {
+            "support": 1420,
+            "accuracy": 0.7183098591549296,
+            "f1": 0.6039076376554173
+          },
+          "13": {
+            "support": 639,
+            "accuracy": 0.6666666666666666,
+            "f1": 0.6915584415584416
+          },
+          "14": {
+            "support": 213,
+            "accuracy": 0.8450704225352113,
+            "f1": 0.7912087912087912
+          },
+          "15": {
+            "support": 639,
+            "accuracy": 0.1298904538341158,
+            "f1": 0.20072551390568316
+          }
+        }
+      },
+      "decision_regret": {
+        "count": 13987,
+        "mean": 2.326469379208445,
+        "median": 0.004201965115498751,
+        "p90": 8.836142025142902
+      },
+      "positive_headroom_capture": {
+        "episode_count": 11879,
+        "raw_mean": -147.88930363837397,
+        "clipped_mean": 0.48858321634157525,
+        "aggregate_positive_clipped_ratio": 0.6283256032847304
+      },
+      "movement": {
+        "move_0_rate": 0.3034961035247015,
+        "move_1_rate": 0.44705798241223993,
+        "move_2_rate": 0.24944591406305855,
+        "average_moves": 0.945949810538357,
+        "trajectory_geodesic_cost_m": {
+          "count": 13987,
+          "mean": 2.528873751024262,
+          "median": 2.2104384899139404,
+          "p90": 5.377213954925537
+        }
+      }
+    },
+    "terminal": {
+      "accuracy": 0.6605419831656744,
+      "macro_f1": 0.6318632693040263
+    },
+    "fused": {
+      "accuracy": 0.5822213097926504,
+      "macro_f1": 0.5267886477746616
+    },
+    "average_moves": 0.35814001231779924,
+    "mean_path": 0.47083177788898556
+  },
+  "h2": {
+    "terminal": {
+      "accuracy": 0.6755286388831861,
+      "macro_f1": 0.6426116868574479
+    },
+    "fused": {
+      "accuracy": 0.6073701498665571,
+      "macro_f1": 0.5525566631647156
+    },
+    "average_moves": 0.5394169575035926,
+    "mean_path": 0.7381686124672646
+  },
+  "history_shift": {
+    "episodes_with_recurrent_step": 3489,
+    "step2_world_model_recomputed": true,
+    "step2_candidate_graph_recomputed": true,
+    "rolling_two_view_history": true
+  },
+  "action_audit": {
+    "h1_h2_action_sequence_changed": 1766,
+    "candidate_identity_mismatch_count": 0
+  },
+  "leakage_flags": {
+    "future_rgb_access_before_execution": false,
+    "future_skeleton_access_before_execution": false,
+    "visited_rgb_revealed_only_after_execution": true,
+    "visited_skeleton_revealed_only_after_execution": true,
+    "gt_label_legal_input": false,
+    "true_future_logp_legal_input": false,
+    "habitat_rendering_performed": false,
+    "perception_regenerated": false
+  }
 }

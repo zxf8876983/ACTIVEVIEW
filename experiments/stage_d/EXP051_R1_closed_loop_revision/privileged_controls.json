@@ -1,6 +1,7 @@
 {
-  "status": "NOT_RUN_BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
+  "status": "NOT_RUN",
   "executed": false,
+  "note": "Privileged H2 branches were not run in the minimal legal rollout implementation.",
   "gt_label_legal_input": false,
   "true_future_logp_legal_input": false
 }

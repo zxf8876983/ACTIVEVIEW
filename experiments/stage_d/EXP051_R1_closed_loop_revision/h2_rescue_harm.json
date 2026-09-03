@@ -1,4 +1,5 @@
 {
-  "status": "NOT_RUN_BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
-  "executed": false
+  "status": "NOT_COMPUTED_IN_R1_FAST_ROLLOUT",
+  "executed": false,
+  "note": "Action-level rescue/harm arrays were not persisted by the rollout engine."
 }

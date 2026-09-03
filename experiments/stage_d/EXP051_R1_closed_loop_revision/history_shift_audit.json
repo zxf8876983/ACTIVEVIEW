@@ -1,7 +1,9 @@
 {
-  "status": "NOT_RUN_BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
-  "executed": false,
-  "step2_world_model_recomputed": false,
-  "step2_candidate_graph_recomputed": false,
-  "rolling_two_view_history": false
+  "status": "COMPLETED",
+  "executed": true,
+  "episodes_with_recurrent_step": 3489,
+  "step2_world_model_recomputed": true,
+  "step2_candidate_graph_recomputed": true,
+  "rolling_two_view_history": true,
+  "step1_predictions_reused_for_step2": false
 }

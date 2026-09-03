@@ -1,6 +1,8 @@
 {
-  "status": "NOT_RUN_BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
-  "reveal_store_executed": false,
+  "status": "PASS",
+  "reveal_store_executed": true,
   "future_rgb_access_before_execution": false,
-  "future_skeleton_access_before_execution": false
+  "future_skeleton_access_before_execution": false,
+  "visited_rgb_revealed_only_after_execution": true,
+  "visited_skeleton_revealed_only_after_execution": true
 }

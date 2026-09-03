@@ -1,0 +1,9 @@
+{
+  "experiment_id": "EXP050-R1",
+  "checkpoint_sha256": "332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac",
+  "checkpoint_runtime_path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+  "architecture": "JointRevision",
+  "source_commit": "4c91cb3000096479901182d5e35e352c0d2898d7",
+  "test_used": false,
+  "training_performed": true
+}

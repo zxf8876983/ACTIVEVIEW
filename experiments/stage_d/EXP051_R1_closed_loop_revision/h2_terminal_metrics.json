@@ -1,4 +1,9 @@
 {
-  "status": "NOT_RUN_BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
-  "executed": false
+  "status": "COMPLETED",
+  "executed": true,
+  "episode_count": 9742,
+  "accuracy": 0.6755286388831861,
+  "macro_f1": 0.6426116868574479,
+  "average_moves": 0.5394169575035926,
+  "mean_path": 0.7381686124672646
 }

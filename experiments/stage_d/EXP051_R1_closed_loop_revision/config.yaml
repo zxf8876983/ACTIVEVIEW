@@ -1,10 +1,10 @@
 experiment_id: EXP051-R1
-status: BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT
+status: COMPLETED
 split: train_val_only
 test_used: false
-training_performed: false
+training_performed: true
 wm_e_frozen: true
 joint_revision_frozen: true
 stgcn_frozen: true
 habitat_rendering_performed: false
-joint_revision_checkpoint: null
+joint_revision_checkpoint: /home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth

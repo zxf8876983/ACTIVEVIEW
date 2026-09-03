@@ -1,6 +1,11 @@
 {
-  "status": "BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
-  "executed": false,
+  "status": "COMPLETED",
+  "executed": true,
+  "checkpoint_sha256": "332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac",
+  "all_legal_accuracy": 0.6850647029384428,
+  "all_legal_macro_f1": 0.6420021270585108,
   "reference_accuracy": 0.686566,
-  "reference_macro_f1": 0.646064
+  "reference_macro_f1": 0.646064,
+  "delta_accuracy_vs_reference": -0.001501297061557212,
+  "delta_macro_f1_vs_reference": -0.004061872941489173
 }

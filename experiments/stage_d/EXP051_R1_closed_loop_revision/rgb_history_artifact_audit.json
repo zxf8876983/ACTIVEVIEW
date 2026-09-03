@@ -1,7 +1,15 @@
 {
-  "status": "NOT_RUN_BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT",
-  "all_view_dino_audit": false,
-  "rgb_extraction_performed": false,
+  "status": "PASS",
+  "all_view_dino_audit": true,
+  "all_view_contexts": 9742,
+  "all_view_observations": 311744,
+  "all_view_dino_cache": "/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_allview_exp051_r1",
+  "rgb_extraction_performed": true,
+  "cache_hit_count": 311744,
+  "cache_miss_count": 0,
+  "embedding_shape": [16, 768],
+  "dtype": "float16",
   "habitat_rendering_performed": false,
-  "future_rgb_substituted": false
+  "future_rgb_substituted": false,
+  "future_candidate_rgb_used": false
 }

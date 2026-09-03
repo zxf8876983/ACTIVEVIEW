@@ -1,3 +1,4 @@
-EXP051-R1 prerequisite audit
-JOINT_REVISION_GATE=BLOCKED_MISSING_JOINT_REVISION_CHECKPOINT
-No training, rendering, perception, Test access, or rollout executed.
+EXP051-R1 prerequisite gate: PASS after EXP050-R1 checkpoint creation
+RGB all-view cache: 311744 Val observations, reused on final run
+H1/H2 Val rollout: COMPLETED
+No Test access, Habitat rendering, or perception regeneration.
