@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP057",
+  "status": "FROZEN_BEFORE_TEST",
+  "canonical_method_name": "WM-E + Multi-Positive Joint Revision + Closed-Loop H2",
+  "recommended_canonical": "MULTI_POSITIVE_H2",
+  "wm_e": {
+    "path": "/tmp/activeview_exp042r1_E/last.pth",
+    "sha256": "db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6",
+    "frozen": true
+  },
+  "joint_revision": {
+    "objective": "MULTI_POSITIVE",
+    "checkpoint_path": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP055_multi_positive_joint_revision/runtime/joint_revision_multi_positive.pth",
+    "sha256": "8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c",
+    "seed": 42,
+    "frozen": true
+  },
+  "stgcn": {
+    "checkpoint_path": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled_best.pth",
+    "sha256": "362ac23195688988d637244eb2a13fa0e7b563b21d143846c671a5cec6b0d0ce",
+    "frozen": true
+  },
+  "perception": {
+    "protocol": "YOLO26n-Pose + VideoPose3D + normalized H36M17 + frozen ST-GCN",
+    "archived_perception_frozen": true,
+    "regenerated": false
+  },
+  "policy": {
+    "horizon": 2,
+    "initial_observed_views": ["s0", "s1"],
+    "candidate_budget": "ALL_LEGAL",
+    "candidate_ordering": "geodesic distance, azimuth tie ordering",
+    "visited_viewpoints_removed": true,
+    "closed_loop": true,
+    "stage_c_initial_policy_frozen": true,
+    "second_step_geometry": "current-viewpoint-centered",
+    "terminal_real_observation": true,
+    "terminal_har": "real archived skeleton -> frozen ST-GCN -> argmax"
+  },
+  "metrics": {
+    "primary_population": "FULL",
+    "primary_metrics": ["Accuracy", "Macro-F1"],
+    "secondary_population": "MOVING_SUBSET",
+    "secondary_metrics": ["Accuracy", "Macro-F1"]
+  },
+  "test": {
+    "used": false,
+    "unlocked": false
+  }
+}

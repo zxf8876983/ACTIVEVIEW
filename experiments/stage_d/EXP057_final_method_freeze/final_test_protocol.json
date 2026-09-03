@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP057",
+  "split": "test",
+  "explicit_authorization_required": true,
+  "methods": [
+    {"id": "INITIAL_BASELINE", "name": "Initial / frozen Stage-C baseline"},
+    {"id": "H1_REAL", "name": "H1 real-observation policy"},
+    {"id": "ORIGINAL_JR_H2", "name": "Original Joint Revision H2", "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth", "sha256": "332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac"},
+    {"id": "MULTI_POSITIVE_JR_H2", "name": "WM-E + Multi-Positive JR + Closed-Loop H2", "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP055_multi_positive_joint_revision/runtime/joint_revision_multi_positive.pth", "sha256": "8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c"}
+  ],
+  "populations": {
+    "primary": "FULL",
+    "secondary": "MOVING"
+  },
+  "metrics": ["Accuracy", "Macro-F1"],
+  "deltas": [
+    "MULTI_POSITIVE_JR_H2 - INITIAL_BASELINE",
+    "MULTI_POSITIVE_JR_H2 - H1_REAL",
+    "MULTI_POSITIVE_JR_H2 - ORIGINAL_JR_H2"
+  ],
+  "constraints": {
+    "no_new_method_variants": true,
+    "no_classwise_tuning": true,
+    "no_new_seed": true,
+    "no_h3": true,
+    "terminal_observation": "real archived skeleton through frozen ST-GCN"
+  },
+  "test_used": false
+}
