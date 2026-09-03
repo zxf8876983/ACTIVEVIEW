@@ -1,0 +1,11 @@
+experiment_id: EXP054
+split: val
+train_matched_joint_revision: true
+seed: 42
+epochs: 20
+batch_size: 512
+optimizer: AdamW
+learning_rate: 0.001
+weight_decay: 0.0001
+test_used: false
+deployable: false

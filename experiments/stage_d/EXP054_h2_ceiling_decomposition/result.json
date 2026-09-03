@@ -1,0 +1,102 @@
+{
+  "experiment_id": "EXP054",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "h1_real": {
+    "full": {
+      "accuracy": 0.6857796525344964,
+      "macro_f1": 0.6436400650666227
+    },
+    "moving_subset": {
+      "accuracy": 0.6615684664339971,
+      "macro_f1": 0.6326987126129878
+    }
+  },
+  "episode_counts": {
+    "moving_val": 9742,
+    "full_val": 13987,
+    "train_matched_contexts": 12091
+  },
+  "methods": {
+    "CURRENT_WM_JR": {
+      "moving": {
+        "accuracy": 0.6755286388831861,
+        "macro_f1": 0.6426116868574479
+      },
+      "full": {
+        "accuracy": 0.6955029670408236,
+        "macro_f1": 0.6492202185207628
+      }
+    },
+    "TRUE_FUTURE_FROZEN_JR": {
+      "moving": {
+        "accuracy": 0.668651200985424,
+        "macro_f1": 0.6374101939888788
+      },
+      "full": {
+        "accuracy": 0.6907128047472653,
+        "macro_f1": 0.6459411517827127
+      }
+    },
+    "TRUE_FUTURE_MATCHED_JR": {
+      "moving": {
+        "accuracy": 0.6711147608293985,
+        "macro_f1": 0.6608193319052518
+      },
+      "full": {
+        "accuracy": 0.6924286837777937,
+        "macro_f1": 0.665222315538208
+      }
+    },
+    "TRUE_FUTURE_GT_ORACLE": {
+      "moving": {
+        "accuracy": 0.8379182919318415,
+        "macro_f1": 0.8252406004112556
+      },
+      "full": {
+        "accuracy": 0.8086079931364839,
+        "macro_f1": 0.7867668601123645
+      }
+    }
+  },
+  "train_matched_joint_revision": {
+    "contexts": 12091,
+    "epochs": 20,
+    "batch_size": 512,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "final_loss": 1.1169028853376706,
+    "training_reused_for_final_audit": true,
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP054_h2_ceiling_decomposition/runtime/true_future_matched_joint_revision.pth",
+    "checkpoint_sha256": "70c85b508ad5e3836c4fd717ef05c11bf01ea845ed1a8cf44b2de15f23cb1e9c",
+    "reused": true
+  },
+  "ceiling": {
+    "world_model_recoverable_headroom": -0.004413878053787679,
+    "decision_remaining_headroom": 0.16680353110244306,
+    "total_headroom": 0.16238965304865538,
+    "wm_fraction": -0.02718078381795167,
+    "decision_fraction": 1.0271807838179516
+  },
+  "action_audit": {
+    "changed_second_action_count": 1872,
+    "rescued": 323,
+    "harmful": 366,
+    "net": -43,
+    "current_oracle_action_agreement": 0.683329911722439,
+    "matched_oracle_action_agreement": 0.6895914596592075
+  },
+  "provenance": {
+    "frozen_joint_revision": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+    "true_future_cache": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP046_counterfactual_recognition_dataset/val_cache.npz",
+    "stgcn_frozen": true,
+    "first_step_frozen": true,
+    "terminal_recognition_real_archived": true,
+    "perception_regenerated": false,
+    "habitat_rendering_performed": false,
+    "test_used": false
+  }
+}
