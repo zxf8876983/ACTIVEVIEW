@@ -7,8 +7,5 @@
   "leakage_flags": {
     "visited_true_skeleton_used_after_transition": false,
     "predicted_future_skeleton_used_for_internal_imagination": false
-  },
-  "device": "cuda:0",
-  "environment": "conda:habitat",
-  "training_performed": false
+  }
 }

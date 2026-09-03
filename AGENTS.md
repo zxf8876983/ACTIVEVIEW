@@ -35,6 +35,27 @@ under `docs/archive/` are not default context.
 - Resolve paths through `activeview/core/paths.py`; do not hardcode new machine
   paths or create repository symlinks to runtime data.
 
+## Runtime environment and GPU policy
+
+- The user authorizes project tasks to run the Conda `habitat` environment
+  outside the Codex sandbox when GPU access or runtime artifacts require it.
+  Such external execution remains scoped to this repository's approved
+  experiments and must follow the checks below.
+- All project Python commands must use the Conda `habitat` environment; do not
+  use the system Python. Prefer
+  `/home/zxf/anaconda3/envs/habitat/bin/python` or
+  `conda run -n habitat python ...`. Do not assume `conda activate` persists
+  between shell commands.
+- This project is GPU-based. Before any training, evaluation, inference or
+  experiment, run `nvidia-smi` and verify CUDA with:
+  `/home/zxf/anaconda3/envs/habitat/bin/python -c "import torch; print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'NO CUDA')"`.
+- Use CUDA whenever it is available. Do not silently fall back to CPU for a
+  PyTorch workload. If CUDA is expected but unavailable, stop and report the
+  problem instead of running the workload.
+- Before launching a long experiment, verify the Conda/Python environment, GPU
+  availability and selected GPU, and print the Python executable and PyTorch
+  CUDA status.
+
 ## Frozen v11.5 scientific invariants
 
 Do not change these definitions without explicit user authorization:

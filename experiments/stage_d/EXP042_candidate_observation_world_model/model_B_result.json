@@ -4,68 +4,68 @@
     "train_contexts": 29133,
     "train_skeleton_targets": 58266,
     "target_scope": "Stage-D remaining p2/p3 candidates",
-    "final_loss": 0.025404936474196286,
+    "final_loss": 0.025221797381226423,
     "history": [
       {
         "epoch": 1,
-        "loss": 0.10192177696616737
+        "loss": 0.10443382347330936
       },
       {
         "epoch": 2,
-        "loss": 0.0401403596492065
+        "loss": 0.040114352898421274
       },
       {
         "epoch": 3,
-        "loss": 0.0364524474135348
+        "loss": 0.03607700263581188
       },
       {
         "epoch": 4,
-        "loss": 0.03380076449980894
+        "loss": 0.03388493618965394
       },
       {
         "epoch": 5,
-        "loss": 0.032386889881787034
+        "loss": 0.03229761853293942
       },
       {
         "epoch": 6,
-        "loss": 0.03154704866489237
+        "loss": 0.03138623871748053
       },
       {
         "epoch": 7,
-        "loss": 0.03011195371792826
+        "loss": 0.029962859091591614
       },
       {
         "epoch": 8,
-        "loss": 0.028942349098216934
+        "loss": 0.028695228385025792
       },
       {
         "epoch": 9,
-        "loss": 0.02786806382995099
+        "loss": 0.027599044756212155
       },
       {
         "epoch": 10,
-        "loss": 0.026756995592121954
+        "loss": 0.02670660523788331
       },
       {
         "epoch": 11,
-        "loss": 0.026191747468249402
+        "loss": 0.02604349045220325
       },
       {
         "epoch": 12,
-        "loss": 0.025404936474196286
+        "loss": 0.025221797381226423
       }
     ],
-    "elapsed_seconds": 113.25128170801327,
+    "elapsed_seconds": 445.38445569295436,
     "checkpoint": "/tmp/activeview_exp042_WM_B/last.pth"
   },
   "val": {
     "variant": "B",
     "prediction_scope": "Stage-D remaining p2/p3 candidates",
     "p2_p3": {
-      "mae": 0.12129923036765919,
-      "rmse": 0.18799253634188748,
-      "velocity_rmse": 0.1852573697986213,
-      "bone_length_distortion": 0.09339931087347858
+      "mae": 0.1220190141511082,
+      "rmse": 0.18669860168855873,
+      "velocity_rmse": 0.18220090710329062,
+      "bone_length_distortion": 0.09568628547070904
     },
     "prediction_count": 18648
   },

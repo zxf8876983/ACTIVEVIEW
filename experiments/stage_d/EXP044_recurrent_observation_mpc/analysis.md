@@ -1,6 +1,3 @@
-# EXP044 — Recurrent Observation MPC
+# EXP044
 
-**Not executed.** The current campaign implementation has no validated
-recurrent multi-step trajectory evaluator/history-rollout entry point, so it
-records `SKIPPED_REQUIRES_RECURRENT_WORLD_MODEL_ROLLOUT` rather than emitting
-non-canonical numbers. No Test data was read.
+Recurrent MPC was not materialized in this run; no Test data was read.
