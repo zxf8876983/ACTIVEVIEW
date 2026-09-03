@@ -31,6 +31,7 @@ def _write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
 def generate(
     *, feature_root: Path, stage_b_root: Path, checkpoint: Path,
     output_dir: Path, device_name: str, batch_size: int,
+    splits: tuple[str, ...] = ("train", "val"),
 ) -> dict[str, Any]:
     summary_path = feature_root / "stage_c_feature_summary.json"
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -44,7 +45,9 @@ def generate(
     output_dir.mkdir(parents=True, exist_ok=True)
     counts: dict[str, int] = {}
     hashes: dict[str, str] = {}
-    for split in ("train", "val"):
+    if not splits or any(split not in {"train", "val", "test"} for split in splits):
+        raise ValueError("splits must be drawn from train, val, test")
+    for split in splits:
         dataset = EpisodeFeatureDataset(feature_root / "features" / f"{split}.jsonl", **stats)
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_episode_batch, num_workers=0)
         rows = predict_dataset(model, loader, load_stage_b_lookup(stage_b_root / "utility_labels" / f"{split}.jsonl"), device, model_type="set_ranker")
@@ -57,7 +60,7 @@ def generate(
         "model": "frozen Stage C-v0 Set Ranker", "test_used": False, "test_generated": False,
         "checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": file_sha256(checkpoint),
         "feature_summary": str(summary_path.resolve()), "feature_summary_sha256": file_sha256(summary_path),
-        "prediction_files": {split: str((output_dir / f"{split}_predictions.jsonl").resolve()) for split in ("train", "val")},
+        "prediction_files": {split: str((output_dir / f"{split}_predictions.jsonl").resolve()) for split in splits},
         "prediction_file_sha256": hashes, "prediction_counts": counts,
     }
     (output_dir / "manifest.json").write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -73,10 +76,11 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--batch-size", type=int, default=256)
+    parser.add_argument("--splits", nargs="+", choices=("train", "val", "test"), default=("train", "val"))
     args = parser.parse_args()
     if args.batch_size <= 0:
         raise ValueError("--batch-size must be positive")
-    print(json.dumps(generate(feature_root=args.feature_root, stage_b_root=args.stage_b_root, checkpoint=args.checkpoint, output_dir=args.output_dir, device_name=args.device, batch_size=args.batch_size), indent=2, ensure_ascii=False))
+    print(json.dumps(generate(feature_root=args.feature_root, stage_b_root=args.stage_b_root, checkpoint=args.checkpoint, output_dir=args.output_dir, device_name=args.device, batch_size=args.batch_size, splits=tuple(args.splits)), indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

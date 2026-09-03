@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Mapping, Sequence
 
 import numpy as np
 import torch
@@ -28,10 +28,33 @@ from activeview.scripts.run_exp051_r1_closed_loop import (
     build_rgb_cache,
     VisitedObservationStore,
 )
+from activeview.active_view.stage_d_rgb_context import RGBObservationKey, load_dinov2, observation_keys_from_feature_rows
+from activeview.active_view.stage_d_rgb_spatial import build_or_load_spatial_cache
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 N_CLASSES = 16
 VIEW_COUNT = 32
+
+
+def _build_history_rgb_cache(rows: Sequence[Mapping[str, Any]], device: torch.device, cache_dir: Path, extra_views: Mapping[str, int | None] | None = None) -> tuple[dict[tuple[str, str, str, int], np.ndarray], dict[str, Any]]:
+    keys, _ = observation_keys_from_feature_rows(rows)
+    if extra_views:
+        expanded = set(keys)
+        for row in rows:
+            selected = extra_views.get(str(row["episode_id"]))
+            if selected is not None:
+                expanded.add(RGBObservationKey(str(row["scene_id"]), str(row["region"]), str(row["record_id"]), int(selected)))
+        keys = sorted(expanded, key=lambda item: item.tuple)
+    values, manifest, info = build_or_load_spatial_cache(
+        rgb_root=Path("/home/zxf/MG08/robot/ActiveView/datasets/offline/hm3d-train"),
+        cache_dir=cache_dir,
+        keys=keys,
+        model_loader=load_dinov2,
+        device=device,
+        batch_size=64,
+    )
+    lookup = {(str(row["scene_id"]), str(row["region"]), str(row["record_id"]), int(row["viewpoint_id"])): np.asarray(values[index], dtype=np.float32) for index, row in enumerate(manifest)}
+    return lookup, {**info, "contexts": len(rows), "views": len(keys), "future_candidate_rgb_used": False}
 
 
 def _split_rows(data_root: Path, split: str) -> list[dict[str, Any]]:
@@ -110,7 +133,7 @@ def _paired(pred_h1: Sequence[int], pred_h2: Sequence[int], labels: Sequence[int
     return {"n": int(len(y)), "rescued": rescued, "harmful": harmful, "net": rescued - harmful, "mcnemar_p": p_value, "delta_accuracy": float(np.mean(acc_delta)), "delta_macro_f1": float(_macro_f1(p2, y) - _macro_f1(p1, y)), "accuracy_ci95": [float(np.quantile(boot_acc, .025)), float(np.quantile(boot_acc, .975))], "macro_f1_ci95": [float(np.quantile(boot_f1, .025)), float(np.quantile(boot_f1, .975))], "bootstrap_replicates": 10000, "seed": 42}
 
 
-def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: Path, output_dir: Path | None = None, split: str = "val") -> dict[str, Any]:
+def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: Path, output_dir: Path | None = None, split: str = "val", rgb_cache_dir: Path | None = None) -> dict[str, Any]:
     if split not in {"val", "test"}:
         raise ValueError(f"unsupported split: {split}")
     rows = _split_rows(data_root, split); sources = _split_sources(data_root, split)
@@ -121,8 +144,11 @@ def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: 
     orders = {str(r["episode_id"]): ([] if bool(v0[str(r["episode_id"])] ["predicted_stays"]) else _candidate_order(r, int(r["s1_viewpoint_id"]), {int(r["s0_viewpoint_id"]), int(r["s1_viewpoint_id"])}, pairwise[(str(r["scene_id"]), str(r["region"]))], azimuths[(str(r["scene_id"]), str(r["region"]))])) for r in rows}
     joint_payload = torch.load(checkpoint, map_location=device, weights_only=False); joint = _JointRevision().to(device); joint.load_state_dict(joint_payload["model_state_dict"]); joint.eval()
     wm = _load_wm_e(wm_checkpoint, device); stgcn = _load_stgcn(data_root, device)
-    rgb_lookup, rgb_audit = build_rgb_cache(data_root, rows, sources, device, Path("/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_allview_exp051_r1"))
     initial_selected = _joint_select(joint, cache, rows, orders, "ALL_LEGAL", device); selected_by_episode = {str(r["episode_id"]): v for r, v in zip(rows, initial_selected)}
+    if rgb_cache_dir is None:
+        rgb_lookup, rgb_audit = build_rgb_cache(data_root, rows, sources, device, Path("/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_allview_exp051_r1"))
+    else:
+        rgb_lookup, rgb_audit = _build_history_rgb_cache(rows, device, rgb_cache_dir, extra_views=selected_by_episode)
     cache_indices = {str(v): i for i, v in enumerate(cache["episode_ids"].tolist())}
     labels: list[int] = []; moving_labels: list[int] = []; h1_terminal: list[int] = []; h2_terminal: list[int] = []; h1_fused: list[int] = []; h2_fused: list[int] = []; h1_moves: list[int] = []; h2_moves: list[int] = []; h2_action_signatures: list[list[int]] = []
     h0_imag: list[np.ndarray] = []; h0_true: list[np.ndarray] = []; h0_labels: list[int] = []; h1_imag: list[np.ndarray] = []; h1_true: list[np.ndarray] = []; h1_labels: list[int] = []
@@ -153,7 +179,11 @@ def run(data_root: Path, checkpoint: Path, device: torch.device, wm_checkpoint: 
                 imagined_logs = _log_probs(stgcn, imagined_s, device); true_logs = archive["logp"][np.asarray(remaining, dtype=np.int64)]; h1_imag.append(imagined_logs); h1_true.append(true_logs); h1_labels.append(label)
                 second_choice = _joint_choice(joint, (obs1.logp, revealed.logp), imagined_logs, cd_np, device)
                 if second_choice is not None:
-                    v2 = int(remaining[second_choice]); store.reveal(v2); h2_visited.append(v2); h2_current = v2; h2_count = 2
+                    v2 = int(remaining[second_choice])
+                    # No WM inference follows the terminal second move, so the
+                    # archived skeleton/log-probability is sufficient here;
+                    # avoid loading an unneeded terminal RGB frame.
+                    h2_visited.append(v2); h2_current = v2; h2_count = 2
         h2_moves.append(h2_count); h2_action_signatures.append([int(value) for value in h2_visited[2:]]); h2_terminal.append(int(np.argmax(archive["logp"][h2_current]))); h2_fused.append(int(np.argmax(np.mean(np.exp(archive["logp"][h2_visited]), axis=0))))
     moving_ids = [str(r["episode_id"]) for r in rows]
     by_id = {episode_id: index for index, episode_id in enumerate(moving_ids)}

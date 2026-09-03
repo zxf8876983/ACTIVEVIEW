@@ -1,0 +1,139 @@
+{
+  "experiment_id": "FINAL_TEST",
+  "status": "COMPLETED",
+  "split": "test",
+  "methods": {
+    "INITIAL_BASELINE": {
+      "full": {
+        "accuracy": 0.4126615362276753,
+        "macro_f1": 0.38178632403054913,
+        "count": 13774
+      },
+      "moving": {
+        "accuracy": 0.2629397385481985,
+        "macro_f1": 0.2554756653321506,
+        "count": 9409
+      }
+    },
+    "H1_REAL": {
+      "full": {
+        "accuracy": 0.6735153187164222,
+        "macro_f1": 0.6230498724709267
+      },
+      "moving": {
+        "accuracy": 0.6448081623977043,
+        "macro_f1": 0.6124965376813798
+      }
+    },
+    "ORIGINAL_JR_H2": {
+      "full": {
+        "accuracy": 0.680557572237549,
+        "macro_f1": 0.6291110635147539
+      },
+      "moving": {
+        "accuracy": 0.6551174407482198,
+        "macro_f1": 0.6218520494358288
+      }
+    },
+    "MULTI_POSITIVE_JR_H2": {
+      "full": {
+        "accuracy": 0.6848410047916365,
+        "macro_f1": 0.6277488276320746
+      },
+      "moving": {
+        "accuracy": 0.6613880327346158,
+        "macro_f1": 0.6229838484529353
+      }
+    }
+  },
+  "deltas": {
+    "MULTI_MINUS_INITIAL": {
+      "full": {
+        "accuracy": 0.27217946856396114,
+        "macro_f1": 0.2459625036015255
+      },
+      "moving": {
+        "accuracy": 0.39844829418641725,
+        "macro_f1": 0.3675081831207847
+      }
+    },
+    "MULTI_MINUS_H1": {
+      "full": {
+        "accuracy": 0.011325686075214225,
+        "macro_f1": 0.004698955161147933
+      },
+      "moving": {
+        "accuracy": 0.01657987033691144,
+        "macro_f1": 0.010487310771555514
+      }
+    },
+    "MULTI_MINUS_ORIGINAL_H2": {
+      "full": {
+        "accuracy": 0.004283432554087474,
+        "macro_f1": -0.0013622358826792524
+      },
+      "moving": {
+        "accuracy": 0.0062705919863960125,
+        "macro_f1": 0.0011317990171064718
+      }
+    }
+  },
+  "test_used": true,
+  "training_performed": false,
+  "protocol": {
+    "experiment_id": "EXP057",
+    "split": "test",
+    "explicit_authorization_required": true,
+    "methods": [
+      {
+        "id": "INITIAL_BASELINE",
+        "name": "Initial / frozen Stage-C baseline"
+      },
+      {
+        "id": "H1_REAL",
+        "name": "H1 real-observation policy"
+      },
+      {
+        "id": "ORIGINAL_JR_H2",
+        "name": "Original Joint Revision H2",
+        "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+        "sha256": "332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac"
+      },
+      {
+        "id": "MULTI_POSITIVE_JR_H2",
+        "name": "WM-E + Multi-Positive JR + Closed-Loop H2",
+        "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP055_multi_positive_joint_revision/runtime/joint_revision_multi_positive.pth",
+        "sha256": "8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c"
+      }
+    ],
+    "populations": {
+      "primary": "FULL",
+      "secondary": "MOVING"
+    },
+    "metrics": [
+      "Accuracy",
+      "Macro-F1"
+    ],
+    "deltas": [
+      "MULTI_POSITIVE_JR_H2 - INITIAL_BASELINE",
+      "MULTI_POSITIVE_JR_H2 - H1_REAL",
+      "MULTI_POSITIVE_JR_H2 - ORIGINAL_JR_H2"
+    ],
+    "constraints": {
+      "no_new_method_variants": true,
+      "no_classwise_tuning": true,
+      "no_new_seed": true,
+      "no_h3": true,
+      "terminal_observation": "real archived skeleton through frozen ST-GCN"
+    },
+    "test_used": false
+  },
+  "provenance": {
+    "manifest": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP057_final_method_freeze/final_method_manifest.json",
+    "protocol": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/stage_d/EXP057_final_method_freeze/final_test_protocol.json",
+    "wm_e": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP057_final_method_freeze/runtime/wm_e_frozen.pth",
+    "original_jr": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP050_joint_rollout_revision/joint_revision_final.pth",
+    "multi_positive_jr": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/stage_d/EXP055_multi_positive_joint_revision/runtime/joint_revision_multi_positive.pth",
+    "stgcn": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled_best.pth"
+  }
+}

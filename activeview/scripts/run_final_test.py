@@ -22,6 +22,7 @@ from activeview.core.paths import get_data_root
 
 MANIFEST = REPO_ROOT / "experiments/stage_d/EXP057_final_method_freeze/final_method_manifest.json"
 PROTOCOL = REPO_ROOT / "experiments/stage_d/EXP057_final_method_freeze/final_test_protocol.json"
+TEST_RGB_CACHE = Path("/home/zxf/MG08/robot/ActiveView/features/dinov2_vitb14_spatial4x4_test_final_union")
 N_CLASSES = 16
 
 
@@ -75,7 +76,7 @@ def _metric_pair(payload: dict[str, Any], key: str) -> dict[str, dict[str, float
     return {"full": metrics["full"], "moving": metrics["moving_subset"]}
 
 
-def run_final_test(*, data_root: Path, device: torch.device, manifest_path: Path = MANIFEST, protocol_path: Path = PROTOCOL, output_dir: Path | None = None) -> dict[str, Any]:
+def run_final_test(*, data_root: Path, device: torch.device, manifest_path: Path = MANIFEST, protocol_path: Path = PROTOCOL, output_dir: Path | None = None, rgb_cache_dir: Path = TEST_RGB_CACHE) -> dict[str, Any]:
     """Run all frozen methods after explicit Test unlock."""
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
@@ -99,8 +100,8 @@ def run_final_test(*, data_root: Path, device: torch.device, manifest_path: Path
 
     out = (output_dir or (REPO_ROOT / "experiments/stage_d/FINAL_TEST")).resolve()
     out.mkdir(parents=True, exist_ok=True)
-    original = run_r2(data_root.resolve(), jr_original, device, wm_path, out / "original_jr_h2", split="test")
-    multi = run_r2(data_root.resolve(), jr_multi, device, wm_path, out / "multi_positive_jr_h2", split="test")
+    original = run_r2(data_root.resolve(), jr_original, device, wm_path, out / "original_jr_h2", split="test", rgb_cache_dir=rgb_cache_dir.resolve())
+    multi = run_r2(data_root.resolve(), jr_multi, device, wm_path, out / "multi_positive_jr_h2", split="test", rgb_cache_dir=rgb_cache_dir.resolve())
     baseline = _baseline(data_root.resolve())
     methods = {"INITIAL_BASELINE": baseline, "H1_REAL": _metric_pair(original, "h1_real"), "ORIGINAL_JR_H2": _metric_pair(original, "h2_real"), "MULTI_POSITIVE_JR_H2": _metric_pair(multi, "h2_real")}
     deltas: dict[str, dict[str, dict[str, float]]] = {}
@@ -121,6 +122,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--manifest", type=Path, default=MANIFEST)
     parser.add_argument("--protocol", type=Path, default=PROTOCOL)
     parser.add_argument("--output-dir", type=Path, default=REPO_ROOT / "experiments/stage_d/FINAL_TEST")
+    parser.add_argument("--rgb-cache-dir", type=Path, default=TEST_RGB_CACHE)
     parser.add_argument("--device", default="cuda:0")
     return parser
 
@@ -137,7 +139,7 @@ def main() -> None:
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA unavailable; refusing CPU fallback for Final Test")
     data_root = (args.data_root or get_data_root()).resolve()
-    result = run_final_test(data_root=data_root, device=device, manifest_path=args.manifest.resolve(), protocol_path=args.protocol.resolve(), output_dir=args.output_dir.resolve())
+    result = run_final_test(data_root=data_root, device=device, manifest_path=args.manifest.resolve(), protocol_path=args.protocol.resolve(), output_dir=args.output_dir.resolve(), rgb_cache_dir=args.rgb_cache_dir.resolve())
     print(json.dumps(result, indent=2))
 
 

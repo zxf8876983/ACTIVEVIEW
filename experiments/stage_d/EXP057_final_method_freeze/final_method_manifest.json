@@ -44,7 +44,7 @@
     "secondary_metrics": ["Accuracy", "Macro-F1"]
   },
   "test": {
-    "used": false,
-    "unlocked": false
+    "used": true,
+    "unlocked": true
   }
 }
