@@ -23,5 +23,7 @@ Accuracy decreased by 0.009536 while Macro-F1 increased by 0.000610, so this
 run does not support a clear terminal improvement (descriptive Case D).
 
 No Test data, Habitat rendering, perception regeneration, or substitute RGB
-features were used.  Privileged H2 controls and paired rescue/harm statistics
-were not run in this minimal legal rollout and are explicitly marked NOT_RUN.
+features were used.  Privileged H2 controls, paired rescue/harm statistics,
+and complete H2 regret decomposition were not run in this minimal legal
+rollout and are explicitly marked NOT_RUN; the result is therefore
+`COMPLETED_PARTIAL`, not a complete campaign verdict.

@@ -1,6 +1,6 @@
 {
   "experiment_id": "EXP051-R1",
-  "status": "COMPLETED",
+  "status": "COMPLETED_PARTIAL",
   "test_used": false,
   "training_performed": true,
   "wm_e_frozen": true,

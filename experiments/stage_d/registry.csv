@@ -23,4 +23,4 @@ EXP048,observation_decision_gap_decomposition,COMPLETED,,,,,INCONCLUSIVE,"Val-on
 EXP049,counterfactual_candidate_scaling,COMPLETED,,,,,INCONCLUSIVE,"Val-only legal candidate-set scaling M=2/4/8/16/ALL_LEGAL; frozen WM-E/ST-GCN; no Test; see EXP049 analysis.md"
 EXP050,joint_rollout_revision,COMPLETED,,0.686566,0.646064,2.339034,8.843223,INCONCLUSIVE,"Train-only set-aware joint revision; paired ΔAccuracy=0.009938 vs independent CF MLP; no Test; see EXP050 analysis.md"
 EXP051,closed_loop_world_model_revision,BLOCKED,,,,,INCONCLUSIVE,"Pre-registered gate met, but H=2 blocked because frozen WM-E RGB history artifacts for newly visited views are unavailable; no substitute or Test used"
-EXP051-R1,closed_loop_world_model_revision_r1,BLOCKED,,,,,INCONCLUSIVE,"Exact EXP050 Joint Revision checkpoint missing; R1 stopped at mandatory H1 reproduction gate; no retraining, rendering, or Test used"
+EXP051-R1,closed_loop_world_model_revision_r1,COMPLETED_PARTIAL,,,,,INCONCLUSIVE,"H1/H2 legal Val rollout completed with recurrent recomputation; privileged controls and paired rescue/harm/regret audit not run; no Test used"
