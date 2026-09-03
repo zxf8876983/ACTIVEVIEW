@@ -1,0 +1,9 @@
+experiment_id: EXP051-R2
+split: val
+moving_subset: 9742
+full_population: 13987
+max_moves_compared: [1, 2]
+terminal_recognition: frozen_real_archived_stgcn_logp
+fusion: mean_exp_real_logp_over_visited_views
+test_used: false
+training_performed: false

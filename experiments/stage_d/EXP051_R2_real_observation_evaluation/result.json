@@ -1,0 +1,134 @@
+{
+  "experiment_id": "EXP051-R2",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": false,
+  "terminal_recognition_source": "frozen EXP046 true_logp from archived skeleton through frozen ST-GCN",
+  "first_step_policy_source": "frozen EXP050-R1/Stage C-v0",
+  "population": {
+    "full": 13987,
+    "moving_subset": 9742,
+    "v0_stay": 4245
+  },
+  "h1_real": {
+    "full": {
+      "accuracy": 0.6857796525344964,
+      "macro_f1": 0.6436400650666227
+    },
+    "moving_subset": {
+      "accuracy": 0.6615684664339971,
+      "macro_f1": 0.6326987126129878
+    }
+  },
+  "h2_real": {
+    "full": {
+      "accuracy": 0.6955029670408236,
+      "macro_f1": 0.6492202185207628
+    },
+    "moving_subset": {
+      "accuracy": 0.6755286388831861,
+      "macro_f1": 0.6426116868574479
+    }
+  },
+  "fused": {
+    "h1_full": {
+      "accuracy": 0.6424537070136556,
+      "macro_f1": 0.5743057058011104
+    },
+    "h1_moving_subset": {
+      "accuracy": 0.5993635803736399,
+      "macro_f1": 0.545336392707058
+    },
+    "h2_full": {
+      "accuracy": 0.6480303138628727,
+      "macro_f1": 0.5794413408058013
+    },
+    "h2_moving_subset": {
+      "accuracy": 0.6073701498665571,
+      "macro_f1": 0.5525566631647156
+    }
+  },
+  "paired_moving_subset": {
+    "n": 9742,
+    "rescued": 369,
+    "harmful": 233,
+    "net": 136,
+    "mcnemar_p": 3.296704792790371e-08,
+    "delta_accuracy": 0.013960172449189078,
+    "delta_macro_f1": 0.009912974244460027,
+    "accuracy_ci95": [
+      0.009033052761239991,
+      0.018887292137138165
+    ],
+    "macro_f1_ci95": [
+      0.0029125454565087,
+      0.017176035604573977
+    ],
+    "bootstrap_replicates": 10000,
+    "seed": 42
+  },
+  "paired_fused_moving_subset": {
+    "n": 9742,
+    "rescued": 174,
+    "harmful": 96,
+    "net": 78,
+    "mcnemar_p": 2.3897872167818624e-06,
+    "delta_accuracy": 0.008006569492917266,
+    "delta_macro_f1": 0.007220270457657607,
+    "accuracy_ci95": [
+      0.004721823034284541,
+      0.01129131595154999
+    ],
+    "macro_f1_ci95": [
+      0.003078922532630679,
+      0.011386933518931965
+    ],
+    "bootstrap_replicates": 10000,
+    "seed": 42
+  },
+  "history_shift_fidelity": {
+    "h0": {
+      "count": 275732,
+      "top1_agreement": 0.5960642943147694,
+      "true_label_logp_pearson": 0.7383121331127264,
+      "true_label_logp_spearman": 0.7670094840909493,
+      "kl_true_to_imagined": 1.0276880264282227,
+      "probability_l1": 0.9054175019264221
+    },
+    "h1": {
+      "count": 95529,
+      "top1_agreement": 0.4985711145306661,
+      "true_label_logp_pearson": 0.6458013527640245,
+      "true_label_logp_spearman": 0.6763674959289379,
+      "kl_true_to_imagined": 1.3028435707092285,
+      "probability_l1": 1.0663200616836548
+    },
+    "recurrent_episode_count": 3489
+  },
+  "motion": {
+    "h1_average_moves": 0.35814001231779924,
+    "h2_average_moves": 0.5394169575035926
+  },
+  "rgb_history_artifact_audit": {
+    "cache_hit_count": 311744,
+    "cache_miss_count": 0,
+    "extraction_time_sec": 0.0,
+    "cache_reused": true,
+    "contexts": 9742,
+    "views": 311744,
+    "elapsed_sec": 42.056721206055954,
+    "future_candidate_rgb_used": false
+  },
+  "leakage_flags": {
+    "future_rgb_access_before_execution": false,
+    "future_skeleton_access_before_execution": false,
+    "visited_rgb_revealed_only_after_execution": true,
+    "visited_skeleton_revealed_only_after_execution": true,
+    "habitat_rendering_performed": false,
+    "perception_regenerated": false,
+    "wm_e_frozen": true,
+    "joint_revision_frozen": true,
+    "stgcn_frozen": true
+  }
+}

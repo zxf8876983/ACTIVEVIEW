@@ -1,0 +1,19 @@
+{
+  "h0": {
+    "count": 275732,
+    "top1_agreement": 0.5960642943147694,
+    "true_label_logp_pearson": 0.7383121331127264,
+    "true_label_logp_spearman": 0.7670094840909493,
+    "kl_true_to_imagined": 1.0276880264282227,
+    "probability_l1": 0.9054175019264221
+  },
+  "h1": {
+    "count": 95529,
+    "top1_agreement": 0.4985711145306661,
+    "true_label_logp_pearson": 0.6458013527640245,
+    "true_label_logp_spearman": 0.6763674959289379,
+    "kl_true_to_imagined": 1.3028435707092285,
+    "probability_l1": 1.0663200616836548
+  },
+  "recurrent_episode_count": 3489
+}
