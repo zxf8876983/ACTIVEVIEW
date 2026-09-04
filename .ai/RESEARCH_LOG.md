@@ -639,3 +639,12 @@ Habitat workers. ST-GCN development contains 2,700 Train and 300 Val records.
 Seed 42 training on RTX 4090 ran 200 epochs with train-only optimization; final
 Train Accuracy/Macro-F1=0.992963/0.991418 and posthoc Val
 Accuracy/Macro-F1=0.700000/0.710511. Test was not generated, read, or evaluated.
+
+## ActiveView Official Val correction
+
+2026-09-04: corrected an initial mistake that generated only the 209-record
+20% `activeview/val` subset. Those generated artifacts were deleted. Using
+the same cap=100/class diversity selection and seed, the complete Official Val
+selection (1,036 records) was rebuilt and generated as fixed-30-frame
+`activeview_official_val` data with 16 CUDA Habitat workers. No Test files were
+read or generated.

@@ -80,3 +80,11 @@ were used. New ST-GCN development data contain 2,700 Train and 300 Val records.
 Seed-42 CUDA training completed at epoch 200: Train Accuracy/Macro-F1
 0.992963/0.991418 and posthoc Val Accuracy/Macro-F1 0.700000/0.710511.
 No Test skeleton was generated, read, or evaluated.
+
+## ActiveView Official Val correction
+
+The initial active-sensing generation mistakenly materialized only the 20%
+`activeview/val` subset (209 records); those generated artifacts were removed.
+The complete cap-100 Official Val selection was rebuilt without reading Test
+and generated under `activeview_official_val/` with 16 CUDA Habitat workers:
+1,036 records, shape `[1036, 3, 30, 17, 1]`.

@@ -9,8 +9,10 @@
 | Train | 2,700 | 1,535 | 389 | 17 | 10,628.138 |
 | Val | 300 | 268 | 161 | 16 | 1,230.223 |
 
-主动感知 `activeview/val.json` 已使用相同 16-worker CUDA 生成，共 209 条、
-固定 30 帧；未生成该 subset 的 Test skeleton。
+完整 cap-100 Official Val 主动感知 manifest 共 1036 条，已使用相同 16-worker
+CUDA 生成固定 30 帧骨架至 `activeview_official_val/`。协议的
+`activeview/val.json` 仅是 60/20/20 切分中的 209 条子集，未将其作为完整
+Official Val 报告；没有生成任何 Test skeleton。
 
 各类别 development 数量（Train/Val）为：walk 270/30，sit 270/30，stand up
 270/30，bend 270/30，crawl 63/7，stumble 104/12，kneel 87/10，clap 88/10，
