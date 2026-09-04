@@ -24,7 +24,7 @@ from typing import Any, Dict, List, Sequence
 import numpy as np
 import torch
 from torch import nn
-from torch.utils.data import DataLoader, TensorDataset, WeightedRandomSampler
+from torch.utils.data import DataLoader, Dataset, TensorDataset, WeightedRandomSampler
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
@@ -35,6 +35,36 @@ from activeview.core.paths import get_data_root
 from activeview.perception.skeleton import get_skeleton_definition
 
 LOGGER = logging.getLogger(__name__)
+
+
+class SegmentRandomCandidateDataset(Dataset):
+    """Sample one candidate frame from each temporal segment on each access."""
+
+    def __init__(self, data: np.ndarray, labels: np.ndarray, candidate_counts: np.ndarray, *, randomize: bool) -> None:
+        self.data = torch.from_numpy(np.asarray(data)).float()
+        self.labels = torch.from_numpy(np.asarray(labels)).long()
+        self.candidate_counts = torch.from_numpy(np.asarray(candidate_counts)).long()
+        self.randomize = bool(randomize)
+        if self.data.ndim != 5 or self.data.shape[2] < 30:
+            raise ValueError(f"candidate data must have shape (N,C,T,V,M), got {tuple(self.data.shape)}")
+        if len(self.data) != len(self.labels) or len(self.data) != len(self.candidate_counts):
+            raise ValueError("candidate data, labels, and counts must have equal length")
+
+    def __len__(self) -> int:
+        return len(self.labels)
+
+    def __getitem__(self, index: int):
+        sample = self.data[index]
+        count = int(self.candidate_counts[index].item())
+        if count not in (1, 3, 5):
+            raise ValueError(f"unsupported temporal candidate count: {count}")
+        offsets = torch.arange(30, dtype=torch.long) * count
+        if self.randomize and count > 1:
+            choices = torch.randint(count, (30,))
+        else:
+            choices = torch.full((30,), count // 2, dtype=torch.long)
+        selected = sample.index_select(1, offsets + choices)
+        return selected, self.labels[index]
 
 
 def set_seed(seed: int) -> None:
@@ -103,6 +133,9 @@ def train(
     categories = [label for label, _ in sorted(mapping.items(), key=lambda item: int(item[1]))]
     arrays = {split: np.load(data_root / f"{split}_data.npy") for split in ("train", "val")}
     labels = {split: np.load(data_root / f"{split}_labels.npy") for split in ("train", "val")}
+    candidate_path = data_root / "train_candidate_data.npy"
+    candidate_counts_path = data_root / "train_candidate_counts.npy"
+    candidate_mode = candidate_path.exists() and candidate_counts_path.exists()
     shape = arrays["train"].shape
     if len(shape) != 5 or shape[1] != 3 or shape[3:] != (17, 1):
         raise ValueError(f"Unexpected tensor shape: {shape}")
@@ -111,7 +144,15 @@ def train(
             raise ValueError(f"Inconsistent {split} tensor/label shape")
         if not np.isfinite(arrays[split]).all():
             raise ValueError(f"{split} tensor contains NaN or Inf")
-    train_ds = TensorDataset(torch.from_numpy(arrays["train"]).float(), torch.from_numpy(labels["train"]).long())
+    if candidate_mode:
+        candidate_data = np.load(candidate_path)
+        candidate_counts = np.load(candidate_counts_path)
+        train_ds = SegmentRandomCandidateDataset(candidate_data, labels["train"], candidate_counts, randomize=True)
+        train_eval_ds = SegmentRandomCandidateDataset(candidate_data, labels["train"], candidate_counts, randomize=False)
+        LOGGER.info("Temporal candidate sampling enabled: data=%s counts=%s", candidate_data.shape, np.bincount(candidate_counts).tolist())
+    else:
+        train_ds = TensorDataset(torch.from_numpy(arrays["train"]).float(), torch.from_numpy(labels["train"]).long())
+        train_eval_ds = train_ds
     val_ds = TensorDataset(torch.from_numpy(arrays["val"]).float(), torch.from_numpy(labels["val"]).long())
     model = STGCN(in_channels=3, num_classes=len(categories), graph_strategy="spatial", edge_importance_weighting=True, skel_def=get_skeleton_definition(backend="h36m_17")).to(device)
     counts = np.bincount(labels["train"], minlength=len(categories)).astype(np.float32)
@@ -131,7 +172,7 @@ def train(
     train_loader = DataLoader(train_ds, batch_size=batch_size, sampler=sampler, pin_memory=device.type == "cuda")
     # The deterministic full-train loader is used only to measure convergence.
     # The validation split is intentionally kept out of the training loop.
-    train_eval_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=False, pin_memory=device.type == "cuda")
+    train_eval_loader = DataLoader(train_eval_ds, batch_size=batch_size, shuffle=False, pin_memory=device.type == "cuda")
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, pin_memory=device.type == "cuda")
     criterion = nn.CrossEntropyLoss(weight=torch.from_numpy(class_weights).to(device))
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
@@ -221,7 +262,13 @@ def train(
         "seed": seed, "train_data_sha256": file_sha256(data_root / "train_data.npy"),
         "val_data_sha256": file_sha256(data_root / "val_data.npy"),
         "skeleton_preprocessing": "RGB -> Ultralytics/VideoPose3D -> camera_to_gravity + root_center + torso_scale + yaw_only",
-        "protocol": "selected16 pure-color Habitat Train/Val; train-only convergence; Val is posthoc upper-bound diagnosis; Habitat active-view evaluation is separate",
+        "protocol": "selected16 or reduced12 pure-color Habitat Train/Val; optional train-only temporal segment candidate sampling; Val is posthoc diagnosis",
+        "temporal_candidate_sampling": {
+            "enabled": candidate_mode,
+            "segments": 30,
+            "one_frame_per_segment": True,
+            "candidate_counts": [1, 3, 5] if candidate_mode else [],
+        },
     }, checkpoint)
     LOGGER.info(
         "Final train-only checkpoint saved at epoch %d: train_acc=%.4f train_macro_f1=%.4f | posthoc val_acc=%.4f val_macro_f1=%.4f",

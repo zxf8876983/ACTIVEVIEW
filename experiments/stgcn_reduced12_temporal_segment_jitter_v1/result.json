@@ -1,0 +1,29 @@
+{
+  "experiment_id": "reduced12_babel_temporal_segment_jitter_v1",
+  "status": "completed",
+  "seed": 42,
+  "train_samples": 2600,
+  "val_samples": 289,
+  "candidate_counts": {"m=1": 0, "m=3": 1748, "m=5": 852},
+  "candidate_data_shape": [2600, 3, 150, 17, 1],
+  "standard_train_shape": [2600, 3, 30, 17, 1],
+  "val_shape": [289, 3, 30, 17, 1],
+  "val_data_sha256": "53260e2be72ba93ee3e18aaf20669a580d6db44fd52d4b72be00fa1972351510",
+  "candidate_data_sha256": "be4fd79129425e8e72d24cfa07bee2d72447e6cbe6d1b14f870151cf4f7f1da8",
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_babel_temporal_jitter_v1/stgcn_reduced12_temporal_jitter_best.pth",
+  "checkpoint_sha256": "b89cb4658a32969ccd03b6ee9c76aed3765c2967b3381605b9531a1498fc1944",
+  "training": {
+    "device": "cuda:0",
+    "epochs": 200,
+    "final_train_loss": 0.044568733416784266,
+    "final_train_accuracy": 0.9726923076923077,
+    "final_train_macro_f1": 0.9728630703322181,
+    "posthoc_val_accuracy": 0.4809688581314879,
+    "posthoc_val_macro_f1": 0.4559826050399361,
+    "best_train_loss_epoch": 196,
+    "best_train_loss": 0.044454031934818394
+  },
+  "test_used_for_evaluation": false,
+  "selected16_modified": false,
+  "val_unchanged_from_base": true
+}

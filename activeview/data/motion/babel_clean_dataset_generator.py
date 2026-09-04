@@ -41,6 +41,16 @@ COORDINATE_TRANSFORM = "VideoPose3D_H36M_Ydown_Zdepth_to_Habitat_gravity; Habita
 URDF_PATH = get_humanoid_urdf_path("male_0")
 
 
+def temporal_candidate_count(interval_frames: int, target_frames: int = 30) -> int:
+    """Return the fixed candidate count used by temporal-jitter training."""
+    frames = int(interval_frames)
+    if frames <= int(target_frames):
+        return 1
+    if frames <= int(target_frames) * 10:
+        return 3
+    return 5
+
+
 def _load_resampled_motion(record: Mapping[str, Any], target_frames: int) -> NormalizedMotion:
     """Load one BABEL interval and temporally resample it to target frames."""
     source_path = Path(str(record["source_path"]))
@@ -194,6 +204,7 @@ class BabelCleanDatasetGenerator:
         pose_backend: str = "ultralytics_yolo26n",
         yolo_weights: Optional[Path] = None,
         videopose_weights: Optional[Path] = None,
+        temporal_candidate_pool: bool = False,
     ) -> None:
         import habitat_sim
         import quaternion  # noqa: F401 - required by Habitat rotations
@@ -201,6 +212,7 @@ class BabelCleanDatasetGenerator:
         self.habitat_sim = habitat_sim
         self.image_size = int(image_size)
         self.target_frames = int(target_frames)
+        self.temporal_candidate_pool = bool(temporal_candidate_pool)
         self.camera_height = float(camera_height)
         if self.camera_height <= 0.0:
             raise ValueError("camera_height must be positive")
@@ -320,7 +332,14 @@ class BabelCleanDatasetGenerator:
         return path
 
     def _process_record(self, sim: Any, human: Any, record: Mapping[str, Any]) -> Dict[str, Any]:
-        norm_motion = _load_resampled_motion(record, self.target_frames)
+        interval_frames = int(record["end_frame"]) - int(record["start_frame"]) + 1
+        candidate_count = (
+            temporal_candidate_count(interval_frames, self.target_frames)
+            if self.temporal_candidate_pool and str(record.get("split", "")) == "train"
+            else 1
+        )
+        render_frames = self.target_frames * candidate_count
+        norm_motion = _load_resampled_motion(record, render_frames)
         converted = self.converter.convert(norm_motion)
         joints = np.asarray(converted["pose_motion"]["joints_array"], dtype=np.float32)
         root_transforms = np.asarray(converted["pose_motion"]["transform_array"], dtype=np.float32)
@@ -340,6 +359,8 @@ class BabelCleanDatasetGenerator:
             "skeleton_path": str(out_path.relative_to(self.output_root)),
             "mean_confidence": float(np.mean(confidences)),
             "num_frames": self.target_frames,
+            "temporal_candidate_count": candidate_count,
+            "rendered_frames": render_frames,
             "source_num_frames": int(record["num_frames"]),
             "skeleton_preprocessing": SKELETON_PREPROCESSING,
             "rendering_protocol": RENDERING_PROTOCOL,
@@ -366,7 +387,20 @@ class BabelCleanDatasetGenerator:
                 # A changed detector backend must invalidate the resumable
                 # sample; otherwise a YOLO26 run could silently reuse a
                 # YOLO11 skeleton while reporting the new configuration.
-                if existing_item is not None and sample_path.exists() and existing_item.get("pose_backend") == self.pose_backend:
+                expected_count = (
+                    temporal_candidate_count(
+                        int(record["end_frame"]) - int(record["start_frame"]) + 1,
+                        self.target_frames,
+                    )
+                    if self.temporal_candidate_pool and split == "train"
+                    else 1
+                )
+                if (
+                    existing_item is not None
+                    and sample_path.exists()
+                    and existing_item.get("pose_backend") == self.pose_backend
+                    and int(existing_item.get("temporal_candidate_count", 1)) == expected_count
+                ):
                     metadata.append(existing_item)
                     continue
                 item = self._process_record(sim, human, record)
@@ -378,7 +412,28 @@ class BabelCleanDatasetGenerator:
             sim.close()
         metadata.sort(key=lambda item: str(item["record_id"]))
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        data = np.stack([np.load(self.output_root / item["skeleton_path"])["skeleton"] for item in metadata])
+        arrays = [np.load(self.output_root / item["skeleton_path"])["skeleton"] for item in metadata]
+        candidate_mode = self.temporal_candidate_pool and split == "train"
+        if candidate_mode:
+            max_frames = max(int(array.shape[1]) for array in arrays)
+            candidate_data = np.zeros(
+                (len(arrays), arrays[0].shape[0], max_frames, arrays[0].shape[2], arrays[0].shape[3]),
+                dtype=np.float32,
+            )
+            candidate_counts = np.asarray(
+                [int(item.get("temporal_candidate_count", 1)) for item in metadata], dtype=np.int64
+            )
+            for row, array in enumerate(arrays):
+                candidate_data[row, :, : array.shape[1]] = array
+            np.save(self.output_root / f"{split}_candidate_data.npy", candidate_data)
+            np.save(self.output_root / f"{split}_candidate_counts.npy", candidate_counts)
+            # Keep the conventional 30-frame array for tools that do not use
+            # temporal jitter; choose the deterministic middle candidate.
+            data = np.stack(
+                [array[:, np.arange(self.target_frames) * count + count // 2] for array, count in zip(arrays, candidate_counts)]
+            )
+        else:
+            data = np.stack(arrays)
         labels = np.asarray([item["label_id"] for item in metadata], dtype=np.int64)
         np.save(self.output_root / f"{split}_data.npy", data)
         np.save(self.output_root / f"{split}_labels.npy", labels)

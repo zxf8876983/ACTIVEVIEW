@@ -27,3 +27,12 @@ chain. A new 12-class ST-GCN was trained on CUDA (RTX 4090) for 200 epochs;
 final train Accuracy/Macro-F1 were 0.973077/0.973572 and post-hoc development
 Val Accuracy/Macro-F1 were 0.484429/0.474513. No policy Test evaluation was
 performed for this protocol.
+
+## Temporal segment jitter follow-up
+
+The reduced12 ST-GCN Train split now has a separate temporal-jitter runtime
+variant: 30 segments with m=3 or m=5 ordered candidates, sampled one per
+segment during training. The reduced12 development Val array is unchanged and
+byte-identical to the base protocol. The independent checkpoint and metrics
+are recorded under `experiments/stgcn_reduced12_temporal_segment_jitter_v1/`;
+no policy Test evaluation was performed.

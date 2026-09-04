@@ -28,6 +28,8 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--device", type=str, default="cuda:0")
     parser.add_argument("--max-records", type=int, default=None)
+    parser.add_argument("--split", choices=("train", "val", "test"), action="append", default=None)
+    parser.add_argument("--temporal-candidates", action="store_true", help="Generate 1/3/5 candidates per 30 temporal segments for Train")
     parser.add_argument(
         "--yolo-weights",
         type=Path,
@@ -50,8 +52,10 @@ def main() -> None:
         label_to_id=mapping,
         yolo_weights=args.yolo_weights,
         videopose_weights=args.videopose_weights,
+        temporal_candidate_pool=args.temporal_candidates,
     )
-    splits = ("train", "val") if args.subset == "stgcn_development" else ("train", "val", "test")
+    default_splits = ("train", "val") if args.subset == "stgcn_development" else ("train", "val", "test")
+    splits = tuple(args.split) if args.split else default_splits
     summaries = {}
     for split in splits:
         summaries[split] = generator.generate_split(

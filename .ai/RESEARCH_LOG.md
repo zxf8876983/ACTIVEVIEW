@@ -580,3 +580,14 @@ runtime on an RTX 4090 for 200 epochs: final Train loss 0.044019, Accuracy
 0.973077, Macro-F1 0.973572; post-hoc development Val Accuracy/Macro-F1
 0.484429/0.474513. The ActiveView motion Test partition was generated as
 requested, but no policy evaluation or Test metric was run.
+
+## Reduced-12 temporal segment jitter
+
+2026-09-04: regenerated only the independent reduced12 ST-GCN Train split as
+30 temporal segments with 1/3/5 candidates per segment (based on interval
+length), and trained by sampling one candidate per segment per access. The
+candidate pool is `[2600,3,150,17,1]` (1748 records with m=3, 852 with m=5);
+development Val remained byte-identical uniform 30-frame sampling. The CUDA
+RTX 4090 run used the fixed 200-epoch protocol and reached Train
+Accuracy/Macro-F1 0.972692/0.972863; post-hoc Val Accuracy/Macro-F1 were
+0.480969/0.455983. No policy Test evaluation was performed.

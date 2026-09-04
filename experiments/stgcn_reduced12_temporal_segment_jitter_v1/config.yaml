@@ -1,0 +1,18 @@
+experiment_id: reduced12_babel_temporal_segment_jitter_v1
+base_protocol: reduced12_babel_diversity_v1
+seed: 42
+segments: 30
+candidate_rule:
+  interval_frames_leq_30: 1
+  interval_frames_leq_300: 3
+  interval_frames_gt_300: 5
+train_sampling: one_random_candidate_per_segment
+val_sampling: fixed_uniform_30_frames
+training:
+  epochs: 200
+  batch_size: 64
+  optimizer: Adam
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  oversample_power: 0.5
+  device: cuda:0
