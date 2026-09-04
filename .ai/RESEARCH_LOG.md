@@ -629,3 +629,13 @@ stopping) finished at epoch 184 with Train Accuracy/Macro-F1=0.997054/0.997775
 and posthoc Val Accuracy/Macro-F1=0.664452/0.620068. `eat` is data-limited
 (11 Train, 1 Val); no synthetic balancing was added. Test was not generated,
 read or evaluated; prior protocols remain unchanged.
+## Reduced-15 wave-to-kneel replacement
+
+2026-09-04: removed the previous revised reduced15 runtime dataset/checkpoint
+only, preserving raw BABEL/AMASS and all other protocols. The independent
+15-class protocol replaced `wave` with `kneel`, retained cap=300/100 and
+diversity-first selection, and generated fixed-30-frame skeletons with 16 CUDA
+Habitat workers. ST-GCN development contains 2,700 Train and 300 Val records.
+Seed 42 training on RTX 4090 ran 200 epochs with train-only optimization; final
+Train Accuracy/Macro-F1=0.992963/0.991418 and posthoc Val
+Accuracy/Macro-F1=0.700000/0.710511. Test was not generated, read, or evaluated.

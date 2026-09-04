@@ -70,3 +70,13 @@ Official Train was split 90/10 for ST-GCN development. Generated fixed
 new ST-GCN trained with seed 42 and train-only early stopping at epoch 184;
 Train Accuracy/Macro-F1=0.997054/0.997775 and posthoc Val
 Accuracy/Macro-F1=0.664452/0.620068. No Test data were generated/read.
+## Reduced-15 wave-to-kneel replacement
+
+2026-09-04: deleted only the prior revised reduced15 runtime dataset/checkpoint
+(about 99M/12M; raw BABEL/AMASS untouched) and created an independent protocol
+replacing `wave` with `kneel`. Cap=300/100, diversity-first selection, fixed
+30-frame resampling, no temporal segment jitter, and 16 CUDA Habitat workers
+were used. New ST-GCN development data contain 2,700 Train and 300 Val records.
+Seed-42 CUDA training completed at epoch 200: Train Accuracy/Macro-F1
+0.992963/0.991418 and posthoc Val Accuracy/Macro-F1 0.700000/0.710511.
+No Test skeleton was generated, read, or evaluated.
