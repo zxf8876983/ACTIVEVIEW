@@ -29,18 +29,17 @@ def main():
  m=json.loads((args.data_dir/'manifest.json').read_text()); mapping=json.loads((d/'datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26_camera_fixed/label_mapping.json').read_text()) if (d/'datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26_camera_fixed/label_mapping.json').exists() else None
  if mapping is None: mapping=json.loads((d/'datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/label_mapping.json').read_text())
  cats=[x for x,_ in sorted(mapping.items(),key=lambda kv:int(kv[1]))]; dev=torch.device(args.device if torch.cuda.is_available() else 'cpu'); model=STGCN(in_channels=3,num_classes=len(cats),graph_strategy='spatial',edge_importance_weighting=True,skel_def=get_skeleton_definition(backend='h36m_17')).to(dev); ck=torch.load(args.checkpoint,map_location=dev,weights_only=False); model.load_state_dict(ck['model_state_dict']); model.eval()
- by_region={r:[] for r in ('bedroom','kitchen','living_room','bathroom')}; items=m['items']; candidate=json.loads((args.candidate_dir/'manifest.json').read_text()); views={x['region']:x['viewpoints'] for x in candidate['placements_data']}
- for item in items: by_region[item['region']].append(item)
- result={'data_dir':str(args.data_dir),'checkpoint':str(args.checkpoint),'records':m['records'],'regions':m['regions'],'views_per_record':32,'oracle_definition':'GT-correctness over the reachable candidate pool; if no candidate is correct, fall back to minimum entropy for deterministic reporting','policies':{},'learned_policy':{'status':'NOT EVALUATED','reason':'No Utility Predictor trained on this semantic-region protocol; historical checkpoint is quarantined.'}}
+ items=m['items']; candidate=json.loads((args.candidate_dir/'manifest.json').read_text()); views={str(x.get('placement_id',x.get('region'))):x['viewpoints'] for x in candidate['placements_data']}
+ result={'data_dir':str(args.data_dir),'checkpoint':str(args.checkpoint),'records':m['records'],'placements':m.get('placements',m.get('regions')),'views_per_record':32,'oracle_definition':'GT-correctness over the reachable candidate pool; if no candidate is correct, fall back to minimum entropy for deterministic reporting','policies':{},'learned_policy':{'status':'NOT EVALUATED','reason':'No Utility Predictor trained on this semantic-region protocol; historical checkpoint is quarantined.'}}
  for policy in ('Fixed','Random','Nearest','Oracle'):
   selected=[]
   for item in items:
    z=np.load(args.data_dir/item['path']); x=torch.from_numpy(z['skeleton']).float().to(dev); x=x.unsqueeze(-1)
    with torch.inference_mode(): prob=torch.softmax(model(x),dim=-1).cpu().numpy()
-   h=entropy(prob); candidates=views[item['region']]; reachable=[v for v in candidates if v['navigation'].get('is_reachable')]
+   item_key=str(item.get('placement_id',item.get('region'))); h=entropy(prob); candidates=views[item_key]; reachable=[v for v in candidates if v['navigation'].get('is_reachable')]
    pool=reachable or candidates; ids=[int(v['viewpoint_id']) for v in pool]
    if policy=='Fixed': idx=min(ids)
-   elif policy=='Random': idx=random.Random(f'{args.seed}|{item["region"]}|{item["record_id"]}').choice(ids)
+   elif policy=='Random': idx=random.Random(f'{args.seed}|{item_key}|{item["record_id"]}').choice(ids)
    elif policy=='Nearest': idx=min(ids,key=lambda j: float(next(v for v in pool if int(v['viewpoint_id'])==j)['navigation'].get('navigation_cost_m') or 1e9))
    else:
     correct_ids=[j for j in ids if int(np.argmax(prob[j]))==int(item['label_id'])]
@@ -48,7 +47,7 @@ def main():
    selected.append((item,int(idx),h,prob))
   targets=[]; preds=[]; hs=[]; per={}
   for item,idx,h,prob in selected:
-   t=int(item['label_id']); pr=int(np.argmax(prob[idx])); targets.append(t); preds.append(pr); hs.append(float(h[idx])); per.setdefault(item['region'],[0,0,[]]); per[item['region']][0]+=1; per[item['region']][1]+=int(pr==t); per[item['region']][2].append(float(h[idx]))
-  result['policies'][policy]={'n':len(selected),'accuracy':float(np.mean(np.asarray(preds)==np.asarray(targets))),'mean_entropy':float(np.mean(hs)),'per_region':{r:{'n':v[0],'accuracy':v[1]/v[0],'mean_entropy':float(np.mean(v[2]))} for r,v in per.items()}}
+   t=int(item['label_id']); pr=int(np.argmax(prob[idx])); targets.append(t); preds.append(pr); hs.append(float(h[idx])); item_key=str(item.get('placement_id',item.get('region'))); per.setdefault(item_key,[0,0,[]]); per[item_key][0]+=1; per[item_key][1]+=int(pr==t); per[item_key][2].append(float(h[idx]))
+  result['policies'][policy]={'n':len(selected),'accuracy':float(np.mean(np.asarray(preds)==np.asarray(targets))),'mean_entropy':float(np.mean(hs)),'per_placement':{r:{'n':v[0],'accuracy':v[1]/v[0],'mean_entropy':float(np.mean(v[2]))} for r,v in per.items()}}
  args.output.parent.mkdir(parents=True,exist_ok=True); args.output.write_text(json.dumps(result,indent=2,ensure_ascii=False)); print(json.dumps({k:{q:v[q] for q in ('accuracy','mean_entropy')} for k,v in result['policies'].items()},ensure_ascii=False))
 if __name__=='__main__': main()

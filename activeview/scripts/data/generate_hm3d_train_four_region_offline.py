@@ -317,7 +317,8 @@ def _run_candidate_metadata(
     *,
     scene_root: Path,
     scene_id: str,
-    region_manifest: Path,
+    region_manifest: Path | None,
+    placements_file: Path | None,
     candidate_dir: Path,
     candidate_script: Path,
 ) -> None:
@@ -341,13 +342,17 @@ def _run_candidate_metadata(
         str(scene_root),
         "--scene-id",
         scene_id,
-        "--region-manifest",
-        str(region_manifest),
         "--output-dir",
         str(candidate_dir),
         "--num-views",
         "32",
     ]
+    if placements_file is not None:
+        command.extend(["--placements-file", str(placements_file)])
+    elif region_manifest is not None:
+        command.extend(["--region-manifest", str(region_manifest)])
+    else:
+        raise ValueError("one of region_manifest or placements_file is required")
     LOGGER.info("[%s] building candidate metadata", scene_id)
     subprocess.run(command, check=True)
     if not manifest_path.exists():
@@ -372,7 +377,11 @@ def _run_view_generation(
     expected_records = len(json.loads(manifest.read_text(encoding="utf-8")))
     if max_records is not None:
         expected_records = min(expected_records, max_records)
-    expected_items = expected_records * len(REGION_LABELS)
+    candidate_manifest = json.loads((candidate_dir / "manifest.json").read_text(encoding="utf-8"))
+    placement_count = int(candidate_manifest.get("placements", len(candidate_manifest.get("placements_data", []))))
+    if placement_count < 1:
+        raise ValueError(f"candidate manifest has no placements: {candidate_dir}")
+    expected_items = expected_records * placement_count
     final_manifest = output_dir / "manifest.json"
     if final_manifest.exists():
         try:
@@ -408,7 +417,7 @@ def _run_view_generation(
     ]
     if max_records is not None:
         command.extend(["--max-records", str(max_records)])
-    LOGGER.info("[%s] generating %d records x %d regions x 32 views with %d workers", scene_id, expected_records, len(REGION_LABELS), workers)
+    LOGGER.info("[%s] generating %d records x %d placements x 32 views with %d workers", scene_id, expected_records, placement_count, workers)
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(command, check=True)
 
@@ -422,6 +431,7 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, default=data_root / "datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/val.json")
     parser.add_argument("--output-root", type=Path, default=data_root / "datasets/offline/hm3d-train")
     parser.add_argument("--topdown-root", type=Path, default=data_root / "visualizations/hm3d_train_semantic_topdown")
+    parser.add_argument("--placement-root", type=Path, default=data_root / "datasets/offline/hm3d-train_reduced14_kneel/placement_sampling_v2")
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--image-size", type=int, default=256)
     parser.add_argument("--target-frames", type=int, default=30)
@@ -460,23 +470,29 @@ def main() -> None:
         scene_out = args.output_root / scene_id
         status: Dict[str, Any] = {"scene_id": scene_id, "status": "started", "output": str(scene_out)}
         try:
-            furniture = _run_topdown(
-                scene_id=scene_id,
-                semantic_root=args.semantic_root,
-                furniture_dir=args.topdown_root / scene_id,
-                topdown_script=topdown_script,
-            )
-            region_manifest = _write_region_manifest(
-                scene_root=args.scene_root,
-                scene_id=scene_id,
-                furniture_path=furniture,
-                output_path=scene_out / "region_placement_manifest.json",
-            )
+            placements_file = args.placement_root / scene_id / "placements.json"
+            if placements_file.exists():
+                region_manifest = None
+            else:
+                furniture = _run_topdown(
+                    scene_id=scene_id,
+                    semantic_root=args.semantic_root,
+                    furniture_dir=args.topdown_root / scene_id,
+                    topdown_script=topdown_script,
+                )
+                region_manifest = _write_region_manifest(
+                    scene_root=args.scene_root,
+                    scene_id=scene_id,
+                    furniture_path=furniture,
+                    output_path=scene_out / "region_placement_manifest.json",
+                )
+                placements_file = None
             candidate_dir = scene_out / "candidate_metadata"
             _run_candidate_metadata(
                 scene_root=args.scene_root,
                 scene_id=scene_id,
                 region_manifest=region_manifest,
+                placements_file=placements_file,
                 candidate_dir=candidate_dir,
                 candidate_script=candidate_script,
             )
