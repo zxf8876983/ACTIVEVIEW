@@ -36,3 +36,15 @@ segment during training. The reduced12 development Val array is unchanged and
 byte-identical to the base protocol. The independent checkpoint and metrics
 are recorded under `experiments/stgcn_reduced12_temporal_segment_jitter_v1/`;
 no policy Test evaluation was performed.
+
+## Reduced-15 BABEL diversity protocol
+
+2026-09-04: built an independent 15-class protocol using cap-300/100
+diversity-first selection and the official Train 90/10 ST-GCN development
+split. The new development data contain 2,926 Train and 325 Val records,
+with fixed 30-frame resampling and no temporal segment jitter. A separate
+ST-GCN was trained with the Conda `habitat` CUDA runtime on RTX 4090 and
+train-only early stopping at epoch 164: final Train Accuracy/Macro-F1
+0.997949/0.998383 and post-hoc Val Accuracy/Macro-F1 0.630769/0.665723.
+Existing selected16 and reduced12 artifacts were not modified; no Test data
+were generated or read.

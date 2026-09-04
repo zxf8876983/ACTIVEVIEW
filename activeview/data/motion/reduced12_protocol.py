@@ -1,4 +1,4 @@
-"""Diversity-aware manifest construction for the reduced 12-class protocol."""
+"""Diversity-aware manifest construction for reduced BABEL class protocols."""
 
 from __future__ import annotations
 
@@ -35,6 +35,24 @@ REDUCED12_LABELS: Tuple[str, ...] = (
     "stumble",
 )
 
+REDUCED15_LABELS: Tuple[str, ...] = (
+    "walk",
+    "sit",
+    "stand up",
+    "crawl",
+    "stumble",
+    "wave",
+    "clap",
+    "throw",
+    "clean something",
+    "jump",
+    "stretch",
+    "kick",
+    "knock",
+    "punch",
+    "take/pick something up",
+)
+
 
 def _identity(feat_p: str) -> Tuple[str, str]:
     """Return AMASS dataset and stable subject identity from a BABEL path."""
@@ -62,9 +80,16 @@ def _duration_bin(duration: float) -> int:
     return 4
 
 
-def _record_id(split: str, sid: str, label_index: int, seg_id: str, label: str) -> str:
+def _record_id(
+    split: str,
+    sid: str,
+    label_index: int,
+    seg_id: str,
+    label: str,
+    prefix: str = "reduced12",
+) -> str:
     digest = hashlib.sha1(f"{split}|{sid}|{label_index}|{seg_id}|{label}".encode()).hexdigest()[:10]
-    return f"reduced12_{split}_{int(sid):05d}_{label_index:03d}_{digest}"
+    return f"{prefix}_{split}_{int(sid):05d}_{label_index:03d}_{digest}"
 
 
 def collect_reduced12_records(
@@ -73,10 +98,12 @@ def collect_reduced12_records(
     source_lookup: Mapping[str, Path],
     *,
     min_frames_exclusive: int = 30,
+    labels: Sequence[str] = REDUCED12_LABELS,
+    record_prefix: str = "reduced12",
 ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """Collect readable, duration-valid records for the requested labels."""
     data = json.loads(babel_path.read_text(encoding="utf-8"))
-    wanted = set(REDUCED12_LABELS)
+    wanted = set(labels)
     records: List[Dict[str, Any]] = []
     excluded: List[Dict[str, Any]] = []
     source_cache: Dict[str, Any] = {}
@@ -117,7 +144,7 @@ def collect_reduced12_records(
             for action_label in sorted(labels):
                 records.append(
                     {
-                        "record_id": _record_id(source_split, str(sid), label_index, seg_id, action_label),
+                        "record_id": _record_id(source_split, str(sid), label_index, seg_id, action_label, record_prefix),
                         "babel_sid": int(sid),
                         "label_index": int(label_index),
                         "seg_id": seg_id,
@@ -153,15 +180,16 @@ def select_diverse_records(
     *,
     cap_per_class: int,
     seed: int,
+    labels: Sequence[str] = REDUCED12_LABELS,
 ) -> List[Dict[str, Any]]:
     """Greedily maximize source, subject, dataset and duration-bin novelty."""
     grouped: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     for record in records:
         grouped[str(record["action_label"])].append(dict(record))
     selected: List[Dict[str, Any]] = []
-    for label in REDUCED12_LABELS:
+    for label in labels:
         candidates = list(grouped.get(label, []))
-        rng = random.Random(seed + REDUCED12_LABELS.index(label) * 1009)
+        rng = random.Random(seed + labels.index(label) * 1009)
         rng.shuffle(candidates)
         chosen: List[Dict[str, Any]] = []
         source_counts: Counter[str] = Counter()
@@ -190,17 +218,22 @@ def select_diverse_records(
             dataset_counts[str(best["amass_dataset"])] += 1
             duration_counts[_duration_bin(float(best["duration_seconds"]))] += 1
         selected.extend(chosen)
-    selected.sort(key=lambda item: (REDUCED12_LABELS.index(str(item["action_label"])), str(item["record_id"])))
+    selected.sort(key=lambda item: (labels.index(str(item["action_label"])), str(item["record_id"])))
     return selected
 
 
-def _split_records(records: Sequence[Mapping[str, Any]], fractions: Sequence[float], seed: int) -> List[List[Dict[str, Any]]]:
+def _split_records(
+    records: Sequence[Mapping[str, Any]],
+    fractions: Sequence[float],
+    seed: int,
+    labels: Sequence[str] = REDUCED12_LABELS,
+) -> List[List[Dict[str, Any]]]:
     """Stratified deterministic split of already capped records."""
     result: List[List[Dict[str, Any]]] = [[] for _ in fractions]
     by_label: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     for record in records:
         by_label[str(record["action_label"])].append(dict(record))
-    for label_index, label in enumerate(REDUCED12_LABELS):
+    for label_index, label in enumerate(labels):
         items = by_label.get(label, [])
         rng = random.Random(seed + label_index * 7919)
         rng.shuffle(items)
@@ -242,7 +275,7 @@ def _diversity(records: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     }
 
 
-def build_reduced12_protocol(
+def build_reduced_protocol(
     *,
     output_root: Path,
     babel_dir: Path,
@@ -251,21 +284,26 @@ def build_reduced12_protocol(
     train_cap: int = 300,
     active_val_cap: int = 100,
     seed: int = 42,
+    labels: Sequence[str] = REDUCED12_LABELS,
+    protocol_name: str = "reduced12 diversity-aware BABEL protocol",
+    record_prefix: str = "reduced12",
 ) -> Dict[str, Any]:
     """Build independent ST-GCN-development and ActiveView manifests."""
     index = json.loads(amass_index_path.read_text(encoding="utf-8"))
     lookup = _source_lookup(index)
     train_raw, train_excluded = collect_reduced12_records(
-        babel_dir / "train.json", "official_train", lookup, min_frames_exclusive=min_frames_exclusive
+        babel_dir / "train.json", "official_train", lookup,
+        min_frames_exclusive=min_frames_exclusive, labels=labels, record_prefix=record_prefix,
     )
     val_raw, val_excluded = collect_reduced12_records(
-        babel_dir / "val.json", "official_val", lookup, min_frames_exclusive=min_frames_exclusive
+        babel_dir / "val.json", "official_val", lookup,
+        min_frames_exclusive=min_frames_exclusive, labels=labels, record_prefix=record_prefix,
     )
-    label_to_id = {label: index for index, label in enumerate(REDUCED12_LABELS)}
-    train_selected = select_diverse_records(train_raw, cap_per_class=train_cap, seed=seed)
-    val_selected = select_diverse_records(val_raw, cap_per_class=active_val_cap, seed=seed + 1)
-    stgcn_train, stgcn_val = _split_records(train_selected, (0.9, 0.1), seed)
-    active_train, active_val, active_test = _split_records(val_selected, (0.6, 0.2, 0.2), seed + 1)
+    label_to_id = {label: index for index, label in enumerate(labels)}
+    train_selected = select_diverse_records(train_raw, cap_per_class=train_cap, seed=seed, labels=labels)
+    val_selected = select_diverse_records(val_raw, cap_per_class=active_val_cap, seed=seed + 1, labels=labels)
+    stgcn_train, stgcn_val = _split_records(train_selected, (0.9, 0.1), seed, labels=labels)
+    active_train, active_val, active_test = _split_records(val_selected, (0.6, 0.2, 0.2), seed + 1, labels=labels)
     manifests = {
         "stgcn_development": {
             "train": _with_split(stgcn_train, "train", label_to_id),
@@ -285,8 +323,8 @@ def build_reduced12_protocol(
         for split, rows in splits.items():
             (subset_root / f"{split}.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False), encoding="utf-8")
     summary = {
-        "protocol": "reduced12 diversity-aware BABEL protocol",
-        "categories": list(REDUCED12_LABELS),
+        "protocol": protocol_name,
+        "categories": list(labels),
         "label_mapping": label_to_id,
         "seed": seed,
         "caps": {"official_train_per_class": train_cap, "official_val_per_class": active_val_cap},
@@ -318,4 +356,28 @@ def build_reduced12_protocol(
     return summary
 
 
-__all__ = ["REDUCED12_LABELS", "build_reduced12_protocol", "collect_reduced12_records", "select_diverse_records"]
+def build_reduced12_protocol(**kwargs: Any) -> Dict[str, Any]:
+    """Build the frozen reduced-12 protocol with its historical defaults."""
+    return build_reduced_protocol(
+        labels=REDUCED12_LABELS,
+        protocol_name="reduced12 diversity-aware BABEL protocol",
+        record_prefix="reduced12",
+        **kwargs,
+    )
+
+
+def build_reduced15_protocol(**kwargs: Any) -> Dict[str, Any]:
+    """Build the independent 15-class, cap-300/100 protocol."""
+    return build_reduced_protocol(
+        labels=REDUCED15_LABELS,
+        protocol_name="reduced15 diversity-aware BABEL protocol",
+        record_prefix="reduced15",
+        **kwargs,
+    )
+
+
+__all__ = [
+    "REDUCED12_LABELS", "REDUCED15_LABELS", "build_reduced_protocol",
+    "build_reduced12_protocol", "build_reduced15_protocol",
+    "collect_reduced12_records", "select_diverse_records",
+]

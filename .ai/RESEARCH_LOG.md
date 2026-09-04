@@ -591,3 +591,16 @@ development Val remained byte-identical uniform 30-frame sampling. The CUDA
 RTX 4090 run used the fixed 200-epoch protocol and reached Train
 Accuracy/Macro-F1 0.972692/0.972863; post-hoc Val Accuracy/Macro-F1 were
 0.480969/0.455983. No policy Test evaluation was performed.
+
+## Reduced-15 BABEL diversity protocol
+
+2026-09-04: added the requested 15 labels as an independent diversity-aware
+protocol. Official Train/Val caps remain 300/100 per class, with source,
+subject, AMASS dataset and duration-bin diversity priorities; Official Train
+was split 90/10 for ST-GCN development. Generated fixed 30-frame Train/Val
+tensors total 2,926/325 records. CUDA RTX 4090 training used seed 42, Adam
+1e-3, batch 64, tempered inverse-frequency oversampling and train-only early
+stopping (final epoch 164), obtaining Train Accuracy/Macro-F1=0.997949/0.998383
+and post-hoc Val Accuracy/Macro-F1=0.630769/0.665723. No Test split was
+generated/read or evaluated; frozen selected16/reduced12 artifacts remain
+unchanged.
