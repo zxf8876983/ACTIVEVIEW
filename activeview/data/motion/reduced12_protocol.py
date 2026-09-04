@@ -53,6 +53,25 @@ REDUCED15_LABELS: Tuple[str, ...] = (
     "take/pick something up",
 )
 
+REDUCED16_LABELS: Tuple[str, ...] = (
+    "walk",
+    "sit",
+    "stand up",
+    "bend",
+    "crawl",
+    "stumble",
+    "wave",
+    "clap",
+    "throw",
+    "clean something",
+    "jump",
+    "kick",
+    "knock",
+    "punch",
+    "eat",
+    "telephone call",
+)
+
 
 def _identity(feat_p: str) -> Tuple[str, str]:
     """Return AMASS dataset and stable subject identity from a BABEL path."""
@@ -376,8 +395,18 @@ def build_reduced15_protocol(**kwargs: Any) -> Dict[str, Any]:
     )
 
 
+def build_reduced16_protocol(**kwargs: Any) -> Dict[str, Any]:
+    """Build the independent 16-class protocol requested for retraining."""
+    return build_reduced_protocol(
+        labels=REDUCED16_LABELS,
+        protocol_name="reduced16 diversity-aware BABEL protocol",
+        record_prefix="reduced16",
+        **kwargs,
+    )
+
+
 __all__ = [
-    "REDUCED12_LABELS", "REDUCED15_LABELS", "build_reduced_protocol",
-    "build_reduced12_protocol", "build_reduced15_protocol",
+    "REDUCED12_LABELS", "REDUCED15_LABELS", "REDUCED16_LABELS", "build_reduced_protocol",
+    "build_reduced12_protocol", "build_reduced15_protocol", "build_reduced16_protocol",
     "collect_reduced12_records", "select_diverse_records",
 ]

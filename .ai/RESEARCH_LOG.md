@@ -604,3 +604,16 @@ stopping (final epoch 164), obtaining Train Accuracy/Macro-F1=0.997949/0.998383
 and post-hoc Val Accuracy/Macro-F1=0.630769/0.665723. No Test split was
 generated/read or evaluated; frozen selected16/reduced12 artifacts remain
 unchanged.
+
+## Reduced-16 BABEL replacement protocol
+
+2026-09-04: created the requested 16-class replacement protocol by removing
+`stretch` and `take/pick something up` and adding `bend`, `eat`, and
+`telephone call`. Diversity-aware cap-300/100 selection and official Train
+90/10 ST-GCN splitting were retained. Sixteen independent CUDA Habitat workers
+generated 2,716 Train and 301 Val fixed-30-frame skeleton records. The ST-GCN
+run (seed 42, Adam 1e-3, batch 64, oversample power 0.5, train-only early
+stopping) finished at epoch 184 with Train Accuracy/Macro-F1=0.997054/0.997775
+and posthoc Val Accuracy/Macro-F1=0.664452/0.620068. `eat` is data-limited
+(11 Train, 1 Val); no synthetic balancing was added. Test was not generated,
+read or evaluated; prior protocols remain unchanged.

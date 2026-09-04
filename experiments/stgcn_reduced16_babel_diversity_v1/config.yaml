@@ -1,0 +1,18 @@
+experiment_id: stgcn_reduced16_babel_diversity_v1
+seed: 42
+categories: 16
+labels: [walk, sit, stand up, bend, crawl, stumble, wave, clap, throw, clean something, jump, kick, knock, punch, eat, telephone call]
+official_train_cap_per_class: 300
+official_val_cap_per_class: 100
+stgcn_split: official_train_selected_then_90_10
+target_frames: 30
+temporal_segment_jitter: false
+generation_workers: 16
+train_epochs_max: 200
+early_stopping_patience: 20
+batch_size: 64
+learning_rate: 0.001
+weight_decay: 0.0001
+oversample_power: 0.5
+device: cuda:0
+test_used: false
