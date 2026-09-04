@@ -20,7 +20,7 @@ from activeview.data.motion.reduced12_protocol import build_reduced15_kneel_prot
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output-root", type=Path, default=data_root / "datasets" / "reduced15_kneel_babel_diversity_v1")
+    parser.add_argument("--output-root", type=Path, default=data_root / "datasets" / "reduced15_replacement_babel_diversity_v1")
     parser.add_argument("--babel-dir", type=Path, default=get_babel_dir())
     parser.add_argument("--amass-index", type=Path, default=data_root / "cache" / "amass_download" / "amass_file_index.json")
     parser.add_argument("--train-cap", type=int, default=300)

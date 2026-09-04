@@ -1,4 +1,4 @@
-experiment_id: stgcn_reduced15_kneel_babel_diversity_v1
+experiment_id: stgcn_reduced15_replacement_babel_diversity_v1
 seed: 42
 categories: 15
 labels: [walk, sit, stand up, bend, crawl, stumble, kneel, clap, throw, clean something, jump, kick, knock, punch, touching face]

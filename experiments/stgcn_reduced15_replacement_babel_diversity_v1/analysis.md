@@ -9,6 +9,9 @@
 | Train | 2,700 | 1,535 | 389 | 17 | 10,628.138 |
 | Val | 300 | 268 | 161 | 16 | 1,230.223 |
 
+主动感知 `activeview/val.json` 已使用相同 16-worker CUDA 生成，共 209 条、
+固定 30 帧；未生成该 subset 的 Test skeleton。
+
 各类别 development 数量（Train/Val）为：walk 270/30，sit 270/30，stand up
 270/30，bend 270/30，crawl 63/7，stumble 104/12，kneel 87/10，clap 88/10，
 throw 270/30，clean something 131/15，jump 270/30，kick 270/30，knock 68/7，

@@ -19,7 +19,7 @@ from activeview.scripts.data.generate_selected16_habitat_parallel import generat
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-root", type=Path, default=data_root / "datasets" / "reduced15_kneel_babel_diversity_v1" / "stgcn_development")
+    parser.add_argument("--data-root", type=Path, default=data_root / "datasets" / "reduced15_replacement_babel_diversity_v1" / "stgcn_development")
     parser.add_argument("--split", choices=("train", "val"), required=True)
     parser.add_argument("--workers", type=int, default=16)
     parser.add_argument("--image-size", type=int, default=256)
