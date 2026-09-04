@@ -605,6 +605,18 @@ and post-hoc Val Accuracy/Macro-F1=0.630769/0.665723. No Test split was
 generated/read or evaluated; frozen selected16/reduced12 artifacts remain
 unchanged.
 
+## Revised reduced-15 replacement
+
+2026-09-04: deleted the previous reduced15 runtime data/checkpoint and
+replaced them with a new 15-class protocol (removed `stretch` and
+`take/pick something up`; added `touching face`). Cap=300/100 and
+diversity-first selection were retained. Sixteen CUDA Habitat workers generated
+2,796 Train and 310 Val fixed-30-frame skeleton records. The new ST-GCN used
+seed 42 and train-only early stopping at epoch 172, obtaining Train
+Accuracy/Macro-F1=0.995708/0.996167 and posthoc Val
+Accuracy/Macro-F1=0.651613/0.672486. No Test skeleton was generated/read or
+evaluated; original BABEL/AMASS data and other protocol roots were untouched.
+
 ## Reduced-16 BABEL replacement protocol
 
 2026-09-04: created the requested 16-class replacement protocol by removing

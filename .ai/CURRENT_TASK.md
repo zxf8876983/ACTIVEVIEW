@@ -49,6 +49,17 @@ train-only early stopping at epoch 164: final Train Accuracy/Macro-F1
 Existing selected16 and reduced12 artifacts were not modified; no Test data
 were generated or read.
 
+## Revised reduced-15 replacement
+
+2026-09-04: removed the old reduced15 runtime dataset/checkpoint (52M and 12M)
+and regenerated a new independent 15-class protocol: walk, sit, stand up, bend,
+crawl, stumble, wave, clap, throw, clean something, jump, kick, knock, punch,
+touching face. Cap=300/100 and diversity-first sampling were preserved. Using
+16 CUDA Habitat workers, fixed-30-frame Train/Val skeletons contain 2,796/310
+records. The new ST-GCN (seed 42, train-only early stopping at epoch 172)
+reached Train Accuracy/Macro-F1 0.995708/0.996167 and posthoc Val
+Accuracy/Macro-F1 0.651613/0.672486. Test was not generated, read or evaluated.
+
 ## Reduced-16 BABEL replacement protocol
 
 2026-09-04: replaced `stretch` and `take/pick something up` from the reduced15
