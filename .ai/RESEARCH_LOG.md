@@ -566,3 +566,17 @@ all seven frozen method Accuracy/F1 values within 1e-8 on the same FULL/MOVING
 Test populations. This confirms source organization did not change scientific
 behavior. It did not create a new method result or alter the official Final
 Test artifacts.
+
+## Reduced-12 BABEL diversity protocol
+
+2026-09-04: created the independent `reduced12_babel_diversity_v1` runtime
+dataset for the requested 12 classes. Per-class caps were 300 on official
+Train and 100 on official Val. Diversity-first deterministic selection (seed
+42) used unique source, subject, AMASS dataset and duration bins. Official
+Train was split 90/10 to ST-GCN development (2600/289); official Val was split
+60/20/20 to ActiveView motion (591/197/197). Existing selected-16 artifacts
+were not modified. The new ST-GCN was trained with the Conda `habitat` CUDA
+runtime on an RTX 4090 for 200 epochs: final Train loss 0.044019, Accuracy
+0.973077, Macro-F1 0.973572; post-hoc development Val Accuracy/Macro-F1
+0.484429/0.474513. The ActiveView motion Test partition was generated as
+requested, but no policy evaluation or Test metric was run.

@@ -1,0 +1,30 @@
+experiment_id: reduced12_babel_diversity_v1
+seed: 42
+categories:
+  - walk
+  - sit
+  - stand up
+  - bend
+  - squat
+  - lean
+  - stretch
+  - take/pick something up
+  - place something
+  - lift something
+  - clean something
+  - stumble
+caps:
+  official_train_per_class: 300
+  official_val_per_class: 100
+splits:
+  stgcn_development: official_train:90%/10%
+  activeview: official_val:60%/20%/20%
+training:
+  architecture: STGCN spatial graph, 3 input channels, 12 classes
+  epochs: 200
+  batch_size: 64
+  optimizer: Adam
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  oversample_power: 0.5
+  device: cuda:0

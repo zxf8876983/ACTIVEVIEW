@@ -23,6 +23,7 @@ from activeview.perception.skeleton import (
     SkeletonDefinition,
     get_skeleton_definition,
 )
+from activeview.core.paths import get_data_root
 
 
 class UltralyticsPose3DEstimator(BasePose3DEstimator):
@@ -37,6 +38,7 @@ class UltralyticsPose3DEstimator(BasePose3DEstimator):
         skel_def: Optional[SkeletonDefinition] = None,
         inference_size: Optional[int] = None,
         backend_label: str = "ultralytics_yolo26n_pose",
+        videopose_weights: Optional[Union[str, Path]] = None,
     ) -> None:
         super().__init__(skel_def=skel_def or get_skeleton_definition(backend="h36m_17"))
         from ultralytics import YOLO
@@ -54,7 +56,13 @@ class UltralyticsPose3DEstimator(BasePose3DEstimator):
         from common.model import TemporalModel
 
         self._normalize_screen_coordinates = normalize_screen_coordinates
-        checkpoint = Path(__file__).resolve().parent / "pretrained_h36m_detectron_coco.bin"
+        checkpoint = Path(videopose_weights) if videopose_weights is not None else (
+            get_data_root() / "checkpoints" / "videopose3d" / "pretrained_h36m_detectron_coco.bin"
+        )
+        if not checkpoint.exists():
+            checkpoint = Path(__file__).resolve().parent / "pretrained_h36m_detectron_coco.bin"
+        if not checkpoint.exists():
+            raise FileNotFoundError(f"VideoPose3D checkpoint not found: {checkpoint}")
         self.videopose_model = TemporalModel(
             num_joints_in=17,
             in_features=2,

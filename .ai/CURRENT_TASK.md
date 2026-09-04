@@ -14,3 +14,16 @@ their golden Accuracy/Macro-F1 values within 1e-8 using the same Test
 populations. No algorithm, checkpoint, official result, or runtime dataset was
 changed during this context synchronization. No new experiment is authorized
 automatically.
+
+## Reduced-12 BABEL diversity protocol
+
+2026-09-04: built an independent 12-class BABEL protocol without modifying
+the frozen selected-16 dataset. Official Train was capped at 300/class and
+split 90/10 into ST-GCN development (2,600/289); Official Val was capped at
+100/class and split 60/20/20 into ActiveView motion (591/197/197). Selection
+used seed 42 and prioritized unique source, subject, AMASS dataset and
+duration-bin diversity. Generated tensors use the existing frozen perception
+chain. A new 12-class ST-GCN was trained on CUDA (RTX 4090) for 200 epochs;
+final train Accuracy/Macro-F1 were 0.973077/0.973572 and post-hoc development
+Val Accuracy/Macro-F1 were 0.484429/0.474513. No policy Test evaluation was
+performed for this protocol.

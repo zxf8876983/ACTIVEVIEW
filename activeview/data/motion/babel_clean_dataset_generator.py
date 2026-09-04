@@ -193,6 +193,7 @@ class BabelCleanDatasetGenerator:
         label_to_id: Optional[Mapping[str, int]] = None,
         pose_backend: str = "ultralytics_yolo26n",
         yolo_weights: Optional[Path] = None,
+        videopose_weights: Optional[Path] = None,
     ) -> None:
         import habitat_sim
         import quaternion  # noqa: F401 - required by Habitat rotations
@@ -224,6 +225,7 @@ class BabelCleanDatasetGenerator:
             weights=weights,
             skel_def=self.skel_def,
             backend_label="ultralytics_yolo26n_pose",
+            videopose_weights=videopose_weights,
         )
         self.perception_chain = "RGB -> Ultralytics YOLO26n-Pose -> VideoPose3D"
 

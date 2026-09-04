@@ -1,0 +1,38 @@
+{
+  "experiment_id": "reduced12_babel_diversity_v1",
+  "status": "completed",
+  "seed": 42,
+  "categories": ["walk", "sit", "stand up", "bend", "squat", "lean", "stretch", "take/pick something up", "place something", "lift something", "clean something", "stumble"],
+  "caps": {"official_train_per_class": 300, "official_val_per_class": 100},
+  "splits": {
+    "stgcn_development": {"train": 2600, "val": 289},
+    "activeview": {"train": 591, "val": 197, "test": 197}
+  },
+  "runtime_data_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_babel_diversity_v1",
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_babel_diversity_v1/stgcn_reduced12_best.pth",
+  "checkpoint_sha256": "939d3493a8b3256978948513c51fec39d10226a604ae96d4a7b22ea23967a212",
+  "data_sha256": {
+    "stgcn_train": "095712e626a0895017fbc1c964fe0a1efd83376711fc983070f1888500a03a1e",
+    "stgcn_val": "53260e2be72ba93ee3e18aaf20669a580d6db44fd52d4b72be00fa1972351510"
+  },
+  "training": {
+    "device": "cuda:0",
+    "epochs": 200,
+    "final_train_loss": 0.04401905305325412,
+    "final_train_accuracy": 0.9730769230769231,
+    "final_train_macro_f1": 0.9735721555635628,
+    "posthoc_val_accuracy": 0.4844290657439446,
+    "posthoc_val_macro_f1": 0.47451299675287845,
+    "best_train_loss_epoch": 196,
+    "best_train_loss": 0.04336292998292125
+  },
+  "provenance": {
+    "official_train": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/babel/babel_v1.0_release/train.json",
+    "official_val": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/babel/babel_v1.0_release/val.json",
+    "amass_index": "/home/zxf/WorkSpace/code/data/ActiveView/cache/amass_download/amass_file_index.json",
+    "perception_chain": "RGB -> Ultralytics YOLO26n-Pose -> VideoPose3D",
+    "cuda_device": "NVIDIA GeForce RTX 4090"
+  },
+  "test_used_for_evaluation": false,
+  "selected16_modified": false
+}
