@@ -437,7 +437,7 @@ def main() -> None:
     parser.add_argument("--scene-root", type=Path, default=get_habitat_data_root() / "hm3d-train")
     parser.add_argument("--semantic-root", type=Path, default=get_habitat_data_root() / "hm3d-train-semantic-annots")
     parser.add_argument("--manifest", type=Path, default=data_root / "datasets/reduced14_kneel_babel_diversity_v1/raw-val/official_val.json")
-    parser.add_argument("--output-root", type=Path, default=data_root / "datasets/offline/hm3d-train")
+    parser.add_argument("--output-root", type=Path, default=data_root / "datasets/offline/hm3d-train_reduced14_kneel/eight_placement_v1")
     parser.add_argument("--topdown-root", type=Path, default=data_root / "visualizations/hm3d_train_semantic_topdown")
     parser.add_argument("--placement-root", type=Path, default=data_root / "datasets/offline/hm3d-train_reduced14_kneel/placement_sampling_v2")
     parser.add_argument("--workers", type=int, default=4)
@@ -454,7 +454,17 @@ def main() -> None:
     if not isinstance(records, list):
         raise ValueError("motion manifest must be a JSON list")
     args.output_root.mkdir(parents=True, exist_ok=True)
-    placement_mode = all((args.placement_root / scene_id / "placements.json").exists() for scene_id in scenes)
+    reduced14_mode = "reduced14_kneel" in args.manifest.as_posix()
+    missing_placements = [
+        scene_id for scene_id in scenes
+        if not (args.placement_root / scene_id / "placements.json").exists()
+    ]
+    if reduced14_mode and missing_placements:
+        raise FileNotFoundError(
+            "reduced14 eight-placement mode requires placements.json for every scene; "
+            f"missing: {', '.join(missing_placements)}"
+        )
+    placement_mode = reduced14_mode
     scene_list_path = args.output_root / "scene_selection.json"
     scene_selection = {"scene_ids": scenes}
     if placement_mode:
