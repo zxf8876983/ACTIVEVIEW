@@ -169,7 +169,7 @@ def sample_scene_placements(
             snapped = np.asarray(sim.pathfinder.snap_point(raw), dtype=np.float32)
             if snapped.shape != (3,) or not np.isfinite(snapped).all():
                 continue
-            if float(np.linalg.norm(snapped - raw)) > 0.5:
+            if float(np.linalg.norm(snapped[[0, 2]] - raw[[0, 2]])) > 0.5:
                 continue
             if not sim.pathfinder.is_navigable(snapped):
                 continue
@@ -183,6 +183,7 @@ def sample_scene_placements(
                 continue
             placements.append(
                 {
+                    "placement_id": f"p{len(placements):02d}",
                     "position": snapped.astype(np.float32),
                     "anchor_label": str(obj["label"]),
                     "anchor_object_id": int(obj.get("instance_index", len(placements))),
