@@ -2,29 +2,48 @@
 
 Status: CLEAN
 
-EXP025, EXP026, EXP027 and EXP028 are complete. Runtime caches, checkpoints and predictions
-are under `/home/zxf/MG08/robot/ActiveView/`; source summaries are under
-`experiments/stage_d/EXP025_dinov2_spatial_rgb/` and
-`experiments/stage_d/EXP026_spatial_rgbd_utility_regression/`.
+## Canonical method
 
-EXP025 used 77,750 unique visited `s0`/`s1` RGB observations (58,266 Train;
-19,484 Val) with frozen DINOv2 spatial tokens. Val: Accuracy 0.659898,
-Macro-F1 0.607331, mean regret 1.378650, P90 5.330633, headroom 0.784692.
-EXP026 used the same keys with frame-15 Habitat metric depth and 16 workers.
-Val: Accuracy 0.657325, Macro-F1 0.606847, mean regret 1.407385, P90
-5.423377, headroom 0.783227. Candidate identity mismatches were zero in both.
+The frozen final method is **WM-E + Multi-Positive Joint Revision + Closed-Loop
+H2** with horizon 2, `ALL_LEGAL` candidates, frozen Stage-C-v0 initial policy,
+frozen WM-E/JR/ST-GCN, visited-view exclusion, current-viewpoint-centered
+geometry, and real archived terminal skeleton HAR.
 
-EXP027 used only visited s0/s1 spatial RGB and legal Stage-D features with
-frozen Stage C-v0 first-step behavior. Val Accuracy 0.657039, Macro-F1
-0.608384, mean regret 1.486694 and P90 5.751852; decision INCONCLUSIVE.
-Test remained locked. No Stage A/B/C artifact, skeleton/RGB dataset,
-perception pipeline or ST-GCN artifact was modified.
+## Final Test
 
-EXP028 was a Val-only oracle predictability audit using a Train-only cosine
-nearest-neighbor index over normalized current observations, legal candidate
-geometry and visited s0/s1 spatial RGB. It found low 25-NN agreement (0.444570),
-high mean three-way neighborhood entropy (0.870910), and Val cross-motion
-oracle-action switching (0.551969) for quantized context groups. Decision is
-INCONCLUSIVE pending human review; no policy was trained and no Test was read.
-See `experiments/stage_d/EXP028_oracle_action_predictability/`.
-Do not start EXP029 automatically.
+The explicitly authorized Final Test is complete. `experiments/stage_d/FINAL_TEST/`
+records `test_used=true`, FULL=13,774 and MOVING=9,409. The final Multi-positive
+method reached FULL Accuracy/F1 0.684841/0.627749 and MOVING 0.661388/0.622984.
+H1_REAL reached 0.673515/0.623050 FULL and 0.644808/0.612497 MOVING; Original
+JR H2 reached 0.680558/0.629111 FULL and 0.655117/0.621852 MOVING. Relative to
+FrozenStageCv0, Multi gained +5.946pp/+6.404pp FULL and +8.704pp/+9.248pp
+MOVING.
+
+For the same Test population, FrozenStageCv0 was FULL Accuracy/F1
+0.625381/0.563705 and MOVING 0.574344/0.530501. The NoMove baseline was
+0.412662/0.381786 FULL and 0.262940/0.255476 MOVING; SafeOracle was
+0.844925/0.811112 FULL and 0.825486/0.800462 MOVING.
+
+## Latest verification
+
+The source consolidation was followed by a read-only equivalence audit in
+`experiments/refactor_regression/result.json`: status PASS, with NoMove,
+Random seed 42, FrozenStageCv0, SafeOracle, H1_REAL, Original JR H2 and
+Multi-positive JR H2 matching frozen golden Accuracy/F1 values within 1e-8 on
+the same Test populations. This audit did not alter official results.
+
+The latest frozen artifact hashes are WM-E
+`db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6`, Original
+JR `332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac`, Multi
+JR `8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c`, and
+ST-GCN `362ac23195688988d637244eb2a13fa0e7b563b21d143846c671a5cec6b0d0ce`.
+
+## Runtime and research boundaries
+
+Runtime datasets, checkpoints and caches remain external under
+`ACTIVEVIEW_DATA_ROOT`; source code is under `activeview/`. Test artifacts are
+frozen and no new training, Val/Test evaluation, perception regeneration or
+Habitat rendering should start automatically. `test_used=false` applies to the
+research experiments (EXP051-R2, EXP055 and EXP056); `test_used=true` applies
+only to the explicitly authorized official Final Test. No next experiment is
+currently authorized.

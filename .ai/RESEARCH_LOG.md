@@ -517,3 +517,52 @@ The EXP051 authorization gate passed, but H=2 was blocked because frozen WM-E
 requires RGB history for newly visited views and the approved cache lacks those
 embeddings; no substitute inputs were used. Test, perception and upstream
 model retraining remained disabled.
+
+## EXP051-R2 — Real-observation closed-loop evaluation
+
+2026-09-04: reran the authorized EXP051 comparison with terminal HAR computed
+from real archived skeleton observations and real ST-GCN log-probabilities,
+using one paired moving population (9,742) plus the full 13,987 population.
+H1_REAL moving Accuracy/F1 were 0.661568/0.632699; H2_REAL were
+0.675529/0.642612 (Δ +0.013960/+0.009913, rescued 369, harmful 233, net
++136, McNemar p=3.30e-08). Full H1/H2 were 0.685780/0.643640 and
+0.695503/0.649220. Fused real-view H1/H2 moving results were
+0.599364/0.545336 and 0.607370/0.552557. WM-E fidelity decreased from h0
+agreement/Pearson 0.596064/0.738312 to h1 0.498571/0.645801, but terminal
+H2 improved. `test_used=false`.
+
+## EXP055–EXP056 — Multi-positive joint revision
+
+2026-09-04: trained the preregistered EXP055 multi-positive JR on 29,133 Train
+contexts with seed 42; its frozen checkpoint SHA is
+`8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c`. It used
+27,077 contexts with at least one correct action, including 25,362 with
+multiple positives and 2,056 no-positive fallback contexts. Val moving/full
+Accuracy/F1 were 0.683022/0.647338 and 0.700722/0.650955, improving EXP051-R2
+in both populations (CASE A). EXP056 repeated the objective at seeds 42/43/44;
+multi-positive won 3/3 seeds, with moving Accuracy means
+0.685828±0.003968 versus Original JR 0.665914±0.000640 and full Accuracy
+0.702676 versus 0.688806. This is a stable CASE-A pass; no Test was used.
+
+## EXP057 — Final method freeze and official Test
+
+2026-09-04: froze the final deployable protocol as WM-E + Multi-Positive JR +
+Closed-Loop H2 (horizon 2, ALL_LEGAL, frozen Stage-C-v0/WM-E/JR/ST-GCN,
+visited-view exclusion, current-viewpoint-centered geometry, real terminal
+HAR). The explicitly authorized Final Test then completed once with FULL=13,774
+and MOVING=9,409. MULTI_POSITIVE_JR_H2 reached FULL Accuracy/F1
+0.684841/0.627749 and MOVING 0.661388/0.622984; H1_REAL was
+0.673515/0.623050 FULL and 0.644808/0.612497 MOVING; Original JR H2 was
+0.680558/0.629111 FULL and 0.655117/0.621852 MOVING. Relative to the frozen
+Stage-C baseline, Multi gained +5.946pp/+6.404pp FULL and +8.704pp/+9.248pp
+MOVING. `test_used=true` only for this official frozen evaluation; no model,
+seed or method was changed after reading Test.
+
+## Refactor equivalence audit
+
+2026-09-04: after consolidating the final source modules, the read-only
+equivalence audit (`experiments/refactor_regression/result.json`) reproduced
+all seven frozen method Accuracy/F1 values within 1e-8 on the same FULL/MOVING
+Test populations. This confirms source organization did not change scientific
+behavior. It did not create a new method result or alter the official Final
+Test artifacts.

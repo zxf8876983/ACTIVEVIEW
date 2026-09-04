@@ -1,6 +1,6 @@
 # ACTIVEVIEW Scientific State
 
-Updated: 2026-08-30
+Updated: 2026-09-04
 
 ## Research goal
 
@@ -128,6 +128,68 @@ records for the approved sequential study are in `experiments/stage_d/`:
 
 Both used only Train/Val. Test, Habitat/perception regeneration and ST-GCN
 retraining remain prohibited until separately authorized.
+
+## Final closed-loop method
+
+The canonical final method is **WM-E + Multi-Positive Joint Revision +
+Closed-Loop H2**. Its frozen protocol is horizon 2 with `ALL_LEGAL` candidate
+sets, frozen Stage-C-v0 initial action, frozen WM-E/JR/ST-GCN, current-viewpoint
+centered second-step geometry, visited-view exclusion, and final HAR from the
+real archived terminal skeleton passed through frozen ST-GCN. EXP051-R2 fixed
+the terminal HAR and fused only real visited observations.
+
+EXP051-R2 was a Val-only paired evaluation. On the 9,742 moving contexts,
+H1_REAL reached Accuracy/F1 0.661568/0.632699 and H2_REAL reached
+0.675529/0.642612 (paired Δ +0.013960/+0.009913; rescued 369, harmful 233,
+McNemar p=3.30e-08). On the full 13,987 population, H1_REAL was
+0.685780/0.643640 and H2_REAL was 0.695503/0.649220. Real-view fused H1/H2
+moving Accuracy/F1 were 0.599364/0.545336 and 0.607370/0.552557. WM-E
+history fidelity shifted from h0 agreement/Pearson 0.596064/0.738312 to h1
+0.498571/0.645801, while real terminal H2 still improved.
+
+EXP055 multi-positive JR used 29,133 Train contexts (27,077 with at least one
+correct action; 25,362 multi-positive; 2,056 no-positive fallback), seed 42,
+and frozen checkpoint SHA
+`8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c`. It
+reached moving/full Val Accuracy/F1 0.683022/0.647338 and 0.700722/0.650955,
+respectively, improving EXP051-R2 in both populations (CASE A).
+
+EXP056 tested seeds 42/43/44 without Test access. Multi-positive JR won all
+three seeds on Accuracy and F1; mean moving Accuracy was
+0.685828±0.003968 versus Original JR 0.665914±0.000640, and mean full
+Accuracy was 0.702676 versus 0.688806. The objective stability result is a
+stable CASE-A pass; seed 42 remains the recommended frozen run.
+
+## Official Final Test and audit
+
+The explicitly authorized Final Test is complete and recorded in
+`experiments/stage_d/FINAL_TEST/result.json` with `test_used=true`. The FULL
+population has 13,774 episodes and MOVING has 9,409. MULTI_POSITIVE_JR_H2
+achieved FULL Accuracy/F1 0.684841/0.627749 and MOVING 0.661388/0.622984.
+The corresponding H1_REAL and ORIGINAL_JR_H2 results were FULL
+0.673515/0.623050 and 0.680558/0.629111, and MOVING 0.644808/0.612497 and
+0.655117/0.621852. Relative to FrozenStageCv0, Multi improved FULL by
++5.946pp Accuracy/+6.404pp F1 and MOVING by +8.704pp/+9.248pp. Relative to
+H1_REAL, Multi improved FULL by +1.133pp/+0.470pp and MOVING by
++1.658pp/+1.049pp; relative to Original JR H2, the Multi deltas were FULL
++0.428pp/-0.136pp and MOVING +0.627pp/+0.113pp.
+
+The post-refactor equivalence audit is recorded in
+`experiments/refactor_regression/result.json` with status PASS. Using the
+formal modules and existing Test artifacts read-only, all seven frozen
+methods (NoMove, Random seed 42, FrozenStageCv0, SafeOracle, H1_REAL,
+ORIGINAL_JR_H2 and MULTI_POSITIVE_JR_H2) matched their golden Accuracy/F1
+values within 1e-8 on the same FULL/MOVING populations. This was an audit, not
+a new method experiment. Frozen artifact hashes include WM-E
+`db2573a013ed9a7fab87561ad26800334556894b96e69dd3d498464794d9b5e6`, Original
+JR `332b3127747f67d954d7c80f530ee1cc5a9ca30c6472fd13a3a010a080c413ac`, Multi
+JR `8a6ef93ded8df94154f2045d6cf7d297c23e587ac8cf2601a83fcf3c82f1383c`, and
+ST-GCN `362ac23195688988d637244eb2a13fa0e7b563b21d143846c671a5cec6b0d0ce`.
+
+The final source consolidation is committed at `c941380` and the current
+documentation/equivalence commits follow it. No further experiment is
+authorized automatically; Test remains locked for any future changes to the
+method.
 
 ## Runtime roots
 
