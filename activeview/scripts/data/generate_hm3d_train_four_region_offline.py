@@ -326,12 +326,20 @@ def _run_candidate_metadata(
     if manifest_path.exists():
         try:
             existing = json.loads(manifest_path.read_text(encoding="utf-8"))
-            if (
-                existing.get("version") == "semantic-region-v2"
-                and existing.get("rotation_reference") == "exact_offline_render_state"
+            common_valid = (
+                existing.get("rotation_reference") == "exact_offline_render_state"
                 and float(existing.get("sensor_height_m", -1.0)) == 1.1
                 and float(existing.get("target_height_m", -1.0)) == 0.85
-            ):
+            )
+            if placements_file is not None:
+                placement_cache_valid = (
+                    existing.get("version") == "furniture-placement-v2"
+                    and int(existing.get("placements", -1)) == 8
+                    and existing.get("source_placements_file") == str(placements_file.resolve())
+                )
+            else:
+                placement_cache_valid = existing.get("version") == "semantic-region-v2"
+            if common_valid and placement_cache_valid:
                 return
         except (OSError, TypeError, ValueError, json.JSONDecodeError):
             pass
@@ -428,7 +436,7 @@ def main() -> None:
     parser.add_argument("--scene-list", type=Path, default=None, help="Optional JSON list of scene IDs")
     parser.add_argument("--scene-root", type=Path, default=get_habitat_data_root() / "hm3d-train")
     parser.add_argument("--semantic-root", type=Path, default=get_habitat_data_root() / "hm3d-train-semantic-annots")
-    parser.add_argument("--manifest", type=Path, default=data_root / "datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/val.json")
+    parser.add_argument("--manifest", type=Path, default=data_root / "datasets/reduced14_kneel_babel_diversity_v1/raw-val/official_val.json")
     parser.add_argument("--output-root", type=Path, default=data_root / "datasets/offline/hm3d-train")
     parser.add_argument("--topdown-root", type=Path, default=data_root / "visualizations/hm3d_train_semantic_topdown")
     parser.add_argument("--placement-root", type=Path, default=data_root / "datasets/offline/hm3d-train_reduced14_kneel/placement_sampling_v2")
@@ -444,19 +452,26 @@ def main() -> None:
     scenes = _load_scene_list(args.scene_list)
     records = json.loads(args.manifest.read_text(encoding="utf-8"))
     if not isinstance(records, list):
-        raise ValueError("Selected16 manifest must be a JSON list")
+        raise ValueError("motion manifest must be a JSON list")
     args.output_root.mkdir(parents=True, exist_ok=True)
+    placement_mode = all((args.placement_root / scene_id / "placements.json").exists() for scene_id in scenes)
     scene_list_path = args.output_root / "scene_selection.json"
-    scene_list_path.write_text(json.dumps({"scene_ids": scenes, "regions": list(REGION_LABELS)}, indent=2), encoding="utf-8")
+    scene_selection = {"scene_ids": scenes}
+    if placement_mode:
+        scene_selection.update({"protocol": "furniture-placement-v2", "placements_per_scene": 8})
+    else:
+        scene_selection["regions"] = list(REGION_LABELS)
+    scene_list_path.write_text(json.dumps(scene_selection, indent=2), encoding="utf-8")
     topdown_script = Path(__file__).with_name("visualize_hm3d_semantic_topdown.py")
     candidate_script = Path(__file__).with_name("generate_semantic_region_candidate_metadata.py")
     generator_script = Path(__file__).with_name("generate_semantic_region_offline_views.py")
     summary_path = args.output_root / "dataset_summary.json"
     summary: Dict[str, Any] = {
-        "version": "hm3d-train-four-region-offline-v1",
+        "version": "hm3d-train-eight-placement-reduced14-v1" if placement_mode else "hm3d-train-four-region-offline-v1",
         "scene_set": "hm3d-train",
         "scenes_requested": scenes,
-        "regions": list(REGION_LABELS),
+        "placements_per_scene": 8 if placement_mode else None,
+        "regions": None if placement_mode else list(REGION_LABELS),
         "records_per_scene": min(len(records), args.max_records) if args.max_records is not None else len(records),
         "views_per_record": 32,
         "workers_per_scene": args.workers,
