@@ -88,3 +88,69 @@ The initial active-sensing generation mistakenly materialized only the 20%
 The complete cap-100 Official Val selection was rebuilt without reading Test
 and generated under `activeview_official_val/` with 16 CUDA Habitat workers:
 1,036 records, shape `[1036, 3, 30, 17, 1]`.
+
+## Reduced-15 jump-to-wave replacement (current)
+
+2026-09-04: ST-GCN was trained only on the Official Train selection (90/10
+development split). Official Val is reserved for ActiveView and was not used
+for ST-GCN optimization. The independent `reduced15_kneel_wave_babel_diversity_v1`
+protocol contains ST-GCN Train/Val=2613/290 and ActiveView records Train/Val=620/209
+plus complete Official-Val records=1036. Only ST-GCN skeleton generation used
+16 CUDA Habitat workers; no ActiveView skeleton or Test skeleton was generated
+or read. The
+ST-GCN checkpoint `stgcn_reduced15_kneel_wave_best.pth` (SHA256
+`47e17af04a24dfa0e671e737c17fb07aeaaa676e8c476c1cfeb8f9ca29dae272`) was
+trained exclusively on `stgcn_development`.
+
+No model was trained on the ActiveView dataset in this task, so there are no
+ActiveView-trained weights to remove. The ActiveView Train/Val skeleton data
+are retained as inputs for future active-perception training; frozen Stage-C
+artifacts remain untouched.
+
+The previously created ActiveView pure-color skeleton artifacts were removed;
+the ActiveView directories now contain records/manifests only. The complete
+Official-Val manifest is ordered by `record_id` for deterministic alignment.
+
+## Reduced-15 wave-to-shake replacement (current)
+
+2026-09-04: deleted only the generated `reduced15_kneel_wave_babel_diversity_v1`
+runtime dataset and its ST-GCN checkpoint; raw BABEL/AMASS sources were left
+untouched. The replacement protocol keeps 14 labels and replaces `wave` with
+`shake`. Official Train/Val caps are 300/100 with diversity-first selection.
+`raw-train` contains 2521/280 fixed-30-frame skeleton samples for ST-GCN
+development; `raw-val` contains 1001 Official-Val records split 599/202/200
+for ActiveView manifests only. Sixteen CUDA Habitat workers generated only
+raw-train skeletons. Seed-42 train-only convergence stopped at epoch 160;
+final Train Accuracy/Macro-F1=0.990877/0.989584 and posthoc development Val
+Accuracy/Macro-F1=0.678571/0.674353. Test was not generated, read or evaluated.
+
+## Reduced-14 shake removal (current)
+
+2026-09-04: removed the generated `reduced15_kneel_shake_babel_diversity_v1`
+runtime dataset and checkpoint, leaving raw BABEL/AMASS untouched. The new
+14-class protocol removes `shake` and retains walk, sit, stand up, bend, crawl,
+stumble, kneel, clap, throw, clean something, kick, knock, punch and touching
+face. Cap=300/100 diversity-first selection produced raw-train 2430/270 fixed-
+30-frame skeleton samples (Official Train 90/10) and raw-val 936 records-only
+Official-Val entries split 560/189/187. Sixteen CUDA Habitat workers generated
+raw-train skeletons; ST-GCN seed-42 train-only convergence stopped at epoch 169,
+with Train Accuracy/Macro-F1=0.992593/0.991072 and posthoc development Val
+Accuracy/Macro-F1=0.688889/0.684317. Test was not generated, read or evaluated.
+
+## Reduced-14 raw-val cap-50 resampling (current)
+
+2026-09-04: only the 14-class Official-Val records were resampled with the
+per-class cap reduced from 100 to 50. raw-val now contains 597 selected
+Official-Val records split 357/120/120 as records-only ActiveView manifests.
+raw-train skeletons, ST-GCN checkpoint and all training metrics are unchanged.
+The raw-val `test.json` is an Official-Val record partition, not policy Test;
+policy Test was not read or evaluated.
+
+## Current positions-only preparation
+
+The new furniture-anchored placement sampler is implemented at
+`activeview/scripts/data/sample_hm3d_train_placements.py`. It generated and
+validated eight placements for each of the 21 frozen HM3D-train scenes under
+`datasets/offline/hm3d-train_reduced14_kneel/placement_sampling_v2/` (168 total),
+using the 14-class raw-val manifest only as provenance. Skeleton generation is
+intentionally not started; this task stops after coordinate generation.

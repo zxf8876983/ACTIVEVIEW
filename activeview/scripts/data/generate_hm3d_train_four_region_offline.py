@@ -71,6 +71,12 @@ REGION_ACTIONS: Mapping[str, str] = {
     "dining_area": "sit",
 }
 
+FURNITURE_LABEL_TERMS: Sequence[str] = (
+    "bed", "couch", "chair", "table", "cabinet", "wardrobe", "sofa",
+    "desk", "dresser", "shelf", "refrigerator", "oven", "stove", "sink",
+    "toilet", "bathtub", "bath", "fireplace", "nightstand", "countertop",
+)
+
 
 def _load_scene_list(path: Path | None) -> List[str]:
     if path is None:
@@ -89,6 +95,110 @@ def _load_furniture(path: Path) -> List[Dict[str, Any]]:
     if not isinstance(objects, list):
         raise ValueError(f"Invalid furniture manifest: {path}")
     return [dict(item) for item in objects if isinstance(item, dict)]
+
+
+def collect_eligible_furniture(semantic_objects: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
+    """Keep common furniture anchors with finite semantic centers."""
+    eligible: List[Dict[str, Any]] = []
+    for item in semantic_objects:
+        label = str(item.get("label", "")).strip()
+        center = np.asarray(item.get("center_xyz", []), dtype=np.float32)
+        if not label or center.shape != (3,) or not np.isfinite(center).all():
+            continue
+        if not any(term in label.lower() for term in FURNITURE_LABEL_TERMS):
+            continue
+        eligible.append(dict(item))
+    return eligible
+
+
+def _semantic_object_center(obj: Mapping[str, Any]) -> np.ndarray:
+    """Convert semantic-GLB x/y/z to Habitat x/y/z coordinates."""
+    center = np.asarray(obj["center_xyz"], dtype=np.float32)
+    if center.shape != (3,) or not np.isfinite(center).all():
+        raise ValueError("Furniture center_xyz must have shape (3,) and finite values")
+    return np.asarray([center[0], center[2], -center[1]], dtype=np.float32)
+
+
+def make_diverse_anchor_order(
+    furniture: Sequence[Mapping[str, Any]], rng: np.random.Generator
+) -> List[Mapping[str, Any]]:
+    """Interleave shuffled furniture categories before sampling placements."""
+    by_category: Dict[str, List[Mapping[str, Any]]] = {}
+    for item in furniture:
+        category = str(item.get("label", "")).strip().lower()
+        by_category.setdefault(category, []).append(item)
+    categories = list(by_category)
+    rng.shuffle(categories)
+    for category in categories:
+        rng.shuffle(by_category[category])
+    ordered: List[Mapping[str, Any]] = []
+    while categories:
+        remaining: List[str] = []
+        for category in categories:
+            bucket = by_category[category]
+            if bucket:
+                ordered.append(bucket.pop())
+            if bucket:
+                remaining.append(category)
+        categories = remaining
+    return ordered
+
+
+def sample_scene_placements(
+    sim: habitat_sim.Simulator,
+    semantic_objects: Sequence[Mapping[str, Any]],
+    num_placements: int = 8,
+    seed: int = 42,
+) -> List[Dict[str, Any]]:
+    """Sample category-diverse, navigable furniture-near human placements."""
+    if num_placements < 1:
+        raise ValueError("num_placements must be positive")
+    rng = np.random.default_rng(seed)
+    furniture = collect_eligible_furniture(semantic_objects)
+    anchors = make_diverse_anchor_order(furniture, rng)
+    placements: List[Dict[str, Any]] = []
+    for obj in anchors:
+        center = _semantic_object_center(obj)
+        for _ in range(30):
+            radius = float(rng.uniform(0.5, 1.2))
+            angle = float(rng.uniform(0.0, 2.0 * math.pi))
+            raw = center + np.asarray(
+                [radius * math.cos(angle), 0.0, radius * math.sin(angle)],
+                dtype=np.float32,
+            )
+            snapped = np.asarray(sim.pathfinder.snap_point(raw), dtype=np.float32)
+            if snapped.shape != (3,) or not np.isfinite(snapped).all():
+                continue
+            if float(np.linalg.norm(snapped - raw)) > 0.5:
+                continue
+            if not sim.pathfinder.is_navigable(snapped):
+                continue
+            try:
+                clearance = float(sim.pathfinder.distance_to_closest_obstacle(snapped))
+            except RuntimeError:
+                continue
+            if clearance < 0.28:
+                continue
+            if any(float(np.linalg.norm(snapped - other["position"])) < 1.0 for other in placements):
+                continue
+            placements.append(
+                {
+                    "position": snapped.astype(np.float32),
+                    "anchor_label": str(obj["label"]),
+                    "anchor_object_id": int(obj.get("instance_index", len(placements))),
+                    "anchor_center_habitat_xyz": center.astype(np.float32),
+                    "clearance_m": clearance,
+                    "radius_m": radius,
+                    "angle_rad": angle,
+                    "yaw_deg": float(rng.choice(np.arange(0, 360, 45))),
+                }
+            )
+            break
+        if len(placements) == num_placements:
+            break
+    if len(placements) != num_placements:
+        raise RuntimeError(f"Only found {len(placements)}/{num_placements} valid placements")
+    return placements
 
 
 def _find_object(objects: Iterable[Mapping[str, Any]], labels: Sequence[str]) -> Mapping[str, Any]:

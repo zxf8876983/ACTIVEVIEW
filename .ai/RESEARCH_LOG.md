@@ -648,3 +648,69 @@ the same cap=100/class diversity selection and seed, the complete Official Val
 selection (1,036 records) was rebuilt and generated as fixed-30-frame
 `activeview_official_val` data with 16 CUDA Habitat workers. No Test files were
 read or generated.
+
+## Reduced-15 jump-to-wave replacement and protocol boundary correction
+
+2026-09-04: replaced `jump` with `wave` in an independent 15-class protocol
+(`walk`, `sit`, `stand up`, `bend`, `crawl`, `stumble`, `kneel`, `clap`,
+`throw`, `clean something`, `wave`, `kick`, `knock`, `punch`, `touching face`).
+Official Train cap=300/class was split 90/10 and used exclusively for ST-GCN
+training (2613 Train, 290 development Val). Official Val cap=100/class was
+kept separate for ActiveView (620/209 60/20 subsets plus complete 1036-record
+Official-Val ActiveView data); it was not used to train ST-GCN. Sixteen CUDA
+Habitat workers generated all requested skeleton tensors. The new ST-GCN
+checkpoint was trained with seed 42 and train-only early stopping, ending at
+epoch 178 (final Train Accuracy/Macro-F1 0.993494/0.992018; posthoc development
+Val 0.679310/0.687613). No model was trained on ActiveView data, no Test files
+were generated/read, and raw BABEL/AMASS data were unchanged. ActiveView
+directories retain only record manifests (620/209 subsets and complete 1036
+Official-Val records); pure-color ActiveView skeleton artifacts were removed.
+
+## Reduced-15 wave-to-shake replacement (2026-09-04)
+
+The generated `reduced15_kneel_wave_babel_diversity_v1` runtime dataset and
+checkpoint were removed, without modifying raw BABEL/AMASS. The new independent
+15-class protocol replaces `wave` with `shake`, uses cap=300/100 diversity-first
+selection, and keeps fixed 30-frame resampling without temporal jitter. Official
+Train was split 90/10 into raw-train ST-GCN development (2521/280); Official Val
+was selected at 1001 records and split 60/20/20 into raw-val records-only
+manifests (599/202/200). Sixteen CUDA Habitat workers generated raw-train
+skeletons. ST-GCN training used seed 42, Adam 1e-3, batch 64, tempered
+inverse-frequency oversampling and train-only early stopping, ending at epoch
+160 with Train Accuracy/Macro-F1 0.990877/0.989584 and posthoc development Val
+Accuracy/Macro-F1 0.678571/0.674353. No Test data were generated, read or
+evaluated; no ActiveView skeletons were generated.
+
+## Reduced-14 shake removal (2026-09-04)
+
+The generated `reduced15_kneel_shake_babel_diversity_v1` runtime data and
+checkpoint were deleted to replace the 15-class protocol with 14 classes by
+removing `shake`. Raw BABEL/AMASS sources were not modified. Cap=300/100
+diversity-first selection and fixed 30-frame/no-jitter protocol were retained:
+Official Train yielded raw-train 2430 Train and 270 Val skeleton samples; Official
+Val yielded 936 records-only entries split 560/189/187 for ActiveView. Sixteen
+CUDA Habitat workers generated raw-train skeletons. ST-GCN training used seed
+42, Adam 1e-3, batch 64, tempered inverse-frequency oversampling and train-only
+early stopping at epoch 169. Final Train Accuracy/Macro-F1 were 0.992593/0.991072
+and posthoc development Val Accuracy/Macro-F1 were 0.688889/0.684317. No Test
+data were generated, read or evaluated.
+
+## Reduced-14 raw-val cap-50 resampling (2026-09-04)
+
+The 14-class Official-Val selection was deterministically resampled with
+cap=50/class (Official Train cap remains 300/class). raw-val now has 597
+selected records and records-only 60/20/20 manifests of 357/120/120. No
+raw-train skeleton or ST-GCN checkpoint was modified or retrained. The policy
+Test split remained locked and was not read or evaluated.
+
+## Furniture-anchored placement sampling v2 (2026-09-04)
+
+Added a positions-only sampler for the frozen 21 HM3D-train scenes. Each scene
+has eight deterministic, category-diverse furniture-near placement candidates
+(radius 0.5–1.2 m, navmesh snap error <=0.5 m, obstacle clearance >=0.28 m,
+pairwise separation >=1.0 m), using the existing semantic center conversion
+`[x,y,z] -> [x,z,-y]`. All 168 placements validated successfully under the
+Conda `habitat` runtime on RTX 4090. Outputs are under
+`datasets/offline/hm3d-train_reduced14_kneel/placement_sampling_v2/`, with the
+597-record reduced14 raw-val manifest recorded as provenance. No skeleton, RGB,
+depth, perception, or policy artifacts were generated and Test was not read.
