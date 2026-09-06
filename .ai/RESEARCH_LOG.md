@@ -714,3 +714,15 @@ Conda `habitat` runtime on RTX 4090. Outputs are under
 `datasets/offline/hm3d-train_reduced14_kneel/placement_sampling_v2/`, with the
 597-record reduced14 raw-val manifest recorded as provenance. No skeleton, RGB,
 depth, perception, or policy artifacts were generated and Test was not read.
+
+## Reduced14 history action-identity diagnostic (2026-09-07)
+
+Added and ran a Val-only diagnostic comparing frozen S1 ST-GCN posterior with
+two Train-fitted 2-layer MLPs (posterior history and 256-D ST-GCN feature
+history). On 44,248 Train contexts and 14,809 Val moving contexts, S1-only,
+posterior-history and feature-history reached Accuracy/Macro-F1
+0.415085/0.396831, 0.464245/0.475459 and 0.484300/0.500795. The feature-history
+belief also improved the privileged selector to 0.473901 terminal Accuracy
+versus 0.430414 for posterior history, while remaining below Privileged JR
+0.595584 and SafeOracle 0.875886. Test was not read, and no formal checkpoint
+was changed; results are committed in `287584c`.
