@@ -737,3 +737,17 @@ method reached Accuracy/Macro-F1 0.486596/0.478697 versus
 0.467689/0.477778. Privileged JR and SafeOracle remained 0.595584/0.604960
 and 0.875886/0.873737. The new checkpoint is separate from the frozen JR,
 WM-E and ST-GCN artifacts; Test was not read.
+
+## Pretrained History Identity -> Multi-positive JR (2026-09-07)
+
+Added a separate 540->256->128 history identity pretraining phase (20 Train
+epochs, selected by Val identity Macro-F1), then trained two independent JR
+variants for 20 epochs: identity frozen and identity fine-tuned at 1e-4 while
+JR used 1e-3. On 14,809 Val moving contexts, PretrainedFrozenJR reached
+Accuracy/Macro-F1 0.491120/0.481416 and PretrainedFinetuneJR reached
+0.489905/0.480227, versus Normal Multi-positive JR 0.479371/0.472555 and
+History-aware JR v1 0.486596/0.478697. The standalone pretrained identity head
+was 0.482815/0.496504, close to the prior Feature-history MLP reference
+0.484300/0.500795. Privileged JR and SafeOracle remained 0.595584/0.604960
+and 0.875886/0.873737. Both new checkpoints are separate runtime artifacts;
+WM-E, ST-GCN and old JR checkpoints were unchanged, and Test was not read.
