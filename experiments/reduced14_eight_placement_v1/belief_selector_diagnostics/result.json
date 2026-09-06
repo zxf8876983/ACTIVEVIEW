@@ -1,0 +1,117 @@
+{
+  "experiment_id": "REDUCED14_BELIEF_SELECTOR_DIAGNOSTICS",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "population": {
+    "moving_contexts": 14809,
+    "candidate_order": "frozen candidate_order / ALL_LEGAL"
+  },
+  "methods": {
+    "SafeOracle": {
+      "positive_action_hit_rate": 0.8758862853670065,
+      "positive_action_hit_count": 12971,
+      "stay_rate": 0.07184820041866433,
+      "action_counts": {
+        "stay": 1064,
+        "move": 13745
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.8758862853670065,
+        "macro_f1": 0.8737370996472578
+      }
+    },
+    "CurrentTop1PseudoLabel": {
+      "positive_action_hit_rate": 0.41528800054021203,
+      "positive_action_hit_count": 6150,
+      "stay_rate": 0.27138902019042477,
+      "action_counts": {
+        "stay": 4019,
+        "move": 10790
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.41528800054021203,
+        "macro_f1": 0.3969959038137704
+      }
+    },
+    "CurrentFullBelief": {
+      "positive_action_hit_rate": 0.4150854210277534,
+      "positive_action_hit_count": 6147,
+      "stay_rate": 0.9820379498953339,
+      "action_counts": {
+        "stay": 14543,
+        "move": 266
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.4150854210277534,
+        "macro_f1": 0.3968309077105983
+      }
+    },
+    "EntropyReduction": {
+      "positive_action_hit_rate": 0.4123843608616382,
+      "positive_action_hit_count": 6107,
+      "stay_rate": 0.057397528529948005,
+      "action_counts": {
+        "stay": 850,
+        "move": 13959
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.4123843608616382,
+        "macro_f1": 0.3869421099401937
+      }
+    },
+    "NormalJR": {
+      "positive_action_hit_rate": 0.47937065298129516,
+      "action_counts": {
+        "stay": 4505,
+        "move": 10304
+      },
+      "stay_rate": 0.3042069012087244,
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.47937065298129516,
+        "macro_f1": 0.47255499837470116
+      },
+      "source": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced14_eight_placement_v1/selector_bottleneck/result.json"
+    },
+    "PrivilegedJR": {
+      "positive_action_hit_rate": 0.5955837666284016,
+      "action_counts": {
+        "stay": 1605,
+        "move": 13204
+      },
+      "stay_rate": 0.10838003916537241,
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.5955837666284016,
+        "macro_f1": 0.6049601213595234
+      },
+      "source": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced14_eight_placement_v1/selector_bottleneck/result.json"
+    }
+  },
+  "comparisons": {
+    "full_belief_minus_top1_accuracy": -0.0002025795124586116,
+    "full_belief_minus_top1_macro_f1": -0.00016499610317211033,
+    "entropy_minus_top1_accuracy": -0.0029036396785738217,
+    "entropy_minus_top1_macro_f1": -0.010053793873576744,
+    "privileged_jr_minus_normal_jr_accuracy": 0.11621311364710646,
+    "privileged_jr_minus_normal_jr_macro_f1": 0.1324051229848222,
+    "safe_oracle_accuracy_gap_best_simple": 0.4605982848267945,
+    "best_simple_selector": "CurrentTop1PseudoLabel"
+  },
+  "provenance": {
+    "candidate_true_logp": "archived frozen ST-GCN recognition used only as privileged offline diagnostic input",
+    "previous_privileged_jr_result": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced14_eight_placement_v1/selector_bottleneck/result.json",
+    "formal_checkpoints_modified": false
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "formal_checkpoint_modified": false,
+    "true_logp_used_for_analysis_only": true,
+    "future_observation_rendered": false
+  }
+}
