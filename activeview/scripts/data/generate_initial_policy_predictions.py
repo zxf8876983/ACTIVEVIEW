@@ -47,7 +47,9 @@ def generate(
     stats = load_feature_statistics(feature_root / "stage_c_feature_stats.json")
     geometry_dim = int(summary["candidate_geometry_dim"])
     device = torch.device(device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu")
-    model = build_utility_predictor("set_ranker", geometry_dim=geometry_dim).to(device)
+    model = build_utility_predictor(
+        "set_ranker", current_dim=int(summary["current_feature_dim"]), geometry_dim=geometry_dim
+    ).to(device)
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(payload["model_state_dict"])
     model.eval()
@@ -65,8 +67,8 @@ def generate(
         counts[split] = len(rows)
         hashes[split] = file_sha256(path)
     result = {
-        "protocol": "ACTIVEVIEW frozen Stage C-v0 Train/Val proposal inference",
-        "model": "frozen Stage C-v0 Set Ranker", "test_used": False, "test_generated": False,
+        "protocol": "ACTIVEVIEW frozen initial-policy proposal inference",
+        "model": "frozen Set Ranker", "test_used": "test" in splits, "test_generated": "test" in splits,
         "checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": file_sha256(checkpoint),
         "feature_summary": str(summary_path.resolve()), "feature_summary_sha256": file_sha256(summary_path),
         "prediction_files": {split: str((output_dir / f"{split}_predictions.jsonl").resolve()) for split in splits},
@@ -79,9 +81,9 @@ def generate(
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--feature-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_c")
-    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_b")
-    parser.add_argument("--checkpoint", type=Path, default=data_root / "checkpoints/stage_c/set_ranker_best.pth")
+    parser.add_argument("--feature-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_c")
+    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_b")
+    parser.add_argument("--checkpoint", type=Path, default=data_root / "checkpoints/policy_reduced14_kneel_eight_placement_v1/stage_c/set_ranker_best.pth")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--batch-size", type=int, default=256)

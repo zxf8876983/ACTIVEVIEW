@@ -42,10 +42,10 @@ from activeview.perception.skeleton import get_skeleton_definition
 SPLITS = ("train", "val", "test")
 
 
-def _load_model(checkpoint: Path, device_name: str) -> tuple[STGCN, torch.device]:
+def _load_model(checkpoint: Path, device_name: str, category_count: int) -> tuple[STGCN, torch.device]:
     device = torch.device(device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu")
     model = STGCN(
-        in_channels=3, num_classes=16, graph_strategy="spatial", edge_importance_weighting=True,
+        in_channels=3, num_classes=category_count, graph_strategy="spatial", edge_importance_weighting=True,
         skel_def=get_skeleton_definition(backend="h36m_17"),
     ).to(device)
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
@@ -138,7 +138,9 @@ def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoin
     started = time.perf_counter()
     stage_a_summary_path = dataset_root / "stage_a_summary.json"
     stage_a_summary = json.loads(stage_a_summary_path.read_text(encoding="utf-8"))
-    model, device = _load_model(checkpoint, device_name)
+    mapping = json.loads(label_mapping.read_text(encoding="utf-8"))
+    category_count = len(mapping)
+    model, device = _load_model(checkpoint, device_name, category_count)
     output_dir.mkdir(parents=True, exist_ok=True)
     feature_dir = output_dir / "features"
     feature_dir.mkdir(parents=True, exist_ok=True)
@@ -175,7 +177,7 @@ def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoin
         "protocol": "ACTIVEVIEW v11.5 Stage C current-conditioned features",
         "stage": "C",
         "status": "generated",
-        "schema": schema_metadata(),
+        "schema": schema_metadata(class_count=category_count),
         "feature_files": {split: str((feature_dir / f"{split}.jsonl").resolve()) for split in SPLITS},
         "feature_file_sha256": {split: file_sha256(feature_dir / f"{split}.jsonl") for split in SPLITS},
         "feature_stats": str(stats_path.resolve()),
@@ -189,8 +191,10 @@ def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoin
         "source_stage_b_utility_sha256": {split: file_sha256(stage_b_root / "utility_labels" / f"{split}.jsonl") for split in SPLITS},
         "stgcn_checkpoint": str(checkpoint.resolve()), "stgcn_checkpoint_sha256": file_sha256(checkpoint),
         "label_mapping": str(label_mapping.resolve()), "label_mapping_sha256": file_sha256(label_mapping),
-        "canonical_split_counts": {"train": 589, "val": 197, "test": 194},
-        "current_feature_dim": CURRENT_FEATURE_DIM, "candidate_geometry_dim": 11,
+        "canonical_split_counts": {
+            split: int(stage_a_summary["policy_split"]["counts"][split]) for split in SPLITS
+        },
+        "current_feature_dim": 256 + category_count + 3, "candidate_geometry_dim": 11,
         "elapsed_seconds": time.perf_counter() - started,
     }
     summary_path = output_dir / "stage_c_feature_summary.json"
@@ -202,11 +206,11 @@ def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoin
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset-root", type=Path, default=data_root / "datasets/policy_v11_5")
-    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_b")
-    parser.add_argument("--output-dir", type=Path, default=data_root / "datasets/policy_v11_5/stage_c")
-    parser.add_argument("--checkpoint", type=Path, default=data_root / "checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled_best.pth")
-    parser.add_argument("--label-mapping", type=Path, default=data_root / "datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/label_mapping.json")
+    parser.add_argument("--dataset-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1")
+    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_b")
+    parser.add_argument("--output-dir", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_c")
+    parser.add_argument("--checkpoint", type=Path, default=data_root / "checkpoints/stgcn_reduced14_kneel_babel_diversity_v1/stgcn_reduced14_kneel_best.pth")
+    parser.add_argument("--label-mapping", type=Path, default=data_root / "datasets/reduced14_kneel_babel_diversity_v1/raw-train/label_mapping.json")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--max-episodes", type=int, default=None, help="Optional per-split smoke-test limit")

@@ -1,5 +1,32 @@
 # Current Task
 
+## Persist verified ActiveView generation scheduling — 2026-09-06
+
+The fixed end-to-end benchmark established that eight Habitat/perception
+workers with one OMP/MKL/OpenBLAS/NumExpr thread per worker are stable and
+about 1.53x faster than the former four-worker default. The current task is to
+make those runtime defaults canonical in the two offline-generation entry
+points without modifying any scientific data-generation semantics. The active
+full reduced14 eight-placement generation remains running and must not be
+interrupted. No Test access or model training is authorized.
+
+Status: completed. The canonical orchestrator defaults to eight workers, while
+the leaf generator injects one-thread native-library limits only into spawned
+worker processes. Import behavior and the legacy leaf default remain
+backward-compatible. Focused validation and independent code review passed.
+
+Runtime update: at the user's request, the eight-worker run was stopped and
+only its incomplete `00475-g7hUFVNac26` output was removed. Canonical
+generation has restarted with an explicit four-worker override. All 14
+completed scenes remain intact, and each of the four worker environments was
+verified to use one OMP/MKL/OpenBLAS/NumExpr thread.
+
+Completion update: the four-worker run completed all 21 scenes successfully;
+each scene contains 4,776 NPZ files and a final manifest. The canonical
+orchestrator is now named `generate_hm3d_train_offline.py`; imports and current
+documentation use this placement-neutral name. This was a naming-only source
+change.
+
 ## AI context synchronized — 2026-09-04
 
 The project context is synchronized to the frozen final state: WM-E +
@@ -145,6 +172,16 @@ Official-Val records split 357/120/120 as records-only ActiveView manifests.
 raw-train skeletons, ST-GCN checkpoint and all training metrics are unchanged.
 The raw-val `test.json` is an Official-Val record partition, not policy Test;
 policy Test was not read or evaluated.
+
+## Current task: reduced14 eight-placement ActiveView retraining (completed)
+
+The latest reduced14 + eight-placement dataset was used with the existing
+raw-val Train/Val/Test=357/120/120 record split and no scene partition. WM-E
+and Multi-Positive Joint Revision were retrained on Train only; frozen 14-class
+ST-GCN supplied terminal recognition. Val and the explicitly requested final
+Test evaluations, including NoMove, FrozenStageCv0, Random, SafeOracle,
+CandidateOracle and Multi-positive H2, are recorded in
+`experiments/reduced14_eight_placement_v1/active_view_retraining/`.
 
 ## Current positions-only preparation
 

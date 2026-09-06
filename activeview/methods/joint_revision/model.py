@@ -23,14 +23,17 @@ N_CLASSES = 16
 class JointRevision(nn.Module):
     """The frozen EXP055 multi-positive Joint Revision architecture."""
 
-    def __init__(self) -> None:
+    def __init__(self, num_classes: int = N_CLASSES) -> None:
         super().__init__()
-        self.current_projector = nn.Sequential(nn.Linear(38, 128), nn.GELU())
-        self.candidate_projector = nn.Sequential(nn.Linear(26, 128), nn.GELU())
+        self.num_classes = int(num_classes)
+        self.current_dim = 2 * self.num_classes + 6
+        self.candidate_dim = self.num_classes + 10
+        self.current_projector = nn.Sequential(nn.Linear(self.current_dim, 128), nn.GELU())
+        self.candidate_projector = nn.Sequential(nn.Linear(self.candidate_dim, 128), nn.GELU())
         layer = nn.TransformerEncoderLayer(d_model=128, nhead=4, dim_feedforward=256, dropout=0.1, batch_first=True, activation="gelu")
         self.encoder = nn.TransformerEncoder(layer, num_layers=2)
         self.score = nn.Linear(128, 1)
-        self.posterior = nn.Linear(128, N_CLASSES)
+        self.posterior = nn.Linear(128, self.num_classes)
 
     def forward(self, current: torch.Tensor, candidates: torch.Tensor, mask: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         current_token = self.current_projector(current).unsqueeze(1)
@@ -73,7 +76,7 @@ def select_actions(
             continue
         index = indices[str(row["episode_id"])]
         stats, values = _features(cache, index, order)
-        tensor = torch.zeros((1, max(31, len(values)), 26), dtype=torch.float32)
+        tensor = torch.zeros((1, max(31, len(values)), model.candidate_dim), dtype=torch.float32)
         tensor[0, : len(values)] = torch.from_numpy(values)
         mask = torch.zeros((1, tensor.shape[1]), dtype=torch.bool)
         mask[0, : len(values)] = True
@@ -94,7 +97,7 @@ def choose_next(
     stats = np.asarray([*probs0, *probs1, -np.sum(probs0 * previous), -np.sum(probs1 * current), np.max(probs0), np.max(probs1), np.sort(probs1)[-1] - np.sort(probs1)[-2], np.sort(probs0)[-1] - np.sort(probs0)[-2]], dtype=np.float32)[None]
     rows = [np.concatenate([current, np.zeros(9, dtype=np.float32), [1.0]])]
     rows.extend(np.concatenate([imagined[index], descriptors[index], [0.0]]) for index in range(len(descriptors)))
-    values = torch.zeros((1, max(31, len(rows)), 26), dtype=torch.float32)
+    values = torch.zeros((1, max(31, len(rows)), model.candidate_dim), dtype=torch.float32)
     values[0, : len(rows)] = torch.from_numpy(np.asarray(rows, dtype=np.float32))
     mask = torch.zeros((1, values.shape[1]), dtype=torch.bool)
     mask[0, : len(rows)] = True

@@ -56,9 +56,11 @@ def current_state_features(
     log_probs: Sequence[float],
     pose_confidence: float,
 ) -> np.ndarray:
-    """Build the 275-D current-only observable feature vector."""
+    """Build the current-only observable feature vector."""
     feature = _finite_array(stgcn_feature, name="stgcn_feature", shape=(CURRENT_ACTION_FEATURE_DIM,))
-    logp = _finite_array(log_probs, name="current_log_probs", shape=(CURRENT_LOG_PROB_DIM,)).astype(np.float64)
+    logp = _finite_array(log_probs, name="current_log_probs").astype(np.float64)
+    if logp.ndim != 1 or logp.size < 2:
+        raise ValueError("current_log_probs must contain at least two classes")
     probabilities = np.exp(logp)
     order = np.sort(probabilities)
     entropy = float(-(probabilities * logp).sum())
@@ -196,7 +198,7 @@ def frozen_current_features(
         log_probs = torch.log_softmax(logits, dim=-1)
     feature = feature_tensor[0].detach().cpu().numpy().astype(np.float32)
     logp = log_probs[0].detach().cpu().numpy().astype(np.float32)
-    if feature.shape != (CURRENT_ACTION_FEATURE_DIM,) or logp.shape != (CURRENT_LOG_PROB_DIM,):
+    if feature.shape != (CURRENT_ACTION_FEATURE_DIM,) or logp.ndim != 1 or logp.size < 2:
         raise ValueError(f"Unexpected frozen ST-GCN outputs: {feature.shape}, {logp.shape}")
     return feature, logp
 
@@ -204,7 +206,10 @@ def frozen_current_features(
 def schema_metadata(
     *,
     include_relative_features: bool = False,
+    class_count: int = CURRENT_LOG_PROB_DIM,
 ) -> dict[str, Any]:
+    if class_count < 2:
+        raise ValueError("class_count must be at least two")
     geometry_names = list(CANDIDATE_GEOMETRY_NAMES)
     version = FEATURE_SCHEMA_VERSION
     if include_relative_features:
@@ -212,8 +217,12 @@ def schema_metadata(
         version = RELATIVE_FEATURE_SCHEMA_VERSION
     metadata = {
         "version": version,
-        "current_feature_dim": CURRENT_FEATURE_DIM,
-        "current_feature_names": list(CURRENT_FEATURE_NAMES),
+        "current_feature_dim": CURRENT_ACTION_FEATURE_DIM + class_count + 3,
+        "current_feature_names": (
+            [f"stgcn_feature_{index}" for index in range(CURRENT_ACTION_FEATURE_DIM)]
+            + [f"current_log_prob_{index}" for index in range(class_count)]
+            + ["current_entropy", "current_top1_top2_margin", "current_pose_confidence"]
+        ),
         "candidate_geometry_dim": len(geometry_names),
         "candidate_geometry_names": geometry_names,
         "body_yaw_used": False,

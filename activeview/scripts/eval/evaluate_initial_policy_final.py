@@ -42,7 +42,9 @@ def evaluate_model(*, feature_root: Path, stage_b_root: Path, checkpoint: Path, 
     label_mapping_path = Path(feature_summary["label_mapping"])
     mapping = json.loads(label_mapping_path.read_text(encoding="utf-8"))
     categories = [name for name, _ in sorted(mapping.items(), key=lambda item: int(item[1]))]
-    model = build_utility_predictor(model_type, geometry_dim=geometry_dim).to(device)
+    model = build_utility_predictor(
+        model_type, current_dim=int(feature_summary["current_feature_dim"]), geometry_dim=geometry_dim
+    ).to(device)
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(payload["model_state_dict"]); model.eval()
     predictions_dir = output_dir / "predictions"; predictions_dir.mkdir(parents=True, exist_ok=True)

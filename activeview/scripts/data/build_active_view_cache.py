@@ -36,11 +36,11 @@ from activeview.perception.skeleton import get_skeleton_definition
 from activeview.data.generation.utility_labels import file_sha256
 
 
-def _load_frozen_stgcn(checkpoint: Path, device_name: str) -> tuple[STGCN, torch.device]:
+def _load_frozen_stgcn(checkpoint: Path, category_count: int, device_name: str) -> tuple[STGCN, torch.device]:
     device = torch.device(device_name if device_name.startswith("cuda") and torch.cuda.is_available() else "cpu")
     model = STGCN(
         in_channels=3,
-        num_classes=16,
+        num_classes=category_count,
         graph_strategy="spatial",
         edge_importance_weighting=True,
         skel_def=get_skeleton_definition(backend="h36m_17"),
@@ -73,14 +73,19 @@ def build(
     feature_root: Path,
     train_predictions: Path,
     val_predictions: Path,
+    test_predictions: Path | None,
     pairwise_root: Path,
     checkpoint: Path,
     output_dir: Path,
     device_name: str,
+    label_mapping: Path,
 ) -> dict[str, Any]:
     stage_a_summary = json.loads((dataset_root / "stage_a_summary.json").read_text(encoding="utf-8"))
-    model, device = _load_frozen_stgcn(checkpoint, device_name)
+    mapping = json.loads(label_mapping.read_text(encoding="utf-8"))
+    model, device = _load_frozen_stgcn(checkpoint, len(mapping), device_name)
     source_paths = {"train": train_predictions, "val": val_predictions}
+    if test_predictions is not None:
+        source_paths["test"] = test_predictions
     split_rows: dict[str, list[dict[str, Any]]] = {}
     total_episode_counts: dict[str, int] = {}
     v0_move_counts: dict[str, int] = {}
@@ -110,19 +115,20 @@ def build(
         source_paths=source_paths,
         checkpoint=checkpoint,
         pairwise_root=pairwise_root,
+        test_rows=split_rows.get("test"),
     )
     summary["source_episode_counts"] = total_episode_counts
     summary["v0_move_eligible_episode_counts"] = v0_move_counts
     summary["eligible_record_counts"] = {
         split: len({str(row["record_id"]) for row in split_rows[split]})
-        for split in ("train", "val")
+        for split in source_paths
     }
     summary["source_stage_a_summary"] = str((dataset_root / "stage_a_summary.json").resolve())
     summary["source_stage_a_summary_sha256"] = file_sha256(dataset_root / "stage_a_summary.json")
     summary["source_stage_b_root"] = str(stage_b_root.resolve())
     summary["source_stage_b_utility_sha256"] = {
         split: file_sha256(stage_b_root / "utility_labels" / f"{split}.jsonl")
-        for split in ("train", "val")
+        for split in source_paths
     }
     summary["source_stage_c_v0_feature_root"] = str(feature_root.resolve())
     (output_dir / "stage_d_feature_summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -132,13 +138,15 @@ def build(
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset-root", type=Path, default=data_root / "datasets/policy_v11_5")
-    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_b")
-    parser.add_argument("--feature-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_c")
+    parser.add_argument("--dataset-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1")
+    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_b")
+    parser.add_argument("--feature-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_c")
     parser.add_argument("--train-predictions", type=Path, required=True)
     parser.add_argument("--val-predictions", type=Path, required=True)
+    parser.add_argument("--test-predictions", type=Path)
     parser.add_argument("--pairwise-root", type=Path, required=True)
-    parser.add_argument("--checkpoint", type=Path, default=data_root / "checkpoints/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled_best.pth")
+    parser.add_argument("--checkpoint", type=Path, default=data_root / "checkpoints/stgcn_reduced14_kneel_babel_diversity_v1/stgcn_reduced14_kneel_best.pth")
+    parser.add_argument("--label-mapping", type=Path, default=data_root / "datasets/reduced14_kneel_babel_diversity_v1/raw-train/label_mapping.json")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
@@ -148,10 +156,12 @@ def main() -> None:
         feature_root=args.feature_root,
         train_predictions=args.train_predictions,
         val_predictions=args.val_predictions,
+        test_predictions=args.test_predictions,
         pairwise_root=args.pairwise_root,
         checkpoint=args.checkpoint,
         output_dir=args.output_dir,
         device_name=args.device,
+        label_mapping=args.label_mapping,
     )
 
 

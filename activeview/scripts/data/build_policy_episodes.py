@@ -66,16 +66,17 @@ def _valid_scene(index: Any) -> bool:
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--split-dir", type=Path, default=data_root / "datasets/policy_v11_5/splits")
-    parser.add_argument("--offline-root", type=Path, default=data_root / "datasets/offline")
+    parser.add_argument("--split-dir", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/splits")
+    parser.add_argument("--offline-root", type=Path, default=data_root / "datasets/offline/hm3d-train_reduced14_kneel")
     parser.add_argument("--habitat-root", type=Path, default=get_habitat_data_root())
-    parser.add_argument("--scene-sets", nargs="+", default=["hm3d-minival", "hm3d-train"])
-    parser.add_argument("--output-dir", type=Path, default=data_root / "datasets/policy_v11_5/episodes")
-    parser.add_argument("--summary", type=Path, default=data_root / "datasets/policy_v11_5/stage_a_summary.json")
+    parser.add_argument("--scene-sets", nargs="+", default=["eight_placement_v1"])
+    parser.add_argument("--habitat-scene-set", default="hm3d-train")
+    parser.add_argument("--output-dir", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/episodes")
+    parser.add_argument("--summary", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_a_summary.json")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--clearance-m", type=float, default=0.10)
     parser.add_argument("--max-scenes", type=int, default=None, help="Optional smoke-test scene limit")
-    parser.add_argument("--regions", nargs="+", choices=REGIONS, default=list(REGIONS))
+    parser.add_argument("--regions", nargs="+", default=None, help="Optional legacy region/context filter")
     parser.add_argument("--max-records", type=int, default=None, help="Optional smoke-test action-record limit")
     args = parser.parse_args()
 
@@ -115,7 +116,7 @@ def main() -> None:
                 exclusion_handle.write(json.dumps(exclusion, ensure_ascii=False) + "\n")
                 exclusions["incomplete_scene"] += 1
                 continue
-            scene_root = args.habitat_root / scene_set
+            scene_root = args.habitat_root / args.habitat_scene_set
             try:
                 sim = _make_sim(scene_root, index.scene_id)
             except (OSError, RuntimeError, FileNotFoundError) as error:
@@ -125,7 +126,10 @@ def main() -> None:
                 continue
             used_scenes.append(index.scene_id)
             try:
-                for region in args.regions:
+                context_ids = sorted(index.placements)
+                if args.regions is not None:
+                    context_ids = [value for value in context_ids if value in set(args.regions)]
+                for region in context_ids:
                     for split in SPLITS:
                         for episode, exclusion in iter_scene_region_episodes(
                             index, policy_records=splits[split], region=region, pathfinder=sim.pathfinder,
@@ -162,7 +166,7 @@ def main() -> None:
         args.output_dir / "exclusions.jsonl",
         policy_records=policy_records,
         complete_scene_ids=used_scenes,
-        regions=args.regions,
+        regions=sorted({context_id for _scene_set, scene_dir in scene_dirs for context_id in load_scene_index(scene_dir).placements}),
     )
     integrity_checks = {
         **episode_audit["integrity_checks"],
@@ -172,6 +176,7 @@ def main() -> None:
 
     summary = {
         "protocol": "ACTIVEVIEW v11.5 Stage A",
+        "smoke_test": args.max_scenes is not None or args.max_records is not None,
         "seed": args.seed,
         "policy_split": {
             "ratios": split_summary["split_ratios"],
@@ -179,7 +184,7 @@ def main() -> None:
         },
         "policy_split_audit": split_audit,
         "per_class_split_counts": split_summary.get("per_class_split_counts", {}),
-        "regions": list(args.regions),
+        "placements": sorted({context_id for _scene_set, scene_dir in scene_dirs for context_id in load_scene_index(scene_dir).placements}),
         "scenes_scanned": scanned,
         "complete_scenes_used": len(used_scenes),
         "scene_ids_used": used_scenes,

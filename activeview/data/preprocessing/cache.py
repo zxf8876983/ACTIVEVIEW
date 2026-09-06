@@ -98,8 +98,9 @@ def log_probs(model: STGCN, skeletons: np.ndarray, device: torch.device) -> np.n
 
 
 def load_wm_e(checkpoint: Path, device: torch.device) -> CandidateObservationWorldModel:
-    model = CandidateObservationWorldModel(use_belief=True, use_rgb=True, residual=False).to(device)
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
+    num_classes = int(payload.get("num_classes", 16))
+    model = CandidateObservationWorldModel(use_belief=True, use_rgb=True, residual=False, num_classes=num_classes).to(device)
     model.load_state_dict(payload["model_state_dict"])
     for parameter in model.parameters():
         parameter.requires_grad_(False)
@@ -168,13 +169,13 @@ def _load_viewpoint_azimuths(archive_path: Path, region: str) -> dict[int, float
     scene_dir = archive_path.parents[1]
     manifest_path = scene_dir / "candidate_metadata" / "manifest.json"
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if payload.get("version") != "semantic-region-v2":
-        raise ValueError(f"Stage D requires semantic-region-v2 metadata: {manifest_path}")
+    if payload.get("version") not in {"semantic-region-v2", "furniture-placement-v2"}:
+        raise ValueError(f"Stage D requires supported candidate metadata: {manifest_path}")
     if str(payload.get("scene_id", scene_dir.name)) != scene_dir.name:
         raise ValueError(f"Candidate metadata scene mismatch: {manifest_path}")
     placements = [
         item for item in payload.get("placements_data", [])
-        if str(item.get("region")) == str(region)
+        if str(item.get("placement_id") or item.get("region")) == str(region)
     ]
     if len(placements) != 1:
         raise ValueError(f"Expected one metadata placement for {scene_dir.name}/{region}")
@@ -390,8 +391,10 @@ def build_second_step_rows(
         if not valid_remaining:
             continue
         s0_feature = np.asarray(feature["current_feature"], dtype=np.float32)
-        if s0_feature.shape != (CURRENT_DIM,) or not np.isfinite(s0_feature).all():
+        if s0_feature.ndim != 1 or s0_feature.size <= 256 or not np.isfinite(s0_feature).all():
             raise ValueError(f"Invalid Stage C current feature for {episode_id}: {s0_feature.shape}")
+        if s1_feature.shape != s0_feature.shape:
+            raise ValueError(f"Stage C s0/s1 feature dimension mismatch for {episode_id}")
         output.append({
             "episode_id": episode_id, "record_id": str(episode["record_id"]), "policy_split": str(episode["policy_split"]),
             "scene_id": str(episode["scene_id"]), "region": str(episode["region"]), "label_id": int(episode["label_id"]),
@@ -413,11 +416,14 @@ def build_second_step_rows(
 def build_cache_summary(
     *, output_dir: Path, train_rows: Sequence[Mapping[str, Any]], val_rows: Sequence[Mapping[str, Any]],
     source_paths: Mapping[str, Path], checkpoint: Path, pairwise_root: Path,
+    test_rows: Sequence[Mapping[str, Any]] | None = None,
 ) -> Dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     feature_dir = output_dir / "features"
     feature_dir.mkdir(parents=True, exist_ok=True)
     all_rows = {"train": list(train_rows), "val": list(val_rows)}
+    if test_rows is not None:
+        all_rows["test"] = list(test_rows)
     counts: dict[str, int] = {}
     hashes: dict[str, str] = {}
     for split, rows in all_rows.items():
@@ -429,13 +435,13 @@ def build_cache_summary(
     save_feature_statistics(stats_path, compute_feature_statistics(all_rows["train"]))
     summary = {
         "protocol": "ACTIVEVIEW Stage D two-step sequential cache",
-        "status": "generated", "built_splits": ["train", "val"], "test_built": False,
-        "schema": {"s0_feature_dim": CURRENT_DIM, "s1_feature_dim": CURRENT_DIM, "delta_semantic_dim": DELTA_SEMANTIC_DIM, "candidate_geometry_dim": GEOMETRY_DIM, "proposal_top_k": TOP_K, "relative_azimuth_reference": "semantic-region-v2 radial azimuth_deg difference (candidate - current), wrapped to [-180, 180)"},
+        "status": "generated", "built_splits": list(all_rows), "test_built": "test" in all_rows,
+        "schema": {"s0_feature_dim": len(all_rows["train"][0]["s0_feature"]), "s1_feature_dim": len(all_rows["train"][0]["s1_feature"]), "delta_semantic_dim": len(all_rows["train"][0]["delta_semantic"]), "candidate_geometry_dim": GEOMETRY_DIM, "proposal_top_k": TOP_K, "relative_azimuth_reference": "candidate metadata radial azimuth_deg difference (candidate - current), wrapped to [-180, 180)"},
         "feature_files": {split: str((feature_dir / f"{split}.jsonl").resolve()) for split in all_rows},
         "feature_file_sha256": hashes, "feature_file_counts": counts,
         "feature_stats": str(stats_path.resolve()), "feature_stats_sha256": file_sha256(stats_path),
-        "source_stage_c_v0_predictions": {split: str(source_paths[split].resolve()) for split in ("train", "val")},
-        "source_stage_c_v0_predictions_sha256": {split: file_sha256(source_paths[split]) for split in ("train", "val")},
+        "source_stage_c_v0_predictions": {split: str(source_paths[split].resolve()) for split in all_rows},
+        "source_stage_c_v0_predictions_sha256": {split: file_sha256(source_paths[split]) for split in all_rows},
         "stgcn_checkpoint": str(checkpoint.resolve()), "stgcn_checkpoint_sha256": file_sha256(checkpoint),
         "pairwise_geodesic_root": str(pairwise_root.resolve()),
         "future_unvisited_candidate_perception_used_as_input": False, "visited_s1_perception_used_as_input": True,

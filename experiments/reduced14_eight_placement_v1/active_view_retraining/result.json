@@ -1,0 +1,69 @@
+{
+  "experiment_id": "REDUCED14_EIGHT_PLACEMENT_ACTIVE_VIEW_RETRAINING",
+  "status": "COMPLETED",
+  "taxonomy": [
+    "walk", "sit", "stand up", "bend", "crawl", "stumble", "kneel",
+    "clap", "throw", "clean something", "kick", "knock", "punch",
+    "touching face"
+  ],
+  "split": {"train_contexts": 57834, "val_contexts": 19440, "test_contexts": 19440, "scene_split": false},
+  "data_protocol": {
+    "dataset": "reduced14_kneel/eight_placement_v1",
+    "placements_per_scene": 8,
+    "candidate_budget": "ALL_LEGAL",
+    "stgcn_checkpoint_frozen": true,
+    "stgcn_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced14_kneel_babel_diversity_v1/stgcn_reduced14_kneel_best.pth"
+  },
+  "training": {
+    "wm_e": {"contexts": 44248, "epochs": 12, "final_loss": 0.1476116050240188, "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/wm_e_last.pth"},
+    "multi_positive_joint_revision": {"contexts": 44248, "epochs": 20, "final_loss": 1.4090365746925617, "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/joint_revision_multi_positive.pth"},
+    "seed": 42,
+    "test_used_for_training": false
+  },
+  "metrics": {
+    "val": {
+      "full": {
+        "NoMove": {"accuracy": 0.29963991769547327, "macro_f1": 0.28381251988472933},
+        "FrozenStageCv0": {"accuracy": 0.4188786008230453, "macro_f1": 0.40556406340361983},
+        "Random": {"accuracy": 0.3058641975308642, "macro_f1": 0.2984326347786986},
+        "SafeOracle": {"accuracy": 0.7699074074074074, "macro_f1": 0.7631090897435746},
+        "CandidateOracle": {"accuracy": 0.7662037037037037, "macro_f1": 0.7593233112104513},
+        "Multi-positive H2": {"accuracy": 0.4678497942386831, "macro_f1": 0.45900331620128954}
+      },
+      "moving": {
+        "NoMove": {"accuracy": 0.25855898440137753, "macro_f1": 0.21387063871296916},
+        "FrozenStageCv0": {"accuracy": 0.4150854210277534, "macro_f1": 0.3968309077105983},
+        "Random": {"accuracy": 0.26672969140387603, "macro_f1": 0.2458091563391122},
+        "SafeOracle": {"accuracy": 0.8758862853670065, "macro_f1": 0.8737370996472578},
+        "CandidateOracle": {"accuracy": 0.8710243770679992, "macro_f1": 0.8688127093613369},
+        "Multi-positive H2": {"accuracy": 0.47937065298129516, "macro_f1": 0.47255499837470116}
+      }
+    },
+    "test": {
+      "full": {
+        "NoMove": {"accuracy": 0.3132716049382716, "macro_f1": 0.3024657858310421},
+        "FrozenStageCv0": {"accuracy": 0.42669753086419754, "macro_f1": 0.4187689062169183},
+        "Random": {"accuracy": 0.3117283950617284, "macro_f1": 0.30633426692745863},
+        "SafeOracle": {"accuracy": 0.7828703703703703, "macro_f1": 0.7778161909140623},
+        "CandidateOracle": {"accuracy": 0.7771090534979423, "macro_f1": 0.7718325415757163},
+        "Multi-positive H2": {"accuracy": 0.47031893004115227, "macro_f1": 0.4680833983438216}
+      },
+      "moving": {
+        "NoMove": {"accuracy": 0.27855115556156235, "macro_f1": 0.238991328734393},
+        "FrozenStageCv0": {"accuracy": 0.4275577780781187, "macro_f1": 0.4116377626480223},
+        "Random": {"accuracy": 0.27652385457494255, "macro_f1": 0.2528542378167084},
+        "SafeOracle": {"accuracy": 0.8954588457899716, "macro_f1": 0.8932874109039105},
+        "CandidateOracle": {"accuracy": 0.8878902554399243, "macro_f1": 0.8854554198955153},
+        "Multi-positive H2": {"accuracy": 0.4848628192999054, "macro_f1": 0.4818025926724286}
+      }
+    }
+  },
+  "test_used": true,
+  "leakage_flags": {
+    "scene_split": false,
+    "stgcn_retrained": false,
+    "true_future_recognition_as_model_input": false,
+    "future_candidate_rgb_used": false,
+    "habitat_rerendered": false
+  }
+}

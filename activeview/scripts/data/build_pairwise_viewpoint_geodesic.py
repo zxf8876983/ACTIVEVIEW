@@ -52,8 +52,8 @@ def build_cache(scene_dir: Path, candidate_manifest_path: Path, output_root: Pat
     import habitat_sim
 
     candidate_manifest = json.loads(candidate_manifest_path.read_text(encoding="utf-8"))
-    if candidate_manifest.get("version") != "semantic-region-v2":
-        raise ValueError("Pairwise cache requires semantic-region-v2 candidate metadata")
+    if candidate_manifest.get("version") not in {"semantic-region-v2", "furniture-placement-v2"}:
+        raise ValueError("Pairwise cache requires supported candidate metadata")
     scene_glb, navmesh = _scene_files(scene_dir)
     backend = habitat_sim.SimulatorConfiguration()
     backend.scene_id = str(scene_glb)
@@ -66,8 +66,10 @@ def build_cache(scene_dir: Path, candidate_manifest_path: Path, output_root: Pat
         output_root.mkdir(parents=True, exist_ok=True)
         outputs: dict[str, str] = {}
         for region_payload in candidate_manifest["placements_data"]:
-            placement_id = str(region_payload.get("placement_id", region_payload["region"]))
-            region = str(region_payload["region"])
+            placement_id = str(region_payload.get("placement_id") or region_payload.get("region", ""))
+            if not placement_id:
+                raise ValueError("Candidate placement is missing placement_id/region")
+            region = placement_id
             views = sorted(region_payload["viewpoints"], key=lambda item: int(item["viewpoint_id"]))
             ids = [int(item["viewpoint_id"]) for item in views]
             if len(ids) != 32 or len(set(ids)) != 32:

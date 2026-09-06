@@ -57,9 +57,11 @@ def relative_view_descriptor(
 def load_pairwise_and_azimuths(
     data_root: Path, rows: Sequence[Mapping[str, Any]],
     sources: Mapping[ContextKey, str],
+    pair_root: Path | None = None,
 ) -> tuple[dict[tuple[str, str], dict[int, dict[int, float]]], dict[tuple[str, str], dict[int, float]]]:
     """Load frozen navigation metadata without changing candidate semantics."""
-    pair_root = data_root / "datasets/policy_v11_5/pairwise_viewpoint_geodesic"
+    if pair_root is None:
+        pair_root = data_root / "datasets/policy_v11_5/pairwise_viewpoint_geodesic"
     pairwise: dict[tuple[str, str], dict[int, dict[int, float]]] = {}
     azimuths: dict[tuple[str, str], dict[int, float]] = {}
     for row in rows:
@@ -71,7 +73,10 @@ def load_pairwise_and_azimuths(
         pairwise[scene_region] = load_pairwise_geodesic(pair_root / scene_region[0] / f"{scene_region[1]}.json")
         manifest = Path(sources[context_key(row)]).parents[1] / "candidate_metadata" / "manifest.json"
         payload = json.loads(manifest.read_text(encoding="utf-8"))
-        placements = [item for item in payload["placements_data"] if str(item["region"]) == scene_region[1]]
+        placements = [
+            item for item in payload["placements_data"]
+            if str(item.get("placement_id") or item.get("region")) == scene_region[1]
+        ]
         if len(placements) != 1:
             raise ValueError(f"candidate metadata placement mismatch for {scene_region}")
         values = {int(view["viewpoint_id"]): float(view["azimuth_deg"]) for view in placements[0]["viewpoints"]}
@@ -136,8 +141,8 @@ def second_step_utility(candidate_logp_true: float, s1_logp_true: float) -> floa
 
 def semantic_delta(s0_feature: Sequence[float], s1_feature: Sequence[float]) -> np.ndarray:
     first, second = np.asarray(s0_feature, dtype=np.float32), np.asarray(s1_feature, dtype=np.float32)
-    if first.shape != (CURRENT_DIM,) or second.shape != (CURRENT_DIM,) or not np.isfinite(first).all() or not np.isfinite(second).all():
-        raise ValueError("s0 and s1 features must be finite 275-D vectors")
+    if first.ndim != 1 or first.shape != second.shape or first.size <= 256 or not np.isfinite(first).all() or not np.isfinite(second).all():
+        raise ValueError("s0 and s1 features must be equal finite one-dimensional vectors")
     return (second[256:] - first[256:]).astype(np.float32)
 
 

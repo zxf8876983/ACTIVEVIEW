@@ -440,7 +440,7 @@ def main() -> None:
     parser.add_argument("--output-root", type=Path, default=data_root / "datasets/offline/hm3d-train_reduced14_kneel/eight_placement_v1")
     parser.add_argument("--topdown-root", type=Path, default=data_root / "visualizations/hm3d_train_semantic_topdown")
     parser.add_argument("--placement-root", type=Path, default=data_root / "datasets/offline/hm3d-train_reduced14_kneel/placement_sampling_v2")
-    parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--image-size", type=int, default=256)
     parser.add_argument("--target-frames", type=int, default=30)
     parser.add_argument("--device", default="cuda:0")

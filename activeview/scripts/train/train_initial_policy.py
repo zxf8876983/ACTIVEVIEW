@@ -88,7 +88,8 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
         if model_type == "move_stay_set_ranker"
         else {}
     )
-    model = build_utility_predictor(model_type, geometry_dim=geometry_dim).to(device)
+    current_dim = int(feature_summary["current_feature_dim"])
+    model = build_utility_predictor(model_type, current_dim=current_dim, geometry_dim=geometry_dim).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="max", patience=3, factor=0.5)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -176,9 +177,9 @@ def train_model(*, feature_root: Path, stage_b_root: Path, output_dir: Path, mod
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--feature-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_c")
-    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_v11_5/stage_b")
-    parser.add_argument("--output-dir", type=Path, default=data_root / "checkpoints/stage_c")
+    parser.add_argument("--feature-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_c")
+    parser.add_argument("--stage-b-root", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/stage_b")
+    parser.add_argument("--output-dir", type=Path, default=data_root / "checkpoints/policy_reduced14_kneel_eight_placement_v1/stage_c")
     parser.add_argument("--model-type", choices=("pairwise_mlp", "set_ranker", "move_stay_set_ranker"), default="set_ranker")
     parser.add_argument("--device", default="cuda:0"); parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--episodes-per-record", type=int, default=16); parser.add_argument("--sampler", dest="sampler_type", choices=("record_balanced", "hard_record"), default="record_balanced"); parser.add_argument("--record-difficulty", type=Path); parser.add_argument("--hard-episodes-per-record", type=int, default=32); parser.add_argument("--normal-episodes-per-record", type=int, default=12); parser.add_argument("--max-epochs", type=int, default=100); parser.add_argument("--patience", type=int, default=10)

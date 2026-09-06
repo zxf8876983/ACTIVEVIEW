@@ -44,11 +44,12 @@ def _temporal_token_encoder() -> nn.Module:
 class CandidateObservationWorldModel(nn.Module):
     """Small history/candidate-conditioned perceived-skeleton predictor."""
 
-    def __init__(self, *, use_belief: bool = False, use_rgb: bool = False, residual: bool = False) -> None:
+    def __init__(self, *, use_belief: bool = False, use_rgb: bool = False, residual: bool = False, num_classes: int = 16) -> None:
         super().__init__()
         self.use_belief = bool(use_belief)
         self.use_rgb = bool(use_rgb)
         self.residual = bool(residual)
+        self.num_classes = int(num_classes)
         self.frame_encoder = nn.Linear(17 * 3, 128)
         self.temporal_position = nn.Parameter(torch.zeros(30, 128))
         self.temporal_encoder = _temporal_token_encoder()
@@ -66,7 +67,7 @@ class CandidateObservationWorldModel(nn.Module):
             num_layers=2,
         )
         self.belief_encoder = (
-            nn.Sequential(nn.Linear(32, 64), nn.GELU(), nn.Linear(64, 128))
+            nn.Sequential(nn.Linear(2 * self.num_classes, 64), nn.GELU(), nn.Linear(64, 128))
             if self.use_belief else None
         )
         self.rgb_projector = nn.Sequential(nn.Linear(768, 128), nn.GELU()) if self.use_rgb else None
@@ -135,8 +136,8 @@ class CandidateObservationWorldModel(nn.Module):
             raise ValueError("history_descriptor must have shape [B,H,9]")
         view_tokens = view_tokens + self.view_descriptor(history_descriptor)
         if self.use_belief:
-            if history_belief is None or self.belief_encoder is None or history_belief.shape != (batch, 32):
-                raise ValueError("belief model requires [B,32] history belief input")
+            if history_belief is None or self.belief_encoder is None or history_belief.shape != (batch, 2 * self.num_classes):
+                raise ValueError(f"belief model requires [B,{2 * self.num_classes}] history belief input")
             view_tokens = view_tokens + self.belief_encoder(history_belief).unsqueeze(1)
         if self.use_rgb:
             if history_rgb is None or history_rgb.shape != (batch, history_count, 16, 768):
@@ -250,7 +251,8 @@ class LazyWorldModelDataset(Dataset[dict[str, Any]]):
         if self.use_belief:
             s0_feature = np.asarray(row["s0_feature"], dtype=np.float32)
             s1_feature = np.asarray(row["s1_feature"], dtype=np.float32)
-            result["history_belief"] = torch.from_numpy(np.concatenate([s0_feature[256:272], s1_feature[256:272]]))
+            class_count = s0_feature.size - 259
+            result["history_belief"] = torch.from_numpy(np.concatenate([s0_feature[256:256 + class_count], s1_feature[256:256 + class_count]]))
         if self.rgb_lookup is not None:
             keys = [(*sample.context_key, int(v)) for v in history_ids]
             try:
@@ -287,7 +289,7 @@ class LazyWorldModelContextDataset(Dataset[dict[str, Any]]):
         candidate_ids = tuple(range(VIEW_COUNT)) if self.target_scope == "all" else tuple(int(v) for v in row["remaining_candidate_ids"])
         result: dict[str, Any] = {"history_skeleton": torch.from_numpy(np.stack([archive["skeleton"][by_id[v]] for v in history_ids])), "history_descriptor": torch.from_numpy(np.stack([relative_view_descriptor(positions, current, v) for v in history_ids])), "candidate_descriptor": torch.from_numpy(np.stack([relative_view_descriptor(positions, current, v) for v in candidate_ids])), "target_skeleton": torch.from_numpy(np.stack([archive["skeleton"][by_id[v]] for v in candidate_ids])), "candidate_ids": torch.tensor(candidate_ids, dtype=torch.long), "context_key": key, "label_id": int(row["label_id"])}
         if self.use_belief:
-            s0_feature = np.asarray(row["s0_feature"], dtype=np.float32); s1_feature = np.asarray(row["s1_feature"], dtype=np.float32); result["history_belief"] = torch.from_numpy(np.concatenate([s0_feature[256:272], s1_feature[256:272]]))
+            s0_feature = np.asarray(row["s0_feature"], dtype=np.float32); s1_feature = np.asarray(row["s1_feature"], dtype=np.float32); class_count = s0_feature.size - 259; result["history_belief"] = torch.from_numpy(np.concatenate([s0_feature[256:256 + class_count], s1_feature[256:256 + class_count]]))
         if self.rgb_lookup is not None:
             result["history_rgb"] = torch.from_numpy(np.stack([np.asarray(self.rgb_lookup[(*key, int(v))], dtype=np.float32) for v in history_ids]))
         return result

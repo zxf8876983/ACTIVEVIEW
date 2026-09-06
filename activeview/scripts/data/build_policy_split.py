@@ -22,20 +22,30 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from activeview.core.paths import get_data_root
-from activeview.data.splits.policy_split import write_policy_splits
+from activeview.data.splits.policy_split import SPLITS, write_policy_splits, write_predefined_policy_splits
 
 
 def main() -> None:
     data_root = get_data_root()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input-manifest", type=Path, default=data_root / "datasets/stgcn_babel_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed/val.json")
-    parser.add_argument("--output-dir", type=Path, default=data_root / "datasets/policy_v11_5/splits")
+    parser.add_argument("--input-manifest", type=Path)
+    parser.add_argument("--input-split-dir", type=Path, default=data_root / "datasets/reduced14_kneel_babel_diversity_v1/raw-val")
+    parser.add_argument("--output-dir", type=Path, default=data_root / "datasets/policy_reduced14_kneel_eight_placement_v1/splits")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
-    records = json.loads(args.input_manifest.read_text(encoding="utf-8"))
-    if not isinstance(records, list):
-        raise ValueError("Input manifest must be a JSON list")
-    summary = write_policy_splits(records, args.output_dir, seed=args.seed)
+    if args.input_manifest is not None:
+        records = json.loads(args.input_manifest.read_text(encoding="utf-8"))
+        if not isinstance(records, list):
+            raise ValueError("Input manifest must be a JSON list")
+        summary = write_policy_splits(records, args.output_dir, seed=args.seed)
+    else:
+        split_records = {
+            split: json.loads((args.input_split_dir / f"{split}.json").read_text(encoding="utf-8"))
+            for split in SPLITS
+        }
+        if any(not isinstance(rows, list) for rows in split_records.values()):
+            raise ValueError("Every predefined split manifest must be a JSON list")
+        summary = write_predefined_policy_splits(split_records, args.output_dir, seed=args.seed)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 

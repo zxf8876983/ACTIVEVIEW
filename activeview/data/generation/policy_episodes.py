@@ -22,8 +22,8 @@ import numpy as np
 
 
 REGIONS: Tuple[str, ...] = ("bedroom", "living_room", "kitchen", "dining_area")
-OFFLINE_VERSION = "semantic-region-offline-v2"
-CANDIDATE_VERSION = "semantic-region-v2"
+OFFLINE_VERSIONS = {"semantic-region-offline-v2"}
+CANDIDATE_VERSIONS = {"semantic-region-v2", "furniture-placement-v2"}
 EXPECTED_SKELETON_SHAPE = (32, 3, 30, 17)
 PathCostFn = Callable[[Any, np.ndarray, np.ndarray], Optional[float]]
 _FINITE_CANDIDATE_FIELDS = ("euclidean_distance_m", "geodesic_distance_m", "relative_azimuth_deg")
@@ -603,9 +603,9 @@ def load_scene_index(scene_dir: Path) -> SceneIndex:
     candidate_path = scene_dir / "candidate_metadata" / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     candidate_manifest = json.loads(candidate_path.read_text(encoding="utf-8"))
-    if manifest.get("version") != OFFLINE_VERSION:
+    if manifest.get("version") not in OFFLINE_VERSIONS:
         raise ValueError(f"Unsupported offline manifest version in {scene_dir}")
-    if candidate_manifest.get("version") != CANDIDATE_VERSION:
+    if candidate_manifest.get("version") not in CANDIDATE_VERSIONS:
         raise ValueError(f"Unsupported candidate manifest version in {scene_dir}")
     for name, payload in (("offline", manifest), ("candidate", candidate_manifest)):
         if payload.get("rotation_reference") != "exact_offline_render_state":
@@ -614,19 +614,29 @@ def load_scene_index(scene_dir: Path) -> SceneIndex:
             raise ValueError(f"Unexpected sensor height in {name} manifest: {scene_dir}")
         if not math.isclose(float(payload.get("target_height_m", -1.0)), 0.85, abs_tol=1e-6):
             raise ValueError(f"Unexpected target height in {name} manifest: {scene_dir}")
-    if int(manifest.get("records", 0)) != 980 or int(manifest.get("regions", 0)) != 4:
-        raise ValueError(f"Unexpected scene record/region count in {scene_dir}")
+    record_count = int(manifest.get("records", 0))
+    placement_count = int(manifest.get("placements", manifest.get("regions", 0)))
+    if record_count <= 0 or placement_count <= 0:
+        raise ValueError(f"Unexpected scene record/placement count in {scene_dir}")
     if int(manifest.get("views_per_record", 0)) != 32:
         raise ValueError(f"Unexpected view count in {scene_dir}")
     items: Dict[Tuple[str, str], Mapping[str, Any]] = {}
     for item in manifest.get("items", []):
-        key = (str(item["record_id"]), str(item["region"]))
+        context_id = str(item.get("placement_id") or item.get("region", ""))
+        key = (str(item["record_id"]), context_id)
         if key in items:
             raise ValueError(f"Duplicate offline item {key} in {scene_dir}")
         items[key] = item
-    placements = {str(item["region"]): item for item in candidate_manifest.get("placements_data", [])}
-    if set(placements) != set(REGIONS):
-        raise ValueError(f"Missing candidate regions in {scene_dir}")
+    placements = {
+        str(item.get("placement_id") or item.get("region", "")): item
+        for item in candidate_manifest.get("placements_data", [])
+    }
+    if len(placements) != placement_count or "" in placements:
+        raise ValueError(f"Missing or duplicate candidate placements in {scene_dir}")
+    if candidate_manifest.get("version") == "furniture-placement-v2" and set(placements) != {
+        f"p{index:02d}" for index in range(8)
+    }:
+        raise ValueError(f"Expected p00...p07 furniture placements in {scene_dir}")
     return SceneIndex(scene_dir.name, scene_dir, manifest, placements, items)
 
 

@@ -159,6 +159,55 @@ def write_policy_splits(
     return summary
 
 
+def write_predefined_policy_splits(
+    split_records: Mapping[str, Sequence[Mapping[str, Any]]],
+    output_dir: Path,
+    *,
+    seed: int = 42,
+) -> Dict[str, Any]:
+    """Persist an existing Train/Val/Test record partition without resplitting."""
+    splits: Dict[str, List[Dict[str, Any]]] = {name: [] for name in SPLITS}
+    for split in SPLITS:
+        for source in split_records.get(split, []):
+            splits[split].append({
+                "record_id": str(source["record_id"]),
+                "action_label": str(source["action_label"]),
+                "label_id": int(source["label_id"]),
+                "policy_split": split,
+            })
+        splits[split].sort(key=lambda item: str(item["record_id"]))
+    audit = audit_policy_splits(splits)
+    if audit["split_overlap"] or not audit["same_record_same_split"]:
+        raise ValueError(f"Invalid predefined policy split: {audit}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for split in SPLITS:
+        (output_dir / f"{split}.json").write_text(
+            json.dumps(splits[split], indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+    per_class: Dict[str, Dict[str, int]] = defaultdict(dict)
+    for split in SPLITS:
+        for item in splits[split]:
+            label = str(item["action_label"])
+            per_class[label][split] = per_class[label].get(split, 0) + 1
+    for counts in per_class.values():
+        for split in SPLITS:
+            counts.setdefault(split, 0)
+    summary = {
+        "protocol": "ACTIVEVIEW reduced14 predefined raw-val policy split",
+        "seed": seed,
+        "split_ratios": dict(RATIOS),
+        "input_sample_count": sum(len(splits[name]) for name in SPLITS),
+        "split_counts": {name: len(splits[name]) for name in SPLITS},
+        "per_class_split_counts": dict(sorted(per_class.items())),
+        "overlap_audit": audit,
+        "predefined_partition_preserved": True,
+    }
+    (output_dir / "summary.json").write_text(
+        json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    return summary
+
+
 def load_policy_split_summary(split_dir: Path) -> Dict[str, Any]:
     """Load the persisted split metadata, including the actual ratios used."""
     path = split_dir / "summary.json"

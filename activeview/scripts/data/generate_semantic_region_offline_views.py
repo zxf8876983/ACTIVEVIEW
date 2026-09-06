@@ -26,6 +26,15 @@ from activeview.perception.normalization import SkeletonNormalizer
 
 URDF=get_humanoid_urdf_path('male_0')
 
+def _worker_process_env() -> Dict[str, str]:
+ raw_threads=os.environ.get('ACTIVEVIEW_WORKER_CPU_THREADS','1')
+ try: threads=int(raw_threads)
+ except ValueError as exc: raise ValueError('ACTIVEVIEW_WORKER_CPU_THREADS must be an integer >= 1') from exc
+ if threads<1: raise ValueError('ACTIVEVIEW_WORKER_CPU_THREADS must be an integer >= 1')
+ env=dict(os.environ)
+ for name in ('OMP_NUM_THREADS','MKL_NUM_THREADS','OPENBLAS_NUM_THREADS','NUMEXPR_NUM_THREADS'): env[name]=str(threads)
+ return env
+
 def _sim(root:Path,sid:str,size:int,cameras:int):
  d=root/sid; glb=next(d.glob('*.basis.glb')); nav=next(d.glob('*.basis.navmesh')); b=habitat_sim.SimulatorConfiguration(); b.scene_id=str(glb); b.enable_physics=True
  agents=[]
@@ -97,7 +106,8 @@ def main():
  tasks=[(str(pl.get('placement_id',pl.get('region'))),r) for pl in cm['placements_data'] for r in records]
  if args.worker_id is not None: _worker(args,tasks[args.worker_id::args.workers],cm,args.output_dir); return
  launch=[]
- for wid in range(args.workers): launch.append(subprocess.Popen([sys.executable,str(Path(__file__)),'--candidate-dir',str(args.candidate_dir),'--manifest',str(args.manifest),'--output-dir',str(args.output_dir),'--scene-root',str(args.scene_root),'--scene-id',args.scene_id,'--workers',str(args.workers),'--worker-id',str(wid),'--image-size',str(args.image_size),'--target-frames',str(args.target_frames),'--device',args.device,'--yolo-weights',str(args.yolo_weights)] + (['--max-records',str(args.max_records)] if args.max_records else [])))
+ worker_env=_worker_process_env()
+ for wid in range(args.workers): launch.append(subprocess.Popen([sys.executable,str(Path(__file__)),'--candidate-dir',str(args.candidate_dir),'--manifest',str(args.manifest),'--output-dir',str(args.output_dir),'--scene-root',str(args.scene_root),'--scene-id',args.scene_id,'--workers',str(args.workers),'--worker-id',str(wid),'--image-size',str(args.image_size),'--target-frames',str(args.target_frames),'--device',args.device,'--yolo-weights',str(args.yolo_weights)] + (['--max-records',str(args.max_records)] if args.max_records else []),env=worker_env))
  codes=[x.wait() for x in launch]
  if any(c!=0 for c in codes): raise RuntimeError(f'worker failures {codes}')
  items=[]

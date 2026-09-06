@@ -140,7 +140,7 @@ stgcn_selected16_habitat_pure_stumble_30frames_yolo26n_camera_fixed_oversampled/
 └── hm3d-train/<原始 Habitat 场景文件夹>/
 ```
 
-每个语义区域从家具语义位置选择一个人体放置点：`bedroom`、`living_room`、`kitchen`、`dining_area`。每个放置点生成 4 个半径（1.5/2.0/2.5/3.0 m）× 8 个方位，共 32 个候选视点。候选元数据生成入口为 `generate_semantic_region_candidate_metadata.py`；4 区域场景编排入口为 `generate_hm3d_train_four_region_offline.py`。
+每个语义区域从家具语义位置选择一个人体放置点：`bedroom`、`living_room`、`kitchen`、`dining_area`。每个放置点生成 4 个半径（1.5/2.0/2.5/3.0 m）× 8 个方位，共 32 个候选视点。候选元数据生成入口为 `generate_semantic_region_candidate_metadata.py`；HM3D-train 场景编排入口为 `generate_hm3d_train_offline.py`。
 
 ### 4.2 Candidate metadata 与 v2 记录
 

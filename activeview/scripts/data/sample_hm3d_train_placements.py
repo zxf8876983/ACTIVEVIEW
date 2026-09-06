@@ -22,7 +22,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from activeview.core.paths import get_data_root, get_habitat_data_root
-from activeview.scripts.data.generate_hm3d_train_four_region_offline import (
+from activeview.scripts.data.generate_hm3d_train_offline import (
     SCENE_IDS,
     _load_furniture,
     _load_scene_list,

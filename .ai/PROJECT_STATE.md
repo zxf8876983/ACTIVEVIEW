@@ -191,6 +191,27 @@ documentation/equivalence commits follow it. No further experiment is
 authorized automatically; Test remains locked for any future changes to the
 method.
 
+## Reduced14 eight-placement ActiveView retraining (2026-09-06)
+
+The canonical current ActiveView runtime uses `reduced14_kneel` with eight
+furniture-anchored placements per scene and the existing raw-val record split
+Train/Val/Test = 357/120/120 (57,834/19,440/19,440 contexts), without a scene
+split. The 14-class ST-GCN checkpoint remains frozen. A new recognition-aware
+WM-E was trained on Train only (12 epochs, seed 42, final loss 0.147612), and
+Multi-Positive Joint Revision was trained on its Train counterfactual cache
+(20 epochs, seed 42, final loss 1.409037). Frozen ST-GCN terminal recognition
+was used for all policy metrics.
+
+On this new population, Test Full Accuracy/Macro-F1 were NoMove
+0.313272/0.302466, FrozenStageCv0 0.426698/0.418769, Random
+0.311728/0.306334, SafeOracle 0.782870/0.777816 and Multi-positive H2
+0.470319/0.468083. Moving-subset values were 0.278551/0.238991,
+0.427558/0.411638, 0.276524/0.252854, 0.895459/0.893287 and
+0.484863/0.481803 respectively. The learned Multi-positive selector is above
+FrozenStageCv0 but far below SafeOracle; this is a new-data retraining result,
+not a change to the frozen ST-GCN protocol. Compact results are stored in
+`experiments/reduced14_eight_placement_v1/active_view_retraining/`.
+
 ## Runtime roots
 
 - Source: repository `activeview/` (the only source package).
