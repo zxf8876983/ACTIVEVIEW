@@ -751,3 +751,18 @@ was 0.482815/0.496504, close to the prior Feature-history MLP reference
 0.484300/0.500795. Privileged JR and SafeOracle remained 0.595584/0.604960
 and 0.875886/0.873737. Both new checkpoints are separate runtime artifacts;
 WM-E, ST-GCN and old JR checkpoints were unchanged, and Test was not read.
+
+## Ranking-aware Recognition WM-E (2026-09-07)
+
+Added a 14-way candidate recognition head to the existing WM-E and trained it
+for 12 Train epochs with the frozen ST-GCN distribution target, fixed KL weight
+0.1 and within-context pairwise ranking weight 0.2. Val selection used the
+candidate-ranking Spearman score. On 14,809 Val contexts and 426,474 legal
+candidate samples, the selected epoch 12 reached recognition
+agreement/Pearson/Spearman 0.519406/0.576882/0.657420, compared with
+0.477298/0.498811/0.615925 for the old WM-E; Top-1/Top-3 positive hit were
+0.544466/0.694780. Rebuilt Train/Val caches used only the recognition head and
+the new Pretrained-Frozen history JR reached Accuracy/Macro-F1
+0.492538/0.488929 versus 0.491120/0.481416 with the old WM-E. New WM-E/JR
+checkpoints and caches are separate runtime artifacts; old WM-E/JR/ST-GCN
+checkpoints were unchanged. Test was not read.

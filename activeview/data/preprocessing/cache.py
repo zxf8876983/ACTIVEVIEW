@@ -100,8 +100,16 @@ def log_probs(model: STGCN, skeletons: np.ndarray, device: torch.device) -> np.n
 def load_wm_e(checkpoint: Path, device: torch.device) -> CandidateObservationWorldModel:
     payload = torch.load(checkpoint, map_location=device, weights_only=False)
     num_classes = int(payload.get("num_classes", 16))
-    model = CandidateObservationWorldModel(use_belief=True, use_rgb=True, residual=False, num_classes=num_classes).to(device)
-    model.load_state_dict(payload["model_state_dict"])
+    state_dict = payload["model_state_dict"]
+    has_recognition_head = any(key.startswith("recognition_head.") for key in state_dict)
+    model = CandidateObservationWorldModel(
+        use_belief=True,
+        use_rgb=True,
+        residual=False,
+        num_classes=num_classes,
+        use_recognition_head=has_recognition_head,
+    ).to(device)
+    model.load_state_dict(state_dict)
     for parameter in model.parameters():
         parameter.requires_grad_(False)
     model.eval()

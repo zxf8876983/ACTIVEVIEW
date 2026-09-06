@@ -44,12 +44,21 @@ def _temporal_token_encoder() -> nn.Module:
 class CandidateObservationWorldModel(nn.Module):
     """Small history/candidate-conditioned perceived-skeleton predictor."""
 
-    def __init__(self, *, use_belief: bool = False, use_rgb: bool = False, residual: bool = False, num_classes: int = 16) -> None:
+    def __init__(
+        self,
+        *,
+        use_belief: bool = False,
+        use_rgb: bool = False,
+        residual: bool = False,
+        num_classes: int = 16,
+        use_recognition_head: bool = False,
+    ) -> None:
         super().__init__()
         self.use_belief = bool(use_belief)
         self.use_rgb = bool(use_rgb)
         self.residual = bool(residual)
         self.num_classes = int(num_classes)
+        self.use_recognition_head = bool(use_recognition_head)
         self.frame_encoder = nn.Linear(17 * 3, 128)
         self.temporal_position = nn.Parameter(torch.zeros(30, 128))
         self.temporal_encoder = _temporal_token_encoder()
@@ -99,6 +108,9 @@ class CandidateObservationWorldModel(nn.Module):
         )
         self.decoder = nn.TransformerDecoder(decoder_layer, num_layers=2)
         self.output_head = nn.Linear(128, 17 * 3)
+        self.recognition_head = (
+            nn.Linear(128, self.num_classes) if self.use_recognition_head else None
+        )
         nn.init.normal_(self.temporal_position, std=0.02)
         nn.init.normal_(self.decoder_queries, std=0.02)
 
@@ -125,7 +137,8 @@ class CandidateObservationWorldModel(nn.Module):
         history_belief: torch.Tensor | None = None,
         history_rgb: torch.Tensor | None = None,
         history_mask: torch.Tensor | None = None,
-    ) -> torch.Tensor:
+        return_recognition: bool = False,
+    ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
         """Predict one candidate skeleton; output shape is ``[B,3,30,17]``."""
         if history_skeleton.ndim != 5 or tuple(history_skeleton.shape[2:]) != SKELETON_SHAPE:
             raise ValueError("history_skeleton must have shape [B,H,3,30,17]")
@@ -147,6 +160,8 @@ class CandidateObservationWorldModel(nn.Module):
             view_tokens = view_tokens + rgb_tokens
         memory = self.history_encoder(view_tokens, src_key_padding_mask=None if history_mask is None else ~history_mask.bool())
         history_state = memory.mean(dim=1)
+        if return_recognition and self.recognition_head is None:
+            raise ValueError("recognition output requested without recognition head")
         if candidate_descriptor.ndim == 2:
             if candidate_descriptor.shape != (batch, 9):
                 raise ValueError("candidate_descriptor must have shape [B,9]")
@@ -154,7 +169,11 @@ class CandidateObservationWorldModel(nn.Module):
             queries = self.decoder_queries.unsqueeze(0).expand(batch, -1, -1)
             decoded = self.decoder(queries, condition.unsqueeze(1))
             output = self.output_head(decoded).reshape(batch, 3, 30, 17)
-            return output + history_skeleton[:, -1] if self.residual else output
+            prediction = output + history_skeleton[:, -1] if self.residual else output
+            if return_recognition:
+                assert self.recognition_head is not None
+                return prediction, self.recognition_head(decoded.mean(dim=1))
+            return prediction
         if candidate_descriptor.ndim != 3 or candidate_descriptor.shape[0] != batch or candidate_descriptor.shape[-1] != 9:
             raise ValueError("candidate_descriptor must have shape [B,K,9]")
         candidate_count = candidate_descriptor.size(1)
@@ -163,7 +182,11 @@ class CandidateObservationWorldModel(nn.Module):
         queries = self.decoder_queries.unsqueeze(0).expand(batch * candidate_count, -1, -1)
         decoded = self.decoder(queries, condition.unsqueeze(1))
         output = self.output_head(decoded).reshape(batch, candidate_count, 3, 30, 17)
-        return output + history_skeleton[:, -1].unsqueeze(1) if self.residual else output
+        prediction = output + history_skeleton[:, -1].unsqueeze(1) if self.residual else output
+        if return_recognition:
+            assert self.recognition_head is not None
+            return prediction, self.recognition_head(decoded.mean(dim=1).reshape(batch, candidate_count, 128))
+        return prediction
 
 
 @dataclass(frozen=True)
@@ -265,10 +288,10 @@ class LazyWorldModelDataset(Dataset[dict[str, Any]]):
 class LazyWorldModelContextDataset(Dataset[dict[str, Any]]):
     """One item per context with all 32 candidate targets for efficient training."""
 
-    def __init__(self, rows: Sequence[Mapping[str, Any]], source_by_context: Mapping[tuple[str, str, str], str], *, use_belief: bool = False, rgb_lookup: Mapping[tuple[str, str, str, int], np.ndarray] | None = None, cache_size: int = 8, target_scope: str = "remaining") -> None:
+    def __init__(self, rows: Sequence[Mapping[str, Any]], source_by_context: Mapping[tuple[str, str, str], str], *, use_belief: bool = False, rgb_lookup: Mapping[tuple[str, str, str, int], np.ndarray] | None = None, cache_size: int = 8, target_scope: str = "remaining", legal_candidate_ids: Mapping[tuple[str, str, str], Sequence[int]] | None = None) -> None:
         if target_scope not in {"remaining", "all"}:
             raise ValueError("target_scope must be remaining or all")
-        self.rows = list(rows); self.source_by_context = dict(source_by_context); self.use_belief = bool(use_belief); self.rgb_lookup = rgb_lookup; self.target_scope = target_scope; self.cache_size = max(1, int(cache_size)); self._archives: OrderedDict[str, dict[str, np.ndarray]] = OrderedDict()
+        self.rows = list(rows); self.source_by_context = dict(source_by_context); self.use_belief = bool(use_belief); self.rgb_lookup = rgb_lookup; self.target_scope = target_scope; self.legal_candidate_ids = {key: tuple(int(v) for v in values) for key, values in (legal_candidate_ids or {}).items()}; self.cache_size = max(1, int(cache_size)); self._archives: OrderedDict[str, dict[str, np.ndarray]] = OrderedDict()
 
     def __len__(self) -> int:
         return len(self.rows)
@@ -287,7 +310,8 @@ class LazyWorldModelContextDataset(Dataset[dict[str, Any]]):
         row = self.rows[index]; key = (str(row["scene_id"]), str(row["region"]), str(row["record_id"])); archive = self._archive(Path(self.source_by_context[key])); ids = archive["viewpoint_ids"]; by_id = {int(view): pos for pos, view in enumerate(ids.tolist())}; s0_id = int(row["s0_viewpoint_id"]); s1_id = int(row["s1_viewpoint_id"])
         positions = archive["positions"]; current = positions[by_id[s1_id]]; history_ids = (s0_id, s1_id)
         candidate_ids = tuple(range(VIEW_COUNT)) if self.target_scope == "all" else tuple(int(v) for v in row["remaining_candidate_ids"])
-        result: dict[str, Any] = {"history_skeleton": torch.from_numpy(np.stack([archive["skeleton"][by_id[v]] for v in history_ids])), "history_descriptor": torch.from_numpy(np.stack([relative_view_descriptor(positions, current, v) for v in history_ids])), "candidate_descriptor": torch.from_numpy(np.stack([relative_view_descriptor(positions, current, v) for v in candidate_ids])), "target_skeleton": torch.from_numpy(np.stack([archive["skeleton"][by_id[v]] for v in candidate_ids])), "candidate_ids": torch.tensor(candidate_ids, dtype=torch.long), "context_key": key, "label_id": int(row["label_id"])}
+        legal_ids = set(self.legal_candidate_ids.get(key, tuple(int(v) for v in row.get("remaining_candidate_ids", ()))))
+        result: dict[str, Any] = {"history_skeleton": torch.from_numpy(np.stack([archive["skeleton"][by_id[v]] for v in history_ids])), "history_descriptor": torch.from_numpy(np.stack([relative_view_descriptor(positions, current, v) for v in history_ids])), "candidate_descriptor": torch.from_numpy(np.stack([relative_view_descriptor(positions, current, v) for v in candidate_ids])), "target_skeleton": torch.from_numpy(np.stack([archive["skeleton"][by_id[v]] for v in candidate_ids])), "candidate_ids": torch.tensor(candidate_ids, dtype=torch.long), "legal_candidate_mask": torch.tensor([int(v) in legal_ids for v in candidate_ids], dtype=torch.bool), "context_key": key, "label_id": int(row["label_id"])}
         if self.use_belief:
             s0_feature = np.asarray(row["s0_feature"], dtype=np.float32); s1_feature = np.asarray(row["s1_feature"], dtype=np.float32); class_count = s0_feature.size - 259; result["history_belief"] = torch.from_numpy(np.concatenate([s0_feature[256:256 + class_count], s1_feature[256:256 + class_count]]))
         if self.rgb_lookup is not None:
@@ -322,13 +346,21 @@ def collate_world_model_context(batch: Sequence[Mapping[str, Any]]) -> dict[str,
     target_skeleton = torch.zeros((len(batch), max_candidates, *SKELETON_SHAPE), dtype=torch.float32)
     candidate_ids = torch.full((len(batch), max_candidates), -1, dtype=torch.long)
     candidate_mask = torch.zeros((len(batch), max_candidates), dtype=torch.bool)
+    legal_candidate_mask = torch.zeros((len(batch), max_candidates), dtype=torch.bool)
     for index, item in enumerate(batch):
         count = int(item["candidate_descriptor"].shape[0])
         candidate_descriptor[index, :count] = item["candidate_descriptor"]
         target_skeleton[index, :count] = item["target_skeleton"]
         candidate_ids[index, :count] = item["candidate_ids"]
         candidate_mask[index, :count] = True
-    result: dict[str, Any] = {"history_skeleton": torch.stack([item["history_skeleton"] for item in batch]), "history_descriptor": torch.stack([item["history_descriptor"] for item in batch]), "candidate_descriptor": candidate_descriptor, "target_skeleton": target_skeleton, "candidate_ids": candidate_ids, "candidate_mask": candidate_mask, "context_key": [item["context_key"] for item in batch], "label_id": torch.tensor([item["label_id"] for item in batch], dtype=torch.long)}
+        # Older callers/fixtures do not provide a separate legal mask; in
+        # that compatibility path every materialized candidate is legal.
+        item_legal_mask = item.get("legal_candidate_mask")
+        if item_legal_mask is None:
+            legal_candidate_mask[index, :count] = True
+        else:
+            legal_candidate_mask[index, :count] = item_legal_mask
+    result: dict[str, Any] = {"history_skeleton": torch.stack([item["history_skeleton"] for item in batch]), "history_descriptor": torch.stack([item["history_descriptor"] for item in batch]), "candidate_descriptor": candidate_descriptor, "target_skeleton": target_skeleton, "candidate_ids": candidate_ids, "candidate_mask": candidate_mask, "legal_candidate_mask": legal_candidate_mask, "context_key": [item["context_key"] for item in batch], "label_id": torch.tensor([item["label_id"] for item in batch], dtype=torch.long)}
     if "history_belief" in batch[0]: result["history_belief"] = torch.stack([item["history_belief"] for item in batch])
     if "history_rgb" in batch[0]: result["history_rgb"] = torch.stack([item["history_rgb"] for item in batch])
     return result

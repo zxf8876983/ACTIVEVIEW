@@ -56,8 +56,16 @@ def build_split(data_root: Path, split: str, wm_path: Path, output: Path, device
     )
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=workers, collate_fn=collate_world_model_context, pin_memory=True, persistent_workers=workers > 0)
     payload = torch.load(wm_path, map_location=device, weights_only=False)
-    model = CandidateObservationWorldModel(use_belief=True, use_rgb=True, residual=False, num_classes=NUM_CLASSES).to(device)
-    model.load_state_dict(payload["model_state_dict"])
+    state_dict = payload["model_state_dict"]
+    has_recognition_head = any(key.startswith("recognition_head.") for key in state_dict)
+    model = CandidateObservationWorldModel(
+        use_belief=True,
+        use_rgb=True,
+        residual=False,
+        num_classes=NUM_CLASSES,
+        use_recognition_head=has_recognition_head,
+    ).to(device)
+    model.load_state_dict(state_dict)
     model.eval()
     stgcn, _ = load_checkpoint(data_root / "checkpoints/stgcn_reduced14_kneel_babel_diversity_v1/stgcn_reduced14_kneel_best.pth", NUM_CLASSES, str(device))
     current_s0: list[np.ndarray] = []
@@ -88,8 +96,17 @@ def build_split(data_root: Path, split: str, wm_path: Path, output: Path, device
             }
             predicted_parts: list[np.ndarray] = []
             for start in range(0, VIEW_COUNT, 8):
-                prediction = model(candidate_descriptor=batch["candidate_descriptor"][:, start:start + 8].to(device), **kwargs)
-                predicted_parts.append(_logp(stgcn, prediction.reshape(-1, 3, 30, 17), device).reshape(batch_count, -1, NUM_CLASSES))
+                model_output = model(
+                    candidate_descriptor=batch["candidate_descriptor"][:, start:start + 8].to(device),
+                    return_recognition=has_recognition_head,
+                    **kwargs,
+                )
+                if has_recognition_head:
+                    _prediction, recognition_logits = model_output
+                    predicted_parts.append(torch.log_softmax(recognition_logits, dim=-1).cpu().numpy())
+                else:
+                    prediction = model_output
+                    predicted_parts.append(_logp(stgcn, prediction.reshape(-1, 3, 30, 17), device).reshape(batch_count, -1, NUM_CLASSES))
             imagined.append(np.concatenate(predicted_parts, axis=1))
     result = {
         "episode_ids": np.asarray(episode_ids, dtype="U"),
@@ -102,7 +119,7 @@ def build_split(data_root: Path, split: str, wm_path: Path, output: Path, device
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(output, **result)
-    summary = {"split": split, "contexts": len(episode_ids), "shape_imagined": list(result["imagined_logp"].shape), "wm_checkpoint": str(wm_path.resolve()), "test_used": split == "test"}
+    summary = {"split": split, "contexts": len(episode_ids), "shape_imagined": list(result["imagined_logp"].shape), "wm_checkpoint": str(wm_path.resolve()), "imagined_logp_source": "recognition_head" if has_recognition_head else "stgcn(predicted_skeleton)", "test_used": split == "test"}
     output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
     return summary
