@@ -1,0 +1,131 @@
+{
+  "experiment_id": "REDUCED14_GT_LABEL_PRIVILEGED_JR",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "population": {
+    "train_contexts": 44248,
+    "val_moving_contexts": 14809
+  },
+  "methods": {
+    "NormalJR": {
+      "positive_action_hit_rate": 0.47937065298129516,
+      "stay_rate": 0.3042069012087244,
+      "action_counts": {
+        "stay": 4505,
+        "move": 10304
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.47937065298129516,
+        "macro_f1": 0.47255499837470116
+      },
+      "source": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced14_eight_placement_v1/selector_bottleneck/result.json"
+    },
+    "PrivilegedJR": {
+      "positive_action_hit_rate": 0.5955837666284016,
+      "stay_rate": 0.10838003916537241,
+      "action_counts": {
+        "stay": 1605,
+        "move": 13204
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.5955837666284016,
+        "macro_f1": 0.6049601213595234
+      },
+      "source": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced14_eight_placement_v1/selector_bottleneck/result.json"
+    },
+    "GTLabelPrivilegedJR": {
+      "positive_action_hit_rate": 0.8720372746302923,
+      "positive_action_hit_count": 12914,
+      "stay_rate": 0.08150449051252617,
+      "action_counts": {
+        "stay": 1207,
+        "move": 13602
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.8720372746302923,
+        "macro_f1": 0.8695226099808931
+      }
+    },
+    "SafeOracle": {
+      "positive_action_hit_rate": 0.8758862853670065,
+      "stay_rate": 0.07184820041866433,
+      "action_counts": {
+        "stay": 1064,
+        "move": 13745
+      },
+      "terminal": {
+        "count": 14809,
+        "accuracy": 0.8758862853670065,
+        "macro_f1": 0.8737370996472578
+      },
+      "source": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced14_eight_placement_v1/selector_bottleneck/result.json"
+    }
+  },
+  "gaps": {
+    "privileged_jr_to_gt_label_privileged_jr": {
+      "accuracy": 0.2764535080018907,
+      "macro_f1": 0.2645624886213698
+    },
+    "gt_label_privileged_jr_to_safe_oracle": {
+      "accuracy": 0.0038490107367141757,
+      "macro_f1": 0.004214489666364618
+    },
+    "normal_jr_to_privileged_jr": {
+      "accuracy": 0.11621311364710646,
+      "macro_f1": 0.1324051229848222
+    }
+  },
+  "training": {
+    "contexts": 44248,
+    "positive_contexts": 37892,
+    "multi_positive_contexts": 34053,
+    "single_positive_contexts": 3839,
+    "no_positive_contexts": 6356,
+    "mean_positive_count": 8.816979837432703,
+    "epochs": 20,
+    "batch_size": 512,
+    "final_loss": 0.10383525944646747,
+    "loss_history": [
+      1.6148065506726845,
+      0.7268000782906324,
+      0.3649896503179923,
+      0.27197521805078134,
+      0.22768772213623442,
+      0.19854775910404907,
+      0.18263860817613273,
+      0.16574554051133408,
+      0.15441839491156326,
+      0.14488823120963984,
+      0.14255683312470885,
+      0.13437240493708644,
+      0.1389133811168287,
+      0.12470459655441087,
+      0.11816641808241263,
+      0.1197014826125112,
+      0.11380140783115365,
+      0.10945323101062884,
+      0.10325263329278464,
+      0.10383525944646747
+    ]
+  },
+  "protocol": {
+    "taxonomy": "reduced14_kneel",
+    "candidate_input": "archived true_logp substituted for imagined_logp",
+    "extra_input": "ground-truth label one-hot, 14-D",
+    "architecture": "JointRevision with current projector input 48-D; candidate/Transformer heads unchanged",
+    "terminal_recognition": "archived true candidate/current logp through frozen ST-GCN"
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "val_used_for_training": false,
+    "formal_checkpoints_modified": false,
+    "true_logp_used_as_privileged_diagnostic_input": true,
+    "ground_truth_label_used_as_privileged_diagnostic_input": true,
+    "true_logp_used_for_candidate_identity": false
+  }
+}
