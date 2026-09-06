@@ -16,8 +16,9 @@ Revision were retrained on Train only, with seed 42 and final-epoch weights.
 | Test Moving Accuracy | 0.278551 | 0.427558 | 0.276524 | 0.895459 | 0.484863 |
 | Test Moving Macro-F1 | 0.238991 | 0.411638 | 0.252854 | 0.893287 | 0.481803 |
 
-The latest method is below FrozenStageCv0 on both Val and Test. On Test Full,
-Multi-positive H2 − FrozenStageCv0 is +0.043621 Accuracy and +0.049314
+The latest method is above FrozenStageCv0 on both Val and Test, but remains
+well below SafeOracle. On Test Full, Multi-positive H2 − FrozenStageCv0 is
++0.043621 Accuracy and +0.049314
 Macro-F1; on the common moving subset the differences are +0.057305 and
 +0.070165. SafeOracle remains the action-selection ceiling, indicating that
 the retrained learned selector does not yet recover the available utility.
