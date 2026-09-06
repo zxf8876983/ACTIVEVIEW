@@ -1,0 +1,423 @@
+{
+  "experiment_id": "REDUCED14_WM_E_DIAGNOSTICS",
+  "status": "COMPLETED",
+  "split": "val",
+  "population": {
+    "contexts": 14809,
+    "legal_candidate_samples": 426474,
+    "candidate_count_mean": 28.798298332095346,
+    "candidate_count_min": 9,
+    "candidate_count_max": 30
+  },
+  "candidate_recognition_agreement": {
+    "overall": {
+      "sample_count": 426474,
+      "agreement": 0.47729756092985737,
+      "pearson": 0.4988114169980131,
+      "spearman": 0.6159245198318315
+    },
+    "per_action": {
+      "0": {
+        "action": 0,
+        "name": "walk",
+        "sample_count": 38503,
+        "agreement": 0.4780666441575981,
+        "pearson": 0.34928207012062906,
+        "spearman": 0.3975418648575584
+      },
+      "1": {
+        "action": 1,
+        "name": "sit",
+        "sample_count": 38189,
+        "agreement": 0.6485637225379036,
+        "pearson": 0.2229248368030429,
+        "spearman": 0.516236957581289
+      },
+      "2": {
+        "action": 2,
+        "name": "stand up",
+        "sample_count": 36206,
+        "agreement": 0.5766723747445175,
+        "pearson": 0.4882846933796585,
+        "spearman": 0.6142469265433655
+      },
+      "3": {
+        "action": 3,
+        "name": "bend",
+        "sample_count": 37501,
+        "agreement": 0.43350843977493936,
+        "pearson": 0.3506079369347419,
+        "spearman": 0.40971785644231
+      },
+      "4": {
+        "action": 4,
+        "name": "crawl",
+        "sample_count": 15259,
+        "agreement": 0.5075693033619503,
+        "pearson": 0.4976197247037054,
+        "spearman": 0.5814034096857712
+      },
+      "5": {
+        "action": 5,
+        "name": "stumble",
+        "sample_count": 33189,
+        "agreement": 0.4043809695983609,
+        "pearson": 0.20465008666271045,
+        "spearman": 0.20818421003967794
+      },
+      "6": {
+        "action": 6,
+        "name": "kneel",
+        "sample_count": 17781,
+        "agreement": 0.4928856644733142,
+        "pearson": 0.32343120633868755,
+        "spearman": 0.38216721841274454
+      },
+      "7": {
+        "action": 7,
+        "name": "clap",
+        "sample_count": 18420,
+        "agreement": 0.4268729641693811,
+        "pearson": 0.4691583169707731,
+        "spearman": 0.5158782051944907
+      },
+      "8": {
+        "action": 8,
+        "name": "throw",
+        "sample_count": 35654,
+        "agreement": 0.4703539574802266,
+        "pearson": 0.5567029302548474,
+        "spearman": 0.630024605046787
+      },
+      "9": {
+        "action": 9,
+        "name": "clean something",
+        "sample_count": 35006,
+        "agreement": 0.41964234702622405,
+        "pearson": 0.3095431580417329,
+        "spearman": 0.41784067404674713
+      },
+      "10": {
+        "action": 10,
+        "name": "kick",
+        "sample_count": 37009,
+        "agreement": 0.5482720419357454,
+        "pearson": 0.26525027012897107,
+        "spearman": 0.43723141553024386
+      },
+      "11": {
+        "action": 11,
+        "name": "knock",
+        "sample_count": 14315,
+        "agreement": 0.4433810688089417,
+        "pearson": 0.04375707558649801,
+        "spearman": 0.024441560899417597
+      },
+      "12": {
+        "action": 12,
+        "name": "punch",
+        "sample_count": 32220,
+        "agreement": 0.3718187461204221,
+        "pearson": 0.2679878960032812,
+        "spearman": 0.34507656872336456
+      },
+      "13": {
+        "action": 13,
+        "name": "touching face",
+        "sample_count": 37222,
+        "agreement": 0.4130084358712589,
+        "pearson": 0.19961139624480972,
+        "spearman": 0.2508159523282805
+      }
+    },
+    "definition": "argmax(ST-GCN(WM-E skeleton)) == argmax(ST-GCN(real archived candidate skeleton))"
+  },
+  "true_class_probability_correlation": {
+    "overall": {
+      "sample_count": 426474,
+      "pearson": 0.4988114169980131,
+      "spearman": 0.6159245198318315
+    },
+    "per_action": {
+      "0": {
+        "sample_count": 38503,
+        "pearson": 0.34928207012062906,
+        "spearman": 0.3975418648575584
+      },
+      "1": {
+        "sample_count": 38189,
+        "pearson": 0.2229248368030429,
+        "spearman": 0.516236957581289
+      },
+      "2": {
+        "sample_count": 36206,
+        "pearson": 0.4882846933796585,
+        "spearman": 0.6142469265433655
+      },
+      "3": {
+        "sample_count": 37501,
+        "pearson": 0.3506079369347419,
+        "spearman": 0.40971785644231
+      },
+      "4": {
+        "sample_count": 15259,
+        "pearson": 0.4976197247037054,
+        "spearman": 0.5814034096857712
+      },
+      "5": {
+        "sample_count": 33189,
+        "pearson": 0.20465008666271045,
+        "spearman": 0.20818421003967794
+      },
+      "6": {
+        "sample_count": 17781,
+        "pearson": 0.32343120633868755,
+        "spearman": 0.38216721841274454
+      },
+      "7": {
+        "sample_count": 18420,
+        "pearson": 0.4691583169707731,
+        "spearman": 0.5158782051944907
+      },
+      "8": {
+        "sample_count": 35654,
+        "pearson": 0.5567029302548474,
+        "spearman": 0.630024605046787
+      },
+      "9": {
+        "sample_count": 35006,
+        "pearson": 0.3095431580417329,
+        "spearman": 0.41784067404674713
+      },
+      "10": {
+        "sample_count": 37009,
+        "pearson": 0.26525027012897107,
+        "spearman": 0.43723141553024386
+      },
+      "11": {
+        "sample_count": 14315,
+        "pearson": 0.04375707558649801,
+        "spearman": 0.024441560899417597
+      },
+      "12": {
+        "sample_count": 32220,
+        "pearson": 0.2679878960032812,
+        "spearman": 0.34507656872336456
+      },
+      "13": {
+        "sample_count": 37222,
+        "pearson": 0.19961139624480972,
+        "spearman": 0.2508159523282805
+      }
+    },
+    "score": "log probability of each context ground-truth action"
+  },
+  "candidate_ranking_positive_hit": {
+    "contexts": 14809,
+    "top1_positive_hit_rate": 0.5167803362819907,
+    "top3_positive_hit_rate": 0.6817475859274765,
+    "oracle_positive_exists_contexts": 12912,
+    "top1_positive_hit_rate_when_oracle_exists": 0.5927044609665427,
+    "top3_positive_hit_rate_when_oracle_exists": 0.781908302354399,
+    "per_action": {
+      "0": {
+        "action": 0,
+        "contexts": 1333,
+        "top1_positive_hit_rate": 0.7771942985746436,
+        "top3_positive_hit_rate": 0.940735183795949,
+        "oracle_positive_exists_contexts": 1332,
+        "top1_positive_hit_rate_when_oracle_exists": 0.7777777777777778,
+        "top3_positive_hit_rate_when_oracle_exists": 0.9414414414414415
+      },
+      "1": {
+        "action": 1,
+        "contexts": 1327,
+        "top1_positive_hit_rate": 0.9110776186887717,
+        "top3_positive_hit_rate": 0.9879427279577996,
+        "oracle_positive_exists_contexts": 1327,
+        "top1_positive_hit_rate_when_oracle_exists": 0.9110776186887717,
+        "top3_positive_hit_rate_when_oracle_exists": 0.9879427279577996
+      },
+      "2": {
+        "action": 2,
+        "contexts": 1258,
+        "top1_positive_hit_rate": 0.7567567567567568,
+        "top3_positive_hit_rate": 0.8966613672496025,
+        "oracle_positive_exists_contexts": 1187,
+        "top1_positive_hit_rate_when_oracle_exists": 0.802021903959562,
+        "top3_positive_hit_rate_when_oracle_exists": 0.9502948609941028
+      },
+      "3": {
+        "action": 3,
+        "contexts": 1302,
+        "top1_positive_hit_rate": 0.32181259600614437,
+        "top3_positive_hit_rate": 0.4838709677419355,
+        "oracle_positive_exists_contexts": 1176,
+        "top1_positive_hit_rate_when_oracle_exists": 0.3562925170068027,
+        "top3_positive_hit_rate_when_oracle_exists": 0.5357142857142857
+      },
+      "4": {
+        "action": 4,
+        "contexts": 531,
+        "top1_positive_hit_rate": 0.6271186440677966,
+        "top3_positive_hit_rate": 0.8757062146892656,
+        "oracle_positive_exists_contexts": 523,
+        "top1_positive_hit_rate_when_oracle_exists": 0.6367112810707457,
+        "top3_positive_hit_rate_when_oracle_exists": 0.8891013384321224
+      },
+      "5": {
+        "action": 5,
+        "contexts": 1153,
+        "top1_positive_hit_rate": 0.19601040763226366,
+        "top3_positive_hit_rate": 0.3261058109280139,
+        "oracle_positive_exists_contexts": 701,
+        "top1_positive_hit_rate_when_oracle_exists": 0.3223965763195435,
+        "top3_positive_hit_rate_when_oracle_exists": 0.536376604850214
+      },
+      "6": {
+        "action": 6,
+        "contexts": 617,
+        "top1_positive_hit_rate": 0.2965964343598055,
+        "top3_positive_hit_rate": 0.44246353322528365,
+        "oracle_positive_exists_contexts": 418,
+        "top1_positive_hit_rate_when_oracle_exists": 0.43779904306220097,
+        "top3_positive_hit_rate_when_oracle_exists": 0.65311004784689
+      },
+      "7": {
+        "action": 7,
+        "contexts": 639,
+        "top1_positive_hit_rate": 0.6619718309859155,
+        "top3_positive_hit_rate": 0.8466353677621283,
+        "oracle_positive_exists_contexts": 598,
+        "top1_positive_hit_rate_when_oracle_exists": 0.7073578595317725,
+        "top3_positive_hit_rate_when_oracle_exists": 0.9046822742474916
+      },
+      "8": {
+        "action": 8,
+        "contexts": 1239,
+        "top1_positive_hit_rate": 0.5641646489104116,
+        "top3_positive_hit_rate": 0.7021791767554479,
+        "oracle_positive_exists_contexts": 1045,
+        "top1_positive_hit_rate_when_oracle_exists": 0.6688995215311004,
+        "top3_positive_hit_rate_when_oracle_exists": 0.8325358851674641
+      },
+      "9": {
+        "action": 9,
+        "contexts": 1213,
+        "top1_positive_hit_rate": 0.22835943940643033,
+        "top3_positive_hit_rate": 0.41302555647155814,
+        "oracle_positive_exists_contexts": 914,
+        "top1_positive_hit_rate_when_oracle_exists": 0.30306345733041573,
+        "top3_positive_hit_rate_when_oracle_exists": 0.5481400437636762
+      },
+      "10": {
+        "action": 10,
+        "contexts": 1287,
+        "top1_positive_hit_rate": 0.7420357420357421,
+        "top3_positive_hit_rate": 0.9448329448329449,
+        "oracle_positive_exists_contexts": 1285,
+        "top1_positive_hit_rate_when_oracle_exists": 0.7431906614785992,
+        "top3_positive_hit_rate_when_oracle_exists": 0.9463035019455253
+      },
+      "11": {
+        "action": 11,
+        "contexts": 498,
+        "top1_positive_hit_rate": 0.3493975903614458,
+        "top3_positive_hit_rate": 0.5100401606425703,
+        "oracle_positive_exists_contexts": 373,
+        "top1_positive_hit_rate_when_oracle_exists": 0.46648793565683644,
+        "top3_positive_hit_rate_when_oracle_exists": 0.6809651474530831
+      },
+      "12": {
+        "action": 12,
+        "contexts": 1119,
+        "top1_positive_hit_rate": 0.3574620196604111,
+        "top3_positive_hit_rate": 0.5746201966041108,
+        "oracle_positive_exists_contexts": 984,
+        "top1_positive_hit_rate_when_oracle_exists": 0.4065040650406504,
+        "top3_positive_hit_rate_when_oracle_exists": 0.6534552845528455
+      },
+      "13": {
+        "action": 13,
+        "contexts": 1293,
+        "top1_positive_hit_rate": 0.2838360402165507,
+        "top3_positive_hit_rate": 0.4903325599381284,
+        "oracle_positive_exists_contexts": 1049,
+        "top1_positive_hit_rate_when_oracle_exists": 0.34985700667302194,
+        "top3_positive_hit_rate_when_oracle_exists": 0.6043851286939943
+      }
+    }
+  },
+  "human_yaw_analysis": {
+    "relative_angle": "wrap(candidate_azimuth_deg - placement_yaw_deg)",
+    "bins": {
+      "0": {
+        "sample_count": 53898,
+        "context_count": 14732,
+        "agreement": 0.4835615421722513,
+        "pearson": 0.5102743588830861,
+        "spearman": 0.6300312959665185,
+        "top1_positive_hit": 0.3930219929405376,
+        "top1_positive_hit_conditional": 0.7919573245794009,
+        "oracle_positive_exists_contexts": 7311
+      },
+      "±45": {
+        "sample_count": 106343,
+        "context_count": 14732,
+        "agreement": 0.4837930094129374,
+        "pearson": 0.5048119516917583,
+        "spearman": 0.6210615459465887,
+        "top1_positive_hit": 0.44277762693456424,
+        "top1_positive_hit_conditional": 0.7054942677914774,
+        "oracle_positive_exists_contexts": 9246
+      },
+      "±90": {
+        "sample_count": 106510,
+        "context_count": 14709,
+        "agreement": 0.4697117641536006,
+        "pearson": 0.49331278424298547,
+        "spearman": 0.6123502225656244,
+        "top1_positive_hit": 0.4149160377999864,
+        "top1_positive_hit_conditional": 0.6805307760927743,
+        "oracle_positive_exists_contexts": 8968
+      },
+      "±135": {
+        "sample_count": 106323,
+        "context_count": 14723,
+        "agreement": 0.4739143929347366,
+        "pearson": 0.4965763485273563,
+        "spearman": 0.6122470830907731,
+        "top1_positive_hit": 0.3957073965903688,
+        "top1_positive_hit_conditional": 0.6778359511343804,
+        "oracle_positive_exists_contexts": 8595
+      },
+      "180": {
+        "sample_count": 53400,
+        "context_count": 14710,
+        "agreement": 0.4799063670411985,
+        "pearson": 0.48747119465440564,
+        "spearman": 0.6004952819482986,
+        "top1_positive_hit": 0.3023113528212101,
+        "top1_positive_hit_conditional": 0.7457655542512158,
+        "oracle_positive_exists_contexts": 5963
+      }
+    },
+    "top1_definition": "within each yaw bin, rank that context's candidates by predicted true-class logp"
+  },
+  "provenance": {
+    "wm_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/wm_e_last.pth",
+    "stgcn_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced14_kneel_babel_diversity_v1/stgcn_reduced14_kneel_best.pth",
+    "stage_d_features": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced14_kneel_eight_placement_v1/stage_d/features/val.jsonl",
+    "counterfactual_cache": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced14_kneel_eight_placement_v1/counterfactual_cache/val.npz",
+    "candidate_metadata": "furniture-placement-v2",
+    "taxonomy_mapping": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced14_kneel_babel_diversity_v1/raw-train/label_mapping.json",
+    "test_files_accessed": false
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "train_used": false,
+    "true_u2_used_for_candidate_identity": false,
+    "true_logp_used_only_for_diagnostic_targets": true,
+    "future_candidate_observation_input": false
+  }
+}
