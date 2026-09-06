@@ -1,0 +1,119 @@
+{
+  "experiment_id": "REDUCED14_SELECTOR_BOTTLENECK",
+  "status": "COMPLETED",
+  "split": "val",
+  "test_used": false,
+  "training_performed": true,
+  "population": {
+    "moving_contexts": 14809,
+    "train_contexts_for_privileged_diagnostic": 44248
+  },
+  "wm_e_top1_positive": {
+    "contexts": 14809,
+    "oracle_positive_exists_contexts": 12912,
+    "top1_positive_hit_rate": 0.5167803362819907,
+    "top3_positive_hit_rate": 0.6817475859274765,
+    "oracle_positive_top1_hit_rate": 0.5927044609665427,
+    "oracle_positive_top3_hit_rate": 0.781908302354399
+  },
+  "normal_jr": {
+    "positive_hit_rate": 0.47937065298129516,
+    "positive_count": 7099,
+    "action_counts": {
+      "stay": 4505,
+      "move": 10304
+    },
+    "terminal": {
+      "count": 14809,
+      "accuracy": 0.47937065298129516,
+      "macro_f1": 0.47255499837470116
+    },
+    "candidate_positive_hit_when_move": 0.3795613354037267
+  },
+  "privileged_jr": {
+    "positive_hit_rate": 0.5955837666284016,
+    "positive_count": 8820,
+    "action_counts": {
+      "stay": 1605,
+      "move": 13204
+    },
+    "terminal": {
+      "count": 14809,
+      "accuracy": 0.5955837666284016,
+      "macro_f1": 0.6049601213595234
+    },
+    "candidate_positive_hit_when_move": 0.5857315964859133
+  },
+  "safe_oracle": {
+    "positive_hit_rate": 0.8758862853670065,
+    "positive_count": 12971,
+    "action_counts": {
+      "stay": 1064,
+      "move": 13745
+    },
+    "terminal": {
+      "count": 14809,
+      "accuracy": 0.8758862853670065,
+      "macro_f1": 0.8737370996472578
+    }
+  },
+  "wm_e_top1_terminal": {
+    "count": 14809,
+    "accuracy": 0.5167803362819907,
+    "macro_f1": 0.5016262273462054
+  },
+  "selector_correction_audit": {
+    "contexts": 14809,
+    "wm_e_top1_correct_jr_wrong": 2223,
+    "wm_e_top1_correct_jr_wrong_rate": 0.15011141873185224,
+    "wm_e_top1_wrong_jr_correct": 1669,
+    "wm_e_top1_wrong_jr_correct_rate": 0.11270173543115673
+  },
+  "training": {
+    "contexts": 44248,
+    "positive_contexts": 37892,
+    "multi_positive_contexts": 34053,
+    "single_positive_contexts": 3839,
+    "no_positive_contexts": 6356,
+    "mean_positive_count": 8.816979837432703,
+    "epochs": 20,
+    "batch_size": 512,
+    "final_loss": 0.5063833844387668,
+    "loss_history": [
+      1.7224514744747643,
+      1.5095629472842162,
+      1.3699536994956005,
+      1.2437902346424672,
+      1.141156085606279,
+      1.0456587857213513,
+      0.9740321930797621,
+      0.9064995571114551,
+      0.856052518576041,
+      0.7978287414572705,
+      0.7573428249907219,
+      0.7189888056667372,
+      0.690420959872761,
+      0.6523812975006542,
+      0.6216276555225767,
+      0.5931570690938797,
+      0.5710297076181433,
+      0.5504746930352573,
+      0.5234689623460003,
+      0.5063833844387668
+    ]
+  },
+  "provenance": {
+    "normal_jr_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/joint_revision_multi_positive.pth",
+    "privileged_candidate_input": "true_logp substituted for imagined_logp; diagnostic only",
+    "candidate_ordering": "frozen candidate_order / ALL_LEGAL",
+    "terminal_recognition": "true archived candidate logp through frozen ST-GCN"
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "val_used_for_training": false,
+    "true_logp_used_as_privileged_diagnostic_input": true,
+    "true_logp_used_for_normal_jr_input": false,
+    "true_logp_used_for_candidate_identity": false,
+    "future_observation_rendered": false
+  }
+}
