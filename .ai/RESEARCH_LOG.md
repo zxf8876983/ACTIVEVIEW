@@ -726,3 +726,14 @@ belief also improved the privileged selector to 0.473901 terminal Accuracy
 versus 0.430414 for posterior history, while remaining below Privileged JR
 0.595584 and SafeOracle 0.875886. Test was not read, and no formal checkpoint
 was changed; results are committed in `287584c`.
+
+## History-aware Multi-positive JR v1 (2026-09-07)
+
+Added a JR-only history identity branch (540→256→128 plus a 14-way head) and
+trained it with `L_JR + 0.2*CE` on the 44,248 reduced14 Train contexts. Val
+checkpoint selection over 14,809 moving contexts selected epoch 16. The new
+method reached Accuracy/Macro-F1 0.486596/0.478697 versus
+0.479371/0.472555 for Normal Multi-positive JR; the identity head reached
+0.467689/0.477778. Privileged JR and SafeOracle remained 0.595584/0.604960
+and 0.875886/0.873737. The new checkpoint is separate from the frozen JR,
+WM-E and ST-GCN artifacts; Test was not read.
