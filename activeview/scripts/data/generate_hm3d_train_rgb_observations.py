@@ -129,6 +129,30 @@ def _load_skeleton_metadata(path: Path) -> dict[str, Any]:
         }
 
 
+def _placement_yaws(source_root: Path, scene_id: str) -> dict[str, float]:
+    """Load fixed furniture-placement yaw values when the source has them.
+
+    Legacy semantic-region archives do not carry placement yaw; returning an
+    empty mapping keeps their historical zero-yaw rendering protocol intact.
+    """
+    manifest_path = source_root / scene_id / "candidate_metadata" / "manifest.json"
+    if not manifest_path.is_file():
+        return {}
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if payload.get("version") != "furniture-placement-v2":
+        return {}
+    yaws: dict[str, float] = {}
+    for placement in payload.get("placements_data", []):
+        placement_id = str(placement.get("placement_id", ""))
+        if not placement_id or "yaw_deg" not in placement:
+            continue
+        yaw = float(placement["yaw_deg"])
+        if not np.isfinite(yaw):
+            raise ValueError(f"Non-finite placement yaw for {scene_id}/{placement_id}")
+        yaws[placement_id] = yaw
+    return yaws
+
+
 def _load_source_records(
     source_root: Path,
     motion_manifest: Path,
@@ -233,14 +257,15 @@ def _render_record(sim: Any, human: Any, record: SourceRecord, source_meta: Mapp
     converted = converter.convert(motion)
     joints = np.asarray(converted["pose_motion"]["joints_array"], dtype=np.float32)
     roots = np.asarray(converted["pose_motion"]["transform_array"], dtype=np.float32)
-    offsets, _ = precompute_grounding_offsets(human, joints, roots, scene_yaw_deg=0.0)
+    yaw_deg = float(source_meta.get("yaw_deg", 0.0))
+    offsets, _ = precompute_grounding_offsets(human, joints, roots, scene_yaw_deg=yaw_deg)
     base = np.asarray(source_meta["placement_position"], dtype=np.float32)
     apply_humanoid_pose(
         human,
         joints[FRAME_INDEX],
         roots[FRAME_INDEX],
         base_position=base,
-        scene_yaw_deg=0.0,
+        scene_yaw_deg=yaw_deg,
         floor_y=float(base[1]),
         grounding_offset=float(offsets[FRAME_INDEX]),
     )
@@ -299,6 +324,14 @@ def _validate_rgb_file(
             }
             if not required.issubset(archive.files):
                 return False
+            if "yaw_deg" in source_meta:
+                if "yaw_deg" not in archive.files:
+                    return False
+                stored_yaw = float(np.asarray(archive["yaw_deg"]).item())
+                if not np.isfinite(stored_yaw) or not np.isclose(
+                    stored_yaw, float(source_meta["yaw_deg"]), rtol=0.0, atol=1e-6
+                ):
+                    return False
             rgb = np.asarray(archive["rgb"])
             if rgb.dtype != np.uint8 or rgb.shape != (32, 256, 256, 3):
                 return False
@@ -361,6 +394,9 @@ def _worker_entry(
     try:
         for index, record in enumerate(tasks, 1):
             source_meta = _load_skeleton_metadata(record.source_path)
+            yaws = _placement_yaws(source_root, record.scene_id)
+            if yaws:
+                source_meta["yaw_deg"] = yaws.get(str(source_meta["placement_id"]), 0.0)
             source_hash = _sha256(record.source_path)
             output_path = _output_path(output_root, source_root, record.source_path)
             output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -377,6 +413,7 @@ def _worker_entry(
                     "region": np.asarray(record.region),
                     "record_id": np.asarray(record.record_id),
                     "placement_id": np.asarray(source_meta["placement_id"]),
+                    "yaw_deg": np.asarray(float(source_meta.get("yaw_deg", 0.0)), dtype=np.float32),
                     "frame_index": np.asarray(FRAME_INDEX, dtype=np.int32),
                     "image_size": np.asarray(IMAGE_SIZE, dtype=np.int32),
                     "source_skeleton_relative_path": np.asarray(str(record.source_path.relative_to(source_root))),
@@ -444,6 +481,9 @@ def audit_dataset(source_root: Path, output_root: Path, records: Sequence[Source
         if path is None:
             continue
         source_meta = _load_skeleton_metadata(record.source_path)
+        yaws = _placement_yaws(source_root, record.scene_id)
+        if yaws:
+            source_meta["yaw_deg"] = yaws.get(str(source_meta["placement_id"]), 0.0)
         source_hash = _sha256(record.source_path)
         if not _validate_rgb_file(path, Path(relative), source_meta, source_hash):
             invalid.append(relative)
