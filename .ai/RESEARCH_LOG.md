@@ -780,3 +780,20 @@ H1. At least one candidate was correctly recognized in 13,604/14,809 contexts
 (0.918631). The diagnostic used only Val rows, archived Val skeletons, the
 frozen reduced14 ST-GCN and the pretrained history-identity checkpoint; Test
 was not read and no formal checkpoint was modified.
+
+## H1 Disambiguation Ranker (2026-09-07)
+
+Trained a deployable 279-D H1 ranker on all 1,318,856 legal Train candidate
+hypotheses from 44,248 contexts for 20 epochs (seed 42, 16 within-context
+pair samples, pairwise logistic loss). The target was the frozen
+history-identity discrimination margin computed from real archived candidate
+observations; labels were not part of the deployed input. Val checkpoint
+selection used history-identity Macro-F1 and selected epoch 2. On 14,809 Val
+moving contexts / 441,283 candidates, the deployable ranker reached identity
+Accuracy/Macro-F1 0.418732/0.428180, below Frozen H1 0.482815/0.496501 and
+privileged Min-entropy/Max-margin H1 (0.512594/0.504617 and
+0.515970/0.510083). Utility Pearson/Spearman were -0.039408/-0.028549 and
+Top-1 oracle-positive hit was 0.063948. The negative result indicates that
+s0 feature/posterior plus geometry alone did not predict the frozen
+disambiguation value under this fixed ranker. Train/Val only; Test was not
+read and formal WM-E, JR and ST-GCN checkpoints were unchanged.
