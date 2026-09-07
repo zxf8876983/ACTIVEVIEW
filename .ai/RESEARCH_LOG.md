@@ -797,3 +797,17 @@ Top-1 oracle-positive hit was 0.063948. The negative result indicates that
 s0 feature/posterior plus geometry alone did not predict the frozen
 disambiguation value under this fixed ranker. Train/Val only; Test was not
 read and formal WM-E, JR and ST-GCN checkpoints were unchanged.
+
+## WM-imagined H1 Disambiguation (2026-09-07)
+
+Ran a Val-only frozen diagnostic over 14,809 moving contexts and 441,283 legal
+H1 candidates. Old WM-E imagined min-entropy/max-margin selectors reached
+Accuracy/F1 0.345668/0.365998 and 0.327166/0.346189; ranking-aware WM-E reached
+0.395840/0.404250 and 0.394220/0.402601, all below Frozen H1
+0.482815/0.496501 and privileged real selectors 0.512594/0.504617 and
+0.515970/0.510083. Imagined-vs-real entropy Pearson/Spearman were
+0.559986/0.477783 (old) and 0.531035/0.528160 (ranking-aware), with candidate
+min-entropy overlaps 0.048281 and 0.052941. The result points to WM-E
+action-discriminative representation fidelity as the limiting factor rather
+than another scalar H1 ranker. CUDA was used; Test was not read, no model was
+trained and formal checkpoints were unchanged.
