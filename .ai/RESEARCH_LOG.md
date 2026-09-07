@@ -766,3 +766,17 @@ the new Pretrained-Frozen history JR reached Accuracy/Macro-F1
 0.492538/0.488929 versus 0.491120/0.481416 with the old WM-E. New WM-E/JR
 checkpoints and caches are separate runtime artifacts; old WM-E/JR/ST-GCN
 checkpoints were unchanged. Test was not read.
+
+## H1 Disambiguation Potential (2026-09-07)
+
+Added and ran a Val-only diagnostic that enumerated all 441,283 legal archived
+H1 candidates across 14,809 reduced14 moving contexts. The frozen/current H1
+reached history-identity Accuracy/Macro-F1 0.482815/0.496501; seeded random H1
+reached 0.341819/0.354743. Selecting minimum entropy and maximum posterior
+margin improved identity Accuracy/Macro-F1 to 0.512594/0.504617 and
+0.515970/0.510083, respectively. The label-conditioned IdentityOracle upper
+bound reached 0.899588/0.900413, leaving a 0.416774 Accuracy gap from frozen
+H1. At least one candidate was correctly recognized in 13,604/14,809 contexts
+(0.918631). The diagnostic used only Val rows, archived Val skeletons, the
+frozen reduced14 ST-GCN and the pretrained history-identity checkpoint; Test
+was not read and no formal checkpoint was modified.
