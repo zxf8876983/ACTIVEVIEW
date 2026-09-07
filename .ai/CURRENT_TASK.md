@@ -1,25 +1,34 @@
 # Current Task
 
-## WM-imagined H1 Disambiguation — completed 2026-09-07
+## Action-Discriminative WM-E — completed 2026-09-07
 
-Implemented and ran a Val-only diagnostic using the frozen old WM-E and
-ranking-aware WM-E. For every one of 14,809 reduced14 moving contexts, all
-441,283 legal H1 candidates were imagined from archived s0, passed through
-frozen ST-GCN and the frozen pretrained History Identity encoder, and then
-evaluated with the selected candidate's real archived observation.
+Implemented and ran the reduced14 Train/Val Action-Discriminative WM-E. The
+existing candidate-conditioned WM-E skeleton head and pose/velocity objective
+were retained; optional 256-D ST-GCN feature and 14-way recognition heads were
+added. Training used 44,248 Train contexts for 12 epochs (seed 42, CUDA RTX
+4090). The fixed objective was
+`L_pose + 0.1*L_rec + 0.1*L_feat + 0.2*L_belief`, with frozen ST-GCN and
+pretrained History Identity teachers. The selected checkpoint is epoch 10 by
+Val belief-entropy Pearson and is stored separately at
+`/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/wm_e_action_discriminative_best.pth`.
 
-Old WM-E imagined min-entropy/max-margin H1 reached Accuracy/F1
-0.345668/0.365998 and 0.327166/0.346189. Ranking-aware WM-E reached
-0.395840/0.404250 and 0.394220/0.402601. Frozen H1 was
-0.482815/0.496501; privileged real min-entropy/max-margin were
-0.512594/0.504617 and 0.515970/0.510083. IdentityOracle reached
-0.899588/0.900413.
+On 14,809 Val moving contexts and 426,474 legal candidates, WM-E diagnostics
+were recognition agreement 0.573531, candidate true-class Pearson/Spearman
+0.538782/0.667349, feature cosine 0.903356, belief KL 0.326315, belief
+entropy Pearson/Spearman 0.775088/0.771148, and belief-margin
+Pearson/Spearman 0.615788/0.503336. Candidate Top-1/Top-3 positive hits were
+0.578567/0.720035 (0.663569/0.825821 conditioned on 12,912
+oracle-positive contexts). Final Train loss was 0.170400.
 
-Imagined-versus-real belief alignment was weak at candidate selection level:
-old entropy Pearson/Spearman 0.559986/0.477783 and min-entropy overlap
-0.048281; ranking-aware 0.531035/0.528160 and overlap 0.052941. The
-diagnostic used CUDA, only Val archives/caches, trained no model, modified no
-formal checkpoint and did not read Test. Results are in
-`experiments/reduced14_eight_placement_v1/wm_imagined_h1_disambiguation/`.
+Using the new WM-imagined H1 beliefs, min-entropy/max-margin selectors reached
+identity Accuracy/Macro-F1 0.392734/0.395487 and 0.360119/0.368381. Frozen H1
+was 0.482815/0.496501; real-observation privileged min-entropy/max-margin
+were 0.512594/0.504617 and 0.515970/0.510083; IdentityOracle was
+0.899588/0.900413. The new imagined selectors therefore improved over old
+WM-E but did not exceed Frozen H1. Results are in
+`experiments/reduced14_eight_placement_v1/action_discriminative_wm_e/`.
+
+Only Train/Val artifacts were read for the experiment; Test was not read.
+The old WM-E, JR, ST-GCN and History Identity checkpoints were not overwritten.
 
 Status: CLEAN. No follow-up experiment is authorized automatically.

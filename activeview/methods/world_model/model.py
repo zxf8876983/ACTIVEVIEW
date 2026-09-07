@@ -52,6 +52,7 @@ class CandidateObservationWorldModel(nn.Module):
         residual: bool = False,
         num_classes: int = 16,
         use_recognition_head: bool = False,
+        use_action_discriminative_heads: bool = False,
     ) -> None:
         super().__init__()
         self.use_belief = bool(use_belief)
@@ -59,6 +60,7 @@ class CandidateObservationWorldModel(nn.Module):
         self.residual = bool(residual)
         self.num_classes = int(num_classes)
         self.use_recognition_head = bool(use_recognition_head)
+        self.use_action_discriminative_heads = bool(use_action_discriminative_heads)
         self.frame_encoder = nn.Linear(17 * 3, 128)
         self.temporal_position = nn.Parameter(torch.zeros(30, 128))
         self.temporal_encoder = _temporal_token_encoder()
@@ -111,6 +113,12 @@ class CandidateObservationWorldModel(nn.Module):
         self.recognition_head = (
             nn.Linear(128, self.num_classes) if self.use_recognition_head else None
         )
+        self.action_feature_head = (
+            nn.Linear(128, 256) if self.use_action_discriminative_heads else None
+        )
+        self.action_logit_head = (
+            nn.Linear(128, self.num_classes) if self.use_action_discriminative_heads else None
+        )
         nn.init.normal_(self.temporal_position, std=0.02)
         nn.init.normal_(self.decoder_queries, std=0.02)
 
@@ -138,7 +146,8 @@ class CandidateObservationWorldModel(nn.Module):
         history_rgb: torch.Tensor | None = None,
         history_mask: torch.Tensor | None = None,
         return_recognition: bool = False,
-    ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
+        return_action_discriminative: bool = False,
+    ) -> torch.Tensor | tuple[torch.Tensor, ...]:
         """Predict one candidate skeleton; output shape is ``[B,3,30,17]``."""
         if history_skeleton.ndim != 5 or tuple(history_skeleton.shape[2:]) != SKELETON_SHAPE:
             raise ValueError("history_skeleton must have shape [B,H,3,30,17]")
@@ -162,6 +171,8 @@ class CandidateObservationWorldModel(nn.Module):
         history_state = memory.mean(dim=1)
         if return_recognition and self.recognition_head is None:
             raise ValueError("recognition output requested without recognition head")
+        if return_action_discriminative and not self.use_action_discriminative_heads:
+            raise ValueError("action-discriminative output requested without action heads")
         if candidate_descriptor.ndim == 2:
             if candidate_descriptor.shape != (batch, 9):
                 raise ValueError("candidate_descriptor must have shape [B,9]")
@@ -170,6 +181,10 @@ class CandidateObservationWorldModel(nn.Module):
             decoded = self.decoder(queries, condition.unsqueeze(1))
             output = self.output_head(decoded).reshape(batch, 3, 30, 17)
             prediction = output + history_skeleton[:, -1] if self.residual else output
+            if return_action_discriminative:
+                assert self.action_feature_head is not None and self.action_logit_head is not None
+                pooled = decoded.mean(dim=1)
+                return prediction, self.action_feature_head(pooled), self.action_logit_head(pooled)
             if return_recognition:
                 assert self.recognition_head is not None
                 return prediction, self.recognition_head(decoded.mean(dim=1))
@@ -183,6 +198,10 @@ class CandidateObservationWorldModel(nn.Module):
         decoded = self.decoder(queries, condition.unsqueeze(1))
         output = self.output_head(decoded).reshape(batch, candidate_count, 3, 30, 17)
         prediction = output + history_skeleton[:, -1].unsqueeze(1) if self.residual else output
+        if return_action_discriminative:
+            assert self.action_feature_head is not None and self.action_logit_head is not None
+            pooled = decoded.mean(dim=1).reshape(batch, candidate_count, 128)
+            return prediction, self.action_feature_head(pooled), self.action_logit_head(pooled)
         if return_recognition:
             assert self.recognition_head is not None
             return prediction, self.recognition_head(decoded.mean(dim=1).reshape(batch, candidate_count, 128))

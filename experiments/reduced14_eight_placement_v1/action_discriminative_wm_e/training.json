@@ -1,0 +1,77 @@
+{
+  "epochs": 12,
+  "batch_size": 64,
+  "workers": 4,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "seed": 42,
+  "train_contexts": 44248,
+  "final_train_loss": 0.1704,
+  "best_epoch": 10,
+  "train_history": [
+    {
+      "epoch": 1,
+      "loss": 0.236816,
+      "val_belief_entropy_pearson": 0.7229763349490348
+    },
+    {
+      "epoch": 2,
+      "loss": 0.211874,
+      "val_belief_entropy_pearson": 0.7369033261903634
+    },
+    {
+      "epoch": 3,
+      "loss": 0.202261,
+      "val_belief_entropy_pearson": 0.7440928332435115
+    },
+    {
+      "epoch": 4,
+      "loss": 0.195134,
+      "val_belief_entropy_pearson": 0.7661642406505703
+    },
+    {
+      "epoch": 5,
+      "loss": 0.190011,
+      "val_belief_entropy_pearson": 0.7599138580653112
+    },
+    {
+      "epoch": 6,
+      "loss": 0.185703,
+      "val_belief_entropy_pearson": 0.7652670365141554
+    },
+    {
+      "epoch": 7,
+      "loss": 0.182037,
+      "val_belief_entropy_pearson": 0.7674147793781976
+    },
+    {
+      "epoch": 8,
+      "loss": 0.179135,
+      "val_belief_entropy_pearson": 0.7657661879416983
+    },
+    {
+      "epoch": 9,
+      "loss": 0.176399,
+      "val_belief_entropy_pearson": 0.7694873882602314
+    },
+    {
+      "epoch": 10,
+      "loss": 0.17424,
+      "val_belief_entropy_pearson": 0.775087686021214
+    },
+    {
+      "epoch": 11,
+      "loss": 0.172169,
+      "val_belief_entropy_pearson": 0.7739956615505978
+    },
+    {
+      "epoch": 12,
+      "loss": 0.1704,
+      "val_belief_entropy_pearson": 0.7708153192505897
+    }
+  ],
+  "elapsed_seconds": null,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/wm_e_action_discriminative_best.pth",
+  "checkpoint_sha256": "14329fb523e06d9f7cc208a996a27d33dd9f686266a381e1256f45e80f613e26",
+  "recovered_after_postprocessing_bug": true
+}

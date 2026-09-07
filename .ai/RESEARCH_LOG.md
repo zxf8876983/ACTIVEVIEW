@@ -811,3 +811,27 @@ min-entropy overlaps 0.048281 and 0.052941. The result points to WM-E
 action-discriminative representation fidelity as the limiting factor rather
 than another scalar H1 ranker. CUDA was used; Test was not read, no model was
 trained and formal checkpoints were unchanged.
+
+## Action-Discriminative WM-E (2026-09-07)
+
+Added optional 256-D ST-GCN feature and 14-way recognition heads to the
+candidate-conditioned WM-E. The existing pose/velocity loss was retained and
+the fixed objective was `L_pose + 0.1*L_rec + 0.1*L_feat + 0.2*L_belief`, with
+frozen ST-GCN and pretrained History Identity teachers. Training used 44,248
+Train contexts for 12 epochs (seed 42, CUDA RTX 4090); Val checkpoint
+selection chose epoch 10 by belief-entropy Pearson. The new checkpoint is
+separate from the old WM-E at
+`/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/wm_e_action_discriminative_best.pth`.
+
+Across 14,809 Val moving contexts and 426,474 legal candidate samples, the
+selected model reached recognition agreement 0.573531, candidate true-class
+Pearson/Spearman 0.538782/0.667349, feature cosine 0.903356, belief KL
+0.326315, belief entropy Pearson/Spearman 0.775088/0.771148, and belief
+margin Pearson/Spearman 0.615788/0.503336. Candidate Top-1/Top-3 positive
+hits were 0.578567/0.720035. The new WM-imagined H1 min-entropy/max-margin
+selectors reached identity Accuracy/Macro-F1 0.392734/0.395487 and
+0.360119/0.368381, respectively, versus Frozen H1 0.482815/0.496501 and
+real-observation privileged max-margin 0.515970/0.510083. Final Train loss
+was 0.170400. The new WM improves over old imagined WM-E but remains below
+Frozen H1, so no formal method checkpoint was replaced. Only Train/Val data
+were read; Test was not read.
