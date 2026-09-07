@@ -405,6 +405,7 @@ def _imagined_h1_beliefs(
     logp0: np.ndarray,
     s0_rgb: np.ndarray,
     device: torch.device,
+    ground_truth_labels: np.ndarray | None = None,
 ) -> tuple[list[np.ndarray], dict[str, Any]]:
     model.eval(); beliefs: list[list[np.ndarray]] = [[] for _ in rows]; started = time.perf_counter()
     s0_features = np.stack([np.asarray(row["s0_feature"], dtype=np.float32)[:256] for row in rows])
@@ -415,10 +416,28 @@ def _imagined_h1_beliefs(
             history_descriptor = torch.from_numpy(s0_descriptors[sl, None]).to(device)
             history_belief = torch.from_numpy(np.concatenate([logp0[sl], logp0[sl]], axis=1)).to(device)
             history_rgb = torch.from_numpy(s0_rgb[sl].astype(np.float32, copy=False)[:, None]).to(device)
+            gt_action = None
+            if ground_truth_labels is not None:
+                labels = np.asarray(ground_truth_labels[sl], dtype=np.int64)
+                if labels.shape != (batch_size,) or np.any((labels < 0) | (labels >= NUM_CLASSES)):
+                    raise ValueError("ground_truth_labels must contain valid reduced14 class IDs")
+                gt_action = F.one_hot(torch.from_numpy(labels), NUM_CLASSES).to(device=device, dtype=torch.float32)
             for cstart in range(0, candidate_descriptors.shape[1], CANDIDATE_CHUNK):
                 cstop = min(cstart + CANDIDATE_CHUNK, candidate_descriptors.shape[1]); c = cstop - cstart
                 descriptor = torch.from_numpy(candidate_descriptors[sl, cstart:cstop]).to(device)
-                _, predicted_feature, predicted_logits = model(history_skeleton, history_descriptor, descriptor, history_belief=history_belief, history_rgb=history_rgb, return_action_discriminative=True)
+                model_kwargs: dict[str, Any] = {
+                    "history_belief": history_belief,
+                    "history_rgb": history_rgb,
+                }
+                if gt_action is not None:
+                    model_kwargs["ground_truth_action"] = gt_action
+                _, predicted_feature, predicted_logits = model(
+                    history_skeleton,
+                    history_descriptor,
+                    descriptor,
+                    **model_kwargs,
+                    return_action_discriminative=True,
+                )
                 pred_logp = torch.log_softmax(predicted_logits, dim=-1).reshape(-1, NUM_CLASSES)
                 feature = predicted_feature.reshape(-1, 256)
                 s0_feature = torch.from_numpy(np.repeat(s0_features[sl], c, axis=0)).to(device)
@@ -442,6 +461,7 @@ def _run_h1(
     device: torch.device,
     names: Sequence[str],
     candidate_context_lookup: Mapping[tuple[str, ...], np.ndarray] | None = None,
+    ground_truth_labels: np.ndarray | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     orders = _h1_orders(data_root, rows)
     real_beliefs, real_stats = _candidate_beliefs(data_root, rows, cache, orders, device)
@@ -450,7 +470,19 @@ def _run_h1(
     )
     s0_rgb = _load_s0_rgb(rows, rgb_lookup)
     identity, _ = _load_history_identity(data_root, device)
-    imagined, inference = _imagined_h1_beliefs(model, identity, rows, s0_skeletons, s0_desc, candidate_desc, counts, np.asarray(cache["current_logp_s0"], dtype=np.float32), s0_rgb, device)
+    imagined, inference = _imagined_h1_beliefs(
+        model,
+        identity,
+        rows,
+        s0_skeletons,
+        s0_desc,
+        candidate_desc,
+        counts,
+        np.asarray(cache["current_logp_s0"], dtype=np.float32),
+        s0_rgb,
+        device,
+        ground_truth_labels=ground_truth_labels,
+    )
     frozen: list[int] = []; real_min: list[int] = []; real_max: list[int] = []; action_min: list[int] = []; action_max: list[int] = []; oracle: list[int] = []
     for row, real, pred in zip(rows, real_beliefs, imagined):
         candidates = list(orders[str(row["episode_id"])]); frozen.append(candidates.index(int(row["s1_viewpoint_id"])))

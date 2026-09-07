@@ -54,6 +54,7 @@ class CandidateObservationWorldModel(nn.Module):
         use_recognition_head: bool = False,
         use_action_discriminative_heads: bool = False,
         candidate_context_dim: int = 0,
+        gt_action_conditioning_dim: int = 0,
     ) -> None:
         super().__init__()
         self.use_belief = bool(use_belief)
@@ -65,6 +66,9 @@ class CandidateObservationWorldModel(nn.Module):
         self.candidate_context_dim = int(candidate_context_dim)
         if self.candidate_context_dim < 0:
             raise ValueError("candidate_context_dim must be non-negative")
+        self.gt_action_conditioning_dim = int(gt_action_conditioning_dim)
+        if self.gt_action_conditioning_dim < 0:
+            raise ValueError("gt_action_conditioning_dim must be non-negative")
         self.frame_encoder = nn.Linear(17 * 3, 128)
         self.temporal_position = nn.Parameter(torch.zeros(30, 128))
         self.temporal_encoder = _temporal_token_encoder()
@@ -103,6 +107,16 @@ class CandidateObservationWorldModel(nn.Module):
         )
         self.candidate_encoder = nn.Sequential(
             nn.Linear(9 + self.candidate_context_dim, 64), nn.GELU(), nn.Linear(64, 128)
+        )
+        # Optional privileged conditioning used only by diagnostic models.
+        # The default dimension is zero, preserving every existing WM-E
+        # parameter shape and checkpoint interface.
+        self.gt_action_encoder = (
+            nn.Sequential(nn.Linear(self.gt_action_conditioning_dim, 64), nn.GELU(), nn.Linear(64, 64))
+            if self.gt_action_conditioning_dim else None
+        )
+        self.condition_fusion = (
+            nn.Linear(128 + 64, 128) if self.gt_action_conditioning_dim else None
         )
         self.decoder_queries = nn.Parameter(torch.zeros(30, 128))
         decoder_layer = nn.TransformerDecoderLayer(
@@ -143,6 +157,47 @@ class CandidateObservationWorldModel(nn.Module):
             raise ValueError(f"expected RGB spatial tokens [B,16,768], got {tuple(rgb.shape)}")
         return self.rgb_encoder(self.rgb_projector(rgb)).mean(dim=1)
 
+    def _condition_with_gt_action(
+        self,
+        base_condition: torch.Tensor,
+        ground_truth_action: torch.Tensor | None,
+    ) -> torch.Tensor:
+        """Fuse a one-hot action hypothesis into candidate conditioning.
+
+        ``ground_truth_action`` is intentionally optional because formal
+        WM-E models do not use it.  Privileged diagnostic models opt in via
+        ``gt_action_conditioning_dim`` and then require a matching one-hot
+        tensor.  The fusion is a small concatenation + linear projection and
+        works for both single-candidate and batched-candidate calls.
+        """
+        if self.gt_action_conditioning_dim == 0:
+            return base_condition
+        if self.gt_action_encoder is None or self.condition_fusion is None:
+            raise RuntimeError("GT action conditioning modules are not initialized")
+        if ground_truth_action is None:
+            raise ValueError("ground_truth_action is required for GT-conditioned WM-E")
+        if ground_truth_action.shape[-1] != self.gt_action_conditioning_dim:
+            raise ValueError(
+                "ground_truth_action must have last dimension "
+                f"{self.gt_action_conditioning_dim}, got {tuple(ground_truth_action.shape)}"
+            )
+        if base_condition.ndim == 2:
+            if ground_truth_action.ndim != 2 or ground_truth_action.shape[0] != base_condition.shape[0]:
+                raise ValueError("ground_truth_action must have shape [B,A] for one candidate per batch item")
+            action_embedding = self.gt_action_encoder(ground_truth_action)
+        elif base_condition.ndim == 3:
+            batch, candidate_count = base_condition.shape[:2]
+            if ground_truth_action.ndim == 2:
+                if ground_truth_action.shape[0] != batch:
+                    raise ValueError("GT action batch dimension does not match candidate batch")
+                ground_truth_action = ground_truth_action.unsqueeze(1).expand(-1, candidate_count, -1)
+            elif ground_truth_action.ndim != 3 or tuple(ground_truth_action.shape[:2]) != (batch, candidate_count):
+                raise ValueError("ground_truth_action must have shape [B,A] or [B,K,A] for candidate batches")
+            action_embedding = self.gt_action_encoder(ground_truth_action)
+        else:
+            raise ValueError(f"unsupported candidate condition rank: {base_condition.ndim}")
+        return self.condition_fusion(torch.cat([base_condition, action_embedding], dim=-1))
+
     def forward(
         self,
         history_skeleton: torch.Tensor,
@@ -153,6 +208,7 @@ class CandidateObservationWorldModel(nn.Module):
         history_mask: torch.Tensor | None = None,
         return_recognition: bool = False,
         return_action_discriminative: bool = False,
+        ground_truth_action: torch.Tensor | None = None,
     ) -> torch.Tensor | tuple[torch.Tensor, ...]:
         """Predict one candidate skeleton; output shape is ``[B,3,30,17]``."""
         if history_skeleton.ndim != 5 or tuple(history_skeleton.shape[2:]) != SKELETON_SHAPE:
@@ -183,7 +239,10 @@ class CandidateObservationWorldModel(nn.Module):
             expected = (batch, 9 + self.candidate_context_dim)
             if tuple(candidate_descriptor.shape) != expected:
                 raise ValueError(f"candidate_descriptor must have shape {expected}")
-            condition = history_state + self.candidate_encoder(candidate_descriptor)
+            condition = self._condition_with_gt_action(
+                history_state + self.candidate_encoder(candidate_descriptor),
+                ground_truth_action,
+            )
             queries = self.decoder_queries.unsqueeze(0).expand(batch, -1, -1)
             decoded = self.decoder(queries, condition.unsqueeze(1))
             output = self.output_head(decoded).reshape(batch, 3, 30, 17)
@@ -200,7 +259,10 @@ class CandidateObservationWorldModel(nn.Module):
         if candidate_descriptor.ndim != 3 or candidate_descriptor.shape[0] != batch or candidate_descriptor.shape[-1] != expected_dim:
             raise ValueError(f"candidate_descriptor must have shape [B,K,{expected_dim}]")
         candidate_count = candidate_descriptor.size(1)
-        condition = history_state.unsqueeze(1) + self.candidate_encoder(candidate_descriptor)
+        condition = self._condition_with_gt_action(
+            history_state.unsqueeze(1) + self.candidate_encoder(candidate_descriptor),
+            ground_truth_action,
+        )
         condition = condition.reshape(batch * candidate_count, 128)
         queries = self.decoder_queries.unsqueeze(0).expand(batch * candidate_count, -1, -1)
         decoded = self.decoder(queries, condition.unsqueeze(1))

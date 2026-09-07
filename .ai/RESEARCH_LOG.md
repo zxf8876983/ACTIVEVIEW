@@ -859,3 +859,29 @@ Accuracy/F1 0.396651/0.400672 and 0.352623/0.367313, below Frozen H1
 but did not recover deployable H1 identity; this remains evidence for a
 candidate-specific scene observability gap rather than a successful formal
 method change. Test was not read.
+
+## GT-conditioned World Model (2026-09-08)
+
+Added and ran a privileged GT-conditioned Action-Discriminative WM-E
+diagnostic. A 14-D one-hot ground-truth action is fused into the existing
+candidate-conditioned latent via a small action embedding and projection;
+pose, feature, recognition and History Identity belief losses remain fixed.
+The model was initialized from the prior Action-Discriminative WM-E and
+trained for 12 epochs on 44,248 Train contexts (seed 42, CUDA RTX 4090), with
+Val selection by the existing belief-entropy Pearson / margin Spearman rule.
+The separate checkpoint is
+`/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced14_eight_placement_v1/wm_e_gt_conditioned_best.pth`.
+
+On 14,809 Val moving contexts and 426,474 legal candidates, GT conditioning
+yielded recognition agreement 0.592210, true-class Pearson/Spearman
+0.542778/0.679059, feature cosine 0.905771, belief KL 0.317047, and
+Top-1/Top-3 positive hits 0.587481/0.729219. Relative to the prior
+Action-Discriminative WM-E (0.573531 agreement, 0.538782/0.667349
+Pearson/Spearman, 0.903356 cosine, 0.326315 KL), candidate-level fidelity
+improved modestly. Imagined H1 min-entropy/max-margin reached identity
+Accuracy/Macro-F1 0.411304/0.419345 and 0.382403/0.394278, versus
+0.392734/0.395487 and 0.360119/0.368381 for the prior model, but remained
+below Frozen H1 0.482815/0.496501. This supports a measurable but insufficient
+benefit from hypothesis-conditioned prediction; the imagined selector/target
+interface remains a limitation. Test was not read and formal checkpoints were
+unchanged.
