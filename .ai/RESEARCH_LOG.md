@@ -885,3 +885,19 @@ below Frozen H1 0.482815/0.496501. This supports a measurable but insufficient
 benefit from hypothesis-conditioned prediction; the imagined selector/target
 interface remains a limitation. Test was not read and formal checkpoints were
 unchanged.
+
+## Reduced14 per-class recognizability and viewpoint-recoverability audit (2026-09-08)
+
+Added and ran a Val-only per-class audit for the reduced14 eight-placement
+protocol. Frozen ST-GCN development Val inference used the independent 270
+raw-train Val samples on CUDA RTX 4090; ActiveView statistics used 19,440 Val
+contexts and 144,720 legal candidate pairs from the existing utility/cache.
+Clean recognizability is the development-Val per-class F1, and viewpoint
+recoverability is H0 SafeOracle accuracy minus Random legal-view accuracy.
+Median-based diagnostic triage placed crawl/throw/kick/punch in the recommended
+retain group, walk/sit/stand up/stumble/clap/knock in manual review, and
+bend/kneel/clean something/touching face in potential-removal review. The latter
+is not an automatic taxonomy decision; no final-policy or Test score was used.
+The report is in
+`experiments/reduced14_eight_placement_v1/per_class_recognizability_audit/`.
+No model was trained, no data was regenerated, and Test was not read.
