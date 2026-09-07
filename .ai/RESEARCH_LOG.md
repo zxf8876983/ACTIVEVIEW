@@ -835,3 +835,27 @@ real-observation privileged max-margin 0.515970/0.510083. Final Train loss
 was 0.170400. The new WM improves over old imagined WM-E but remains below
 Frozen H1, so no formal method checkpoint was replaced. Only Train/Val data
 were read; Test was not read.
+
+## Oracle Candidate Occlusion Context (2026-09-07)
+
+Implemented and ran a privileged static-geometry diagnostic for reduced14 with
+eight furniture-anchored placements. Habitat-Sim physics raycasts generated a
+10-D descriptor (root/pelvis/torso/head/left-right upper/lower body LOS,
+visible-keypoint ratio, mean normalized obstruction distance) for 5,376
+scene/placement/viewpoint entries across the 21 HM3D-train scenes. The
+descriptor was built from candidate metadata and static scene mesh only; no
+action labels, recognition predictions, real candidate skeleton outputs or
+Test rows were used.
+
+The Action-Discriminative WM-E was extended with optional 10-D candidate
+context, initialized from the prior 9-D model, and trained for 12 epochs on
+44,248 Train contexts (seed 42, CUDA RTX 4090). The new checkpoint is separate
+from the old one. On 14,809 Val moving contexts and 426,474 legal candidates,
+recognition agreement/Pearson/Spearman were 0.585435/0.564185/0.687090,
+feature cosine was 0.907745, belief KL was 0.315069, and Top-1/Top-3 positive
+hits were 0.588561/0.726585. Imagined H1 min-entropy/max-margin reached
+Accuracy/F1 0.396651/0.400672 and 0.352623/0.367313, below Frozen H1
+0.482815/0.496501. Static oracle context improved candidate-level fidelity
+but did not recover deployable H1 identity; this remains evidence for a
+candidate-specific scene observability gap rather than a successful formal
+method change. Test was not read.

@@ -152,6 +152,7 @@ def _build_loader(
     batch_size: int,
     workers: int,
     shuffle: bool,
+    candidate_context_lookup: Mapping[tuple[str, ...], np.ndarray] | None = None,
 ) -> DataLoader:
     sources = _sources(data_root, [dict(row) for row in rows])
     pairwise, azimuths = load_pairwise_and_azimuths(
@@ -169,6 +170,7 @@ def _build_loader(
     dataset = LazyWorldModelContextDataset(
         rows, sources, use_belief=True, rgb_lookup=rgb_lookup,
         target_scope="all", legal_candidate_ids=legal_by_context, cache_size=64,
+        candidate_context_lookup=candidate_context_lookup,
     )
     return DataLoader(
         dataset, batch_size=batch_size, shuffle=shuffle, num_workers=workers,
@@ -337,12 +339,23 @@ def _evaluate_wm(
     }
 
 
-def _load_context_inputs(data_root: Path, rows: Sequence[Mapping[str, Any]], orders: Mapping[str, Sequence[int]]) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[int]]:
+def _load_context_inputs(
+    data_root: Path,
+    rows: Sequence[Mapping[str, Any]],
+    orders: Mapping[str, Sequence[int]],
+    candidate_context_lookup: Mapping[tuple[str, ...], np.ndarray] | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[int]]:
     sources = _source_map(data_root, rows)
     s0_skeletons = np.empty((len(rows), 3, 30, 17), dtype=np.float32)
     s0_descriptors = np.empty((len(rows), 9), dtype=np.float32)
     max_count = max((len(orders[str(row["episode_id"])]) for row in rows), default=0)
-    descriptors = np.zeros((len(rows), max_count, 9), dtype=np.float32)
+    context_dim = 0
+    if candidate_context_lookup:
+        first_context = np.asarray(next(iter(candidate_context_lookup.values())), dtype=np.float32)
+        if first_context.ndim != 1:
+            raise ValueError(f"candidate context descriptors must be 1-D, got {first_context.shape}")
+        context_dim = int(first_context.size)
+    descriptors = np.zeros((len(rows), max_count, 9 + context_dim), dtype=np.float32)
     counts: list[int] = []
     for index, row in enumerate(rows):
         with np.load(sources[context_key(row)], allow_pickle=False) as archive:
@@ -350,7 +363,21 @@ def _load_context_inputs(data_root: Path, rows: Sequence[Mapping[str, Any]], ord
         by_id = {int(value): pos for pos, value in enumerate(ids.tolist())}; s0_id = int(row["s0_viewpoint_id"])
         current = positions[by_id[s0_id]]; s0_skeletons[index] = skeleton[by_id[s0_id]]; s0_descriptors[index] = relative_view_descriptor(positions, current, s0_id)
         candidates = [int(v) for v in orders[str(row["episode_id"])]]; counts.append(len(candidates))
-        for offset, candidate in enumerate(candidates): descriptors[index, offset] = relative_view_descriptor(positions, current, candidate)
+        for offset, candidate in enumerate(candidates):
+            descriptor = relative_view_descriptor(positions, current, candidate)
+            if candidate_context_lookup is not None:
+                try:
+                    key = (*context_key(row), int(candidate))
+                    extra_value = candidate_context_lookup.get(key)
+                    if extra_value is None:
+                        extra_value = candidate_context_lookup[(str(row["scene_id"]), str(row["region"]), int(candidate))]
+                    extra = np.asarray(extra_value, dtype=np.float32)
+                except KeyError as exc:
+                    raise ValueError(f"missing candidate context descriptor {exc}") from exc
+                if extra.shape != (context_dim,):
+                    raise ValueError(f"invalid candidate context descriptor shape: {extra.shape}")
+                descriptor = np.concatenate([descriptor, extra], axis=0)
+            descriptors[index, offset] = descriptor
     return s0_skeletons, s0_descriptors, descriptors, counts
 
 
@@ -414,10 +441,13 @@ def _run_h1(
     model: CandidateObservationWorldModel,
     device: torch.device,
     names: Sequence[str],
+    candidate_context_lookup: Mapping[tuple[str, ...], np.ndarray] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     orders = _h1_orders(data_root, rows)
     real_beliefs, real_stats = _candidate_beliefs(data_root, rows, cache, orders, device)
-    s0_skeletons, s0_desc, candidate_desc, counts = _load_context_inputs(data_root, rows, orders)
+    s0_skeletons, s0_desc, candidate_desc, counts = _load_context_inputs(
+        data_root, rows, orders, candidate_context_lookup
+    )
     s0_rgb = _load_s0_rgb(rows, rgb_lookup)
     identity, _ = _load_history_identity(data_root, device)
     imagined, inference = _imagined_h1_beliefs(model, identity, rows, s0_skeletons, s0_desc, candidate_desc, counts, np.asarray(cache["current_logp_s0"], dtype=np.float32), s0_rgb, device)
