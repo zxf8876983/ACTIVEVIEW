@@ -1,0 +1,1516 @@
+{
+  "experiment_id": "REDUCED12_ACTION_IDENTITY_FUSION_ABLATION",
+  "status": "COMPLETED",
+  "test_used": false,
+  "training_performed": true,
+  "population": {
+    "train_moving_contexts": 30580,
+    "val_moving_contexts": 10080,
+    "train_unique_visited_observations": 61160,
+    "val_unique_visited_observations": 20160
+  },
+  "label_names": [
+    "walk",
+    "sit",
+    "stand up",
+    "bend",
+    "crawl",
+    "stumble",
+    "clap",
+    "throw",
+    "kick",
+    "knock",
+    "punch",
+    "touching face"
+  ],
+  "method_order": [
+    "S1-only",
+    "Mean posterior",
+    "Product-of-Evidence",
+    "Confidence-select",
+    "ST-GCN feature-only MLP",
+    "ST-GCN feature + logp MLP",
+    "DINO-only MLP",
+    "Current all-feature MLP"
+  ],
+  "methods": {
+    "S1-only": {
+      "count": 10080,
+      "accuracy": 0.454265873015873,
+      "macro_f1": 0.44478185161607287,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.5929038281979458,
+          "f1": 0.4006309148264984
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.7201017811704835,
+          "f1": 0.7214786488209051
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.61742006615215,
+          "f1": 0.6800242865816637
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.2826086956521739,
+          "f1": 0.319910514541387
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.7354260089686099,
+          "f1": 0.7672514619883041
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.160188457008245,
+          "f1": 0.23734729493891796
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.39300411522633744,
+          "f1": 0.42024202420242024
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.5717234262125903,
+          "f1": 0.5009041591320073
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.7543402777777778,
+          "f1": 0.5768337205443079
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.16252821670428894,
+          "f1": 0.24615384615384614
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.17486910994764399,
+          "f1": 0.21019509125236
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.21414342629482072,
+          "f1": 0.2564102564102564
+        }
+      }
+    },
+    "Mean posterior": {
+      "count": 10080,
+      "accuracy": 0.45009920634920636,
+      "macro_f1": 0.4350315274250925,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.6349206349206349,
+          "f1": 0.40129831808793154
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.7188295165394402,
+          "f1": 0.6936771025168815
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.6030871003307607,
+          "f1": 0.6666666666666665
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.2865612648221344,
+          "f1": 0.3209739900387382
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.7107623318385651,
+          "f1": 0.7703523693803159
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.10365135453474676,
+          "f1": 0.17374136229022705
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.36419753086419754,
+          "f1": 0.39999999999999997
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.5479876160990712,
+          "f1": 0.5195694716242663
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.7881944444444444,
+          "f1": 0.5584255842558425
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.16478555304740405,
+          "f1": 0.2543554006968641
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.15287958115183245,
+          "f1": 0.20305980528511822
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.21414342629482072,
+          "f1": 0.25825825825825827
+        }
+      }
+    },
+    "Product-of-Evidence": {
+      "count": 10080,
+      "accuracy": 0.43194444444444446,
+      "macro_f1": 0.4055297908681961,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.7049486461251168,
+          "f1": 0.40854978354978355
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.6870229007633588,
+          "f1": 0.6999351911860012
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.6163175303197354,
+          "f1": 0.6767554479418887
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.3577075098814229,
+          "f1": 0.3167104111986002
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.6390134529147982,
+          "f1": 0.7116104868913858
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.05182567726737338,
+          "f1": 0.09617486338797814
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.26337448559670784,
+          "f1": 0.3363994743758213
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.5036119711042312,
+          "f1": 0.5099268547544409
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.7109375,
+          "f1": 0.5489276139410187
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.07674943566591422,
+          "f1": 0.13465346534653466
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.12041884816753927,
+          "f1": 0.17319277108433737
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.2241035856573705,
+          "f1": 0.2535211267605634
+        }
+      }
+    },
+    "Confidence-select": {
+      "count": 10080,
+      "accuracy": 0.447718253968254,
+      "macro_f1": 0.4332406752719015,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.6078431372549019,
+          "f1": 0.3921686746987952
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.7175572519083969,
+          "f1": 0.6857142857142856
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.6041896361631753,
+          "f1": 0.6614363307181654
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.2707509881422925,
+          "f1": 0.3118952760387023
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.7040358744394619,
+          "f1": 0.7602905569007263
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.11307420494699646,
+          "f1": 0.18640776699029124
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.3683127572016461,
+          "f1": 0.4008958566629339
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.5541795665634675,
+          "f1": 0.5203488372093024
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.7881944444444444,
+          "f1": 0.5560318432333129
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.1670428893905192,
+          "f1": 0.2573913043478261
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.15392670157068064,
+          "f1": 0.20289855072463767
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.2201195219123506,
+          "f1": 0.2634088200238379
+        }
+      }
+    },
+    "ST-GCN feature-only MLP": {
+      "count": 10080,
+      "accuracy": 0.5310515873015873,
+      "macro_f1": 0.555231589369489,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.5023342670401494,
+          "f1": 0.5153256704980842
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.72264631043257,
+          "f1": 0.6600813480534573
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.6912899669239251,
+          "f1": 0.7455410225921523
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.3073122529644269,
+          "f1": 0.3331547937868237
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.8452914798206278,
+          "f1": 0.8597491448118587
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.34393404004711425,
+          "f1": 0.36798991808443604
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.5493827160493827,
+          "f1": 0.54434250764526
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.48606811145510836,
+          "f1": 0.5061794734013972
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.6440972222222222,
+          "f1": 0.6227444397817877
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.7133182844243793,
+          "f1": 0.7093153759820428
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.5916230366492147,
+          "f1": 0.5327675624705328
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.2778884462151394,
+          "f1": 0.2655878153260352
+        }
+      }
+    },
+    "ST-GCN feature + logp MLP": {
+      "count": 10080,
+      "accuracy": 0.5295634920634921,
+      "macro_f1": 0.5474003922339535,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.5042016806722689,
+          "f1": 0.509915014164306
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.72264631043257,
+          "f1": 0.6570271833429727
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.6890848952590959,
+          "f1": 0.7106310403638431
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.3073122529644269,
+          "f1": 0.33914940021810247
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.8139013452914798,
+          "f1": 0.8581560283687943
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.39811542991755006,
+          "f1": 0.38739255014326646
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.5164609053497943,
+          "f1": 0.571103526734926
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.5252837977296182,
+          "f1": 0.5201839550332142
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.6657986111111112,
+          "f1": 0.5717480432351846
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.6568848758465011,
+          "f1": 0.6346782988004364
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.5801047120418849,
+          "f1": 0.5386485172581429
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.2201195219123506,
+          "f1": 0.2701711491442542
+        }
+      }
+    },
+    "DINO-only MLP": {
+      "count": 10080,
+      "accuracy": 0.38898809523809524,
+      "macro_f1": 0.417400361119796,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.41830065359477125,
+          "f1": 0.37789962041332775
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.5725190839694656,
+          "f1": 0.5145797598627786
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.11245865490628446,
+          "f1": 0.13001912045889102
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.25889328063241107,
+          "f1": 0.266395526182003
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.5986547085201793,
+          "f1": 0.6488456865127582
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.26383981154299174,
+          "f1": 0.26122448979591834
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.5164609053497943,
+          "f1": 0.5492341356673962
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.26109391124871,
+          "f1": 0.25274725274725274
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.5399305555555556,
+          "f1": 0.5682960255824577
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.7110609480812641,
+          "f1": 0.7167235494880547
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.4806282722513089,
+          "f1": 0.44028776978417267
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.26693227091633465,
+          "f1": 0.28255139694254083
+        }
+      }
+    },
+    "Current all-feature MLP": {
+      "count": 10080,
+      "accuracy": 0.5476190476190477,
+      "macro_f1": 0.566859752840995,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.5340802987861811,
+          "f1": 0.4861878453038674
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.7417302798982188,
+          "f1": 0.6678121420389461
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.6482910694597575,
+          "f1": 0.6511627906976745
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.3191699604743083,
+          "f1": 0.36538461538461536
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.7286995515695067,
+          "f1": 0.8301404853128991
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.36160188457008247,
+          "f1": 0.3792464484249537
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.5370370370370371,
+          "f1": 0.5845464725643896
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.5025799793601651,
+          "f1": 0.4959266802443991
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.7109375,
+          "f1": 0.6923076923076923
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.7697516930022573,
+          "f1": 0.7453551912568306
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.6534031413612565,
+          "f1": 0.5834502103786815
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.28884462151394424,
+          "f1": 0.3207964601769912
+        }
+      }
+    }
+  },
+  "focus_actions": {
+    "bend": {
+      "S1-only": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.2826086956521739,
+        "f1": 0.319910514541387
+      },
+      "Mean posterior": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.2865612648221344,
+        "f1": 0.3209739900387382
+      },
+      "Product-of-Evidence": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.3577075098814229,
+        "f1": 0.3167104111986002
+      },
+      "Confidence-select": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.2707509881422925,
+        "f1": 0.3118952760387023
+      },
+      "ST-GCN feature-only MLP": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.3073122529644269,
+        "f1": 0.3331547937868237
+      },
+      "ST-GCN feature + logp MLP": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.3073122529644269,
+        "f1": 0.33914940021810247
+      },
+      "DINO-only MLP": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.25889328063241107,
+        "f1": 0.266395526182003
+      },
+      "Current all-feature MLP": {
+        "label_id": 3,
+        "count": 1012,
+        "recall": 0.3191699604743083,
+        "f1": 0.36538461538461536
+      }
+    },
+    "stumble": {
+      "S1-only": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.160188457008245,
+        "f1": 0.23734729493891796
+      },
+      "Mean posterior": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.10365135453474676,
+        "f1": 0.17374136229022705
+      },
+      "Product-of-Evidence": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.05182567726737338,
+        "f1": 0.09617486338797814
+      },
+      "Confidence-select": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.11307420494699646,
+        "f1": 0.18640776699029124
+      },
+      "ST-GCN feature-only MLP": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.34393404004711425,
+        "f1": 0.36798991808443604
+      },
+      "ST-GCN feature + logp MLP": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.39811542991755006,
+        "f1": 0.38739255014326646
+      },
+      "DINO-only MLP": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.26383981154299174,
+        "f1": 0.26122448979591834
+      },
+      "Current all-feature MLP": {
+        "label_id": 5,
+        "count": 849,
+        "recall": 0.36160188457008247,
+        "f1": 0.3792464484249537
+      }
+    },
+    "knock": {
+      "S1-only": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.16252821670428894,
+        "f1": 0.24615384615384614
+      },
+      "Mean posterior": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.16478555304740405,
+        "f1": 0.2543554006968641
+      },
+      "Product-of-Evidence": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.07674943566591422,
+        "f1": 0.13465346534653466
+      },
+      "Confidence-select": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.1670428893905192,
+        "f1": 0.2573913043478261
+      },
+      "ST-GCN feature-only MLP": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.7133182844243793,
+        "f1": 0.7093153759820428
+      },
+      "ST-GCN feature + logp MLP": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.6568848758465011,
+        "f1": 0.6346782988004364
+      },
+      "DINO-only MLP": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.7110609480812641,
+        "f1": 0.7167235494880547
+      },
+      "Current all-feature MLP": {
+        "label_id": 9,
+        "count": 443,
+        "recall": 0.7697516930022573,
+        "f1": 0.7453551912568306
+      }
+    },
+    "touching face": {
+      "S1-only": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.21414342629482072,
+        "f1": 0.2564102564102564
+      },
+      "Mean posterior": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.21414342629482072,
+        "f1": 0.25825825825825827
+      },
+      "Product-of-Evidence": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.2241035856573705,
+        "f1": 0.2535211267605634
+      },
+      "Confidence-select": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.2201195219123506,
+        "f1": 0.2634088200238379
+      },
+      "ST-GCN feature-only MLP": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.2778884462151394,
+        "f1": 0.2655878153260352
+      },
+      "ST-GCN feature + logp MLP": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.2201195219123506,
+        "f1": 0.2701711491442542
+      },
+      "DINO-only MLP": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.26693227091633465,
+        "f1": 0.28255139694254083
+      },
+      "Current all-feature MLP": {
+        "label_id": 11,
+        "count": 1004,
+        "recall": 0.28884462151394424,
+        "f1": 0.3207964601769912
+      }
+    }
+  },
+  "relative_to_s1_pp": {
+    "S1-only": {
+      "accuracy_pp": 0.0,
+      "macro_f1_pp": 0.0
+    },
+    "Mean posterior": {
+      "accuracy_pp": -0.4166666666666652,
+      "macro_f1_pp": -0.9750324190980375
+    },
+    "Product-of-Evidence": {
+      "accuracy_pp": -2.232142857142855,
+      "macro_f1_pp": -3.925206074787674
+    },
+    "Confidence-select": {
+      "accuracy_pp": -0.6547619047619024,
+      "macro_f1_pp": -1.1541176344171344
+    },
+    "ST-GCN feature-only MLP": {
+      "accuracy_pp": 7.678571428571429,
+      "macro_f1_pp": 11.044973775341616
+    },
+    "ST-GCN feature + logp MLP": {
+      "accuracy_pp": 7.529761904761906,
+      "macro_f1_pp": 10.261854061788068
+    },
+    "DINO-only MLP": {
+      "accuracy_pp": -6.527777777777777,
+      "macro_f1_pp": -2.738149049627686
+    },
+    "Current all-feature MLP": {
+      "accuracy_pp": 9.335317460317466,
+      "macro_f1_pp": 12.207790122492213
+    }
+  },
+  "training": {
+    "ST-GCN feature-only MLP": {
+      "branch": "st_gcn_feature_only_mlp",
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "hidden_dim": 256,
+      "input_dim": 768,
+      "best_epoch": 9,
+      "best_val_accuracy": 0.5310515873015873,
+      "best_val_macro_f1": 0.555231589369489,
+      "final_train_loss": 0.655328835050265,
+      "elapsed_seconds": 3.1202762126922607,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_identity_fusion_ablation/st_gcn_feature_only_mlp.pth",
+      "test_used": false,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.6031866411368052,
+          "val_accuracy": 0.5246031746031746,
+          "val_macro_f1": 0.5314459978962045
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.3564336359500886,
+          "val_accuracy": 0.5261904761904762,
+          "val_macro_f1": 0.5297693807478395
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.251317669947942,
+          "val_accuracy": 0.5301587301587302,
+          "val_macro_f1": 0.550489243589846
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.1726004044214884,
+          "val_accuracy": 0.526686507936508,
+          "val_macro_f1": 0.5459260939110545
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.102736590305964,
+          "val_accuracy": 0.5261904761904762,
+          "val_macro_f1": 0.5448218351359303
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.0452840934197107,
+          "val_accuracy": 0.5275793650793651,
+          "val_macro_f1": 0.5473101095607763
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.0033371478319169,
+          "val_accuracy": 0.518154761904762,
+          "val_macro_f1": 0.5348804104277284
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.9550588021675745,
+          "val_accuracy": 0.5322420634920635,
+          "val_macro_f1": 0.5501413457615202
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.915889420111974,
+          "val_accuracy": 0.5310515873015873,
+          "val_macro_f1": 0.555231589369489
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.8853211402893066,
+          "val_accuracy": 0.5231150793650794,
+          "val_macro_f1": 0.5485028972009954
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.855185005068779,
+          "val_accuracy": 0.5209325396825397,
+          "val_macro_f1": 0.5433006451985564
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.824507478872935,
+          "val_accuracy": 0.5275793650793651,
+          "val_macro_f1": 0.5432465024355108
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.7982832103967666,
+          "val_accuracy": 0.5176587301587302,
+          "val_macro_f1": 0.5361194091212741
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.7738462299108505,
+          "val_accuracy": 0.5170634920634921,
+          "val_macro_f1": 0.5438096738146487
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.748458926876386,
+          "val_accuracy": 0.513095238095238,
+          "val_macro_f1": 0.5367491013984907
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.731671600540479,
+          "val_accuracy": 0.5223214285714286,
+          "val_macro_f1": 0.5488161280249423
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.7061398516098658,
+          "val_accuracy": 0.5274801587301587,
+          "val_macro_f1": 0.5437326259727983
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.6884579042593638,
+          "val_accuracy": 0.5109126984126984,
+          "val_macro_f1": 0.52918889922241
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.6707334011793137,
+          "val_accuracy": 0.5112103174603174,
+          "val_macro_f1": 0.5330297888501555
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.655328835050265,
+          "val_accuracy": 0.5182539682539683,
+          "val_macro_f1": 0.5356101491112715
+        }
+      ]
+    },
+    "ST-GCN feature + logp MLP": {
+      "branch": "st_gcn_feature_logp_mlp",
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "hidden_dim": 256,
+      "input_dim": 804,
+      "best_epoch": 10,
+      "best_val_accuracy": 0.5295634920634921,
+      "best_val_macro_f1": 0.5474003922339535,
+      "final_train_loss": 0.6542396634817124,
+      "elapsed_seconds": 3.0276947021484375,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_identity_fusion_ablation/st_gcn_feature_logp_mlp.pth",
+      "test_used": false,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.599342703819275,
+          "val_accuracy": 0.5276785714285714,
+          "val_macro_f1": 0.5406333044359842
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.3579676389694213,
+          "val_accuracy": 0.5298611111111111,
+          "val_macro_f1": 0.5466760186609435
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2482967813809713,
+          "val_accuracy": 0.5235119047619048,
+          "val_macro_f1": 0.5349185290162038
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.1657619555791219,
+          "val_accuracy": 0.5240079365079365,
+          "val_macro_f1": 0.5345742114734965
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.1051446179548898,
+          "val_accuracy": 0.5304563492063492,
+          "val_macro_f1": 0.5456045914287816
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.048779415090879,
+          "val_accuracy": 0.524702380952381,
+          "val_macro_f1": 0.5446895829987184
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.9988133509953817,
+          "val_accuracy": 0.5298611111111111,
+          "val_macro_f1": 0.5455250809624466
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.9551255265871684,
+          "val_accuracy": 0.5305555555555556,
+          "val_macro_f1": 0.5470608477995372
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.9174184441566468,
+          "val_accuracy": 0.5262896825396826,
+          "val_macro_f1": 0.546916474371816
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.8846517672141393,
+          "val_accuracy": 0.5295634920634921,
+          "val_macro_f1": 0.5474003922339535
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.8537403096755346,
+          "val_accuracy": 0.5258928571428572,
+          "val_macro_f1": 0.5431297285689892
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.8230312705039978,
+          "val_accuracy": 0.526984126984127,
+          "val_macro_f1": 0.5472297449236035
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.7976381977399191,
+          "val_accuracy": 0.5148809523809523,
+          "val_macro_f1": 0.5321861517166304
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.7712868134180705,
+          "val_accuracy": 0.5091269841269841,
+          "val_macro_f1": 0.528885793657836
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.7556070337692896,
+          "val_accuracy": 0.5040674603174603,
+          "val_macro_f1": 0.5250848165498543
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.7307046314080556,
+          "val_accuracy": 0.5115079365079365,
+          "val_macro_f1": 0.5325921579921259
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.7088388164838155,
+          "val_accuracy": 0.5149801587301587,
+          "val_macro_f1": 0.5308430038712967
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.6876384109258652,
+          "val_accuracy": 0.5182539682539683,
+          "val_macro_f1": 0.5394213655107244
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.6684938927491506,
+          "val_accuracy": 0.5138888888888888,
+          "val_macro_f1": 0.5365331989939083
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.6542396634817124,
+          "val_accuracy": 0.510813492063492,
+          "val_macro_f1": 0.52960718032493
+        }
+      ]
+    },
+    "DINO-only MLP": {
+      "branch": "dino_only_mlp",
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "hidden_dim": 256,
+      "input_dim": 2304,
+      "best_epoch": 9,
+      "best_val_accuracy": 0.38898809523809524,
+      "best_val_macro_f1": 0.417400361119796,
+      "final_train_loss": 0.6182661712169647,
+      "elapsed_seconds": 4.4884724617004395,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_identity_fusion_ablation/dino_only_mlp.pth",
+      "test_used": false,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 2.052689121166865,
+          "val_accuracy": 0.32490079365079366,
+          "val_macro_f1": 0.3257423348144694
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.7430670797824859,
+          "val_accuracy": 0.3484126984126984,
+          "val_macro_f1": 0.35394954567608256
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.6106276949246725,
+          "val_accuracy": 0.36319444444444443,
+          "val_macro_f1": 0.37922591980061227
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.5050371925036112,
+          "val_accuracy": 0.37490079365079365,
+          "val_macro_f1": 0.3927585791857069
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.407200562953949,
+          "val_accuracy": 0.3713293650793651,
+          "val_macro_f1": 0.39407276974117206
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.3284672697385151,
+          "val_accuracy": 0.37916666666666665,
+          "val_macro_f1": 0.39958448411529157
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.251106599966685,
+          "val_accuracy": 0.38015873015873014,
+          "val_macro_f1": 0.40374318983161417
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1781369388103484,
+          "val_accuracy": 0.3821428571428571,
+          "val_macro_f1": 0.40823510132485125
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.1159976691007614,
+          "val_accuracy": 0.38898809523809524,
+          "val_macro_f1": 0.417400361119796
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.048747475941976,
+          "val_accuracy": 0.37688492063492063,
+          "val_macro_f1": 0.4044147741409907
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.9902924726406733,
+          "val_accuracy": 0.3819444444444444,
+          "val_macro_f1": 0.4044712636533765
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.9363837540149689,
+          "val_accuracy": 0.3751984126984127,
+          "val_macro_f1": 0.40135532636903165
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.8874279618263244,
+          "val_accuracy": 0.3827380952380952,
+          "val_macro_f1": 0.4146915692998577
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.8443503946065902,
+          "val_accuracy": 0.3738095238095238,
+          "val_macro_f1": 0.3943450528221096
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.7977522124846776,
+          "val_accuracy": 0.3786706349206349,
+          "val_macro_f1": 0.4045260953287039
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.7563846488793691,
+          "val_accuracy": 0.3821428571428571,
+          "val_macro_f1": 0.41140421968802277
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.7181892544031143,
+          "val_accuracy": 0.3869047619047619,
+          "val_macro_f1": 0.4135771357641074
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.6781568070252736,
+          "val_accuracy": 0.37688492063492063,
+          "val_macro_f1": 0.4053574022688959
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.647483225663503,
+          "val_accuracy": 0.38551587301587303,
+          "val_macro_f1": 0.41340053860745746
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.6182661712169647,
+          "val_accuracy": 0.3876984126984127,
+          "val_macro_f1": 0.41645249474976537
+        }
+      ]
+    },
+    "Current all-feature MLP": {
+      "branch": "current_all_feature_mlp",
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "hidden_dim": 256,
+      "input_dim": 3108,
+      "best_epoch": 14,
+      "best_val_accuracy": 0.5476190476190477,
+      "best_val_macro_f1": 0.566859752840995,
+      "final_train_loss": 0.2336511495212714,
+      "elapsed_seconds": 5.108903646469116,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_identity_fusion_ablation/current_all_feature_mlp.pth",
+      "test_used": false,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.5831137299537659,
+          "val_accuracy": 0.5438492063492063,
+          "val_macro_f1": 0.5557547037035195
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2223757326602935,
+          "val_accuracy": 0.5433531746031746,
+          "val_macro_f1": 0.5572427940123236
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.0409908453623453,
+          "val_accuracy": 0.5452380952380952,
+          "val_macro_f1": 0.5666133100450287
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.8869049390157063,
+          "val_accuracy": 0.5452380952380952,
+          "val_macro_f1": 0.5654215728566715
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.7682115942239761,
+          "val_accuracy": 0.5407738095238095,
+          "val_macro_f1": 0.5619783913108052
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.6697631498177846,
+          "val_accuracy": 0.5375992063492063,
+          "val_macro_f1": 0.5601138436826576
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.5917491013805072,
+          "val_accuracy": 0.5410714285714285,
+          "val_macro_f1": 0.564106040362645
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.5155740976333618,
+          "val_accuracy": 0.5341269841269841,
+          "val_macro_f1": 0.5585130564346185
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.4575379823644956,
+          "val_accuracy": 0.5388888888888889,
+          "val_macro_f1": 0.5612144359627057
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.41368407060702644,
+          "val_accuracy": 0.5430555555555555,
+          "val_macro_f1": 0.5653821713813961
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.375074577331543,
+          "val_accuracy": 0.5428571428571428,
+          "val_macro_f1": 0.5582429101812855
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.3468853791554769,
+          "val_accuracy": 0.5396825396825397,
+          "val_macro_f1": 0.5636333808347751
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.32315086101492246,
+          "val_accuracy": 0.5429563492063492,
+          "val_macro_f1": 0.5617660082664028
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.2980633353193601,
+          "val_accuracy": 0.5476190476190477,
+          "val_macro_f1": 0.566859752840995
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.2805004614094893,
+          "val_accuracy": 0.539781746031746,
+          "val_macro_f1": 0.5595877708380426
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.2658597655594349,
+          "val_accuracy": 0.5466269841269841,
+          "val_macro_f1": 0.5641811652954496
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.2616467967629433,
+          "val_accuracy": 0.5380952380952381,
+          "val_macro_f1": 0.5574436842315856
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.24757995729645094,
+          "val_accuracy": 0.5379960317460317,
+          "val_macro_f1": 0.5589504423870453
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.2424421747525533,
+          "val_accuracy": 0.5455357142857142,
+          "val_macro_f1": 0.5651937247441013
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.2336511495212714,
+          "val_accuracy": 0.5386904761904762,
+          "val_macro_f1": 0.5618813434477364
+        }
+      ]
+    }
+  },
+  "dino_cache_summary": {
+    "encoder_name": "facebook/dinov2-base",
+    "encoder_version": "transformers.AutoModel",
+    "model_config_name": "facebook/dinov2-base",
+    "rgb_dataset_version": "activeview-rgb-observation-v1",
+    "patch_grid": [
+      16,
+      16
+    ],
+    "pooled_grid": [
+      4,
+      4
+    ],
+    "embedding_shape": [
+      16,
+      768
+    ],
+    "dtype": "float16",
+    "observation_count": 81320,
+    "future_candidate_rgb_used": false
+  },
+  "scientific_conclusion": {
+    "posterior_fusion": "No analytic posterior fusion branch improves S1-only Macro-F1.",
+    "feature_source": "ST-GCN feature-only reaches 0.531052/0.555232; adding logp changes it to 0.529563/0.547400.",
+    "dino_effect": "DINO is complementary in the all-feature branch (all-feature Macro-F1 0.566860 vs feature+logp 0.547400); DINO-only is 0.417400.",
+    "best_deployable": "The best Val-moving branch is Current all-feature MLP with Accuracy/Macro-F1 0.547619/0.566860; this is a single-seed Val comparison, not Test evidence.",
+    "identity_ceiling": "Current all-feature MLP reaches 0.547619/0.566860; compare this with the prior approximately 55% identity result without claiming generalization beyond Val."
+  },
+  "protocol": {
+    "loss": "CrossEntropy",
+    "mlp": "Linear(input,256) -> GELU -> Linear(256,12)",
+    "epochs": 20,
+    "seed": 42,
+    "selection": "best moving-Val Macro-F1 then Accuracy",
+    "normalization": "Train-only mean/std per branch",
+    "wm_or_jr_modified": false
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "test_paths_read": false,
+    "future_candidate_rgb_used": false,
+    "future_candidate_dino_used": false,
+    "wm_modified": false,
+    "jr_modified": false,
+    "skeleton_regenerated": false,
+    "rgb_regenerated": false,
+    "dino_regenerated": false
+  },
+  "artifacts": {
+    "per_class_metrics": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced12_eight_placement_v1/action_identity_fusion_ablation/per_class_metrics.json",
+    "confusion_matrices": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced12_eight_placement_v1/action_identity_fusion_ablation/confusion_matrices.npz"
+  }
+}
