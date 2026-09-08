@@ -1,0 +1,221 @@
+{
+  "branch": "gt_margin",
+  "parameter_count": 406721,
+  "device": "cuda:0",
+  "max_epochs": 100,
+  "selected_epoch": 16,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/h1_discriminative_objective_batch/gt_margin/gt_margin_best.pth",
+  "checkpoint_sha256": "f5f8fc81b8779e908a7d50aeff32bf7e7e78ffc3f53ee018c434bc0187a65150",
+  "checkpoint_selection_metric": "Val objective loss",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 4.996287822723389,
+      "train_regression_loss": 4.996287822723389,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.990242700107762,
+      "lr": 0.001
+    },
+    {
+      "epoch": 2,
+      "train_loss": 4.867370390892029,
+      "train_regression_loss": 4.867370390892029,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.8405058735706765,
+      "lr": 0.001
+    },
+    {
+      "epoch": 3,
+      "train_loss": 4.749275016784668,
+      "train_regression_loss": 4.749275016784668,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.835809183902428,
+      "lr": 0.001
+    },
+    {
+      "epoch": 4,
+      "train_loss": 4.69351806640625,
+      "train_regression_loss": 4.69351806640625,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.8329308306584595,
+      "lr": 0.001
+    },
+    {
+      "epoch": 5,
+      "train_loss": 4.719530844688416,
+      "train_regression_loss": 4.719530844688416,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.8076589615618595,
+      "lr": 0.001
+    },
+    {
+      "epoch": 6,
+      "train_loss": 4.6574149370193485,
+      "train_regression_loss": 4.6574149370193485,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.758874627410388,
+      "lr": 0.001
+    },
+    {
+      "epoch": 7,
+      "train_loss": 4.680715727806091,
+      "train_regression_loss": 4.680715727806091,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.831388371889709,
+      "lr": 0.001
+    },
+    {
+      "epoch": 8,
+      "train_loss": 4.714338207244873,
+      "train_regression_loss": 4.714338207244873,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.795901923883156,
+      "lr": 0.001
+    },
+    {
+      "epoch": 9,
+      "train_loss": 4.664418005943299,
+      "train_regression_loss": 4.664418005943299,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.798481495653997,
+      "lr": 0.001
+    },
+    {
+      "epoch": 10,
+      "train_loss": 4.682937407493592,
+      "train_regression_loss": 4.682937407493592,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.759427617807857,
+      "lr": 0.001
+    },
+    {
+      "epoch": 11,
+      "train_loss": 4.678841876983642,
+      "train_regression_loss": 4.678841876983642,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.749695496480973,
+      "lr": 0.001
+    },
+    {
+      "epoch": 12,
+      "train_loss": 4.592197585105896,
+      "train_regression_loss": 4.592197585105896,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.811862218575399,
+      "lr": 0.001
+    },
+    {
+      "epoch": 13,
+      "train_loss": 4.602659273147583,
+      "train_regression_loss": 4.602659273147583,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.756040659107145,
+      "lr": 0.001
+    },
+    {
+      "epoch": 14,
+      "train_loss": 4.6657439231872555,
+      "train_regression_loss": 4.6657439231872555,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.794627134917213,
+      "lr": 0.001
+    },
+    {
+      "epoch": 15,
+      "train_loss": 4.624417686462403,
+      "train_regression_loss": 4.624417686462403,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.789331803556348,
+      "lr": 0.001
+    },
+    {
+      "epoch": 16,
+      "train_loss": 4.620020961761474,
+      "train_regression_loss": 4.620020961761474,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.739138188909312,
+      "lr": 0.001
+    },
+    {
+      "epoch": 17,
+      "train_loss": 4.570667886734009,
+      "train_regression_loss": 4.570667886734009,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.795895506124028,
+      "lr": 0.001
+    },
+    {
+      "epoch": 18,
+      "train_loss": 4.53761477470398,
+      "train_regression_loss": 4.53761477470398,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.761819612784464,
+      "lr": 0.001
+    },
+    {
+      "epoch": 19,
+      "train_loss": 4.57358558177948,
+      "train_regression_loss": 4.57358558177948,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.810272240247882,
+      "lr": 0.001
+    },
+    {
+      "epoch": 20,
+      "train_loss": 4.581259536743164,
+      "train_regression_loss": 4.581259536743164,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.760871472905894,
+      "lr": 0.001
+    },
+    {
+      "epoch": 21,
+      "train_loss": 4.585671377182007,
+      "train_regression_loss": 4.585671377182007,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.76004427769145,
+      "lr": 0.001
+    },
+    {
+      "epoch": 22,
+      "train_loss": 4.592980670928955,
+      "train_regression_loss": 4.592980670928955,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.756799471182902,
+      "lr": 0.001
+    },
+    {
+      "epoch": 23,
+      "train_loss": 4.532399678230286,
+      "train_regression_loss": 4.532399678230286,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.7926689914015475,
+      "lr": 0.001
+    },
+    {
+      "epoch": 24,
+      "train_loss": 4.541367721557617,
+      "train_regression_loss": 4.541367721557617,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.787274868761907,
+      "lr": 0.001
+    },
+    {
+      "epoch": 25,
+      "train_loss": 4.5216409921646115,
+      "train_regression_loss": 4.5216409921646115,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.751804992800853,
+      "lr": 0.001
+    },
+    {
+      "epoch": 26,
+      "train_loss": 4.500619506835937,
+      "train_regression_loss": 4.500619506835937,
+      "train_ranking_loss": 0.0,
+      "val_loss": 4.7660929492262545,
+      "lr": 0.001
+    }
+  ],
+  "test_used": false
+}
