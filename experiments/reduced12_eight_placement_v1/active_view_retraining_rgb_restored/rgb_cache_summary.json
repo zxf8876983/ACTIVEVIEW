@@ -1,0 +1,15 @@
+{
+  "version": "activeview-reduced12-visited-rgb-v1",
+  "protocol": "reduced12-eight-placement-v1",
+  "splits": [
+    "train",
+    "val"
+  ],
+  "records": 40660,
+  "rendered_viewpoints": 81320,
+  "frame_index": 15,
+  "image_size": 256,
+  "workers": 1,
+  "future_candidate_rgb_rendered": false,
+  "test_used": false
+}

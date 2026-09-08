@@ -1,0 +1,80 @@
+{
+  "protocol": "reduced12-eight-placement-v1",
+  "variant": "Recognition-aware WM-E RGB restored",
+  "train_contexts": 30580,
+  "val_contexts": 10080,
+  "epochs": 12,
+  "seed": 42,
+  "num_classes": 12,
+  "use_belief": true,
+  "use_rgb": true,
+  "residual": false,
+  "target_scope": "all",
+  "loss": "SmoothL1 + 0.25 velocity + 0.10 frozen ST-GCN recognition KL",
+  "best_val_loss": 0.1353665409208853,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.370619121736313,
+      "val_loss": 0.1936642900109291
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.1937373307646568,
+      "val_loss": 0.18418073215627973
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.17745241011535773,
+      "val_loss": 0.17029009844306148
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.16496643960226529,
+      "val_loss": 0.15915249745491183
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.15768703091967554,
+      "val_loss": 0.15162739671672446
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.15180686003992247,
+      "val_loss": 0.14780047578336317
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.14771761576874984,
+      "val_loss": 0.14366974544864666
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.14428736456517893,
+      "val_loss": 0.14483683202651482
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.14134260195319123,
+      "val_loss": 0.13955255036678496
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.1389700738424786,
+      "val_loss": 0.13729037745278092
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.13674883285701026,
+      "val_loss": 0.1359363149710094
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.13446305564382585,
+      "val_loss": 0.1353665409208853
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1_rgb_restored/wm_e/wm_e_best.pth",
+  "elapsed_seconds": 3010.3321586819366,
+  "test_used": false
+}

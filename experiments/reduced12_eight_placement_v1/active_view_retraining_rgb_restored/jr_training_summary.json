@@ -1,0 +1,33 @@
+{
+  "contexts": 30580,
+  "positive_contexts": 26750,
+  "multi_positive_contexts": 24146,
+  "single_positive_contexts": 2604,
+  "no_positive_contexts": 3830,
+  "mean_positive_count": 8.811439252336449,
+  "final_loss": 1.3110410590966544,
+  "loss_history": [
+    1.7563160479068756,
+    1.6721551537513732,
+    1.6370378613471985,
+    1.6099050323168436,
+    1.5843153854211172,
+    1.566846779982249,
+    1.5452574034531912,
+    1.5290602703889211,
+    1.5054835657278696,
+    1.4902023255825043,
+    1.4722745498021443,
+    1.4559738636016846,
+    1.4353479584058126,
+    1.4175188978513082,
+    1.3985061864058177,
+    1.379875644048055,
+    1.370606352885564,
+    1.347651046514511,
+    1.3391696314016979,
+    1.3110410590966544
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1_rgb_restored/joint_revision_multi_positive.pth",
+  "test_used": false
+}

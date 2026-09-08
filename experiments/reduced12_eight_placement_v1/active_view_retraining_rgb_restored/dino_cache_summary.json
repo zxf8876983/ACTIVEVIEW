@@ -1,0 +1,26 @@
+{
+  "cache_dir": "/home/zxf/WorkSpace/code/data/ActiveView/features/dinov2_vitb14_spatial4x4_reduced12_eight_placement/initial_history",
+  "unique_observations": 81320,
+  "split_observations": {
+    "train": 61160,
+    "val": 20160
+  },
+  "shape": [
+    81320,
+    16,
+    768
+  ],
+  "dtype": "float16",
+  "encoder": "facebook/dinov2-base",
+  "spatial_grid": [
+    4,
+    4
+  ],
+  "source_rgb_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/rgb_reduced12_eight_placement_v1/visited_s0_s1",
+  "cache_hit_count": 0,
+  "cache_miss_count": 81320,
+  "extraction_time_sec": 392.5792008799035,
+  "cache_reused": false,
+  "future_candidate_rgb_used": false,
+  "test_used": false
+}

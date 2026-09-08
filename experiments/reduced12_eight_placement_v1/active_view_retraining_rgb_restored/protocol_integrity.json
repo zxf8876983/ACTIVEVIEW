@@ -1,0 +1,23 @@
+{
+  "stage_b_stgcn_checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+  "stage_b_val_episodes": 15540,
+  "stage_d_val_contexts": 10080,
+  "rgb_expected_records": 40660,
+  "rgb_expected_viewpoints": 81320,
+  "rgb_actual_records": 40660,
+  "rgb_missing_records": 0,
+  "rgb_extra_records": 0,
+  "rgb_schema_sample_errors": 0,
+  "dino_unique_observations": 81320,
+  "dino_shape": [81320, 16, 768],
+  "dino_dtype": "float16",
+  "val_archive_sample_rows": 24,
+  "val_archive_sample_viewpoints": 149,
+  "val_stage_b_label_all_match": true,
+  "val_true_logp_max_abs_error": 0.0009498596,
+  "reduced12_scene_count": 20,
+  "historical_reduced14_scene_count": 21,
+  "h0_candidate_count": {"min": 1, "mean": 6.5878378378, "median": 6, "max": 21},
+  "h2_remaining_candidate_count": {"min": 1, "mean": 1.9198412698, "median": 2, "max": 2},
+  "test_used": false
+}

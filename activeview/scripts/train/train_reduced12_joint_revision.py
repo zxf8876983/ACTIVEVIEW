@@ -77,9 +77,16 @@ def _examples(rows: Sequence[Mapping[str, Any]], cache: Mapping[str, np.ndarray]
     return (np.asarray(currents), np.asarray(candidates_all), np.asarray(masks), np.asarray(fallbacks), np.asarray(positives), np.asarray(labels, dtype=np.int64)), stats
 
 
-def train(data_root: Path, device: torch.device, batch_size: int) -> dict[str, Any]:
+def train(
+    data_root: Path,
+    device: torch.device,
+    batch_size: int,
+    cache_root: Path | None = None,
+    output_path: Path | None = None,
+) -> dict[str, Any]:
     _seed(); root = data_root / "datasets/policy_reduced12_eight_placement_v1"
-    rows = load_jsonl(root / "stage_d/features/train.jsonl"); cache = {k: np.asarray(v) for k, v in np.load(root / "counterfactual_cache/train.npz", allow_pickle=False).items()}; arrays, stats = _examples(rows, cache, _orders(data_root, rows))
+    cache_dir = cache_root or (root / "counterfactual_cache")
+    rows = load_jsonl(root / "stage_d/features/train.jsonl"); cache = {k: np.asarray(v) for k, v in np.load(cache_dir / "train.npz", allow_pickle=False).items()}; arrays, stats = _examples(rows, cache, _orders(data_root, rows))
     loader = DataLoader(_Dataset(arrays), batch_size=batch_size, shuffle=True)
     model = JointRevision(num_classes=NUM_CLASSES).to(device); optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4); history: list[float] = []
     for epoch in range(1, EPOCHS + 1):
@@ -88,14 +95,14 @@ def train(data_root: Path, device: torch.device, batch_size: int) -> dict[str, A
             current = batch["current"].float().to(device); candidates = batch["candidates"].float().to(device); mask = batch["mask"].bool().to(device); fallback = batch["fallback"].long().to(device); positive = batch["positive"].float().to(device); labels = batch["label"].long().to(device)
             scores, posterior = model(current, candidates, mask); valid_scores = scores.masked_fill(~mask, -1e9); all_lse = torch.logsumexp(valid_scores, dim=1); positive_mask = positive.bool() & mask; positive_lse = torch.logsumexp(scores.masked_fill(~positive_mask, -1e9), dim=1); has_positive = positive_mask.any(dim=1); main = torch.where(has_positive, all_lse - positive_lse, nn.functional.cross_entropy(valid_scores, fallback, reduction="none")); bce_all = nn.functional.binary_cross_entropy_with_logits(scores, positive, reduction="none"); bce = (bce_all * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1); target = labels.unsqueeze(1).expand(-1, posterior.size(1)); post_all = nn.functional.cross_entropy(posterior.reshape(-1, NUM_CLASSES), target.reshape(-1), reduction="none").reshape_as(scores); post = (post_all * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1); loss = (main + 0.25 * bce + 0.05 * post).mean(); optimizer.zero_grad(set_to_none=True); loss.backward(); optimizer.step(); losses.append(float(loss.detach().cpu()))
         history.append(float(np.mean(losses))); print(f"JR epoch {epoch}/{EPOCHS} loss={history[-1]:.6f}", flush=True)
-    output = data_root / "checkpoints/activeview_reduced12_eight_placement_v1/joint_revision_multi_positive.pth"; output.parent.mkdir(parents=True, exist_ok=True); torch.save({"state_dict": model.state_dict(), "model_state_dict": model.state_dict(), "seed": SEED, "epochs": EPOCHS, "num_classes": NUM_CLASSES}, output)
+    output = output_path or (data_root / "checkpoints/activeview_reduced12_eight_placement_v1/joint_revision_multi_positive.pth"); output.parent.mkdir(parents=True, exist_ok=True); torch.save({"state_dict": model.state_dict(), "model_state_dict": model.state_dict(), "seed": SEED, "epochs": EPOCHS, "num_classes": NUM_CLASSES}, output)
     result = {**stats, "final_loss": history[-1], "loss_history": history, "checkpoint": str(output.resolve()), "test_used": False}; (output.parent / "joint_revision_training.json").write_text(json.dumps(result, indent=2) + "\n"); print(json.dumps(result, indent=2)); return result
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(); parser.add_argument("--data-root", type=Path, default=get_data_root()); parser.add_argument("--device", default="cuda:0"); parser.add_argument("--batch-size", type=int, default=512); args = parser.parse_args(); device = torch.device(args.device)
+    parser = argparse.ArgumentParser(); parser.add_argument("--data-root", type=Path, default=get_data_root()); parser.add_argument("--device", default="cuda:0"); parser.add_argument("--batch-size", type=int, default=512); parser.add_argument("--cache-root", type=Path, default=None); parser.add_argument("--output-path", type=Path, default=None); args = parser.parse_args(); device = torch.device(args.device)
     if device.type == "cuda" and not torch.cuda.is_available(): raise RuntimeError("CUDA unavailable; JR requires GPU")
-    train(args.data_root.resolve(), device, args.batch_size)
+    train(args.data_root.resolve(), device, args.batch_size, args.cache_root, args.output_path)
 
 
 if __name__ == "__main__": main()

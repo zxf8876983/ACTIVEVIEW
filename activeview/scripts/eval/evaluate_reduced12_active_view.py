@@ -74,8 +74,15 @@ def _h0_predictions(utility_rows: Sequence[Mapping[str, Any]], rng: np.random.Ge
     return random_pred, candidate_pred, safe_pred, aggregate
 
 
-def evaluate(data_root: Path, device: torch.device) -> dict[str, Any]:
-    root = data_root / "datasets/policy_reduced12_eight_placement_v1"; utility_rows = load_jsonl(root / "stage_b/utility_labels/val.jsonl"); v0_rows = load_jsonl(root / "stage_c/predictions/val_predictions.jsonl"); moving_rows = load_jsonl(root / "stage_d/features/val.jsonl"); cache = _cache(root / "counterfactual_cache/val.npz")
+def evaluate(
+    data_root: Path,
+    device: torch.device,
+    *,
+    counterfactual_root: Path | None = None,
+    wm_checkpoint: Path | None = None,
+    jr_checkpoint: Path | None = None,
+) -> dict[str, Any]:
+    root = data_root / "datasets/policy_reduced12_eight_placement_v1"; utility_rows = load_jsonl(root / "stage_b/utility_labels/val.jsonl"); v0_rows = load_jsonl(root / "stage_c/predictions/val_predictions.jsonl"); moving_rows = load_jsonl(root / "stage_d/features/val.jsonl"); cache = _cache((counterfactual_root or (root / "counterfactual_cache")) / "val.npz")
     train_rows = load_jsonl(root / "stage_d/features/train.jsonl")
     v0_by_id = {str(row["episode_id"]): row for row in v0_rows}; utility_by_id = {str(row["episode_id"]): row for row in utility_rows}; moving_ids = [str(row["episode_id"]) for row in moving_rows]; moving_set = set(moving_ids); cache_index = {str(value): index for index, value in enumerate(cache["episode_ids"].tolist())}
     if moving_set != set(cache_index): raise ValueError("Val Stage-D and counterfactual cache IDs are not aligned")
@@ -89,7 +96,8 @@ def evaluate(data_root: Path, device: torch.device) -> dict[str, Any]:
     for episode in moving_ids:
         i = cache_index[episode]; label = int(v0_by_id[episode]["label_id"]); current_score = float(cache["current_logp_s1"][i, label]); candidates = order_by_id[episode]; best = max(candidates, key=lambda c: float(cache["true_logp"][i, c, label]), default=None)
         safe_h2.append(int(np.argmax(cache["current_logp_s1"][i])) if best is None or float(cache["true_logp"][i, best, label]) <= current_score else int(np.argmax(cache["true_logp"][i, best])))
-    model = JointRevision(num_classes=NUM_CLASSES).to(device); payload = torch.load(data_root / "checkpoints/activeview_reduced12_eight_placement_v1/joint_revision_multi_positive.pth", map_location=device, weights_only=False); model.load_state_dict(payload.get("model_state_dict", payload["state_dict"])); model.eval(); jr_actions = select_actions(model, cache, moving_rows, order_by_id, budget="ALL_LEGAL", device=device)
+    jr_path = jr_checkpoint or (data_root / "checkpoints/activeview_reduced12_eight_placement_v1/joint_revision_multi_positive.pth")
+    model = JointRevision(num_classes=NUM_CLASSES).to(device); payload = torch.load(jr_path, map_location=device, weights_only=False); model.load_state_dict(payload.get("model_state_dict", payload["state_dict"])); model.eval(); jr_actions = select_actions(model, cache, moving_rows, order_by_id, budget="ALL_LEGAL", device=device)
     jr_m = [int(np.argmax(cache["current_logp_s1"][cache_index[e]])) if action is None else int(np.argmax(cache["true_logp"][cache_index[e], int(action)])) for e, action in zip(moving_ids, jr_actions)]
     frozen_m = h1_pred; no_move_m = [s0_pred[e] for e in moving_ids]
     moving_predictions = {"NoMove": no_move_m, "FrozenStageCv0": frozen_m, "Random": random_m, "H0 CandidateOracle": candidate_m, "H0 SafeOracle": safe_m, "Multi-positive H2": jr_m, "FixedH1-H2 SafeOracle": safe_h2}
@@ -117,14 +125,15 @@ def evaluate(data_root: Path, device: torch.device) -> dict[str, Any]:
     h0_metrics = {"full": {"H0 CandidateOracle": _metrics([candidate_full[str(row["episode_id"])] for row in v0_rows], labels_full), "H0 SafeOracle": _metrics([safe_full[str(row["episode_id"])] for row in v0_rows], labels_full)}, "diagnostics": h0_diag}
     mapping = json.loads((data_root / "datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/label_mapping.json").read_text(encoding="utf-8"))
     labels_by_id = {str(value): key for key, value in mapping.items()}
-    result = {"experiment_id": "REDUCED12_EIGHT_PLACEMENT_ACTIVE_VIEW", "status": "COMPLETED", "test_used": False, "population": {"full_val": len(v0_rows), "moving_val": len(moving_rows), "train_contexts": len(train_rows), "split_source": "reduced12 raw-val Train/Val only"}, "labels": labels_by_id, "class_counts": {"train": {labels_by_id[str(k)]: v for k, v in sorted(Counter(int(row["label_id"]) for row in train_rows).items())}, "val": {labels_by_id[str(k)]: v for k, v in sorted(Counter(int(row["label_id"]) for row in v0_rows).items())}, "moving_val": {labels_by_id[str(k)]: v for k, v in sorted(Counter(int(row["label_id"]) for row in moving_rows).items())}}, "methods": {"full": {name: _metrics(pred, labels_full) for name, pred in full_predictions.items()}, "moving": {name: _metrics(pred, labels_moving) for name, pred in moving_predictions.items()}}, "h0_benchmark": h0_metrics, "wm_diagnostics": wm_diagnostics, "protocol": {"taxonomy": "reduced12_no_kneel_clean", "placements_per_scene": 8, "candidate_budget": "ALL_LEGAL", "terminal_observation": "real archived skeleton through frozen 12-class ST-GCN", "wm_e_checkpoint": str((data_root / "checkpoints/activeview_reduced12_eight_placement_v1/wm_e/wm_e_best.pth").resolve()), "jr_checkpoint": str((data_root / "checkpoints/activeview_reduced12_eight_placement_v1/joint_revision_multi_positive.pth").resolve()), "rgb_dino_available": False}, "leakage_flags": {"test_used": False, "true_future_recognition_as_model_input": False, "future_candidate_rgb_used": False, "habitat_rendering_performed": False}}
+    wm_path = wm_checkpoint or (data_root / "checkpoints/activeview_reduced12_eight_placement_v1/wm_e/wm_e_best.pth")
+    result = {"experiment_id": "REDUCED12_EIGHT_PLACEMENT_ACTIVE_VIEW", "status": "COMPLETED", "test_used": False, "population": {"full_val": len(v0_rows), "moving_val": len(moving_rows), "train_contexts": len(train_rows), "split_source": "reduced12 raw-val Train/Val only"}, "labels": labels_by_id, "class_counts": {"train": {labels_by_id[str(k)]: v for k, v in sorted(Counter(int(row["label_id"]) for row in train_rows).items())}, "val": {labels_by_id[str(k)]: v for k, v in sorted(Counter(int(row["label_id"]) for row in v0_rows).items())}, "moving_val": {labels_by_id[str(k)]: v for k, v in sorted(Counter(int(row["label_id"]) for row in moving_rows).items())}}, "methods": {"full": {name: _metrics(pred, labels_full) for name, pred in full_predictions.items()}, "moving": {name: _metrics(pred, labels_moving) for name, pred in moving_predictions.items()}}, "h0_benchmark": h0_metrics, "wm_diagnostics": wm_diagnostics, "protocol": {"taxonomy": "reduced12_no_kneel_clean", "placements_per_scene": 8, "candidate_budget": "ALL_LEGAL", "terminal_observation": "real archived skeleton through frozen 12-class ST-GCN", "wm_e_checkpoint": str(wm_path.resolve()), "jr_checkpoint": str(jr_path.resolve()), "rgb_dino_available": counterfactual_root is not None}, "leakage_flags": {"test_used": False, "true_future_recognition_as_model_input": False, "future_candidate_rgb_used": False, "habitat_rendering_performed": False}}
     return result
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(); parser.add_argument("--data-root", type=Path, default=get_data_root()); parser.add_argument("--device", default="cuda:0"); args = parser.parse_args(); device = torch.device(args.device)
+    parser = argparse.ArgumentParser(); parser.add_argument("--data-root", type=Path, default=get_data_root()); parser.add_argument("--device", default="cuda:0"); parser.add_argument("--counterfactual-root", type=Path, default=None); parser.add_argument("--wm-checkpoint", type=Path, default=None); parser.add_argument("--jr-checkpoint", type=Path, default=None); parser.add_argument("--output-dir", type=Path, default=None); args = parser.parse_args(); device = torch.device(args.device)
     if device.type == "cuda" and not torch.cuda.is_available(): raise RuntimeError("CUDA unavailable; evaluator requires GPU")
-    result = evaluate(args.data_root.resolve(), device); output = Path(__file__).resolve().parents[3] / "experiments/reduced12_eight_placement_v1/active_view_retraining"; output.mkdir(parents=True, exist_ok=True); (output / "result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"); print(json.dumps(result, indent=2, ensure_ascii=False))
+    result = evaluate(args.data_root.resolve(), device, counterfactual_root=args.counterfactual_root, wm_checkpoint=args.wm_checkpoint, jr_checkpoint=args.jr_checkpoint); output = (args.output_dir or (Path(__file__).resolve().parents[3] / "experiments/reduced12_eight_placement_v1/active_view_retraining")).resolve(); output.mkdir(parents=True, exist_ok=True); (output / "result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"); print(json.dumps(result, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__": main()
