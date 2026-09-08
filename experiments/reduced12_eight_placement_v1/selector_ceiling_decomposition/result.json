@@ -1,0 +1,495 @@
+{
+  "experiment_id": "REDUCED12_SELECTOR_CEILING_DECOMPOSITION",
+  "status": "COMPLETED",
+  "test_used": false,
+  "population": {
+    "train_contexts": 30580,
+    "moving_val_contexts": 10080,
+    "full_val_episodes": 15540
+  },
+  "method_order": [
+    "Frozen H1",
+    "Imagined+Inferred JR",
+    "Real+Inferred JR",
+    "Imagined+GT JR",
+    "Real+GT JR",
+    "CurrentLabel-Real",
+    "GTLabel-Imagined",
+    "FixedH1-H2 Oracle"
+  ],
+  "methods": {
+    "moving": {
+      "Frozen H1": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.454265873015873,
+          "macro_f1": 0.44478185161607287
+        },
+        "positive_action_hit_rate": 0.454265873015873,
+        "stay_rate": 1.0,
+        "correction_rate": 0.0,
+        "harm_rate": 0.0,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.08224206349206349
+      },
+      "Imagined+Inferred JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5356150793650793,
+          "macro_f1": 0.53632031612324
+        },
+        "positive_action_hit_rate": 0.5356150793650793,
+        "stay_rate": 0.3725198412698413,
+        "correction_rate": 0.16071428571428573,
+        "harm_rate": 0.07936507936507936,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.12172619047619047
+      },
+      "Real+Inferred JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.598313492063492,
+          "macro_f1": 0.6067908106849462
+        },
+        "positive_action_hit_rate": 0.598313492063492,
+        "stay_rate": 0.12192460317460317,
+        "correction_rate": 0.23462301587301587,
+        "harm_rate": 0.09057539682539682,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.2650793650793651
+      },
+      "Imagined+GT JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.7121031746031746,
+          "macro_f1": 0.6967858166669861
+        },
+        "positive_action_hit_rate": 0.7121031746031746,
+        "stay_rate": 0.4469246031746032,
+        "correction_rate": 0.25992063492063494,
+        "harm_rate": 0.0020833333333333333,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.15029761904761904
+      },
+      "Real+GT JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.908531746031746,
+          "macro_f1": 0.9047044421264765
+        },
+        "positive_action_hit_rate": 0.908531746031746,
+        "stay_rate": 0.09295634920634921,
+        "correction_rate": 0.4544642857142857,
+        "harm_rate": 0.0001984126984126984,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.5675595238095238
+      },
+      "CurrentLabel-Real": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.45416666666666666,
+          "macro_f1": 0.44463261752017585
+        },
+        "positive_action_hit_rate": 0.45416666666666666,
+        "stay_rate": 0.25625,
+        "correction_rate": 0.0,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.45595238095238094
+      },
+      "GTLabel-Imagined": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.6782738095238096,
+          "macro_f1": 0.663142107372901
+        },
+        "positive_action_hit_rate": 0.6782738095238096,
+        "stay_rate": 0.40168650793650795,
+        "correction_rate": 0.2376984126984127,
+        "harm_rate": 0.01369047619047619,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.14821428571428572
+      },
+      "FixedH1-H2 Oracle": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.9112103174603174,
+          "macro_f1": 0.9080466163075224
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      }
+    },
+    "full": {
+      "Frozen H1": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.45933075933075934,
+          "macro_f1": 0.44900871407033427
+        },
+        "positive_action_hit_rate": 0.454265873015873,
+        "stay_rate": 1.0,
+        "correction_rate": 0.0,
+        "harm_rate": 0.0,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.08224206349206349
+      },
+      "Imagined+Inferred JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5120978120978121,
+          "macro_f1": 0.5063325886677915
+        },
+        "positive_action_hit_rate": 0.5356150793650793,
+        "stay_rate": 0.3725198412698413,
+        "correction_rate": 0.16071428571428573,
+        "harm_rate": 0.07936507936507936,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.12172619047619047
+      },
+      "Real+Inferred JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5527670527670527,
+          "macro_f1": 0.5541333504217633
+        },
+        "positive_action_hit_rate": 0.598313492063492,
+        "stay_rate": 0.12192460317460317,
+        "correction_rate": 0.23462301587301587,
+        "harm_rate": 0.09057539682539682,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.2650793650793651
+      },
+      "Imagined+GT JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.6265765765765766,
+          "macro_f1": 0.6118707545838113
+        },
+        "positive_action_hit_rate": 0.7121031746031746,
+        "stay_rate": 0.4469246031746032,
+        "correction_rate": 0.25992063492063494,
+        "harm_rate": 0.0020833333333333333,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.15029761904761904
+      },
+      "Real+GT JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.753989703989704,
+          "macro_f1": 0.7487744846428425
+        },
+        "positive_action_hit_rate": 0.908531746031746,
+        "stay_rate": 0.09295634920634921,
+        "correction_rate": 0.4544642857142857,
+        "harm_rate": 0.0001984126984126984,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.5675595238095238
+      },
+      "CurrentLabel-Real": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.45926640926640927,
+          "macro_f1": 0.4489151759906209
+        },
+        "positive_action_hit_rate": 0.45416666666666666,
+        "stay_rate": 0.25625,
+        "correction_rate": 0.0,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.45595238095238094
+      },
+      "GTLabel-Imagined": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.6046332046332046,
+          "macro_f1": 0.5896340473423609
+        },
+        "positive_action_hit_rate": 0.6782738095238096,
+        "stay_rate": 0.40168650793650795,
+        "correction_rate": 0.2376984126984127,
+        "harm_rate": 0.01369047619047619,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.14821428571428572
+      },
+      "FixedH1-H2 Oracle": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.7557271557271558,
+          "macro_f1": 0.7510010040405887
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      }
+    }
+  },
+  "gap_decomposition_pp": {
+    "wm_gap": 6.26984126984127,
+    "identity_gap": 31.0218253968254,
+    "imagined_identity_gain": 17.64880952380953,
+    "architecture_residual": 0.2678571428571419,
+    "current_h2_minus_frozen_h1": 8.134920634920634,
+    "current_h2_minus_frozen_h1_f1": 9.153846450716719,
+    "real_inferred_minus_frozen_h1": 14.404761904761903,
+    "real_inferred_minus_frozen_h1_f1": 16.200895906887336,
+    "real_gt_minus_frozen_h1": 45.426587301587304,
+    "real_gt_minus_frozen_h1_f1": 45.992259051040364
+  },
+  "branch_training": {
+    "imagined_inferred": {
+      "contexts": 30580,
+      "positive_contexts": 26750,
+      "multi_positive_contexts": 24146,
+      "single_positive_contexts": 2604,
+      "no_positive_contexts": 3830,
+      "mean_positive_count": 8.811439252336449,
+      "evidence": "imagined",
+      "gt_identity_input": false,
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "loss_history": [
+        1.7563160479068756,
+        1.6721551537513732,
+        1.6370378613471985,
+        1.6099050323168436,
+        1.5843153854211172,
+        1.566846779982249,
+        1.5452574034531912,
+        1.5290602703889211,
+        1.5054835657278696,
+        1.4902023255825043,
+        1.4722745498021443,
+        1.4559738636016846,
+        1.4353479584058126,
+        1.4175188978513082,
+        1.3985061864058177,
+        1.379875644048055,
+        1.370606352885564,
+        1.347651046514511,
+        1.3391696314016979,
+        1.3110410590966544
+      ],
+      "final_loss": 1.3110410590966544,
+      "elapsed_seconds": 26.237511157989502,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_selector_ceiling_decomposition/imagined_inferred.pth",
+      "test_used": false
+    },
+    "real_inferred": {
+      "contexts": 30580,
+      "positive_contexts": 26750,
+      "multi_positive_contexts": 24146,
+      "single_positive_contexts": 2604,
+      "no_positive_contexts": 3830,
+      "mean_positive_count": 8.811439252336449,
+      "evidence": "real",
+      "gt_identity_input": false,
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "loss_history": [
+        1.7022574424743653,
+        1.5024092515309653,
+        1.3876497427622476,
+        1.2888826608657837,
+        1.2035492559274037,
+        1.1315616389115652,
+        1.0624337822198868,
+        1.0111133207877476,
+        0.9577252517143885,
+        0.9092988183101018,
+        0.8587644219398498,
+        0.8148952573537827,
+        0.7814272582530976,
+        0.7469900031884511,
+        0.7163725405931473,
+        0.6833192010720571,
+        0.6616609305143356,
+        0.6358371277650198,
+        0.6039804855982462,
+        0.5803716793656349
+      ],
+      "final_loss": 0.5803716793656349,
+      "elapsed_seconds": 18.336868047714233,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_selector_ceiling_decomposition/real_inferred.pth",
+      "test_used": false
+    },
+    "imagined_gt": {
+      "contexts": 30580,
+      "positive_contexts": 26750,
+      "multi_positive_contexts": 24146,
+      "single_positive_contexts": 2604,
+      "no_positive_contexts": 3830,
+      "mean_positive_count": 8.811439252336449,
+      "evidence": "imagined",
+      "gt_identity_input": true,
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "loss_history": [
+        1.7314909021059672,
+        1.5390987912813823,
+        1.3497518281141916,
+        1.2086612304051718,
+        1.1306177804867426,
+        1.0880249599615732,
+        1.066427359978358,
+        1.0459234515825908,
+        1.0260638078053792,
+        1.0136053989330926,
+        0.9973816176255544,
+        0.9873804748058319,
+        0.9817133406798045,
+        0.9668496797482172,
+        0.956765482823054,
+        0.9483951638142268,
+        0.9432651966810226,
+        0.933838814496994,
+        0.9223126997550328,
+        0.9116060425837834
+      ],
+      "final_loss": 0.9116060425837834,
+      "elapsed_seconds": 11.391753911972046,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_selector_ceiling_decomposition/imagined_gt.pth",
+      "test_used": false
+    },
+    "real_gt": {
+      "contexts": 30580,
+      "positive_contexts": 26750,
+      "multi_positive_contexts": 24146,
+      "single_positive_contexts": 2604,
+      "no_positive_contexts": 3830,
+      "mean_positive_count": 8.811439252336449,
+      "evidence": "real",
+      "gt_identity_input": true,
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "loss_history": [
+        1.6568467795848847,
+        1.1749444901943207,
+        0.5668234020471573,
+        0.34620237201452253,
+        0.25297714620828626,
+        0.2115490769346555,
+        0.18459788088997206,
+        0.16760786461333435,
+        0.15433921590447425,
+        0.1466980534295241,
+        0.13094202615320683,
+        0.12802844357987245,
+        0.11767696800331275,
+        0.11498206381996473,
+        0.10634118045369784,
+        0.10408065629502138,
+        0.10259961312015851,
+        0.09317248792697987,
+        0.09270780508716901,
+        0.09062962159514427
+      ],
+      "final_loss": 0.09062962159514427,
+      "elapsed_seconds": 11.13869023323059,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_selector_ceiling_decomposition/real_gt.pth",
+      "test_used": false
+    }
+  },
+  "baseline_reproduction": {
+    "observed_moving_accuracy": 0.5356150793650793,
+    "observed_moving_macro_f1": 0.53632031612324,
+    "reference_moving_accuracy": 0.5356150793650793,
+    "reference_moving_macro_f1": 0.53632031612324,
+    "accuracy_delta_pp": 0.0,
+    "macro_f1_delta_pp": 0.0,
+    "tolerance_pp": 2.0
+  },
+  "reference_definitions": {
+    "CurrentLabel-Real": "argmax current s1 label, score stay+real candidates on that label",
+    "GTLabel-Imagined": "GT label, score stay+imagined candidates on GT label",
+    "FixedH1-H2 Oracle": "GT label, score stay+real candidates on GT label"
+  },
+  "protocol": {
+    "taxonomy": "reduced12_no_kneel_clean",
+    "candidate_budget": "ALL_LEGAL",
+    "positive_definition": "stay/current or legal candidate whose real archived ST-GCN argmax equals GT",
+    "terminal_observation": "real archived skeleton through frozen reduced12 ST-GCN",
+    "wm_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1_rgb_restored/wm_e/wm_e_best.pth",
+    "counterfactual_cache": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1_rgb_restored/counterfactual_cache"
+  },
+  "scientific_conclusion": "Case B is primary: Real+GT is only 0.268 pp below the fixed oracle, while Real+Inferred loses 31.022 pp; action identity/belief inference is the largest bottleneck. Case A also applies as a secondary effect because Real+Inferred exceeds Imagined+Inferred by 6.270 pp, so WM candidate fidelity remains material.",
+  "leakage_flags": {
+    "test_used": false,
+    "test_paths_read": false,
+    "stgcn_retrained": false,
+    "wm_retrained": false,
+    "skeleton_rgb_dino_regenerated": false,
+    "privileged_branches_deployable": false
+  }
+}
