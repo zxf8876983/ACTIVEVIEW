@@ -1,0 +1,409 @@
+{
+  "experiment_id": "REDUCED12_SOFT_BELIEF_CANDIDATE_SCORING",
+  "status": "COMPLETED",
+  "test_used": false,
+  "population": {
+    "moving_val_contexts": 10080,
+    "full_val_episodes": 15540
+  },
+  "method_order": [
+    "Current JR",
+    "S1Posterior + Imagined",
+    "LearnedBelief + Imagined",
+    "LearnedBelief-hard + Imagined",
+    "GT-onehot + Imagined",
+    "LearnedBelief + Real",
+    "LearnedBelief-hard + Real",
+    "GT-onehot + Real",
+    "FixedH1-H2 Oracle"
+  ],
+  "methods": {
+    "moving": {
+      "Current JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5356150793650793,
+          "macro_f1": 0.53632031612324
+        },
+        "positive_action_hit_rate": 0.5356150793650793,
+        "stay_rate": 0.3725198412698413,
+        "correction_rate": 0.16071428571428573,
+        "harm_rate": 0.07936507936507936,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.12172619047619047
+      },
+      "S1Posterior + Imagined": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.447718253968254,
+          "macro_f1": 0.4389276421896515
+        },
+        "positive_action_hit_rate": 0.447718253968254,
+        "stay_rate": 0.881547619047619,
+        "correction_rate": 0.00248015873015873,
+        "harm_rate": 0.009027777777777777,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.0867063492063492
+      },
+      "LearnedBelief + Imagined": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5038690476190476,
+          "macro_f1": 0.5039188155843587
+        },
+        "positive_action_hit_rate": 0.5038690476190476,
+        "stay_rate": 0.4748015873015873,
+        "correction_rate": 0.1183531746031746,
+        "harm_rate": 0.06875,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.09751984126984127
+      },
+      "LearnedBelief-hard + Imagined": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5030753968253968,
+          "macro_f1": 0.5016233941230976
+        },
+        "positive_action_hit_rate": 0.5030753968253968,
+        "stay_rate": 0.42569444444444443,
+        "correction_rate": 0.13482142857142856,
+        "harm_rate": 0.08601190476190476,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.10158730158730159
+      },
+      "GT-onehot + Imagined": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.6782738095238096,
+          "macro_f1": 0.663142107372901
+        },
+        "positive_action_hit_rate": 0.6782738095238096,
+        "stay_rate": 0.40168650793650795,
+        "correction_rate": 0.2376984126984127,
+        "harm_rate": 0.01369047619047619,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.14821428571428572
+      },
+      "LearnedBelief + Real": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.567063492063492,
+          "macro_f1": 0.5831214959847203
+        },
+        "positive_action_hit_rate": 0.567063492063492,
+        "stay_rate": 0.11746031746031746,
+        "correction_rate": 0.19484126984126984,
+        "harm_rate": 0.0820436507936508,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.560218253968254
+      },
+      "LearnedBelief-hard + Real": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5503968253968254,
+          "macro_f1": 0.5657433092092491
+        },
+        "positive_action_hit_rate": 0.5503968253968254,
+        "stay_rate": 0.11071428571428571,
+        "correction_rate": 0.18799603174603174,
+        "harm_rate": 0.09186507936507937,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.5520833333333334
+      },
+      "GT-onehot + Real": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.9112103174603174,
+          "macro_f1": 0.9080466163075224
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      },
+      "FixedH1-H2 Oracle": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.9112103174603174,
+          "macro_f1": 0.9080466163075224
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      }
+    },
+    "full": {
+      "Current JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5120978120978121,
+          "macro_f1": 0.5063325886677915
+        },
+        "positive_action_hit_rate": 0.5356150793650793,
+        "stay_rate": 0.3725198412698413,
+        "correction_rate": 0.16071428571428573,
+        "harm_rate": 0.07936507936507936,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.12172619047619047
+      },
+      "S1Posterior + Imagined": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.45508365508365506,
+          "macro_f1": 0.4452700838594211
+        },
+        "positive_action_hit_rate": 0.447718253968254,
+        "stay_rate": 0.881547619047619,
+        "correction_rate": 0.00248015873015873,
+        "harm_rate": 0.009027777777777777,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.0867063492063492
+      },
+      "LearnedBelief + Imagined": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.4915057915057915,
+          "macro_f1": 0.4863766949006074
+        },
+        "positive_action_hit_rate": 0.5038690476190476,
+        "stay_rate": 0.4748015873015873,
+        "correction_rate": 0.1183531746031746,
+        "harm_rate": 0.06875,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.09751984126984127
+      },
+      "LearnedBelief-hard + Imagined": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.49099099099099097,
+          "macro_f1": 0.4849078965608699
+        },
+        "positive_action_hit_rate": 0.5030753968253968,
+        "stay_rate": 0.42569444444444443,
+        "correction_rate": 0.13482142857142856,
+        "harm_rate": 0.08601190476190476,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.10158730158730159
+      },
+      "GT-onehot + Imagined": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.6046332046332046,
+          "macro_f1": 0.5896340473423609
+        },
+        "positive_action_hit_rate": 0.6782738095238096,
+        "stay_rate": 0.40168650793650795,
+        "correction_rate": 0.2376984126984127,
+        "harm_rate": 0.01369047619047619,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.14821428571428572
+      },
+      "LearnedBelief + Real": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5324967824967825,
+          "macro_f1": 0.5383790353563604
+        },
+        "positive_action_hit_rate": 0.567063492063492,
+        "stay_rate": 0.11746031746031746,
+        "correction_rate": 0.19484126984126984,
+        "harm_rate": 0.0820436507936508,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.560218253968254
+      },
+      "LearnedBelief-hard + Real": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5216859716859716,
+          "macro_f1": 0.5273400287557106
+        },
+        "positive_action_hit_rate": 0.5503968253968254,
+        "stay_rate": 0.11071428571428571,
+        "correction_rate": 0.18799603174603174,
+        "harm_rate": 0.09186507936507937,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.5520833333333334
+      },
+      "GT-onehot + Real": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.7557271557271558,
+          "macro_f1": 0.7510010040405887
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      },
+      "FixedH1-H2 Oracle": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.7557271557271558,
+          "macro_f1": 0.7510010040405887
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      }
+    }
+  },
+  "belief_metrics": {
+    "s1_posterior": {
+      "count": 10080,
+      "accuracy": 0.454265873015873,
+      "macro_f1": 0.44478185161607287,
+      "mean_entropy": 0.4027270550039331
+    },
+    "learned_belief": {
+      "count": 10080,
+      "accuracy": 0.5476190476190477,
+      "macro_f1": 0.566859752840995,
+      "mean_entropy": 0.6030118403459211
+    },
+    "learned_belief_hard": {
+      "count": 10080,
+      "accuracy": 0.5476190476190477,
+      "macro_f1": 0.566859752840995,
+      "mean_entropy": 3.0394123227521413e-10
+    },
+    "gt_onehot": {
+      "count": 10080,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "mean_entropy": 3.0394123227521413e-10
+    }
+  },
+  "gaps_pp": {
+    "learned_soft_imagined_minus_current_jr": {
+      "accuracy_pp": -3.1746031746031744,
+      "macro_f1_pp": -3.2401500538881356
+    },
+    "learned_hard_minus_soft_imagined": {
+      "accuracy_pp": -0.07936507936507908,
+      "macro_f1_pp": -0.2295421461261049
+    },
+    "learned_hard_minus_soft_real": {
+      "accuracy_pp": -1.6666666666666607,
+      "macro_f1_pp": -1.7378186775471205
+    },
+    "learned_real_minus_gt_real": {
+      "accuracy_pp": -34.41468253968254,
+      "macro_f1_pp": -32.49251203228021
+    },
+    "gt_imagined_minus_gt_real": {
+      "accuracy_pp": -23.293650793650787,
+      "macro_f1_pp": -24.490450893462135
+    }
+  },
+  "belief_provenance": {
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_belief_estimator_v1/action_belief_best.pth",
+    "dino_summary": {
+      "encoder_name": "facebook/dinov2-base",
+      "encoder_version": "transformers.AutoModel",
+      "model_config_name": "facebook/dinov2-base",
+      "rgb_dataset_version": "activeview-rgb-observation-v1",
+      "patch_grid": [
+        16,
+        16
+      ],
+      "pooled_grid": [
+        4,
+        4
+      ],
+      "embedding_shape": [
+        16,
+        768
+      ],
+      "dtype": "float16",
+      "observation_count": 81320,
+      "future_candidate_rgb_used": false
+    },
+    "input_alignment": {
+      "contexts": 10080,
+      "unique_visited_observations": 20160
+    },
+    "input_dim": 3108
+  },
+  "scientific_conclusion": "Direct soft-belief scoring changes Current JR by only -3.175 pp Accuracy, so it does not show a large belief-selector interface gain. Soft belief is at least as effective as hard belief on the imagined branch. LearnedBelief + Real remains 34.415 pp below GT-onehot + Real, indicating that the learned identity estimator remains a major bottleneck. The GT imagined-to-real gap is 23.294 pp Accuracy, quantifying the remaining candidate-evidence/WM gap.",
+  "protocol": {
+    "taxonomy": "reduced12_no_kneel_clean",
+    "candidate_budget": "ALL_LEGAL",
+    "score": "sum_y belief[y] * exp(candidate_logp[y])",
+    "terminal_observation": "selected real archived skeleton through frozen reduced12 ST-GCN",
+    "evidence": "imagined_logp or true_logp from frozen counterfactual cache",
+    "seed": 42
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "test_paths_read": false,
+    "training_performed": false,
+    "stgcn_modified": false,
+    "wm_modified": false,
+    "jr_modified": false,
+    "data_regenerated": false
+  }
+}
