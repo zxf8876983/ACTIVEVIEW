@@ -1,0 +1,77 @@
+{
+  "protocol": "reduced12-eight-placement-v1",
+  "variant": "Recognition-aware WM-E",
+  "train_contexts": 30580,
+  "val_contexts": 10080,
+  "epochs": 12,
+  "seed": 42,
+  "num_classes": 12,
+  "use_rgb": false,
+  "rgb_dino_available": false,
+  "best_val_loss": 0.15723988128519512,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.37738615823091326,
+      "val_loss": 0.19623851019276095
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.19838284214794885,
+      "val_loss": 0.188553463243231
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.1850622610878745,
+      "val_loss": 0.18321550890944804
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.17796204507226226,
+      "val_loss": 0.16909251383305351
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.1731187806905064,
+      "val_loss": 0.16928637013593806
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.16976032141112882,
+      "val_loss": 0.1716412688853054
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.16764224619920284,
+      "val_loss": 0.16950784319469445
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.16443067383816054,
+      "val_loss": 0.16697436406666152
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.16255617073140882,
+      "val_loss": 0.1645444117580788
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.16025806467777515,
+      "val_loss": 0.16118550887685032
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.15818667084477436,
+      "val_loss": 0.15723988128519512
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.1563012931324448,
+      "val_loss": 0.1586424877065458
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1/wm_e/wm_e_best.pth",
+  "elapsed_seconds": 192.5137256809976,
+  "test_used": false
+}

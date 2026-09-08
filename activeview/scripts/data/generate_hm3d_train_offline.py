@@ -455,18 +455,20 @@ def main() -> None:
         raise ValueError("motion manifest must be a JSON list")
     args.output_root.mkdir(parents=True, exist_ok=True)
     reduced14_mode = "reduced14_kneel" in args.manifest.as_posix()
-    missing_placements = [
-        scene_id for scene_id in scenes
-        if not (args.placement_root / scene_id / "placements.json").exists()
-    ]
-    if reduced14_mode and missing_placements:
+    placement_paths = {
+        scene_id: args.placement_root / scene_id / "placements.json"
+        for scene_id in scenes
+    }
+    missing_placements = [scene_id for scene_id, path in placement_paths.items() if not path.exists()]
+    any_placements = len(missing_placements) < len(scenes)
+    if (reduced14_mode or any_placements) and missing_placements:
         raise FileNotFoundError(
-            "reduced14 eight-placement mode requires placements.json for every scene; "
+            "eight-placement mode requires placements.json for every scene; "
             f"missing: {', '.join(missing_placements)}"
         )
-    placement_mode = reduced14_mode
+    placement_mode = reduced14_mode or any_placements
     scene_list_path = args.output_root / "scene_selection.json"
-    scene_selection = {"scene_ids": scenes}
+    scene_selection = {"scene_ids": scenes, "scene_order_source": str(args.semantic_root.resolve())}
     if placement_mode:
         scene_selection.update({"protocol": "furniture-placement-v2", "placements_per_scene": 8})
     else:
@@ -477,7 +479,7 @@ def main() -> None:
     generator_script = Path(__file__).with_name("generate_semantic_region_offline_views.py")
     summary_path = args.output_root / "dataset_summary.json"
     summary: Dict[str, Any] = {
-        "version": "hm3d-train-eight-placement-reduced14-v1" if placement_mode else "hm3d-train-four-region-offline-v1",
+        "version": "hm3d-train-eight-placement-v1" if placement_mode else "hm3d-train-four-region-offline-v1",
         "scene_set": "hm3d-train",
         "scenes_requested": scenes,
         "placements_per_scene": 8 if placement_mode else None,

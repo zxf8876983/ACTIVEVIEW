@@ -41,7 +41,6 @@ from activeview.data.splits.policy_split import (
     SPLITS,
     audit_policy_splits,
     load_policy_split_summary,
-    load_policy_splits,
 )
 from activeview.scripts.eval.evaluate_hm3d_train_dynamic_reachability import _make_sim, _path_cost
 
@@ -55,12 +54,42 @@ def _scene_dirs(offline_root: Path, scene_sets: Sequence[str]) -> List[Tuple[str
         root = offline_root / scene_set
         if not root.exists():
             continue
-        result.extend((scene_set, path) for path in sorted(root.iterdir()) if path.is_dir())
+        result.extend(
+            (scene_set, path)
+            for path in sorted(root.iterdir())
+            if path.is_dir() and (path / "manifest.json").is_file()
+        )
     return result
 
 
 def _valid_scene(index: Any) -> bool:
     return index.manifest.get("version") == "semantic-region-offline-v2"
+
+
+def _load_selected_policy_splits(
+    split_dir: Path, selected_splits: Sequence[str],
+) -> Tuple[Dict[str, Any], Dict[str, List[Dict[str, Any]]]]:
+    """Load only explicitly requested split files.
+
+    The canonical writer still emits an empty ``test`` episode file for
+    schema compatibility, but a Train/Val-only run must not read a Test
+    source split at all.
+    """
+    summary = load_policy_split_summary(split_dir)
+    selected = tuple(str(split) for split in selected_splits)
+    if not selected or any(split not in SPLITS for split in selected):
+        raise ValueError(f"selected_splits must be drawn from {SPLITS}")
+    splits: Dict[str, List[Dict[str, Any]]] = {split: [] for split in SPLITS}
+    for split in selected:
+        path = split_dir / f"{split}.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, list):
+            raise ValueError(f"Expected a list in {path}")
+        splits[split] = [dict(item) for item in payload]
+    audit = audit_policy_splits(splits)
+    if audit["split_overlap"] or not audit["same_record_same_split"]:
+        raise ValueError(f"Invalid selected policy split: {audit}")
+    return summary, splits
 
 
 def main() -> None:
@@ -78,10 +107,10 @@ def main() -> None:
     parser.add_argument("--max-scenes", type=int, default=None, help="Optional smoke-test scene limit")
     parser.add_argument("--regions", nargs="+", default=None, help="Optional legacy region/context filter")
     parser.add_argument("--max-records", type=int, default=None, help="Optional smoke-test action-record limit")
+    parser.add_argument("--splits", nargs="+", choices=SPLITS, default=list(SPLITS), help="Source split files to read")
     args = parser.parse_args()
 
-    split_summary = load_policy_split_summary(args.split_dir)
-    splits = load_policy_splits(args.split_dir)
+    split_summary, splits = _load_selected_policy_splits(args.split_dir, args.splits)
     if args.max_records is not None:
         selected_ids = {
             str(item["record_id"])

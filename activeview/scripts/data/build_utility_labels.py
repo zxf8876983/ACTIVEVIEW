@@ -93,9 +93,15 @@ def _read_stage_a_summary(path: Path) -> Dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"Stage A summary must be an object: {path}")
     scenes = {str(item) for item in payload.get("scene_ids_used", [])}
-    expected_scene_count = 1 if bool(payload.get("smoke_test")) else 21
-    if len(scenes) != expected_scene_count or LEGACY_MINIVAL_SCENE in scenes:
-        raise ValueError("Stage A summary does not describe the canonical 21 HM3D-train scenes")
+    declared_scene_count = payload.get("complete_scenes_used", payload.get("scene_count"))
+    expected_scene_count = 1 if bool(payload.get("smoke_test")) else declared_scene_count
+    if expected_scene_count is None:
+        raise ValueError("Stage A summary is missing complete scene count")
+    if len(scenes) != int(expected_scene_count) or LEGACY_MINIVAL_SCENE in scenes:
+        raise ValueError(
+            "Stage A summary scene count does not match its declared protocol: "
+            f"observed={len(scenes)}, declared={expected_scene_count}"
+        )
     return payload
 
 
@@ -123,7 +129,7 @@ def _load_resumed_records(output_path: Path, source_path: Path) -> List[Dict[str
 def build(
     *, dataset_root: Path, output_dir: Path, checkpoint: Path, label_mapping: Path,
     device_name: str, inference_batch_size: int, max_episodes: int | None,
-    resume: bool,
+    resume: bool, selected_splits: tuple[str, ...] = SPLITS,
 ) -> Dict[str, Any]:
     started = time.perf_counter()
     stage_a_summary_path = dataset_root / "stage_a_summary.json"
@@ -137,7 +143,16 @@ def build(
     output_files: Dict[str, str] = {}
     source_episode_files: Dict[str, str] = {}
     source_episode_file_hashes: Dict[str, str] = {}
+    selected = tuple(str(split) for split in selected_splits)
+    if not selected or any(split not in SPLITS for split in selected):
+        raise ValueError(f"selected_splits must be drawn from {SPLITS}")
     for split in SPLITS:
+        if split not in selected:
+            empty_path = output_dir / "utility_labels" / f"{split}.jsonl"
+            empty_path.parent.mkdir(parents=True, exist_ok=True)
+            empty_path.write_text("", encoding="utf-8")
+            output_files[split] = str(empty_path.resolve())
+            continue
         source_path = Path(stage_a_summary["episode_files"][split])
         if not source_path.exists():
             raise FileNotFoundError(source_path)
@@ -225,6 +240,7 @@ def main() -> None:
     parser.add_argument("--inference-batch-size", type=int, default=64)
     parser.add_argument("--max-episodes", type=int, default=None, help="Optional per-split smoke-test limit")
     parser.add_argument("--resume", action="store_true", help="Resume a verified complete JSONL prefix")
+    parser.add_argument("--splits", nargs="+", choices=SPLITS, default=list(SPLITS), help="Source episode splits to read")
     args = parser.parse_args()
     if args.inference_batch_size <= 0:
         raise ValueError("--inference-batch-size must be positive")
@@ -232,7 +248,7 @@ def main() -> None:
         dataset_root=args.dataset_root, output_dir=args.output_dir, checkpoint=args.checkpoint,
         label_mapping=args.label_mapping, device_name=args.device,
         inference_batch_size=args.inference_batch_size, max_episodes=args.max_episodes,
-        resume=args.resume,
+        resume=args.resume, selected_splits=tuple(args.splits),
     )
 
 

@@ -1,0 +1,190 @@
+{
+  "experiment_id": "REDUCED12_EIGHT_PLACEMENT_ACTIVE_VIEW",
+  "status": "COMPLETED",
+  "test_used": false,
+  "population": {
+    "full_val": 15540,
+    "moving_val": 10080,
+    "train_contexts": 30580,
+    "split_source": "reduced12 raw-val Train/Val only"
+  },
+  "labels": {
+    "0": "walk",
+    "1": "sit",
+    "2": "stand up",
+    "3": "bend",
+    "4": "crawl",
+    "5": "stumble",
+    "6": "clap",
+    "7": "throw",
+    "8": "kick",
+    "9": "knock",
+    "10": "punch",
+    "11": "touching face"
+  },
+  "class_counts": {
+    "train": {
+      "walk": 3249,
+      "sit": 2883,
+      "stand up": 2615,
+      "bend": 2925,
+      "crawl": 1314,
+      "stumble": 2574,
+      "clap": 1481,
+      "throw": 2897,
+      "kick": 3416,
+      "knock": 1320,
+      "punch": 2878,
+      "touching face": 3028
+    },
+    "val": {
+      "walk": 1480,
+      "sit": 1480,
+      "stand up": 1480,
+      "bend": 1480,
+      "crawl": 740,
+      "stumble": 1332,
+      "clap": 888,
+      "throw": 1480,
+      "kick": 1480,
+      "knock": 740,
+      "punch": 1480,
+      "touching face": 1480
+    },
+    "moving_val": {
+      "walk": 1071,
+      "sit": 786,
+      "stand up": 907,
+      "bend": 1012,
+      "crawl": 446,
+      "stumble": 849,
+      "clap": 486,
+      "throw": 969,
+      "kick": 1152,
+      "knock": 443,
+      "punch": 955,
+      "touching face": 1004
+    }
+  },
+  "methods": {
+    "full": {
+      "NoMove": {
+        "count": 15540,
+        "accuracy": 0.3296010296010296,
+        "macro_f1": 0.3291746660379951
+      },
+      "FrozenStageCv0": {
+        "count": 15540,
+        "accuracy": 0.45933075933075934,
+        "macro_f1": 0.44900871407033427
+      },
+      "Random": {
+        "count": 15540,
+        "accuracy": 0.3415701415701416,
+        "macro_f1": 0.34124525774905096
+      },
+      "H0 CandidateOracle": {
+        "count": 15540,
+        "accuracy": 0.6999356499356499,
+        "macro_f1": 0.69872722421702
+      },
+      "H0 SafeOracle": {
+        "count": 15540,
+        "accuracy": 0.7308236808236809,
+        "macro_f1": 0.728526204927228
+      },
+      "Multi-positive H2": {
+        "count": 15540,
+        "accuracy": 0.48725868725868726,
+        "macro_f1": 0.4777392245146686
+      },
+      "FixedH1-H2 SafeOracle": {
+        "count": 15540,
+        "accuracy": 0.7557271557271558,
+        "macro_f1": 0.7510010040405887
+      }
+    },
+    "moving": {
+      "NoMove": {
+        "count": 10080,
+        "accuracy": 0.254265873015873,
+        "macro_f1": 0.2355003110008198
+      },
+      "FrozenStageCv0": {
+        "count": 10080,
+        "accuracy": 0.454265873015873,
+        "macro_f1": 0.44478185161607287
+      },
+      "Random": {
+        "count": 10080,
+        "accuracy": 0.3300595238095238,
+        "macro_f1": 0.327350153979487
+      },
+      "H0 CandidateOracle": {
+        "count": 10080,
+        "accuracy": 0.7093253968253969,
+        "macro_f1": 0.7043303109345173
+      },
+      "H0 SafeOracle": {
+        "count": 10080,
+        "accuracy": 0.7279761904761904,
+        "macro_f1": 0.7214947720279441
+      },
+      "Multi-positive H2": {
+        "count": 10080,
+        "accuracy": 0.4973214285714286,
+        "macro_f1": 0.4921338556304711
+      },
+      "FixedH1-H2 SafeOracle": {
+        "count": 10080,
+        "accuracy": 0.9112103174603174,
+        "macro_f1": 0.9080466163075224
+      }
+    }
+  },
+  "h0_benchmark": {
+    "full": {
+      "H0 CandidateOracle": {
+        "count": 15540,
+        "accuracy": 0.6999356499356499,
+        "macro_f1": 0.69872722421702
+      },
+      "H0 SafeOracle": {
+        "count": 15540,
+        "accuracy": 0.7308236808236809,
+        "macro_f1": 0.728526204927228
+      }
+    },
+    "diagnostics": {
+      "correct_view_ratio": 0.335912219977346,
+      "num_correct_legal_views": 2.2517374517374518,
+      "legal_view_accuracy": 0.335912219977346,
+      "any_correct_rate": 0.7313384813384813,
+      "mean_legal_view_count": 6.587837837837838
+    }
+  },
+  "wm_diagnostics": {
+    "legal_candidate_count": 279740,
+    "recognition_agreement": 0.37149138485736755,
+    "true_class_pearson": 0.3607846714285203,
+    "true_class_spearman": 0.403005169483671,
+    "top1_positive_hit": 0.4983009974788995,
+    "top3_positive_hit": 0.7392305162775403,
+    "oracle_positive_contexts": 9123
+  },
+  "protocol": {
+    "taxonomy": "reduced12_no_kneel_clean",
+    "placements_per_scene": 8,
+    "candidate_budget": "ALL_LEGAL",
+    "terminal_observation": "real archived skeleton through frozen 12-class ST-GCN",
+    "wm_e_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1/wm_e/wm_e_best.pth",
+    "jr_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1/joint_revision_multi_positive.pth",
+    "rgb_dino_available": false
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "true_future_recognition_as_model_input": false,
+    "future_candidate_rgb_used": false,
+    "habitat_rendering_performed": false
+  }
+}

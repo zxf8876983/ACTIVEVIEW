@@ -134,7 +134,7 @@ def _load_pending(episode: Mapping[str, Any]) -> tuple[np.ndarray, np.ndarray, f
     return skeleton, placement, confidence_value
 
 
-def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoint: Path, label_mapping: Path, device_name: str, batch_size: int, max_episodes: int | None = None) -> Dict[str, Any]:
+def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoint: Path, label_mapping: Path, device_name: str, batch_size: int, max_episodes: int | None = None, selected_splits: tuple[str, ...] = SPLITS) -> Dict[str, Any]:
     started = time.perf_counter()
     stage_a_summary_path = dataset_root / "stage_a_summary.json"
     stage_a_summary = json.loads(stage_a_summary_path.read_text(encoding="utf-8"))
@@ -144,6 +144,9 @@ def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoin
     output_dir.mkdir(parents=True, exist_ok=True)
     feature_dir = output_dir / "features"
     feature_dir.mkdir(parents=True, exist_ok=True)
+    selected = tuple(str(split) for split in selected_splits)
+    if not selected or any(split not in SPLITS for split in selected):
+        raise ValueError(f"selected_splits must be drawn from {SPLITS}")
     counts: Dict[str, int] = {}
     for split in SPLITS:
         stage_a_path = Path(stage_a_summary["episode_files"][split])
@@ -151,6 +154,10 @@ def build(*, dataset_root: Path, stage_b_root: Path, output_dir: Path, checkpoin
         output_path = feature_dir / f"{split}.jsonl"
         count = 0
         pending: List[tuple[Mapping[str, Any], Mapping[str, Any], np.ndarray, np.ndarray, float]] = []
+        if split not in selected:
+            output_path.write_text("", encoding="utf-8")
+            counts[split] = 0
+            continue
         with output_path.open("w", encoding="utf-8") as target:
             for line_number, (episode, utility) in enumerate(_iter_pairs(stage_a_path, stage_b_path), 1):
                 if max_episodes is not None and line_number > max_episodes:
@@ -214,10 +221,11 @@ def main() -> None:
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--max-episodes", type=int, default=None, help="Optional per-split smoke-test limit")
+    parser.add_argument("--splits", nargs="+", choices=SPLITS, default=list(SPLITS), help="Source episode splits to read")
     args = parser.parse_args()
     if args.batch_size <= 0:
         raise ValueError("--batch-size must be positive")
-    build(dataset_root=args.dataset_root, stage_b_root=args.stage_b_root, output_dir=args.output_dir, checkpoint=args.checkpoint, label_mapping=args.label_mapping, device_name=args.device, batch_size=args.batch_size, max_episodes=args.max_episodes)
+    build(dataset_root=args.dataset_root, stage_b_root=args.stage_b_root, output_dir=args.output_dir, checkpoint=args.checkpoint, label_mapping=args.label_mapping, device_name=args.device, batch_size=args.batch_size, max_episodes=args.max_episodes, selected_splits=tuple(args.splits))
 
 
 if __name__ == "__main__":

@@ -325,6 +325,65 @@ def build_second_step_rows(
     predictions = _lookup(v0_prediction_rows, "v0 prediction")
     archive_feature_cache: dict[tuple[str, int], tuple[np.ndarray, np.ndarray, float, np.ndarray, np.ndarray, np.ndarray]] = {}
     azimuth_cache: dict[tuple[str, str], dict[int, float]] = {}
+
+    # Resolve the unique p1 observations before constructing rows.  The old
+    # implementation invoked the frozen ST-GCN once per row; repeated p1
+    # observations therefore serialized tiny CUDA kernels and made Stage-D
+    # needlessly slow.  This pass only resolves the same frozen p1 choices and
+    # does not change the candidate protocol or any feature definition.
+    pending: dict[tuple[str, int], tuple[np.ndarray, float, np.ndarray, np.ndarray, np.ndarray]] = {}
+    for feature in feature_rows:
+        episode_id = str(feature["episode_id"])
+        episode = stage_a.get(episode_id)
+        utility = stage_b.get(episode_id)
+        prediction = predictions.get(episode_id)
+        if episode is None or utility is None or prediction is None:
+            raise ValueError(f"Missing aligned Stage A/B/prediction row for {episode_id}")
+        ids = [int(value) for value in prediction["candidate_viewpoint_ids"]]
+        predicted = [float(value) for value in prediction["predicted_utilities"]]
+        by_id = {int(item["viewpoint_id"]): item for item in utility["candidates"]}
+        if set(ids) != set(by_id):
+            raise ValueError(f"v0 candidate IDs disagree for {episode_id}")
+        ordered = order_candidates(
+            predicted,
+            ids,
+            [float(by_id[item]["geodesic_distance_m"]) for item in ids],
+            top_k=TOP_K,
+        )
+        if not ordered or float(predicted[ids.index(ordered[0])]) <= 0.0:
+            continue
+        p1_id = int(ordered[0])
+        p1_source = next(item for item in episode["candidate_pool"] if int(item["viewpoint_id"]) == p1_id)
+        archive_path = Path(p1_source["skeleton_source_path"])
+        key = (str(archive_path), p1_id)
+        if key in pending:
+            continue
+        skeleton, confidence, position, rotation = _view_from_archive(archive_path, p1_id)
+        with np.load(archive_path, allow_pickle=False) as archive:
+            placement = np.asarray(archive["placement_position"], dtype=np.float32)
+        pending[key] = (skeleton, confidence, position, rotation, placement)
+
+    if pending:
+        skeletons = np.stack([value[0] for value in pending.values()]).astype(np.float32)
+        features: list[np.ndarray] = []
+        logps: list[np.ndarray] = []
+        with torch.inference_mode():
+            for start in range(0, len(skeletons), 512):
+                batch = torch.from_numpy(skeletons[start:start + 512]).to(device=device, dtype=torch.float32).unsqueeze(-1)
+                feature_tensor = stgcn_model.forward_features(batch)
+                logp_tensor = torch.log_softmax(stgcn_model.fc(feature_tensor), dim=-1)
+                features.append(feature_tensor.detach().cpu().numpy().astype(np.float32))
+                logps.append(logp_tensor.detach().cpu().numpy().astype(np.float32))
+        for key, feature_vector, log_probs in zip(pending, np.concatenate(features), np.concatenate(logps)):
+            skeleton, confidence, position, rotation, placement = pending[key]
+            archive_feature_cache[key] = (
+                current_state_features(feature_vector, log_probs, confidence),
+                log_probs,
+                confidence,
+                position,
+                rotation,
+                placement,
+            )
     output: list[Dict[str, Any]] = []
     move_count = 0
     for feature in feature_rows:
@@ -362,12 +421,7 @@ def build_second_step_rows(
             raise ValueError(f"Missing s1 azimuth metadata for viewpoint {p1_id}: {archive_path}")
         cache_key = (str(archive_path), p1_id)
         if cache_key not in archive_feature_cache:
-            skeleton, confidence, position, rotation = _view_from_archive(archive_path, p1_id)
-            feature_vector, log_probs = frozen_current_features(stgcn_model, skeleton, device)
-            current_vector = current_state_features(feature_vector, log_probs, confidence)
-            with np.load(archive_path, allow_pickle=False) as archive:
-                placement = np.asarray(archive["placement_position"], dtype=np.float32)
-            archive_feature_cache[cache_key] = (current_vector, log_probs, confidence, position, rotation, placement)
+            raise RuntimeError(f"Missing precomputed frozen p1 feature: {cache_key}")
         s1_feature, s1_log_probs, _confidence, s1_position, s1_rotation, placement = archive_feature_cache[cache_key]
         stage_a_candidates = {int(item["viewpoint_id"]): item for item in episode["candidate_pool"]}
         pairwise = pairwise_by_region.get((str(episode["scene_id"]), str(episode["region"])), {})

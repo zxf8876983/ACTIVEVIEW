@@ -161,6 +161,21 @@ REDUCED14_KNEEL_LABELS: Tuple[str, ...] = (
     "touching face",
 )
 
+REDUCED12_NO_KNEEL_CLEAN_LABELS: Tuple[str, ...] = (
+    "walk",
+    "sit",
+    "stand up",
+    "bend",
+    "crawl",
+    "stumble",
+    "clap",
+    "throw",
+    "kick",
+    "knock",
+    "punch",
+    "touching face",
+)
+
 
 def _identity(feat_p: str) -> Tuple[str, str]:
     """Return AMASS dataset and stable subject identity from a BABEL path."""
@@ -544,8 +559,18 @@ def build_reduced14_kneel_protocol(**kwargs: Any) -> Dict[str, Any]:
     )
 
 
+def build_reduced12_no_kneel_clean_protocol(**kwargs: Any) -> Dict[str, Any]:
+    """Build the reduced14 protocol after removing kneel and clean something."""
+    return build_reduced_protocol(
+        labels=REDUCED12_NO_KNEEL_CLEAN_LABELS,
+        protocol_name="reduced12 no-kneel/no-clean diversity-aware BABEL protocol",
+        record_prefix="reduced12kc",
+        **kwargs,
+    )
+
+
 __all__ = [
-    "REDUCED12_LABELS", "REDUCED15_LABELS", "REDUCED16_LABELS", "REDUCED15_REVISED_LABELS", "REDUCED15_KNEEL_LABELS", "REDUCED15_KNEEL_WAVE_LABELS", "REDUCED15_KNEEL_SHAKE_LABELS", "REDUCED14_KNEEL_LABELS", "build_reduced_protocol",
-    "build_reduced12_protocol", "build_reduced15_protocol", "build_reduced16_protocol", "build_reduced15_revised_protocol", "build_reduced15_kneel_protocol", "build_reduced15_kneel_wave_protocol", "build_reduced15_kneel_shake_protocol", "build_reduced14_kneel_protocol",
+    "REDUCED12_LABELS", "REDUCED15_LABELS", "REDUCED16_LABELS", "REDUCED15_REVISED_LABELS", "REDUCED15_KNEEL_LABELS", "REDUCED15_KNEEL_WAVE_LABELS", "REDUCED15_KNEEL_SHAKE_LABELS", "REDUCED14_KNEEL_LABELS", "REDUCED12_NO_KNEEL_CLEAN_LABELS", "build_reduced_protocol",
+    "build_reduced12_protocol", "build_reduced15_protocol", "build_reduced16_protocol", "build_reduced15_revised_protocol", "build_reduced15_kneel_protocol", "build_reduced15_kneel_wave_protocol", "build_reduced15_kneel_shake_protocol", "build_reduced14_kneel_protocol", "build_reduced12_no_kneel_clean_protocol",
     "collect_reduced12_records", "select_diverse_records",
 ]
