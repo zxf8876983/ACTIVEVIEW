@@ -1,0 +1,585 @@
+{
+  "experiment_id": "REDUCED12_ACTION_BELIEF_ESTIMATOR_V1",
+  "status": "COMPLETED",
+  "test_used": false,
+  "population": {
+    "train_contexts": 30580,
+    "moving_val_contexts": 10080,
+    "full_val_episodes": 15540
+  },
+  "method_order": [
+    "Frozen H1",
+    "Imagined + Inferred JR",
+    "Real + Inferred JR",
+    "Imagined + LearnedBelief JR",
+    "Real + LearnedBelief JR",
+    "Imagined + GT JR",
+    "Real + GT JR",
+    "FixedH1-H2 Oracle"
+  ],
+  "methods": {
+    "moving": {
+      "Frozen H1": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.454265873015873,
+          "macro_f1": 0.44478185161607287
+        },
+        "positive_action_hit_rate": 0.454265873015873,
+        "stay_rate": 1.0,
+        "correction_rate": 0.0,
+        "harm_rate": 0.0,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.08224206349206349
+      },
+      "Imagined + Inferred JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5356150793650793,
+          "macro_f1": 0.53632031612324
+        },
+        "positive_action_hit_rate": 0.5356150793650793,
+        "stay_rate": 0.3725198412698413,
+        "correction_rate": 0.16071428571428573,
+        "harm_rate": 0.07936507936507936,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.12172619047619047
+      },
+      "Real + Inferred JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.598313492063492,
+          "macro_f1": 0.6067908106849462
+        },
+        "positive_action_hit_rate": 0.598313492063492,
+        "stay_rate": 0.12192460317460317,
+        "correction_rate": 0.23462301587301587,
+        "harm_rate": 0.09057539682539682,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.2650793650793651
+      },
+      "Imagined + GT JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.7121031746031746,
+          "macro_f1": 0.6967858166669861
+        },
+        "positive_action_hit_rate": 0.7121031746031746,
+        "stay_rate": 0.4469246031746032,
+        "correction_rate": 0.25992063492063494,
+        "harm_rate": 0.0020833333333333333,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.15029761904761904
+      },
+      "Real + GT JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.908531746031746,
+          "macro_f1": 0.9047044421264765
+        },
+        "positive_action_hit_rate": 0.908531746031746,
+        "stay_rate": 0.09295634920634921,
+        "correction_rate": 0.4544642857142857,
+        "harm_rate": 0.0001984126984126984,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.5675595238095238
+      },
+      "FixedH1-H2 Oracle": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.9112103174603174,
+          "macro_f1": 0.9080466163075224
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      },
+      "Imagined + LearnedBelief JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5434523809523809,
+          "macro_f1": 0.5441996884615129
+        },
+        "positive_action_hit_rate": 0.5434523809523809,
+        "stay_rate": 0.4380952380952381,
+        "correction_rate": 0.16101190476190477,
+        "harm_rate": 0.07182539682539682,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.11349206349206349
+      },
+      "Real + LearnedBelief JR": {
+        "terminal": {
+          "count": 10080,
+          "accuracy": 0.5858134920634921,
+          "macro_f1": 0.6032253818699584
+        },
+        "positive_action_hit_rate": 0.5858134920634921,
+        "stay_rate": 0.11666666666666667,
+        "correction_rate": 0.2257936507936508,
+        "harm_rate": 0.09424603174603174,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.29662698412698413
+      }
+    },
+    "full": {
+      "Frozen H1": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.45933075933075934,
+          "macro_f1": 0.44900871407033427
+        },
+        "positive_action_hit_rate": 0.454265873015873,
+        "stay_rate": 1.0,
+        "correction_rate": 0.0,
+        "harm_rate": 0.0,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.08224206349206349
+      },
+      "Imagined + Inferred JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5120978120978121,
+          "macro_f1": 0.5063325886677915
+        },
+        "positive_action_hit_rate": 0.5356150793650793,
+        "stay_rate": 0.3725198412698413,
+        "correction_rate": 0.16071428571428573,
+        "harm_rate": 0.07936507936507936,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.12172619047619047
+      },
+      "Real + Inferred JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5527670527670527,
+          "macro_f1": 0.5541333504217633
+        },
+        "positive_action_hit_rate": 0.598313492063492,
+        "stay_rate": 0.12192460317460317,
+        "correction_rate": 0.23462301587301587,
+        "harm_rate": 0.09057539682539682,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.2650793650793651
+      },
+      "Imagined + GT JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.6265765765765766,
+          "macro_f1": 0.6118707545838113
+        },
+        "positive_action_hit_rate": 0.7121031746031746,
+        "stay_rate": 0.4469246031746032,
+        "correction_rate": 0.25992063492063494,
+        "harm_rate": 0.0020833333333333333,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.15029761904761904
+      },
+      "Real + GT JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.753989703989704,
+          "macro_f1": 0.7487744846428425
+        },
+        "positive_action_hit_rate": 0.908531746031746,
+        "stay_rate": 0.09295634920634921,
+        "correction_rate": 0.4544642857142857,
+        "harm_rate": 0.0001984126984126984,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.5675595238095238
+      },
+      "FixedH1-H2 Oracle": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.7557271557271558,
+          "macro_f1": 0.7510010040405887
+        },
+        "positive_action_hit_rate": 0.9112103174603174,
+        "stay_rate": 0.08224206349206349,
+        "correction_rate": 0.4570436507936508,
+        "harm_rate": 9.92063492063492e-05,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 1.0
+      },
+      "Imagined + LearnedBelief JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5171814671814672,
+          "macro_f1": 0.5118956196975446
+        },
+        "positive_action_hit_rate": 0.5434523809523809,
+        "stay_rate": 0.4380952380952381,
+        "correction_rate": 0.16101190476190477,
+        "harm_rate": 0.07182539682539682,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.11349206349206349
+      },
+      "Real + LearnedBelief JR": {
+        "terminal": {
+          "count": 15540,
+          "accuracy": 0.5446589446589447,
+          "macro_f1": 0.5513128164218509
+        },
+        "positive_action_hit_rate": 0.5858134920634921,
+        "stay_rate": 0.11666666666666667,
+        "correction_rate": 0.2257936507936508,
+        "harm_rate": 0.09424603174603174,
+        "no_positive_contexts": 886,
+        "single_positive_contexts": 720,
+        "multi_positive_contexts": 8474,
+        "mean_number_of_positives": 9.343811181205133,
+        "selected_action_overlap_with_fixed_oracle": 0.29662698412698413
+      }
+    }
+  },
+  "belief_metrics": {
+    "s1_only": {
+      "count": 10080,
+      "accuracy": 0.454265873015873,
+      "macro_f1": 0.44478185161607287
+    },
+    "learned_belief": {
+      "count": 10080,
+      "accuracy": 0.5476190476190477,
+      "macro_f1": 0.566859752840995
+    },
+    "s1_mean_entropy": 0.40272706747055054,
+    "learned_mean_entropy": 0.6030118465423584
+  },
+  "belief_gain": {
+    "accuracy_pp": 0.783730158730156,
+    "macro_f1_pp": 0.787937233827285
+  },
+  "remaining_identity_gap": {
+    "accuracy_pp": 16.86507936507937,
+    "macro_f1_pp": 15.258612820547324
+  },
+  "real_learned_to_real_gt_gap": {
+    "accuracy_pp": 32.27182539682539
+  },
+  "belief_training": {
+    "seed": 42,
+    "epochs": 20,
+    "batch_size": 512,
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "best_epoch": 14,
+    "best_val_accuracy": 0.5476190476190477,
+    "best_val_macro_f1": 0.566859752840995,
+    "final_train_loss": 0.2336511495212714,
+    "elapsed_seconds": 4.0696494579315186,
+    "input_dim": 3108,
+    "feature_schema": "[stgcn256, logp12, dino_mean768] for s0/s1 plus h1-h0",
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_belief_estimator_v1/action_belief_best.pth",
+    "test_used": false,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.5831137299537659,
+        "val_accuracy": 0.5438492063492063,
+        "val_macro_f1": 0.5557547037035195
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.2223757326602935,
+        "val_accuracy": 0.5433531746031746,
+        "val_macro_f1": 0.5572427940123236
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.0409908453623453,
+        "val_accuracy": 0.5452380952380952,
+        "val_macro_f1": 0.5666133100450287
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.8869049390157063,
+        "val_accuracy": 0.5452380952380952,
+        "val_macro_f1": 0.5654215728566715
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.7682115942239761,
+        "val_accuracy": 0.5407738095238095,
+        "val_macro_f1": 0.5619783913108052
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.6697631498177846,
+        "val_accuracy": 0.5375992063492063,
+        "val_macro_f1": 0.5601138436826576
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5917491013805072,
+        "val_accuracy": 0.5410714285714285,
+        "val_macro_f1": 0.564106040362645
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5155740976333618,
+        "val_accuracy": 0.5341269841269841,
+        "val_macro_f1": 0.5585130564346185
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.4575379823644956,
+        "val_accuracy": 0.5388888888888889,
+        "val_macro_f1": 0.5612144359627057
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.41368407060702644,
+        "val_accuracy": 0.5430555555555555,
+        "val_macro_f1": 0.5653821713813961
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.375074577331543,
+        "val_accuracy": 0.5428571428571428,
+        "val_macro_f1": 0.5582429101812855
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.3468853791554769,
+        "val_accuracy": 0.5396825396825397,
+        "val_macro_f1": 0.5636333808347751
+      },
+      {
+        "epoch": 13,
+        "train_loss": 0.32315086101492246,
+        "val_accuracy": 0.5429563492063492,
+        "val_macro_f1": 0.5617660082664028
+      },
+      {
+        "epoch": 14,
+        "train_loss": 0.2980633353193601,
+        "val_accuracy": 0.5476190476190477,
+        "val_macro_f1": 0.566859752840995
+      },
+      {
+        "epoch": 15,
+        "train_loss": 0.2805004614094893,
+        "val_accuracy": 0.539781746031746,
+        "val_macro_f1": 0.5595877708380426
+      },
+      {
+        "epoch": 16,
+        "train_loss": 0.2658597655594349,
+        "val_accuracy": 0.5466269841269841,
+        "val_macro_f1": 0.5641811652954496
+      },
+      {
+        "epoch": 17,
+        "train_loss": 0.2616467967629433,
+        "val_accuracy": 0.5380952380952381,
+        "val_macro_f1": 0.5574436842315856
+      },
+      {
+        "epoch": 18,
+        "train_loss": 0.24757995729645094,
+        "val_accuracy": 0.5379960317460317,
+        "val_macro_f1": 0.5589504423870453
+      },
+      {
+        "epoch": 19,
+        "train_loss": 0.2424421747525533,
+        "val_accuracy": 0.5455357142857142,
+        "val_macro_f1": 0.5651937247441013
+      },
+      {
+        "epoch": 20,
+        "train_loss": 0.2336511495212714,
+        "val_accuracy": 0.5386904761904762,
+        "val_macro_f1": 0.5618813434477364
+      }
+    ]
+  },
+  "jr_training": {
+    "imagined": {
+      "contexts": 30580,
+      "positive_contexts": 26750,
+      "multi_positive_contexts": 24146,
+      "single_positive_contexts": 2604,
+      "no_positive_contexts": 3830,
+      "mean_positive_count": 8.811439252336449,
+      "evidence": "imagined",
+      "gt_identity_input": false,
+      "learned_belief_input": true,
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "loss_history": [
+        1.7336098710695902,
+        1.5907096246878305,
+        1.4239385803540547,
+        1.2958339750766754,
+        1.2282288948694864,
+        1.1881620784600575,
+        1.160311406850815,
+        1.139997559785843,
+        1.1225965082645417,
+        1.1043897112210592,
+        1.0922258108854295,
+        1.0793540745973587,
+        1.0701714426279068,
+        1.058403726418813,
+        1.0473480035861333,
+        1.042454316218694,
+        1.034036151568095,
+        1.0232063035170238,
+        1.010179728269577,
+        1.00113052825133
+      ],
+      "final_loss": 1.00113052825133,
+      "elapsed_seconds": 11.4296875,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_belief_estimator_v1/joint_revision_imagined_learned_belief.pth",
+      "test_used": false
+    },
+    "real": {
+      "contexts": 30580,
+      "positive_contexts": 26750,
+      "multi_positive_contexts": 24146,
+      "single_positive_contexts": 2604,
+      "no_positive_contexts": 3830,
+      "mean_positive_count": 8.811439252336449,
+      "evidence": "real",
+      "gt_identity_input": false,
+      "learned_belief_input": true,
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 512,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "loss_history": [
+        1.6599731862545013,
+        1.316084881623586,
+        0.822434730331103,
+        0.5714195261398951,
+        0.46223961661259333,
+        0.3982497493426005,
+        0.3643526718020439,
+        0.33880333229899406,
+        0.320156749834617,
+        0.3023104853928089,
+        0.28703903903563815,
+        0.2768554670115312,
+        0.26829900220036507,
+        0.26052592843770983,
+        0.24795035421848297,
+        0.2348555088043213,
+        0.2274227959414323,
+        0.2149475152293841,
+        0.20724331289529802,
+        0.20198888356486958
+      ],
+      "final_loss": 0.20198888356486958,
+      "elapsed_seconds": 11.578691720962524,
+      "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_action_belief_estimator_v1/joint_revision_real_learned_belief.pth",
+      "test_used": false
+    }
+  },
+  "dino_cache": {
+    "encoder_name": "facebook/dinov2-base",
+    "encoder_version": "transformers.AutoModel",
+    "model_config_name": "facebook/dinov2-base",
+    "rgb_dataset_version": "activeview-rgb-observation-v1",
+    "patch_grid": [
+      16,
+      16
+    ],
+    "pooled_grid": [
+      4,
+      4
+    ],
+    "embedding_shape": [
+      16,
+      768
+    ],
+    "dtype": "float16",
+    "observation_count": 81320,
+    "future_candidate_rgb_used": false
+  },
+  "input_alignment": {
+    "train": {
+      "contexts": 30580,
+      "unique_visited_observations": 61160
+    },
+    "val": {
+      "contexts": 10080,
+      "unique_visited_observations": 20160
+    }
+  },
+  "scientific_conclusion": {
+    "belief": "Learned visited-history belief does not produce a large identity recovery (+0.784 pp Moving Accuracy).",
+    "real_candidate": "Real+LearnedBelief remains 32.272 pp below Real+GT, so identity/selector limitations remain even with real candidate evidence.",
+    "overall": "Learned visited-history belief does not produce a large identity recovery (+0.784 pp Moving Accuracy). Real+LearnedBelief remains 32.272 pp below Real+GT, so identity/selector limitations remain even with real candidate evidence. The remaining limitation should be interpreted against the separate WM candidate-evidence gap, not as evidence to change WM-E in this experiment."
+  },
+  "protocol": {
+    "taxonomy": "reduced12_no_kneel_clean",
+    "candidate_budget": "ALL_LEGAL",
+    "terminal_observation": "real archived skeleton through frozen reduced12 ST-GCN",
+    "candidate_evidence": "imagined or true frozen cache",
+    "belief_inputs": "visited s0/s1 ST-GCN feature, logp, DINO mean and h1-h0",
+    "test_used": false
+  },
+  "leakage_flags": {
+    "test_used": false,
+    "future_candidate_rgb_used": false,
+    "future_candidate_dino_used": false,
+    "gt_label_as_belief_input": false,
+    "stgcn_retrained": false,
+    "wm_retrained": false
+  }
+}
