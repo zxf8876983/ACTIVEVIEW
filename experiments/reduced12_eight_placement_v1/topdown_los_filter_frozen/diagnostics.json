@@ -1,0 +1,25 @@
+{
+  "contexts_with_los1_candidate": {
+    "count": 8268,
+    "rate": 0.8202380952380952
+  },
+  "frozen_selection_filtered_out": {
+    "count": 1022,
+    "rate": 0.10138888888888889
+  },
+  "filtered_context_outcomes": {
+    "rescue_count": 272,
+    "harm_count": 125,
+    "net_rescue_minus_harm": 147,
+    "rescue_rate_among_frozen_wrong": 0.4108761329305136,
+    "harm_rate_among_frozen_correct": 0.3472222222222222
+  },
+  "frozen_selected_correctness_by_los": {
+    "los1_count": 7246,
+    "los1_correct": 3717,
+    "p_correct_given_los1": 0.5129726745790781,
+    "los0_count": 2834,
+    "los0_correct": 862,
+    "p_correct_given_los0": 0.3041637261820748
+  }
+}
