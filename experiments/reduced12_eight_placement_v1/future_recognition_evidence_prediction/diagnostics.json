@@ -1,0 +1,53 @@
+{
+  "logp": {
+    "candidate_count": 68702,
+    "logp_pearson": 0.6108362143529088,
+    "logp_spearman": 0.6115988679396192,
+    "top1_class_agreement": 0.4379785159092894,
+    "top3_class_agreement": 0.6841285552094554,
+    "score_spearman_vs_gt_true_logp": {
+      "entropy": 0.0994283885298631,
+      "belief": 0.1355184990603193
+    },
+    "predicted_top_vs_real_best_gt_logp_overlap": {
+      "entropy": 0.19831349206349205,
+      "belief": 0.19563492063492063
+    }
+  },
+  "feature": {
+    "candidate_count": 68702,
+    "logp_pearson": 0.5286974166784865,
+    "logp_spearman": 0.5334613881482823,
+    "top1_class_agreement": 0.44177753194957936,
+    "top3_class_agreement": 0.6985386160519345,
+    "score_spearman_vs_gt_true_logp": {
+      "entropy": 0.08736211845167388,
+      "belief": 0.13144693374264918
+    },
+    "predicted_top_vs_real_best_gt_logp_overlap": {
+      "entropy": 0.2003968253968254,
+      "belief": 0.20327380952380952
+    },
+    "feature_target_available": true,
+    "feature_cosine_mean": 0.8907238245010376,
+    "feature_classification_agreement": 0.24895927338359872
+  },
+  "feature_logp": {
+    "candidate_count": 68702,
+    "logp_pearson": 0.6132176252464105,
+    "logp_spearman": 0.6146859759536549,
+    "top1_class_agreement": 0.44393176326744493,
+    "top3_class_agreement": 0.6901400250356613,
+    "score_spearman_vs_gt_true_logp": {
+      "entropy": 0.10401767030842003,
+      "belief": 0.13259291567990508
+    },
+    "predicted_top_vs_real_best_gt_logp_overlap": {
+      "entropy": 0.1953373015873016,
+      "belief": 0.19146825396825398
+    },
+    "feature_target_available": true,
+    "feature_cosine_mean": 0.8870758414268494,
+    "feature_classification_agreement": 0.44393176326744493
+  }
+}
