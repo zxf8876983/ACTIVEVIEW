@@ -1,0 +1,26 @@
+{
+  "context_los1_fraction": {
+    "mean": 0.48574331973951196,
+    "median": 0.5,
+    "count": 10080
+  },
+  "candidate_correctness_by_los": {
+    "los1_count": 34721,
+    "los0_count": 33981,
+    "correct_los1_count": 15907,
+    "correct_los0_count": 7072,
+    "wrong_los1_count": 18814,
+    "wrong_los0_count": 26909,
+    "p_correct_given_los1": 0.45813772644797096,
+    "p_correct_given_los0": 0.20811630028545364,
+    "los1_fraction_among_correct": 0.6922407415466295,
+    "los1_fraction_among_wrong": 0.4114778120420795
+  },
+  "contexts_all_candidate_los_equal": {
+    "count": 3181,
+    "rate": 0.3155753968253968
+  },
+  "topdown_selected_los1_rate": 0.8202380952380952,
+  "candidate_count": 68702,
+  "legal_candidates_per_context": 6.815674603174603
+}
