@@ -1,0 +1,72 @@
+{
+  "head": {
+    "mean": 0.08812598034169453,
+    "median": 0.07474380731582642,
+    "spearman_with_gt_logp": -0.03499958392912533,
+    "mean_if_stgcn_correct": 0.08527848574903565,
+    "mean_if_stgcn_wrong": 0.08955704519406002
+  },
+  "torso": {
+    "mean": 0.012461500886685756,
+    "median": 0.005664362572133541,
+    "spearman_with_gt_logp": -0.027513610465394918,
+    "mean_if_stgcn_correct": 0.0111353448021018,
+    "mean_if_stgcn_wrong": 0.013127986914891577
+  },
+  "left_upper_arm": {
+    "mean": 0.2087406577773967,
+    "median": 0.026346152648329735,
+    "spearman_with_gt_logp": -0.020765618063780397,
+    "mean_if_stgcn_correct": 0.19596614118591915,
+    "mean_if_stgcn_wrong": 0.2151607443149284
+  },
+  "left_forearm": {
+    "mean": 0.4782858625863746,
+    "median": 0.5117311477661133,
+    "spearman_with_gt_logp": -0.05171457801597677,
+    "mean_if_stgcn_correct": 0.46633459619795026,
+    "mean_if_stgcn_wrong": 0.48429220841537973
+  },
+  "right_upper_arm": {
+    "mean": 0.22891684674684634,
+    "median": 0.13309387862682343,
+    "spearman_with_gt_logp": -0.00042064222941842294,
+    "mean_if_stgcn_correct": 0.23141935362547536,
+    "mean_if_stgcn_wrong": 0.2276591623087295
+  },
+  "right_forearm": {
+    "mean": 0.36613433781336263,
+    "median": 0.3595578372478485,
+    "spearman_with_gt_logp": -0.04196272196614121,
+    "mean_if_stgcn_correct": 0.3567868812759018,
+    "mean_if_stgcn_wrong": 0.3708320873874132
+  },
+  "left_thigh": {
+    "mean": 0.016688829883908938,
+    "median": 0.0,
+    "spearman_with_gt_logp": 0.0317898544874031,
+    "mean_if_stgcn_correct": 0.015755817535802016,
+    "mean_if_stgcn_wrong": 0.017157733734206357
+  },
+  "right_thigh": {
+    "mean": 0.0170650094664574,
+    "median": 0.0,
+    "spearman_with_gt_logp": -0.031594855167863735,
+    "mean_if_stgcn_correct": 0.013322605998718968,
+    "mean_if_stgcn_wrong": 0.018945828513439473
+  },
+  "left_lower_leg": {
+    "mean": 0.21570211214911264,
+    "median": 0.16187749803066254,
+    "spearman_with_gt_logp": -0.07742528004416316,
+    "mean_if_stgcn_correct": 0.19620746536865485,
+    "mean_if_stgcn_wrong": 0.22549953332375428
+  },
+  "right_lower_leg": {
+    "mean": 0.20584550445708105,
+    "median": 0.16612616181373596,
+    "spearman_with_gt_logp": -0.060600671096939056,
+    "mean_if_stgcn_correct": 0.1893192774926555,
+    "mean_if_stgcn_wrong": 0.21415108741129524
+  }
+}
