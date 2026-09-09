@@ -1,0 +1,107 @@
+{
+  "joints": {
+    "pelvis": {
+      "joint_index": 0,
+      "mean": 0.7161728143692017,
+      "median": 1.0,
+      "count": 68702
+    },
+    "right_hip": {
+      "joint_index": 1,
+      "mean": 0.7111097574234009,
+      "median": 1.0,
+      "count": 68702
+    },
+    "right_knee": {
+      "joint_index": 2,
+      "mean": 0.6678529381752014,
+      "median": 1.0,
+      "count": 68702
+    },
+    "right_ankle": {
+      "joint_index": 3,
+      "mean": 0.6277279853820801,
+      "median": 1.0,
+      "count": 68702
+    },
+    "left_hip": {
+      "joint_index": 4,
+      "mean": 0.7129486799240112,
+      "median": 1.0,
+      "count": 68702
+    },
+    "left_knee": {
+      "joint_index": 5,
+      "mean": 0.6666375398635864,
+      "median": 1.0,
+      "count": 68702
+    },
+    "left_ankle": {
+      "joint_index": 6,
+      "mean": 0.6313934922218323,
+      "median": 1.0,
+      "count": 68702
+    },
+    "spine1": {
+      "joint_index": 7,
+      "mean": 0.7228755950927734,
+      "median": 1.0,
+      "count": 68702
+    },
+    "spine3": {
+      "joint_index": 8,
+      "mean": 0.7236980199813843,
+      "median": 1.0,
+      "count": 68702
+    },
+    "neck": {
+      "joint_index": 9,
+      "mean": 0.7249109745025635,
+      "median": 1.0,
+      "count": 68702
+    },
+    "head": {
+      "joint_index": 10,
+      "mean": 0.7232443690299988,
+      "median": 1.0,
+      "count": 68702
+    },
+    "left_shoulder": {
+      "joint_index": 11,
+      "mean": 0.7263422608375549,
+      "median": 1.0,
+      "count": 68702
+    },
+    "left_elbow": {
+      "joint_index": 12,
+      "mean": 0.7106318473815918,
+      "median": 1.0,
+      "count": 68702
+    },
+    "left_wrist": {
+      "joint_index": 13,
+      "mean": 0.6459782719612122,
+      "median": 1.0,
+      "count": 68702
+    },
+    "right_shoulder": {
+      "joint_index": 14,
+      "mean": 0.7233268022537231,
+      "median": 1.0,
+      "count": 68702
+    },
+    "right_elbow": {
+      "joint_index": 15,
+      "mean": 0.7177204489707947,
+      "median": 1.0,
+      "count": 68702
+    },
+    "right_wrist": {
+      "joint_index": 16,
+      "mean": 0.7027961611747742,
+      "median": 1.0,
+      "count": 68702
+    }
+  },
+  "visibility_npz": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced12_eight_placement_v1/scene_joint_visibility_oracle/visibility.npz"
+}

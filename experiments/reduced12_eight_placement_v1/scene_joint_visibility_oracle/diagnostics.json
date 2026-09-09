@@ -1,0 +1,21 @@
+{
+  "candidate_count": 68702,
+  "scene_visibility_correct_mean": 0.8775672385154734,
+  "scene_visibility_wrong_mean": 0.6068152072532583,
+  "candidate_spearman_scene_visibility_vs_gt_logp": 0.26552142882772395,
+  "context_visibility_range_mean": 0.5645220561691242,
+  "contexts_visibility_indistinguishable": {
+    "count": 1898,
+    "rate": 0.1882936507936508
+  },
+  "contexts_all_topdown_los_equal": {
+    "count": 3181,
+    "rate": 0.3155753968253968
+  },
+  "topdown_los1_candidate_fraction": 0.5043812407207942,
+  "frozen_selection_removed_by_topdown_filter": {
+    "count": 1026,
+    "rate": 0.10178571428571428
+  },
+  "p_correct_given_visibility_positive": 0.9352887418947735
+}
