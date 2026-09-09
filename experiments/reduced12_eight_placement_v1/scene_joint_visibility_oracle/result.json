@@ -1649,7 +1649,15 @@
       "count": 1026,
       "rate": 0.10178571428571428
     },
-    "p_correct_given_visibility_positive": 0.9352887418947735
+    "p_correct_given_visibility_positive": 0.9352887418947735,
+    "candidate_correctness_by_visibility": {
+      "positive_count": 55049,
+      "positive_correct_count": 21492,
+      "zero_count": 13653,
+      "zero_correct_count": 1487,
+      "p_correct_given_visibility_positive": 0.3904158113680539,
+      "p_correct_given_visibility_zero": 0.10891379184062111
+    }
   },
   "protocol": {
     "visibility": "17 H36M joints, six frames, static HM3D ray cast; humanoid excluded from ray simulator",
