@@ -1,0 +1,446 @@
+{
+  "walk": {
+    "FrozenStageCv0": {
+      "support": 1071,
+      "recall": 0.5929038281979458,
+      "f1": 0.4006309148264984
+    },
+    "GTMargin Listwise": {
+      "support": 1071,
+      "recall": 0.6171802054154996,
+      "f1": 0.41158156911581567
+    },
+    "AnyCorrect Oracle": {
+      "support": 1071,
+      "recall": 0.9551820728291317,
+      "f1": 0.6450189155107188
+    },
+    "dino_mean": {
+      "support": 1071,
+      "recall": 0.5658263305322129,
+      "f1": 0.4327026062120671
+    },
+    "dino_meanmax": {
+      "support": 1071,
+      "recall": 0.5704948646125116,
+      "f1": 0.4311926605504587
+    },
+    "dino_spatial": {
+      "support": 1071,
+      "recall": 0.5779645191409897,
+      "f1": 0.4298611111111111
+    },
+    "candidate_conditioned_spatial": {
+      "support": 1071,
+      "recall": 0.5714285714285714,
+      "f1": 0.44868035190615835
+    }
+  },
+  "sit": {
+    "FrozenStageCv0": {
+      "support": 786,
+      "recall": 0.7201017811704835,
+      "f1": 0.7214786488209051
+    },
+    "GTMargin Listwise": {
+      "support": 786,
+      "recall": 0.7353689567430025,
+      "f1": 0.7339682539682539
+    },
+    "AnyCorrect Oracle": {
+      "support": 786,
+      "recall": 0.9007633587786259,
+      "f1": 0.8740740740740741
+    },
+    "dino_mean": {
+      "support": 786,
+      "recall": 0.7595419847328244,
+      "f1": 0.7495291902071564
+    },
+    "dino_meanmax": {
+      "support": 786,
+      "recall": 0.7493638676844784,
+      "f1": 0.743217665615142
+    },
+    "dino_spatial": {
+      "support": 786,
+      "recall": 0.7608142493638677,
+      "f1": 0.7461010605115408
+    },
+    "candidate_conditioned_spatial": {
+      "support": 786,
+      "recall": 0.7697201017811705,
+      "f1": 0.7581453634085213
+    }
+  },
+  "stand up": {
+    "FrozenStageCv0": {
+      "support": 907,
+      "recall": 0.61742006615215,
+      "f1": 0.6800242865816637
+    },
+    "GTMargin Listwise": {
+      "support": 907,
+      "recall": 0.6383682469680264,
+      "f1": 0.6996978851963745
+    },
+    "AnyCorrect Oracle": {
+      "support": 907,
+      "recall": 0.8136714443219405,
+      "f1": 0.8477886272257323
+    },
+    "dino_mean": {
+      "support": 907,
+      "recall": 0.6438809261300992,
+      "f1": 0.6989826451226809
+    },
+    "dino_meanmax": {
+      "support": 907,
+      "recall": 0.6328555678059536,
+      "f1": 0.6825208085612365
+    },
+    "dino_spatial": {
+      "support": 907,
+      "recall": 0.6460859977949284,
+      "f1": 0.6984505363528011
+    },
+    "candidate_conditioned_spatial": {
+      "support": 907,
+      "recall": 0.6438809261300992,
+      "f1": 0.6977299880525686
+    }
+  },
+  "bend": {
+    "FrozenStageCv0": {
+      "support": 1012,
+      "recall": 0.2826086956521739,
+      "f1": 0.319910514541387
+    },
+    "GTMargin Listwise": {
+      "support": 1012,
+      "recall": 0.27964426877470355,
+      "f1": 0.31887323943661977
+    },
+    "AnyCorrect Oracle": {
+      "support": 1012,
+      "recall": 0.817193675889328,
+      "f1": 0.6685529506871464
+    },
+    "dino_mean": {
+      "support": 1012,
+      "recall": 0.3211462450592885,
+      "f1": 0.30345471521942113
+    },
+    "dino_meanmax": {
+      "support": 1012,
+      "recall": 0.3241106719367589,
+      "f1": 0.3095799905615857
+    },
+    "dino_spatial": {
+      "support": 1012,
+      "recall": 0.3241106719367589,
+      "f1": 0.31644958996623257
+    },
+    "candidate_conditioned_spatial": {
+      "support": 1012,
+      "recall": 0.32707509881422925,
+      "f1": 0.30036297640653353
+    }
+  },
+  "crawl": {
+    "FrozenStageCv0": {
+      "support": 446,
+      "recall": 0.7354260089686099,
+      "f1": 0.7672514619883041
+    },
+    "GTMargin Listwise": {
+      "support": 446,
+      "recall": 0.7354260089686099,
+      "f1": 0.7610208816705337
+    },
+    "AnyCorrect Oracle": {
+      "support": 446,
+      "recall": 0.8497757847533632,
+      "f1": 0.9056152927120669
+    },
+    "dino_mean": {
+      "support": 446,
+      "recall": 0.7533632286995515,
+      "f1": 0.7859649122807018
+    },
+    "dino_meanmax": {
+      "support": 446,
+      "recall": 0.7331838565022422,
+      "f1": 0.765807962529274
+    },
+    "dino_spatial": {
+      "support": 446,
+      "recall": 0.7511210762331838,
+      "f1": 0.7799767171129219
+    },
+    "candidate_conditioned_spatial": {
+      "support": 446,
+      "recall": 0.7511210762331838,
+      "f1": 0.775462962962963
+    }
+  },
+  "stumble": {
+    "FrozenStageCv0": {
+      "support": 849,
+      "recall": 0.160188457008245,
+      "f1": 0.23734729493891796
+    },
+    "GTMargin Listwise": {
+      "support": 849,
+      "recall": 0.16136631330977622,
+      "f1": 0.24140969162995596
+    },
+    "AnyCorrect Oracle": {
+      "support": 849,
+      "recall": 0.4098939929328622,
+      "f1": 0.5790349417637272
+    },
+    "dino_mean": {
+      "support": 849,
+      "recall": 0.16489988221436985,
+      "f1": 0.2434782608695652
+    },
+    "dino_meanmax": {
+      "support": 849,
+      "recall": 0.15312131919905772,
+      "f1": 0.22827041264266903
+    },
+    "dino_spatial": {
+      "support": 849,
+      "recall": 0.1707891637220259,
+      "f1": 0.2537182852143482
+    },
+    "candidate_conditioned_spatial": {
+      "support": 849,
+      "recall": 0.17550058892815076,
+      "f1": 0.25823223570190645
+    }
+  },
+  "clap": {
+    "FrozenStageCv0": {
+      "support": 486,
+      "recall": 0.39300411522633744,
+      "f1": 0.42024202420242024
+    },
+    "GTMargin Listwise": {
+      "support": 486,
+      "recall": 0.3497942386831276,
+      "f1": 0.3824521934758155
+    },
+    "AnyCorrect Oracle": {
+      "support": 486,
+      "recall": 0.6502057613168725,
+      "f1": 0.7340301974448317
+    },
+    "dino_mean": {
+      "support": 486,
+      "recall": 0.3991769547325103,
+      "f1": 0.42920353982300885
+    },
+    "dino_meanmax": {
+      "support": 486,
+      "recall": 0.39094650205761317,
+      "f1": 0.43181818181818177
+    },
+    "dino_spatial": {
+      "support": 486,
+      "recall": 0.4053497942386831,
+      "f1": 0.4353591160220994
+    },
+    "candidate_conditioned_spatial": {
+      "support": 486,
+      "recall": 0.3950617283950617,
+      "f1": 0.4329199549041714
+    }
+  },
+  "throw": {
+    "FrozenStageCv0": {
+      "support": 969,
+      "recall": 0.5717234262125903,
+      "f1": 0.5009041591320073
+    },
+    "GTMargin Listwise": {
+      "support": 969,
+      "recall": 0.5655314757481941,
+      "f1": 0.4986351228389445
+    },
+    "AnyCorrect Oracle": {
+      "support": 969,
+      "recall": 0.7316821465428277,
+      "f1": 0.7970770095559304
+    },
+    "dino_mean": {
+      "support": 969,
+      "recall": 0.564499484004128,
+      "f1": 0.4984054669703872
+    },
+    "dino_meanmax": {
+      "support": 969,
+      "recall": 0.5944272445820433,
+      "f1": 0.5222121486854034
+    },
+    "dino_spatial": {
+      "support": 969,
+      "recall": 0.5717234262125903,
+      "f1": 0.512962962962963
+    },
+    "candidate_conditioned_spatial": {
+      "support": 969,
+      "recall": 0.5933952528379773,
+      "f1": 0.5145413870246085
+    }
+  },
+  "kick": {
+    "FrozenStageCv0": {
+      "support": 1152,
+      "recall": 0.7543402777777778,
+      "f1": 0.5768337205443079
+    },
+    "GTMargin Listwise": {
+      "support": 1152,
+      "recall": 0.7578125,
+      "f1": 0.5845329762303314
+    },
+    "AnyCorrect Oracle": {
+      "support": 1152,
+      "recall": 0.9105902777777778,
+      "f1": 0.8160248930377285
+    },
+    "dino_mean": {
+      "support": 1152,
+      "recall": 0.7517361111111112,
+      "f1": 0.5923392612859097
+    },
+    "dino_meanmax": {
+      "support": 1152,
+      "recall": 0.7552083333333334,
+      "f1": 0.5920381082000681
+    },
+    "dino_spatial": {
+      "support": 1152,
+      "recall": 0.7473958333333334,
+      "f1": 0.5903325334247514
+    },
+    "candidate_conditioned_spatial": {
+      "support": 1152,
+      "recall": 0.7569444444444444,
+      "f1": 0.5993127147766323
+    }
+  },
+  "knock": {
+    "FrozenStageCv0": {
+      "support": 443,
+      "recall": 0.16252821670428894,
+      "f1": 0.24615384615384614
+    },
+    "GTMargin Listwise": {
+      "support": 443,
+      "recall": 0.16252821670428894,
+      "f1": 0.24448217317487267
+    },
+    "AnyCorrect Oracle": {
+      "support": 443,
+      "recall": 0.45598194130925507,
+      "f1": 0.6102719033232629
+    },
+    "dino_mean": {
+      "support": 443,
+      "recall": 0.17155756207674944,
+      "f1": 0.25806451612903225
+    },
+    "dino_meanmax": {
+      "support": 443,
+      "recall": 0.1963882618510158,
+      "f1": 0.29194630872483224
+    },
+    "dino_spatial": {
+      "support": 443,
+      "recall": 0.15349887133182843,
+      "f1": 0.23367697594501718
+    },
+    "candidate_conditioned_spatial": {
+      "support": 443,
+      "recall": 0.19187358916478556,
+      "f1": 0.2809917355371901
+    }
+  },
+  "punch": {
+    "FrozenStageCv0": {
+      "support": 955,
+      "recall": 0.17486910994764399,
+      "f1": 0.21019509125236
+    },
+    "GTMargin Listwise": {
+      "support": 955,
+      "recall": 0.17801047120418848,
+      "f1": 0.21505376344086022
+    },
+    "AnyCorrect Oracle": {
+      "support": 955,
+      "recall": 0.45968586387434557,
+      "f1": 0.5952542372881356
+    },
+    "dino_mean": {
+      "support": 955,
+      "recall": 0.2,
+      "f1": 0.23771001866832606
+    },
+    "dino_meanmax": {
+      "support": 955,
+      "recall": 0.187434554973822,
+      "f1": 0.22572509457755358
+    },
+    "dino_spatial": {
+      "support": 955,
+      "recall": 0.2031413612565445,
+      "f1": 0.23687423687423684
+    },
+    "candidate_conditioned_spatial": {
+      "support": 955,
+      "recall": 0.18848167539267016,
+      "f1": 0.22799240025332487
+    }
+  },
+  "touching face": {
+    "FrozenStageCv0": {
+      "support": 1004,
+      "recall": 0.21414342629482072,
+      "f1": 0.2564102564102564
+    },
+    "GTMargin Listwise": {
+      "support": 1004,
+      "recall": 0.2241035856573705,
+      "f1": 0.26439482961222094
+    },
+    "AnyCorrect Oracle": {
+      "support": 1004,
+      "recall": 0.600597609561753,
+      "f1": 0.6828992072480181
+    },
+    "dino_mean": {
+      "support": 1004,
+      "recall": 0.2400398406374502,
+      "f1": 0.2787738577212261
+    },
+    "dino_meanmax": {
+      "support": 1004,
+      "recall": 0.24203187250996017,
+      "f1": 0.2793103448275862
+    },
+    "dino_spatial": {
+      "support": 1004,
+      "recall": 0.23705179282868527,
+      "f1": 0.2764227642276423
+    },
+    "candidate_conditioned_spatial": {
+      "support": 1004,
+      "recall": 0.23207171314741035,
+      "f1": 0.2703016241299304
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "branch": "candidate_conditioned_spatial",
+  "seed": 42,
+  "epochs": 20,
+  "batch_size": 256,
+  "optimizer": "AdamW",
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "selected_epoch": 20,
+  "best_val_loss": 1.8149383872747422,
+  "parameter_count": 215426,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/h1_visual_context_batch/candidate_conditioned_spatial_best.pth",
+  "elapsed_seconds": 13.813330888748169,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.9018044233322144,
+      "val_loss": 1.8873232752084732
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.8697785079479217,
+      "val_loss": 1.8695308238267898
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.854264509677887,
+      "val_loss": 1.8600945740938186
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.861517196893692,
+      "val_loss": 1.8561239421367646
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.8532192528247833,
+      "val_loss": 1.85134859085083
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.8400255858898162,
+      "val_loss": 1.8503564804792405
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.8368806302547456,
+      "val_loss": 1.8475887030363083
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.8353144168853759,
+      "val_loss": 1.8382850408554077
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.8292664587497711,
+      "val_loss": 1.8334803819656371
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.8174579441547394,
+      "val_loss": 1.8264632672071457
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.8171112775802611,
+      "val_loss": 1.8322141736745834
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.8256260275840759,
+      "val_loss": 1.8226087033748626
+    },
+    {
+      "epoch": 13,
+      "train_loss": 1.8153887510299682,
+      "val_loss": 1.826307436823845
+    },
+    {
+      "epoch": 14,
+      "train_loss": 1.8102041006088256,
+      "val_loss": 1.8261378705501556
+    },
+    {
+      "epoch": 15,
+      "train_loss": 1.8085339486598968,
+      "val_loss": 1.8270362436771392
+    },
+    {
+      "epoch": 16,
+      "train_loss": 1.7954406201839448,
+      "val_loss": 1.8197007089853288
+    },
+    {
+      "epoch": 17,
+      "train_loss": 1.8077175676822663,
+      "val_loss": 1.821162959933281
+    },
+    {
+      "epoch": 18,
+      "train_loss": 1.7855771362781525,
+      "val_loss": 1.821228915452957
+    },
+    {
+      "epoch": 19,
+      "train_loss": 1.7935261487960816,
+      "val_loss": 1.8202666938304901
+    },
+    {
+      "epoch": 20,
+      "train_loss": 1.7935613691806793,
+      "val_loss": 1.8149383872747422
+    }
+  ],
+  "test_used": false,
+  "objective": "Stay-aware GTMargin listwise (unchanged)"
+}

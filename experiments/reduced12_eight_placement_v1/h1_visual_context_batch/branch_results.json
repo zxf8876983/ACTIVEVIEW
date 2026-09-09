@@ -1,0 +1,58 @@
+{
+  "completed_branch": "candidate_conditioned_spatial",
+  "metrics_moving": {
+    "dino_mean": {
+      "n": 10080,
+      "accuracy": 0.4665674603174603,
+      "macro_f1": 0.4590507492091234,
+      "move_rate": 0.9184523809523809,
+      "stay_rate": 0.08154761904761909,
+      "s0_error_correction_rate": 0.3848609817746441,
+      "s0_correct_harm_rate": 0.29379633242294184,
+      "mean_selected_gt_true_logp": -3.8521728327906297,
+      "mean_selected_gt_margin": -0.8182838843384148,
+      "mean_regret_to_gt_logp_oracle": 2.57003683711858,
+      "p90_regret_to_gt_logp_oracle": 8.522289800643922
+    },
+    "dino_meanmax": {
+      "n": 10080,
+      "accuracy": 0.4666666666666667,
+      "macro_f1": 0.45863664060783266,
+      "move_rate": 0.9207341269841269,
+      "stay_rate": 0.07926587301587307,
+      "s0_error_correction_rate": 0.38379672741785287,
+      "s0_correct_harm_rate": 0.29028482247366366,
+      "mean_selected_gt_true_logp": -3.8209605135831723,
+      "mean_selected_gt_margin": -0.8134214236314935,
+      "mean_regret_to_gt_logp_oracle": 2.538824517911123,
+      "p90_regret_to_gt_logp_oracle": 8.477770905382933
+    },
+    "dino_spatial": {
+      "n": 10080,
+      "accuracy": 0.4685515873015873,
+      "macro_f1": 0.45918215747713886,
+      "move_rate": 0.9069444444444444,
+      "stay_rate": 0.09305555555555556,
+      "s0_error_correction_rate": 0.38645736330983105,
+      "s0_correct_harm_rate": 0.2906749902458057,
+      "mean_selected_gt_true_logp": -3.8824608650408416,
+      "mean_selected_gt_margin": -0.8571236489877133,
+      "mean_regret_to_gt_logp_oracle": 2.6003248693687913,
+      "p90_regret_to_gt_logp_oracle": 8.663627947866917
+    },
+    "candidate_conditioned_spatial": {
+      "n": 10080,
+      "accuracy": 0.47152777777777777,
+      "macro_f1": 0.4637228079220425,
+      "move_rate": 0.9225198412698413,
+      "stay_rate": 0.07748015873015868,
+      "s0_error_correction_rate": 0.38645736330983105,
+      "s0_correct_harm_rate": 0.27896995708154504,
+      "mean_selected_gt_true_logp": -3.7802952584221736,
+      "mean_selected_gt_margin": -0.7048888827315413,
+      "mean_regret_to_gt_logp_oracle": 2.498159262750124,
+      "p90_regret_to_gt_logp_oracle": 8.361923062801361
+    }
+  },
+  "test_used": false
+}
