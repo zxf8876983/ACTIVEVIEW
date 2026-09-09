@@ -1,0 +1,62 @@
+{
+  "projected_area": {
+    "mean": 0.18438124866992955,
+    "median": 0.14475159556605596,
+    "std": 0.12128005303750838,
+    "spearman_vs_gt_true_logp": 0.18869363451163274,
+    "correct_candidate_mean": 0.2166954410224421,
+    "wrong_candidate_mean": 0.1681411107509745,
+    "context_range_mean": 0.2706088097458093,
+    "indistinguishable_context_rate": 0.0
+  },
+  "limb_projection": {
+    "mean": 72.3653301317247,
+    "median": 69.30335186427249,
+    "std": 20.056185248528724,
+    "spearman_vs_gt_true_logp": 0.15254007599257827,
+    "correct_candidate_mean": 77.1469634463608,
+    "wrong_candidate_mean": 69.96222552491798,
+    "context_range_mean": 47.706761519202715,
+    "indistinguishable_context_rate": 0.0
+  },
+  "joint_separation": {
+    "mean": 0.27858978154450154,
+    "median": 0.2825935249160879,
+    "std": 0.0750679963999924,
+    "spearman_vs_gt_true_logp": 0.11466777347258975,
+    "correct_candidate_mean": 0.2885783096012971,
+    "wrong_candidate_mean": 0.27356984877068735,
+    "context_range_mean": 0.11211672779005316,
+    "indistinguishable_context_rate": 0.0
+  },
+  "human_observability": {
+    "mean": 1.3545380026249314,
+    "median": 1.2370411874598974,
+    "std": 0.8849508302942282,
+    "spearman_vs_gt_true_logp": 0.12591621170368503,
+    "correct_candidate_mean": 1.5190102183109264,
+    "wrong_candidate_mean": 1.2718792303604594,
+    "context_range_mean": 2.532744675880559,
+    "indistinguishable_context_rate": 0.0
+  },
+  "scene_visibility": {
+    "mean": 0.6973745930990043,
+    "median": 0.9607842564582825,
+    "std": 0.4142951550851082,
+    "spearman_vs_gt_true_logp": 0.26552142882772395,
+    "correct_candidate_mean": 0.8775672385154734,
+    "wrong_candidate_mean": 0.6068152072532583,
+    "context_range_mean": 0.5645220561691242,
+    "indistinguishable_context_rate": 0.1882936507936508
+  },
+  "scene_human_observability": {
+    "mean": 0.5049108949742642,
+    "median": 0.515998583692242,
+    "std": 0.31826816471830405,
+    "spearman_vs_gt_true_logp": 0.23316138870669528,
+    "correct_candidate_mean": 0.6118137505551317,
+    "wrong_candidate_mean": 0.45118474580660767,
+    "context_range_mean": 0.8126309930832479,
+    "indistinguishable_context_rate": 0.007242063492063492
+  }
+}
