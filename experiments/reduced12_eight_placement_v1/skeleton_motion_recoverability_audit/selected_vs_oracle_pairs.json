@@ -1,0 +1,121 @@
+{
+  "selected_mapping_available": true,
+  "all_move_pairs": {
+    "pairs": 9299,
+    "summary": {
+      "pair_count": 9299,
+      "cues": {
+        "mean_joint_motion": {
+          "mean_difference_right_minus_left": -0.00425376175947652,
+          "median_difference_right_minus_left": 0.0,
+          "right_better_fraction": 0.23895042477685774
+        },
+        "total_motion_energy": {
+          "mean_difference_right_minus_left": -0.0004944866989591783,
+          "median_difference_right_minus_left": 0.0,
+          "right_better_fraction": 0.23174534896225402
+        },
+        "mean_bone_cv": {
+          "mean_difference_right_minus_left": -0.008378993903546827,
+          "median_difference_right_minus_left": 0.0,
+          "right_better_fraction": 0.4551026992149694
+        },
+        "mean_jerk_norm": {
+          "mean_difference_right_minus_left": -0.0012652050897099388,
+          "median_difference_right_minus_left": 0.0,
+          "right_better_fraction": 0.3895042477685773
+        },
+        "body_extent_cv": {
+          "mean_difference_right_minus_left": -0.0034008706337648647,
+          "median_difference_right_minus_left": 0.0,
+          "right_better_fraction": 0.41413055167222285
+        },
+        "motion_retention": {
+          "mean_difference_right_minus_left": -0.11754080886123419,
+          "median_difference_right_minus_left": 0.0,
+          "right_better_fraction": 0.23131519518227767
+        }
+      }
+    },
+    "oracle_correct_selector_wrong": 2293
+  },
+  "oracle_correct_selector_wrong": {
+    "pairs": 2293,
+    "summary": {
+      "pair_count": 2293,
+      "cues": {
+        "mean_joint_motion": {
+          "mean_difference_right_minus_left": -0.012020138687747215,
+          "median_difference_right_minus_left": -0.00568927651591495,
+          "right_better_fraction": 0.3270824247710423
+        },
+        "total_motion_energy": {
+          "mean_difference_right_minus_left": -0.004349360478357201,
+          "median_difference_right_minus_left": -0.0007219240062456458,
+          "right_better_fraction": 0.31617967727867424
+        },
+        "mean_bone_cv": {
+          "mean_difference_right_minus_left": -0.015881249704578024,
+          "median_difference_right_minus_left": -0.011739126227340862,
+          "right_better_fraction": 0.6698648059310947
+        },
+        "mean_jerk_norm": {
+          "mean_difference_right_minus_left": -0.019372449223444967,
+          "median_difference_right_minus_left": -0.0056247729449087625,
+          "right_better_fraction": 0.6136066288704753
+        },
+        "body_extent_cv": {
+          "mean_difference_right_minus_left": -0.005574244427039612,
+          "median_difference_right_minus_left": -0.0032279807583117867,
+          "right_better_fraction": 0.615787178368949
+        },
+        "motion_retention": {
+          "mean_difference_right_minus_left": -0.2130083372412001,
+          "median_difference_right_minus_left": -0.1484193905565847,
+          "right_better_fraction": 0.32751853467073705
+        }
+      }
+    },
+    "oracle_correct_selector_wrong": 2293
+  },
+  "severe_miss": {
+    "pairs": 2016,
+    "summary": {
+      "pair_count": 2016,
+      "cues": {
+        "mean_joint_motion": {
+          "mean_difference_right_minus_left": -0.011769630536249279,
+          "median_difference_right_minus_left": -0.005710800178280648,
+          "right_better_fraction": 0.33283730158730157
+        },
+        "total_motion_energy": {
+          "mean_difference_right_minus_left": -0.004029162082151773,
+          "median_difference_right_minus_left": -0.0007687174064993727,
+          "right_better_fraction": 0.32043650793650796
+        },
+        "mean_bone_cv": {
+          "mean_difference_right_minus_left": -0.015532985525131607,
+          "median_difference_right_minus_left": -0.012016297956418868,
+          "right_better_fraction": 0.6661706349206349
+        },
+        "mean_jerk_norm": {
+          "mean_difference_right_minus_left": -0.01818403627879853,
+          "median_difference_right_minus_left": -0.005980566085342847,
+          "right_better_fraction": 0.6081349206349206
+        },
+        "body_extent_cv": {
+          "mean_difference_right_minus_left": -0.005093547503320524,
+          "median_difference_right_minus_left": -0.0032055883232997248,
+          "right_better_fraction": 0.6101190476190477
+        },
+        "motion_retention": {
+          "mean_difference_right_minus_left": -0.21120215710865847,
+          "median_difference_right_minus_left": -0.15943769254451795,
+          "right_better_fraction": 0.33581349206349204
+        }
+      }
+    },
+    "oracle_correct_selector_wrong": 2016
+  },
+  "excluded_stay_or_missing": 781
+}

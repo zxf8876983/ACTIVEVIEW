@@ -1,0 +1,202 @@
+{
+  "mean_joint_motion": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": -0.02132552368968327,
+    "spearman_quality_vs_gt_margin": 0.20434125377077345,
+    "pearson_raw_vs_gt_margin": -0.02132552368968327,
+    "spearman_raw_vs_gt_margin": 0.20434125377077345
+  },
+  "max_joint_motion": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": -0.011974523336927372,
+    "spearman_quality_vs_gt_margin": 0.1864953521202102,
+    "pearson_raw_vs_gt_margin": -0.011974523336927372,
+    "spearman_raw_vs_gt_margin": 0.1864953521202102
+  },
+  "top4_joint_motion_mean": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": -0.02014286143525199,
+    "spearman_quality_vs_gt_margin": 0.18853676411236656,
+    "pearson_raw_vs_gt_margin": -0.02014286143525199,
+    "spearman_raw_vs_gt_margin": 0.18853676411236656
+  },
+  "total_motion_energy": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": -0.08815119719099264,
+    "spearman_quality_vs_gt_margin": 0.20007672577907182,
+    "pearson_raw_vs_gt_margin": -0.08815119719099264,
+    "spearman_raw_vs_gt_margin": 0.20007672577907182
+  },
+  "mean_velocity_norm": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": -0.02132552368968327,
+    "spearman_quality_vs_gt_margin": 0.20434125377077345,
+    "pearson_raw_vs_gt_margin": -0.02132552368968327,
+    "spearman_raw_vs_gt_margin": 0.20434125377077345
+  },
+  "mean_acceleration_norm": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.05811995337153705,
+    "spearman_quality_vs_gt_margin": -0.1728272265488105,
+    "pearson_raw_vs_gt_margin": -0.05811995337153705,
+    "spearman_raw_vs_gt_margin": 0.1728272265488105
+  },
+  "mean_jerk_norm": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.061674940907605835,
+    "spearman_quality_vs_gt_margin": -0.1680360871696539,
+    "pearson_raw_vs_gt_margin": -0.061674940907605835,
+    "spearman_raw_vs_gt_margin": 0.1680360871696539
+  },
+  "p95_acceleration": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.04498472082842761,
+    "spearman_quality_vs_gt_margin": -0.1689339670519669,
+    "pearson_raw_vs_gt_margin": -0.04498472082842761,
+    "spearman_raw_vs_gt_margin": 0.1689339670519669
+  },
+  "p95_jerk": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.04872415696663706,
+    "spearman_quality_vs_gt_margin": -0.1631484235286674,
+    "pearson_raw_vs_gt_margin": -0.04872415696663706,
+    "spearman_raw_vs_gt_margin": 0.1631484235286674
+  },
+  "velocity_smoothness": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.05811995337153705,
+    "spearman_quality_vs_gt_margin": -0.1728272265488105,
+    "pearson_raw_vs_gt_margin": -0.05811995337153705,
+    "spearman_raw_vs_gt_margin": 0.1728272265488105
+  },
+  "acceleration_smoothness": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.061674940907605835,
+    "spearman_quality_vs_gt_margin": -0.1680360871696539,
+    "pearson_raw_vs_gt_margin": -0.061674940907605835,
+    "spearman_raw_vs_gt_margin": 0.1680360871696539
+  },
+  "mean_bone_cv": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": -0.053343480302734704,
+    "spearman_quality_vs_gt_margin": -0.1971929377447482,
+    "pearson_raw_vs_gt_margin": 0.053343480302734704,
+    "spearman_raw_vs_gt_margin": 0.1971929377447482
+  },
+  "max_bone_cv": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": -0.07761047964546552,
+    "spearman_quality_vs_gt_margin": -0.17905015417379647,
+    "pearson_raw_vs_gt_margin": 0.07761047964546552,
+    "spearman_raw_vs_gt_margin": 0.17905015417379647
+  },
+  "bone_length_temporal_error": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": -0.11042008114267804,
+    "spearman_quality_vs_gt_margin": -0.23081656807731396,
+    "pearson_raw_vs_gt_margin": 0.11042008114267804,
+    "spearman_raw_vs_gt_margin": 0.23081656807731396
+  },
+  "lr_distance_instability": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": -0.19258714725059967,
+    "spearman_quality_vs_gt_margin": -0.23613315388703465,
+    "pearson_raw_vs_gt_margin": 0.19258714725059967,
+    "spearman_raw_vs_gt_margin": 0.23613315388703465
+  },
+  "mean_body_extent": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": -0.2251129087718833,
+    "spearman_quality_vs_gt_margin": -0.2193493896096717,
+    "pearson_raw_vs_gt_margin": -0.2251129087718833,
+    "spearman_raw_vs_gt_margin": -0.2193493896096717
+  },
+  "body_extent_cv": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": -0.1864114351972814,
+    "spearman_quality_vs_gt_margin": -0.2827472468403369,
+    "pearson_raw_vs_gt_margin": 0.1864114351972814,
+    "spearman_raw_vs_gt_margin": 0.2827472468403369
+  },
+  "min_body_extent": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": -0.2534231454948643,
+    "spearman_quality_vs_gt_margin": -0.25902057787977883,
+    "pearson_raw_vs_gt_margin": -0.2534231454948643,
+    "spearman_raw_vs_gt_margin": -0.25902057787977883
+  },
+  "motion_retention": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": 0.05872154696998471,
+    "spearman_quality_vs_gt_margin": 0.06306247958139985,
+    "pearson_raw_vs_gt_margin": 0.05872154696998471,
+    "spearman_raw_vs_gt_margin": 0.06306247958139985
+  },
+  "motion_deviation": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.02210584324684275,
+    "spearman_quality_vs_gt_margin": 0.1346194511252361,
+    "pearson_raw_vs_gt_margin": -0.02210584324684275,
+    "spearman_raw_vs_gt_margin": -0.1346194511252361
+  },
+  "SceneVisibility": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": 0.27826048475689563,
+    "spearman_quality_vs_gt_margin": 0.26699388040483957,
+    "pearson_raw_vs_gt_margin": 0.27826048475689563,
+    "spearman_raw_vs_gt_margin": 0.26699388040483957
+  },
+  "HumanObservability": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": 0.11336742150206086,
+    "spearman_quality_vs_gt_margin": 0.11955977978733585,
+    "pearson_raw_vs_gt_margin": 0.11336742150206086,
+    "spearman_raw_vs_gt_margin": 0.11955977978733585
+  },
+  "ProjectedArea": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": 0.1691216321432886,
+    "spearman_quality_vs_gt_margin": 0.18044352793709012,
+    "pearson_raw_vs_gt_margin": 0.1691216321432886,
+    "spearman_raw_vs_gt_margin": 0.18044352793709012
+  },
+  "PoseConfidence": {
+    "count": 68702,
+    "direction": "higher_is_better",
+    "pearson_quality_vs_gt_margin": 0.2742642587492025,
+    "spearman_quality_vs_gt_margin": 0.2630267965996763,
+    "pearson_raw_vs_gt_margin": 0.2742642587492025,
+    "spearman_raw_vs_gt_margin": 0.2630267965996763
+  },
+  "Distance": {
+    "count": 68702,
+    "direction": "lower_is_better",
+    "pearson_quality_vs_gt_margin": 0.18672544575446523,
+    "spearman_quality_vs_gt_margin": 0.17528613952955008,
+    "pearson_raw_vs_gt_margin": -0.18672544575446523,
+    "spearman_raw_vs_gt_margin": -0.17528613952955008
+  }
+}

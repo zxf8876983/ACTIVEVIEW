@@ -1,0 +1,1038 @@
+{
+  "pair_count": 11800,
+  "cues": {
+    "mean_joint_motion": {
+      "mean_difference_right_minus_left": -0.012504882661351704,
+      "median_difference_right_minus_left": 4.053676253809905e-07,
+      "right_better_fraction": 0.5028813559322034
+    },
+    "total_motion_energy": {
+      "mean_difference_right_minus_left": -0.009264711044927404,
+      "median_difference_right_minus_left": 1.733269738211317e-10,
+      "right_better_fraction": 0.5065254237288136
+    },
+    "mean_bone_cv": {
+      "mean_difference_right_minus_left": -0.008536887855241513,
+      "median_difference_right_minus_left": -9.44938537719665e-09,
+      "right_better_fraction": 0.5045762711864407
+    },
+    "mean_jerk_norm": {
+      "mean_difference_right_minus_left": -0.047336898435862015,
+      "median_difference_right_minus_left": -0.0004082007406217957,
+      "right_better_fraction": 0.5377966101694915
+    },
+    "body_extent_cv": {
+      "mean_difference_right_minus_left": 0.0006999068819485524,
+      "median_difference_right_minus_left": 0.00046123254008442055,
+      "right_better_fraction": 0.45093220338983053
+    },
+    "motion_retention": {
+      "mean_difference_right_minus_left": -0.023599471065030887,
+      "median_difference_right_minus_left": 0.0,
+      "right_better_fraction": 0.48347457627118645
+    }
+  },
+  "wrong_to_correct_pairs": 11800,
+  "examples": [
+    {
+      "episode_id": "reduced12kc_official_val_01445_000_2754f7b48b__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 270.0,
+      "wrong_id": 6,
+      "correct_id": 14,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.16815805435180664,
+      "correct_margin": 3.2957589514553547
+    },
+    {
+      "episode_id": "reduced12kc_official_val_01445_000_2754f7b48b__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 7,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -1.9273037910461426,
+      "correct_margin": 6.477669728454202
+    },
+    {
+      "episode_id": "reduced12kc_official_val_01445_000_2754f7b48b__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 23,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -1.9273037910461426,
+      "correct_margin": 1.0990569591522217
+    },
+    {
+      "episode_id": "reduced12kc_official_val_01445_000_2754f7b48b__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 135.0,
+      "wrong_id": 27,
+      "correct_id": 19,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -5.731535479426384,
+      "correct_margin": 0.03940272331237793
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02179_015_42d7aed562__00006-HkseAnWCgqk__p00__v07",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -6.1971842823550105,
+      "correct_margin": 5.009433733299375
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02179_015_42d7aed562__00006-HkseAnWCgqk__p00__v07",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 23,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -5.189606282860041,
+      "correct_margin": 0.14041662216186523
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02391_010_5c5609393b__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 0.0,
+      "wrong_id": 0,
+      "correct_id": 8,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -8.557257980108261,
+      "correct_margin": 0.6438674926757812
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02391_010_5c5609393b__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 8,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -9.688467301428318,
+      "correct_margin": 0.6438674926757812
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02391_010_5c5609393b__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 12,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -1.0912590622901917,
+      "correct_margin": 1.2503857910633087
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02391_010_5c5609393b__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 12,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.08636355400085449,
+      "correct_margin": 1.2503857910633087
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02391_010_5c5609393b__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -5.012039601802826,
+      "correct_margin": 11.455065012212799
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02589_002_cb3f3d4795__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 4,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.8266721367835999,
+      "correct_margin": 2.5316442251205444
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02589_002_cb3f3d4795__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 4,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -4.107700526714325,
+      "correct_margin": 2.5316442251205444
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02589_002_cb3f3d4795__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -1.6938199400901794,
+      "correct_margin": 1.636918067932129
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02589_002_cb3f3d4795__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 45.0,
+      "wrong_id": 9,
+      "correct_id": 25,
+      "wrong_radius": "2.0",
+      "correct_radius": "3.0",
+      "wrong_margin": -1.0549140274524689,
+      "correct_margin": 0.1509230136871338
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02589_002_cb3f3d4795__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 45.0,
+      "wrong_id": 17,
+      "correct_id": 25,
+      "wrong_radius": "2.5",
+      "correct_radius": "3.0",
+      "wrong_margin": -0.376223087310791,
+      "correct_margin": 0.1509230136871338
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02589_002_cb3f3d4795__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 135.0,
+      "wrong_id": 19,
+      "correct_id": 27,
+      "wrong_radius": "2.5",
+      "correct_radius": "3.0",
+      "wrong_margin": -0.3761575222015381,
+      "correct_margin": 0.15089178085327148
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02596_000_996dfed77b__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 4,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -7.755318775773048,
+      "correct_margin": 1.6286761462688446
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02596_000_996dfed77b__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.1323251724243164,
+      "correct_margin": 4.0050037913024426
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02596_000_996dfed77b__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 135.0,
+      "wrong_id": 27,
+      "correct_id": 19,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -5.317220151424408,
+      "correct_margin": 1.6496219635009766
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02831_002_15e3b6235b__00006-HkseAnWCgqk__p00__v04",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 7,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -5.59840933419764,
+      "correct_margin": 0.7680672407150269
+    },
+    {
+      "episode_id": "reduced12kc_official_val_02831_002_15e3b6235b__00006-HkseAnWCgqk__p00__v04",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 7,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.5356510281562805,
+      "correct_margin": 0.7680672407150269
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03290_005_44e32ec521__00006-HkseAnWCgqk__p00__v14",
+      "azimuth": 0.0,
+      "wrong_id": 0,
+      "correct_id": 16,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -9.894012690521777,
+      "correct_margin": 1.606596440076828
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03290_005_44e32ec521__00006-HkseAnWCgqk__p00__v14",
+      "azimuth": 0.0,
+      "wrong_id": 8,
+      "correct_id": 16,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -3.5129328966140747,
+      "correct_margin": 1.606596440076828
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 0,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -7.33832748234272,
+      "correct_margin": 4.906717761885375
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 8,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -7.33832748234272,
+      "correct_margin": 8.987046736336197
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 4,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -5.998207151889801,
+      "correct_margin": 0.6538210511207581
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 7,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -1.4481739699840546,
+      "correct_margin": 2.5027532428503036
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 7,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -6.505022971890867,
+      "correct_margin": 2.5027532428503036
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 45.0,
+      "wrong_id": 25,
+      "correct_id": 9,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.1509230136871338,
+      "correct_margin": 1.0549140274524689
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 45.0,
+      "wrong_id": 25,
+      "correct_id": 17,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -0.1509230136871338,
+      "correct_margin": 0.376223087310791
+    },
+    {
+      "episode_id": "reduced12kc_official_val_03742_000_47e51fdfd1__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 135.0,
+      "wrong_id": 27,
+      "correct_id": 19,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -0.15089178085327148,
+      "correct_margin": 0.3761575222015381
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05192_021_d3e7310b24__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 0,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -1.7609937191009521,
+      "correct_margin": 1.0828929245471954
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05192_021_d3e7310b24__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 8,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -1.7609937191009521,
+      "correct_margin": 7.023176507558674
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05192_021_d3e7310b24__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 12,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -8.277464936021715,
+      "correct_margin": 2.9184636548161507
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05192_021_d3e7310b24__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 20,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -8.277464936021715,
+      "correct_margin": 1.6938076168298721
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05393_009_20672db509__00006-HkseAnWCgqk__p00__v00",
+      "azimuth": 315.0,
+      "wrong_id": 7,
+      "correct_id": 15,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -7.82388299703598,
+      "correct_margin": 0.8370710611343384
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05393_009_20672db509__00006-HkseAnWCgqk__p00__v00",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 15,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.34714269638061523,
+      "correct_margin": 0.8370710611343384
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -2.1541967391967773,
+      "correct_margin": 3.1325035095214844
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 7,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -2.255350671708584,
+      "correct_margin": 2.607433207333088
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 15,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -2.255350671708584,
+      "correct_margin": 0.5181365609169006
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 45.0,
+      "wrong_id": 17,
+      "correct_id": 9,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -2.0073657631874084,
+      "correct_margin": 0.10532212257385254
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05908_004_b4b1a2ed46__00006-HkseAnWCgqk__p00__v15",
+      "azimuth": 45.0,
+      "wrong_id": 9,
+      "correct_id": 25,
+      "wrong_radius": "2.0",
+      "correct_radius": "3.0",
+      "wrong_margin": -7.557626366615295,
+      "correct_margin": 0.21105480194091797
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05908_004_b4b1a2ed46__00006-HkseAnWCgqk__p00__v15",
+      "azimuth": 45.0,
+      "wrong_id": 17,
+      "correct_id": 25,
+      "wrong_radius": "2.5",
+      "correct_radius": "3.0",
+      "wrong_margin": -3.28054940700531,
+      "correct_margin": 0.21105480194091797
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05938_000_f679b9f051__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 0,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -6.666765746660531,
+      "correct_margin": 5.340819727629423
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05938_000_f679b9f051__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 8,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -6.666765746660531,
+      "correct_margin": 0.06702375411987305
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05938_000_f679b9f051__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -2.388140194118023,
+      "correct_margin": 6.651064734207466
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05938_000_f679b9f051__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 7,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.9398119449615479,
+      "correct_margin": 10.578616738659548
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05938_000_f679b9f051__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 15,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.9398119449615479,
+      "correct_margin": 8.09418663190445
+    },
+    {
+      "episode_id": "reduced12kc_official_val_05938_000_f679b9f051__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 45.0,
+      "wrong_id": 9,
+      "correct_id": 17,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -0.8091393709182739,
+      "correct_margin": 4.516967164352536
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06214_002_ebedccf998__00006-HkseAnWCgqk__p00__v19",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 0,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -3.336604818701744,
+      "correct_margin": 8.33785584603902
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06214_002_ebedccf998__00006-HkseAnWCgqk__p00__v19",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 8,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -3.336604818701744,
+      "correct_margin": 8.087606955668889
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06214_002_ebedccf998__00006-HkseAnWCgqk__p00__v19",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -4.093964248895645,
+      "correct_margin": 9.31731296738144
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06214_002_ebedccf998__00006-HkseAnWCgqk__p00__v19",
+      "azimuth": 315.0,
+      "wrong_id": 7,
+      "correct_id": 23,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -2.121556207537651,
+      "correct_margin": 4.10105855576694
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06214_002_ebedccf998__00006-HkseAnWCgqk__p00__v19",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 23,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -6.223231451585889,
+      "correct_margin": 4.10105855576694
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06301_000_6ddbd22d2b__00006-HkseAnWCgqk__p00__v23",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 4,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.274414598941803,
+      "correct_margin": 5.1114333095029
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06301_000_6ddbd22d2b__00006-HkseAnWCgqk__p00__v23",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 12,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.274414598941803,
+      "correct_margin": 2.7085646986961365
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06301_000_6ddbd22d2b__00006-HkseAnWCgqk__p00__v23",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 7,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -1.3443159610033035,
+      "correct_margin": 9.015362031845143
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06301_000_6ddbd22d2b__00006-HkseAnWCgqk__p00__v23",
+      "azimuth": 135.0,
+      "wrong_id": 27,
+      "correct_id": 19,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -7.651957929134369,
+      "correct_margin": 8.902106413719594
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06874_005_efd4381865__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 15,
+      "correct_id": 7,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -6.3823595736175776,
+      "correct_margin": 1.3397456407546997
+    },
+    {
+      "episode_id": "reduced12kc_official_val_06874_005_efd4381865__00006-HkseAnWCgqk__p00__v25",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 7,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -9.693065118044615,
+      "correct_margin": 1.3397456407546997
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07697_002_857733d014__00006-HkseAnWCgqk__p00__v20",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.35204029083251953,
+      "correct_margin": 0.10117459297180176
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07752_000_4fb530c491__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 0.0,
+      "wrong_id": 8,
+      "correct_id": 0,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -4.382408559322357,
+      "correct_margin": 7.011937614064664
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07752_000_4fb530c491__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 4,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -3.306758150458336,
+      "correct_margin": 3.930203329771757
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07752_000_4fb530c491__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 4,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -5.2086439579725266,
+      "correct_margin": 3.930203329771757
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07760_004_225ca729ea__00006-HkseAnWCgqk__p00__v14",
+      "azimuth": 0.0,
+      "wrong_id": 0,
+      "correct_id": 16,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -0.7441940009593964,
+      "correct_margin": 1.4096672534942627
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07760_004_225ca729ea__00006-HkseAnWCgqk__p00__v14",
+      "azimuth": 0.0,
+      "wrong_id": 8,
+      "correct_id": 16,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -2.9228044748306274,
+      "correct_margin": 1.4096672534942627
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07760_018_584ce13221__00006-HkseAnWCgqk__p00__v12",
+      "azimuth": 45.0,
+      "wrong_id": 9,
+      "correct_id": 17,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -8.519987970590591,
+      "correct_margin": 4.089311325922608
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07760_018_584ce13221__00006-HkseAnWCgqk__p00__v12",
+      "azimuth": 45.0,
+      "wrong_id": 25,
+      "correct_id": 17,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -7.652009606361389,
+      "correct_margin": 4.089311325922608
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07895_002_d61312f0de__00006-HkseAnWCgqk__p00__v23",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 4,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -8.63747145049274,
+      "correct_margin": 4.5001106057316065
+    },
+    {
+      "episode_id": "reduced12kc_official_val_07895_002_d61312f0de__00006-HkseAnWCgqk__p00__v23",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 12,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -8.63747145049274,
+      "correct_margin": 0.5170401930809021
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08000_005_f24af36aac__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 0,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -1.6947546154260635,
+      "correct_margin": 9.724069480507751
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08000_005_f24af36aac__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 8,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -1.6947546154260635,
+      "correct_margin": 3.9161177556961775
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08000_005_f24af36aac__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 4,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.2801833152770996,
+      "correct_margin": 6.215643909061328
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08000_005_f24af36aac__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 12,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.2801833152770996,
+      "correct_margin": 7.886906711268239
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08214_002_546f9799af__00006-HkseAnWCgqk__p00__v09",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 20,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -3.3730549812316895,
+      "correct_margin": 3.2814861834049225
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08214_002_546f9799af__00006-HkseAnWCgqk__p00__v09",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 20,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -5.556454181671143,
+      "correct_margin": 3.2814861834049225
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08982_000_b36fd70a37__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 4,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -1.4411744475364685,
+      "correct_margin": 10.598945737237955
+    },
+    {
+      "episode_id": "reduced12kc_official_val_08982_000_b36fd70a37__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 20,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -1.4411744475364685,
+      "correct_margin": 3.4000604413449764
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09244_001_0ed1f80f13__00006-HkseAnWCgqk__p00__v15",
+      "azimuth": 0.0,
+      "wrong_id": 0,
+      "correct_id": 8,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.4784049987792969,
+      "correct_margin": 7.782339720288292
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09244_001_0ed1f80f13__00006-HkseAnWCgqk__p00__v15",
+      "azimuth": 0.0,
+      "wrong_id": 0,
+      "correct_id": 16,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -0.4784049987792969,
+      "correct_margin": 12.222466349619026
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09244_001_0ed1f80f13__00006-HkseAnWCgqk__p00__v15",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 12,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -1.5287284553050995,
+      "correct_margin": 9.061084993983968
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09244_001_0ed1f80f13__00006-HkseAnWCgqk__p00__v15",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 20,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -1.5287284553050995,
+      "correct_margin": 4.589522486552596
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09282_003_2596e030f9__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 7,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -7.285641417838633,
+      "correct_margin": 1.068965196609497
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09282_003_2596e030f9__00006-HkseAnWCgqk__p00__v16",
+      "azimuth": 315.0,
+      "wrong_id": 23,
+      "correct_id": 15,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -7.285641417838633,
+      "correct_margin": 5.003647084347904
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09402_003_14b2796891__00006-HkseAnWCgqk__p00__v08",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 0,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -3.005621686577797,
+      "correct_margin": 11.934899807036345
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09402_003_14b2796891__00006-HkseAnWCgqk__p00__v08",
+      "azimuth": 180.0,
+      "wrong_id": 12,
+      "correct_id": 4,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -0.9893402457237244,
+      "correct_margin": 7.278451811696868
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09402_003_14b2796891__00006-HkseAnWCgqk__p00__v08",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 4,
+      "wrong_radius": "2.5",
+      "correct_radius": "1.5",
+      "wrong_margin": -2.34478959441185,
+      "correct_margin": 7.278451811696868
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09402_003_14b2796891__00006-HkseAnWCgqk__p00__v08",
+      "azimuth": 270.0,
+      "wrong_id": 14,
+      "correct_id": 6,
+      "wrong_radius": "2.0",
+      "correct_radius": "1.5",
+      "wrong_margin": -7.601280391216278,
+      "correct_margin": 2.287638932466507
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09402_003_14b2796891__00006-HkseAnWCgqk__p00__v08",
+      "azimuth": 45.0,
+      "wrong_id": 9,
+      "correct_id": 17,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -8.519987970590591,
+      "correct_margin": 2.2171279042959213
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09402_003_14b2796891__00006-HkseAnWCgqk__p00__v08",
+      "azimuth": 45.0,
+      "wrong_id": 25,
+      "correct_id": 17,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -2.1909220069646835,
+      "correct_margin": 2.2171279042959213
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09402_003_14b2796891__00006-HkseAnWCgqk__p00__v08",
+      "azimuth": 135.0,
+      "wrong_id": 27,
+      "correct_id": 19,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -7.651957929134369,
+      "correct_margin": 0.1018829345703125
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09498_008_a5b40e0d34__00006-HkseAnWCgqk__p00__v06",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 12,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -8.846222489140928,
+      "correct_margin": 8.142296796257142
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09498_008_a5b40e0d34__00006-HkseAnWCgqk__p00__v06",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 20,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.5",
+      "wrong_margin": -8.846222489140928,
+      "correct_margin": 11.023262858776434
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09665_006_16c7aae8cc__00006-HkseAnWCgqk__p00__v00",
+      "azimuth": 180.0,
+      "wrong_id": 4,
+      "correct_id": 12,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -1.2426052391529083,
+      "correct_margin": 5.119158877525479
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09665_006_16c7aae8cc__00006-HkseAnWCgqk__p00__v00",
+      "azimuth": 180.0,
+      "wrong_id": 20,
+      "correct_id": 12,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -4.595913641154766,
+      "correct_margin": 5.119158877525479
+    },
+    {
+      "episode_id": "reduced12kc_official_val_09665_006_16c7aae8cc__00006-HkseAnWCgqk__p00__v00",
+      "azimuth": 0.0,
+      "wrong_id": 16,
+      "correct_id": 8,
+      "wrong_radius": "2.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -0.6742672920227051,
+      "correct_margin": 5.364426473155618
+    },
+    {
+      "episode_id": "reduced12kc_official_val_10112_001_bb599edc97__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 45.0,
+      "wrong_id": 9,
+      "correct_id": 17,
+      "wrong_radius": "2.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -3.6390742361545563,
+      "correct_margin": 0.6012123823165894
+    },
+    {
+      "episode_id": "reduced12kc_official_val_10112_001_bb599edc97__00006-HkseAnWCgqk__p00__v27",
+      "azimuth": 45.0,
+      "wrong_id": 25,
+      "correct_id": 17,
+      "wrong_radius": "3.0",
+      "correct_radius": "2.5",
+      "wrong_margin": -4.244540613144636,
+      "correct_margin": 0.6012123823165894
+    },
+    {
+      "episode_id": "reduced12kc_official_val_10339_004_a07c9c1c7c__00006-HkseAnWCgqk__p00__v17",
+      "azimuth": 0.0,
+      "wrong_id": 0,
+      "correct_id": 8,
+      "wrong_radius": "1.5",
+      "correct_radius": "2.0",
+      "wrong_margin": -1.9622235298156738,
+      "correct_margin": 2.7303076162934303
+    }
+  ]
+}

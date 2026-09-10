@@ -1,0 +1,177 @@
+{
+  "mean_joint_motion": {
+    "contexts": 10080,
+    "mean": 0.09493416324111402,
+    "median": 0.09999999999999999,
+    "fraction_positive": 0.5434523809523809,
+    "fraction_above_0.3": 0.4064484126984127
+  },
+  "max_joint_motion": {
+    "contexts": 10080,
+    "mean": 0.09476941684300855,
+    "median": 0.09999999999999999,
+    "fraction_positive": 0.5396825396825397,
+    "fraction_above_0.3": 0.4099206349206349
+  },
+  "top4_joint_motion_mean": {
+    "contexts": 10080,
+    "mean": 0.09234789144154078,
+    "median": 0.09999999999999999,
+    "fraction_positive": 0.540079365079365,
+    "fraction_above_0.3": 0.40634920634920635
+  },
+  "total_motion_energy": {
+    "contexts": 10080,
+    "mean": 0.0731449896183849,
+    "median": 0.028571428571428574,
+    "fraction_positive": 0.5083333333333333,
+    "fraction_above_0.3": 0.3776785714285714
+  },
+  "mean_velocity_norm": {
+    "contexts": 10080,
+    "mean": 0.09493416324111402,
+    "median": 0.09999999999999999,
+    "fraction_positive": 0.5434523809523809,
+    "fraction_above_0.3": 0.4064484126984127
+  },
+  "mean_acceleration_norm": {
+    "contexts": 10080,
+    "mean": -0.0763367650214503,
+    "median": -0.08571428571428573,
+    "fraction_positive": 0.43660714285714286,
+    "fraction_above_0.3": 0.30277777777777776
+  },
+  "mean_jerk_norm": {
+    "contexts": 10080,
+    "mean": -0.07358707998598278,
+    "median": -0.07878787878787878,
+    "fraction_positive": 0.439484126984127,
+    "fraction_above_0.3": 0.3038690476190476
+  },
+  "p95_acceleration": {
+    "contexts": 10080,
+    "mean": -0.08170156953967861,
+    "median": -0.0879120879120879,
+    "fraction_positive": 0.43898809523809523,
+    "fraction_above_0.3": 0.3060515873015873
+  },
+  "p95_jerk": {
+    "contexts": 10080,
+    "mean": -0.05344420265026244,
+    "median": -0.051315789473684204,
+    "fraction_positive": 0.4481150793650794,
+    "fraction_above_0.3": 0.30753968253968256
+  },
+  "velocity_smoothness": {
+    "contexts": 10080,
+    "mean": -0.0763367650214503,
+    "median": -0.08571428571428573,
+    "fraction_positive": 0.43660714285714286,
+    "fraction_above_0.3": 0.30277777777777776
+  },
+  "acceleration_smoothness": {
+    "contexts": 10080,
+    "mean": -0.07358707998598278,
+    "median": -0.07878787878787878,
+    "fraction_positive": 0.439484126984127,
+    "fraction_above_0.3": 0.3038690476190476
+  },
+  "mean_bone_cv": {
+    "contexts": 10080,
+    "mean": -0.06283150918996037,
+    "median": -0.08571428571428573,
+    "fraction_positive": 0.43660714285714286,
+    "fraction_above_0.3": 0.2994047619047619
+  },
+  "max_bone_cv": {
+    "contexts": 10080,
+    "mean": -0.04568519905251625,
+    "median": -0.07142857142857144,
+    "fraction_positive": 0.4492063492063492,
+    "fraction_above_0.3": 0.3107142857142857
+  },
+  "bone_length_temporal_error": {
+    "contexts": 10080,
+    "mean": -0.07360238090110574,
+    "median": -0.051960784313725486,
+    "fraction_positive": 0.41805555555555557,
+    "fraction_above_0.3": 0.28273809523809523
+  },
+  "lr_distance_instability": {
+    "contexts": 10080,
+    "mean": -0.06561569398473563,
+    "median": -0.08571428571428573,
+    "fraction_positive": 0.4148809523809524,
+    "fraction_above_0.3": 0.2798611111111111
+  },
+  "mean_body_extent": {
+    "contexts": 10080,
+    "mean": -0.12075272502551913,
+    "median": -0.19047619047619052,
+    "fraction_positive": 0.39375,
+    "fraction_above_0.3": 0.26339285714285715
+  },
+  "body_extent_cv": {
+    "contexts": 10080,
+    "mean": -0.14159452323212574,
+    "median": -0.1956043956043956,
+    "fraction_positive": 0.38492063492063494,
+    "fraction_above_0.3": 0.2526785714285714
+  },
+  "min_body_extent": {
+    "contexts": 10080,
+    "mean": -0.11424017684246537,
+    "median": -0.1541958041958042,
+    "fraction_positive": 0.4097222222222222,
+    "fraction_above_0.3": 0.2759920634920635
+  },
+  "motion_retention": {
+    "contexts": 10080,
+    "mean": 0.09946714158446901,
+    "median": 0.12963386315646186,
+    "fraction_positive": 0.5544642857142857,
+    "fraction_above_0.3": 0.4131944444444444
+  },
+  "motion_deviation": {
+    "contexts": 10080,
+    "mean": 0.14180060382897433,
+    "median": 0.16666666666666669,
+    "fraction_positive": 0.5739087301587301,
+    "fraction_above_0.3": 0.4197420634920635
+  },
+  "SceneVisibility": {
+    "contexts": 10080,
+    "mean": 0.2125160734939351,
+    "median": 0.18720083986714944,
+    "fraction_positive": 0.5587301587301587,
+    "fraction_above_0.3": 0.4459325396825397
+  },
+  "HumanObservability": {
+    "contexts": 10080,
+    "mean": 0.08196867355982547,
+    "median": 0.13333333333333333,
+    "fraction_positive": 0.5700396825396825,
+    "fraction_above_0.3": 0.3984126984126984
+  },
+  "ProjectedArea": {
+    "contexts": 10080,
+    "mean": 0.10562267880587192,
+    "median": 0.18414786967418545,
+    "fraction_positive": 0.5915674603174603,
+    "fraction_above_0.3": 0.41944444444444445
+  },
+  "PoseConfidence": {
+    "contexts": 10080,
+    "mean": 0.21411674359029026,
+    "median": 0.3142857142857143,
+    "fraction_positive": 0.6373015873015873,
+    "fraction_above_0.3": 0.5073412698412698
+  },
+  "Distance": {
+    "contexts": 10080,
+    "mean": 0.11851258196701439,
+    "median": 0.18237166310401937,
+    "fraction_positive": 0.5976190476190476,
+    "fraction_above_0.3": 0.42430555555555555
+  }
+}
