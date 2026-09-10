@@ -1,0 +1,29 @@
+{
+  "summary": {
+    "cases": 12,
+    "groups": {
+      "A": 4,
+      "B": 4,
+      "C": 4,
+      "fallback": 0
+    },
+    "mean_abs_azimuth_difference_deg": 33.75,
+    "oracle_scene_visibility_higher_fraction": 0.0,
+    "oracle_human_observability_higher_fraction": 0.0,
+    "mean_margin_difference": 9.590479858851268,
+    "motion_fidelity": "motion_fidelity_gt_alignment_unavailable",
+    "rgb_archive": "frame_index=15 only; t0/t29 marked unavailable",
+    "scene_map": "scene_map_unavailable"
+  },
+  "protocol_flags": {
+    "test_used": false,
+    "training_used": false,
+    "new_rgb_rendered": false,
+    "new_pose_estimation": false,
+    "gt_action_used_for_posthoc_diagnostic_only": true,
+    "gt_margin_used_for_case_selection_and_visualization_only": true,
+    "selector_remains_unchanged": true,
+    "deployable": false
+  },
+  "representative_case": "case_0009"
+}
