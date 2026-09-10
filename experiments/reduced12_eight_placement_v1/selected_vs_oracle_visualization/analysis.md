@@ -25,6 +25,8 @@ Targeted renderer status: `BLOCKED_EXTERNAL_RUNTIME` (External Habitat environme
 Representative case available: `False`; it is created only when all six targeted RGB images pass validation.
 No full-dataset RGB regeneration was performed.
 
+The host rendering script must be executed from a normal Linux/SSH shell with GPU access, not from the Codex sandbox. The current coding session only performs static checks and does not launch Habitat rendering.
+
 ## Additional protocol flags
 
 `full_dataset_rgb_regenerated=false`; `targeted_rgb_rendering_only=true`; `targeted_cases=12`; `targeted_viewpoints_per_case=2`; `targeted_frames=[0,15,29]`.

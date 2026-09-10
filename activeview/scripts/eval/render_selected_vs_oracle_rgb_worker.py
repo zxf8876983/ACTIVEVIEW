@@ -85,16 +85,17 @@ def run(args: argparse.Namespace) -> int:
     motions = {str(row["record_id"]): row for row in json.loads(args.motion_manifest.read_text(encoding="utf-8"))}
     if len(cases) != 12:
         raise ValueError(f"expected exactly 12 cases, got {len(cases)}")
-    status: dict[str, Any] = {"status": "RENDERING", "launcher_python": None, "habitat_python": sys.executable, "habitat_import_ok": True, "magnum_import_ok": True, "cuda_available_in_habitat_env": False, "gpu_name": None, "renderer_initialized": False, "rendered_cases": 0, "rendered_images": 0, "targeted_cases": 12, "targeted_viewpoints_per_case": 2, "frame_ids": list(FRAME_IDS), "full_dataset_rgb_regenerated": False, "test_used": False, "training_used": False}
-    import torch
+    status: dict[str, Any] = {"status": "RENDERING", "launcher_python": os.environ.get("ACTIVEVIEW_HOST_RUNNER", "direct-worker"), "habitat_python": sys.executable, "habitat_import_ok": True, "magnum_import_ok": True, "cuda_available_in_habitat_env": False, "gpu_name": None, "renderer_initialized": False, "rendered_cases": 0, "rendered_images": 0, "invalid_images": 0, "targeted_cases": 12, "targeted_viewpoints_per_case": 2, "frame_ids": list(FRAME_IDS), "full_dataset_rgb_regenerated": False, "test_used": False, "training_used": False}
+    # PyTorch CUDA availability is diagnostic only. Habitat-Sim's EGL/OpenGL
+    # simulator initialization and valid color observations are the renderer gate.
+    try:
+        import torch
 
-    status["cuda_available_in_habitat_env"] = bool(torch.cuda.is_available())
-    if status["cuda_available_in_habitat_env"]:
-        status["gpu_name"] = torch.cuda.get_device_name(0)
-    if not status["cuda_available_in_habitat_env"]:
-        status.update({"status": "BLOCKED_EXTERNAL_RUNTIME", "reason": "external Habitat Python cannot access CUDA"})
-        _write_json(args.runtime_status, status)
-        raise RuntimeError(status["reason"])
+        status["cuda_available_in_habitat_env"] = bool(torch.cuda.is_available())
+        if status["cuda_available_in_habitat_env"]:
+            status["gpu_name"] = torch.cuda.get_device_name(0)
+    except Exception as exc:
+        status["torch_probe_error"] = repr(exc)
     scenes = sorted({str(case["scene_id"]) for case in cases})
     converter = MotionConverter(URDF_PATH)
     try:
@@ -114,11 +115,12 @@ def run(args: argparse.Namespace) -> int:
             finally:
                 sim.close()
     except Exception as exc:
-        status.update({"status": "RENDER_FAILED", "reason": repr(exc)})
+        status.update({"status": "RENDER_FAILED", "reason": repr(exc), "invalid_images": 1})
         _write_json(args.runtime_status, status)
         raise
     status["status"] = "COMPLETED"
     _write_json(args.runtime_status, status)
+    print(json.dumps({"rendered_cases": status["rendered_cases"], "rendered_images": status["rendered_images"], "invalid_images": status["invalid_images"]}, ensure_ascii=False))
     return 0
 
 
