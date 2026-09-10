@@ -1,27 +1,43 @@
 # Recognizer-Level Clean Motion Reference Audit
 
-## Status: BLOCKED before instance-level analysis
+Val Moving contexts only. Clean references use exact raw-val AMASS intervals, MotionConverter and Habitat articulated-humanoid FK; no candidate estimated skeleton was used to construct a clean reference.
 
-The Val record-to-source audit was run, but the required exact clean H36M17 reference could not be constructed from the repository's current formal pipeline. No clean skeleton, ST-GCN output, similarity, ranking, quadrant, selector, or per-class metric was fabricated.
+| Method | Accuracy | Macro-F1 | Move rate |
+|---|---:|---:|---:|
+| S0-only | 0.254266 | 0.235500 | 0.000000 |
+| FrozenStageCv0 | 0.454266 | 0.444782 | 1.000000 |
+| Candidate-Conditioned Spatial | 0.454266 | 0.444782 | 1.000000 |
+| Real-GTMargin Oracle | 0.709623 | 0.704598 | 1.000000 |
+| AnyCorrect Oracle | 0.728274 | 0.729637 | 0.000000 |
+| MaxFeatureCos-to-Clean | 0.352679 | 0.332132 | 1.000000 |
+| MinJSD-to-Clean | 0.367460 | 0.334927 | 1.000000 |
 
-- Val Moving contexts: 10080
-- Unique Val record instances: 105
-- Exact record/segment mapping: confirmed
-- Exact clean motion instances matched: 0
-- Blockers: no explicit clean/true H36M17 skeleton cache was found; formal AMASS-to-H36M17 clean converter is unavailable
+## Clean recognizer
 
-## What is available
+Unique-record clean ST-GCN: Accuracy=0.266667, Macro-F1=0.185584 (N=105).
+Moving-context weighted clean ST-GCN: Accuracy=0.245238, Macro-F1=0.178535 (N=10080).
 
-Every checked Val record carries an AMASS source path, start/end frame, and the deterministic 30-frame `np.linspace` mapping. The archived candidate NPZs are view-dependent estimated skeletons and therefore are not accepted as clean references.
+## Representation and ranking
 
-## Why the analysis stopped
+- FeatureCos: global Pearson=0.117758, Spearman=0.104015; within-context Spearman mean=0.102751.
+- NegativeFeatureL2: global Pearson=-0.140761, Spearman=-0.086012; within-context Spearman mean=-0.109227.
+- NegativePosteriorJSD: global Pearson=-0.266490, Spearman=-0.224632; within-context Spearman mean=-0.201869.
+- SceneVisibility: global Pearson=0.219863, Spearman=0.276370; within-context Spearman mean=0.217956.
+- ProjectedArea: global Pearson=0.121937, Spearman=0.188695; within-context Spearman mean=0.129703.
+- PoseConfidence: global Pearson=0.214855, Spearman=0.272156; within-context Spearman mean=0.220586.
+- NegativeDistance: global Pearson=-0.145692, Spearman=-0.184023; within-context Spearman mean=-0.146220.
+- NegativeMotionDeviation: global Pearson=-0.030958, Spearman=-0.134797; within-context Spearman mean=-0.133424.
+- Feature cosine mean=0.714210; normalized feature L2 mean=0.714295; posterior JSD mean=0.537188.
 
-`activeview.data.motion.babel_official150_true_skeleton` does not define the referenced `AMASSTrueSkeletonConverter`, and no explicit clean/true H36M17 skeleton cache exists at the checked dataset locations. The installed environment also lacks an alternative formal clean FK path. Generating a clean reference by choosing another same-class motion, using a centroid, or treating an estimated candidate as clean would violate exact instance alignment.
+## Selected-vs-GT-best audit
 
-## Required minimum fix
+Clean-correct rate=0.245238; GT-margin oracle-correct rate=0.709623.
+CleanWrong→OracleCorrect contexts=5149; CleanCorrect→OracleWrong contexts=468.
+Frozen selection wrong while oracle correct=2574; severe-miss contexts=1287.
 
-Restore or provide the project's formal AMASS-SMPL/SMPL-X-to-H36M17 FK converter and its exact normalization (`root_center + torso_scale + yaw_only`), or provide a verified per-record clean skeleton cache keyed by the exact `record_id` and frame segment. Then rerun this script before computing recognizer-level comparisons.
+## Scientific interpretation
 
-Flags: `test_used=false`; `training_used=false`; `new_rgb_rendered=false`; `new_pose_estimation=false`; `exact_clean_motion_instance_required=true`; `clean_motion_used_for_privileged_reference_only=true`; `clean_reference_used_as_deployable_input=false`; `deployable=false`.
+The clean recognizer is a representation ceiling reference: its score is reported independently of ActiveView selector decisions. The estimated candidate and clean distributions are not interchangeable, so the remaining gap should be interpreted as both motion/observation mismatch and candidate selection error.
+Candidate-conditioned Spatial is represented by the archived Stage-C proposal_rank_1_id; GT-GTMargin Oracle selects the legal candidate with maximum true-class margin.
 
-`representation_cases.png` was intentionally not generated because the alignment gate failed and no valid cases exist.
+Flags: `test_used=false`; `training_used=false`; `new_rgb_rendered=false`; `new_pose_estimation=false`; `clean_h36m17_source=exact AMASS->Habitat FK`; `clean_reference_used_for_privileged_reference_only=true`; `deployable=false`.

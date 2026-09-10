@@ -1,8 +1,69 @@
 {
-  "status": "BLOCKED",
-  "reason": "alignment gate blocked feature/posterior similarity: no explicit clean/true H36M17 skeleton cache was found; formal AMASS-to-H36M17 clean converter is unavailable",
-  "alignment_status": "BLOCKED",
-  "test_used": false,
-  "training_used": false,
-  "metrics_computed": false
+  "candidate_count": 68702,
+  "feature_cos_clean": {
+    "count": 68702,
+    "mean": 0.7142098695769478,
+    "median": 0.7263393413372625,
+    "p25": 0.6605148616278903,
+    "p75": 0.7763743994803489,
+    "p90": 0.8180386342141336
+  },
+  "normalized_feature_l2_clean": {
+    "count": 68702,
+    "mean": 0.7142953526279086,
+    "median": 0.7042604434152466,
+    "p25": 0.648860659242224,
+    "p75": 0.7748384819426039,
+    "p90": 0.8414630457773646
+  },
+  "posterior_jsd_clean": {
+    "count": 68702,
+    "mean": 0.5371880830947856,
+    "median": 0.6466185712900472,
+    "p25": 0.5035650391494138,
+    "p75": 0.6858595186641914,
+    "p90": 0.6921853502472319
+  },
+  "posterior_kl_clean_to_candidate": {
+    "count": 68702,
+    "mean": 6.26933774781023,
+    "median": 5.361762397647144,
+    "p25": 3.356245758685344,
+    "p75": 8.877006357885254,
+    "p90": 12.665598900775022
+  },
+  "correct_vs_wrong": {
+    "feature_cos_clean_correct": {
+      "count": 22979,
+      "mean": 0.7198314774652322,
+      "median": 0.733141053679581,
+      "p25": 0.660928190303018,
+      "p75": 0.788159630148694,
+      "p90": 0.8284488938988412
+    },
+    "feature_cos_clean_wrong": {
+      "count": 45723,
+      "mean": 0.7113846190976509,
+      "median": 0.7231397123026562,
+      "p25": 0.660396514159123,
+      "p75": 0.7709774527459268,
+      "p90": 0.8106081805038025
+    },
+    "posterior_jsd_clean_correct": {
+      "count": 22979,
+      "mean": 0.43259251666851195,
+      "median": 0.5839613659015543,
+      "p25": 0.09762026972352689,
+      "p75": 0.6877311249261016,
+      "p90": 0.6924166475201932
+    },
+    "posterior_jsd_clean_wrong": {
+      "count": 45723,
+      "mean": 0.5897546583612674,
+      "median": 0.6532602198680248,
+      "p25": 0.5973893930074743,
+      "p75": 0.6848018278639775,
+      "p90": 0.6920246304552721
+    }
+  }
 }

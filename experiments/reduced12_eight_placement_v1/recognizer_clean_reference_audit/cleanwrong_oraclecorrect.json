@@ -1,8 +1,6 @@
 {
-  "status": "BLOCKED",
-  "reason": "alignment gate blocked CleanWrong & OracleCorrect analysis: no explicit clean/true H36M17 skeleton cache was found; formal AMASS-to-H36M17 clean converter is unavailable",
-  "alignment_status": "BLOCKED",
-  "test_used": false,
-  "training_used": false,
-  "metrics_computed": false
+  "count": 5149,
+  "mean_oracle_feature_cos": 0.6770891626588437,
+  "mean_oracle_jsd": 0.6190819978090326,
+  "small_change_flip_rate_feature_cos_ge_0.95": 0.0
 }

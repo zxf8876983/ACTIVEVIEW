@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "frame_ids": [
+    0,
+    6,
+    12,
+    18,
+    24,
+    29
+  ],
+  "joint_order": [
+    "pelvis",
+    "right_hip",
+    "right_knee",
+    "right_ankle",
+    "left_hip",
+    "left_knee",
+    "left_ankle",
+    "spine1",
+    "spine3",
+    "neck",
+    "head",
+    "left_shoulder",
+    "left_elbow",
+    "left_wrist",
+    "right_shoulder",
+    "right_elbow",
+    "right_wrist"
+  ],
+  "pelvis_semantics": "human.translation, matching legacy renderer convention",
+  "records": [
+    {
+      "record_id": "reduced12kc_official_val_00268_002_ae586d5f93",
+      "scene_id": "00006-HkseAnWCgqk",
+      "placement_id": "p00",
+      "max_abs_difference": 0.0,
+      "pelvis_hip_midpoint_distance": {
+        "count": 6,
+        "mean": 0.10666593412558238,
+        "median": 0.1066659539937973,
+        "p25": 0.10666586458683014,
+        "p75": 0.10666599310934544,
+        "p90": 0.10666601732373238
+      },
+      "root_translation_finite": true
+    },
+    {
+      "record_id": "reduced12kc_official_val_01445_000_2754f7b48b",
+      "scene_id": "00006-HkseAnWCgqk",
+      "placement_id": "p00",
+      "max_abs_difference": 0.0,
+      "pelvis_hip_midpoint_distance": {
+        "count": 6,
+        "mean": 0.10666593412558238,
+        "median": 0.10666592791676521,
+        "p25": 0.10666591301560402,
+        "p75": 0.10666593722999096,
+        "p90": 0.1066659726202488
+      },
+      "root_translation_finite": true
+    },
+    {
+      "record_id": "reduced12kc_official_val_02122_002_098c10821c",
+      "scene_id": "00006-HkseAnWCgqk",
+      "placement_id": "p00",
+      "max_abs_difference": 0.0,
+      "pelvis_hip_midpoint_distance": {
+        "count": 6,
+        "mean": 0.10666593164205551,
+        "median": 0.10666592791676521,
+        "p25": 0.10666586831212044,
+        "p75": 0.10666598193347454,
+        "p90": 0.10666603222489357
+      },
+      "root_translation_finite": true
+    }
+  ],
+  "max_abs_difference": 0.0,
+  "tolerance": 1e-05,
+  "clean_fk_valid": true
+}

@@ -1,8 +1,997 @@
 {
-  "status": "BLOCKED",
-  "reason": "alignment gate blocked clean-reference privileged selectors: no explicit clean/true H36M17 skeleton cache was found; formal AMASS-to-H36M17 clean converter is unavailable",
-  "alignment_status": "BLOCKED",
-  "test_used": false,
-  "training_used": false,
-  "metrics_computed": false
+  "candidate_rows": 68702,
+  "selected_gt_margin": {
+    "count": 10080,
+    "mean": -1.0698461963366421,
+    "median": -1.055521845817566,
+    "p25": -6.5703641176223755,
+    "p75": 4.739503860473633,
+    "p90": 8.807461738586426
+  },
+  "regret_to_gt_margin_oracle": {
+    "count": 10080,
+    "mean": 4.825746185456713,
+    "median": 3.170593798160553,
+    "p25": 0.0,
+    "p75": 7.931864440441132,
+    "p90": 12.572844314575196
+  },
+  "frozen_wrong_oracle_correct_contexts": 2574,
+  "severe_miss_definition": "Frozen wrong while GT-margin oracle correct; severe is regret at or above median of that subset",
+  "severe_miss_contexts": 1287,
+  "severe_miss_regret_median": 9.840799808502197,
+  "cleanwrong_oraclecorrect_deep_dive": {
+    "count": 5149,
+    "mean_oracle_feature_cos": 0.6770891626588437,
+    "mean_oracle_jsd": 0.6190819978090326,
+    "small_change_flip_rate_feature_cos_ge_0.95": 0.0
+  },
+  "cleancorrect_oraclewrong_count": 468,
+  "clean_subset_metrics": {
+    "clean_recognizer": {
+      "count": 2472,
+      "accuracy": 1.0,
+      "macro_f1": 0.4166666666666667,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 361,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1": 1.0
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 684,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1": 1.0
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 226,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1": 1.0
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 671,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1": 1.0
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 530,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1": 1.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          361,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          684,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          226,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          671,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          530
+        ]
+      ]
+    },
+    "frozen_stage_cv0": {
+      "count": 2472,
+      "accuracy": 0.5950647249190939,
+      "macro_f1": 0.27611599677763604,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 361,
+          "recall": 0.7202216066481995,
+          "precision": 0.7558139534883721,
+          "f1": 0.7375886524822696
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 684,
+          "recall": 0.7236842105263158,
+          "precision": 0.9840954274353877,
+          "f1": 0.8340353833192924
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 226,
+          "recall": 0.48672566371681414,
+          "precision": 0.7333333333333333,
+          "f1": 0.5851063829787234
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 671,
+          "recall": 0.7034277198211625,
+          "precision": 0.8838951310861424,
+          "f1": 0.783402489626556
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 530,
+          "recall": 0.2528301886792453,
+          "precision": 0.7127659574468085,
+          "f1": 0.37325905292479106
+        }
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          40,
+          260,
+          0,
+          18,
+          1,
+          20,
+          0,
+          8,
+          14,
+          0,
+          0,
+          0
+        ],
+        [
+          50,
+          23,
+          495,
+          10,
+          9,
+          4,
+          1,
+          13,
+          72,
+          0,
+          3,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          25,
+          1,
+          1,
+          7,
+          0,
+          1,
+          110,
+          17,
+          6,
+          9,
+          11,
+          38
+        ],
+        [
+          66,
+          3,
+          0,
+          10,
+          1,
+          1,
+          1,
+          472,
+          76,
+          0,
+          29,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          105,
+          57,
+          7,
+          63,
+          1,
+          8,
+          38,
+          24,
+          30,
+          28,
+          35,
+          134
+        ]
+      ]
+    },
+    "real_gt_margin_oracle": {
+      "count": 2472,
+      "accuracy": 0.8106796116504854,
+      "macro_f1": 0.359126406753256,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 361,
+          "recall": 0.8919667590027701,
+          "precision": 0.9044943820224719,
+          "f1": 0.898186889818689
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 684,
+          "recall": 0.8757309941520468,
+          "precision": 0.9900826446280991,
+          "f1": 0.9294026377036463
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 226,
+          "recall": 0.7079646017699115,
+          "precision": 0.9195402298850575,
+          "f1": 0.8
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 671,
+          "recall": 0.8673621460506706,
+          "precision": 0.9831081081081081,
+          "f1": 0.9216152019002375
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1": 0.0
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 530,
+          "recall": 0.6433962264150943,
+          "precision": 0.9291553133514986,
+          "f1": 0.7603121516164995
+        }
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          13,
+          322,
+          0,
+          21,
+          0,
+          3,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          24,
+          6,
+          599,
+          38,
+          3,
+          0,
+          0,
+          5,
+          9,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          13,
+          1,
+          1,
+          26,
+          0,
+          0,
+          160,
+          2,
+          0,
+          3,
+          3,
+          17
+        ],
+        [
+          24,
+          2,
+          1,
+          37,
+          1,
+          1,
+          0,
+          582,
+          9,
+          0,
+          5,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          39,
+          25,
+          4,
+          76,
+          0,
+          1,
+          14,
+          3,
+          11,
+          6,
+          10,
+          341
+        ]
+      ]
+    }
+  },
+  "privileged_selectors": {
+    "MaxFeatureCos-to-Clean": {
+      "accuracy": 0.35267857142857145,
+      "macro_f1": 0.3321317724095347,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.20728291316526612,
+          "precision": 0.18301731244847486,
+          "f1": 0.19439579684763572
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.628498727735369,
+          "precision": 0.4039247751430908,
+          "f1": 0.4917869586859134
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.6868798235942668,
+          "precision": 0.6442605997931747,
+          "f1": 0.6648879402347918
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.44664031620553357,
+          "precision": 0.16878267363704258,
+          "f1": 0.24498644986449866
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.21524663677130046,
+          "precision": 0.7868852459016393,
+          "f1": 0.33802816901408456
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.01060070671378092,
+          "precision": 0.6923076923076923,
+          "f1": 0.020881670533642694
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.5041152263374485,
+          "precision": 0.580568720379147,
+          "f1": 0.539647577092511
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.52218782249742,
+          "precision": 0.48098859315589354,
+          "f1": 0.5007422068283028
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.5277777777777778,
+          "precision": 0.4852354349561053,
+          "f1": 0.5056133056133055
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.09932279909706546,
+          "precision": 0.4782608695652174,
+          "f1": 0.16448598130841122
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.05863874345549738,
+          "precision": 0.16766467065868262,
+          "f1": 0.08688906128782002
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.199203187250996,
+          "precision": 0.2812939521800281,
+          "f1": 0.23323615160349853
+        }
+      }
+    },
+    "MinJSD-to-Clean": {
+      "accuracy": 0.3674603174603175,
+      "macro_f1": 0.334926837698837,
+      "per_class": {
+        "walk": {
+          "label_id": 0,
+          "count": 1071,
+          "recall": 0.22128851540616246,
+          "precision": 0.2233741753063148,
+          "f1": 0.2223264540337711
+        },
+        "sit": {
+          "label_id": 1,
+          "count": 786,
+          "recall": 0.7735368956743003,
+          "precision": 0.37346437346437344,
+          "f1": 0.503728251864126
+        },
+        "stand up": {
+          "label_id": 2,
+          "count": 907,
+          "recall": 0.7750826901874311,
+          "precision": 0.6023993144815767,
+          "f1": 0.6779170684667308
+        },
+        "bend": {
+          "label_id": 3,
+          "count": 1012,
+          "recall": 0.24110671936758893,
+          "precision": 0.14244016345592528,
+          "f1": 0.17908256880733944
+        },
+        "crawl": {
+          "label_id": 4,
+          "count": 446,
+          "recall": 0.23542600896860988,
+          "precision": 0.65625,
+          "f1": 0.34653465346534656
+        },
+        "stumble": {
+          "label_id": 5,
+          "count": 849,
+          "recall": 0.03297997644287397,
+          "precision": 0.3373493975903614,
+          "f1": 0.06008583690987124
+        },
+        "clap": {
+          "label_id": 6,
+          "count": 486,
+          "recall": 0.5308641975308642,
+          "precision": 0.6386138613861386,
+          "f1": 0.5797752808988764
+        },
+        "throw": {
+          "label_id": 7,
+          "count": 969,
+          "recall": 0.6418988648090815,
+          "precision": 0.48142414860681115,
+          "f1": 0.5501990269792127
+        },
+        "kick": {
+          "label_id": 8,
+          "count": 1152,
+          "recall": 0.3880208333333333,
+          "precision": 0.44345238095238093,
+          "f1": 0.4138888888888889
+        },
+        "knock": {
+          "label_id": 9,
+          "count": 443,
+          "recall": 0.029345372460496615,
+          "precision": 0.19117647058823528,
+          "f1": 0.050880626223091974
+        },
+        "punch": {
+          "label_id": 10,
+          "count": 955,
+          "recall": 0.05235602094240838,
+          "precision": 0.1592356687898089,
+          "f1": 0.07880220646178092
+        },
+        "touching face": {
+          "label_id": 11,
+          "count": 1004,
+          "recall": 0.38745019920318724,
+          "precision": 0.3291032148900169,
+          "f1": 0.35590118938700827
+        }
+      }
+    }
+  }
 }

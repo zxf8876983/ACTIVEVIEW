@@ -1,8 +1,58 @@
 {
-  "status": "BLOCKED",
-  "reason": "alignment gate blocked utility ranking correlations: no explicit clean/true H36M17 skeleton cache was found; formal AMASS-to-H36M17 clean converter is unavailable",
-  "alignment_status": "BLOCKED",
-  "test_used": false,
-  "training_used": false,
-  "metrics_computed": false
+  "FeatureCos": {
+    "count": 68702,
+    "pearson_global": 0.1177580823840873,
+    "spearman_global": 0.10401504362213128,
+    "mean_within_context_pearson": 0.10951887185876111,
+    "mean_within_context_spearman": 0.10275082408067641
+  },
+  "NegativeFeatureL2": {
+    "count": 68702,
+    "pearson_global": -0.1407613059260939,
+    "spearman_global": -0.08601238900381705,
+    "mean_within_context_pearson": -0.12316992692443621,
+    "mean_within_context_spearman": -0.10922726142287273
+  },
+  "NegativePosteriorJSD": {
+    "count": 68702,
+    "pearson_global": -0.2664899900757474,
+    "spearman_global": -0.2246316219691849,
+    "mean_within_context_pearson": -0.2168712878974626,
+    "mean_within_context_spearman": -0.20186871290860262
+  },
+  "SceneVisibility": {
+    "count": 68702,
+    "pearson_global": 0.2198631729527314,
+    "spearman_global": 0.2763701512380324,
+    "mean_within_context_pearson": 0.2295143319520752,
+    "mean_within_context_spearman": 0.21795550121024468
+  },
+  "ProjectedArea": {
+    "count": 68702,
+    "pearson_global": 0.12193660248842282,
+    "spearman_global": 0.1886945115174159,
+    "mean_within_context_pearson": 0.1413862237534817,
+    "mean_within_context_spearman": 0.12970341663628004
+  },
+  "PoseConfidence": {
+    "count": 68702,
+    "pearson_global": 0.21485549740171,
+    "spearman_global": 0.2721560325267956,
+    "mean_within_context_pearson": 0.24171923478746352,
+    "mean_within_context_spearman": 0.2205862132525569
+  },
+  "NegativeDistance": {
+    "count": 68702,
+    "pearson_global": -0.14569191227398676,
+    "spearman_global": -0.18402294178274678,
+    "mean_within_context_pearson": -0.17569235047575618,
+    "mean_within_context_spearman": -0.14622024726947522
+  },
+  "NegativeMotionDeviation": {
+    "count": 68702,
+    "pearson_global": -0.030957592636458885,
+    "spearman_global": -0.13479703999202003,
+    "mean_within_context_pearson": -0.13420884745994227,
+    "mean_within_context_spearman": -0.13342439383031382
+  }
 }
