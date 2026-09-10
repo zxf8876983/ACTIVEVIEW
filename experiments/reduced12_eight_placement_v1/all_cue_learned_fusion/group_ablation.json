@@ -1,0 +1,55 @@
+{
+  "G0_Base": {
+    "status": "COMPLETED",
+    "models": [
+      "Linear-Margin",
+      "Mlp-Listwise"
+    ],
+    "branches": [
+      "G0_Base-Linear-Margin",
+      "G0_Base-Mlp-Listwise"
+    ]
+  },
+  "G1_Base_CurrentDINO": {
+    "status": "COMPLETED",
+    "models": [
+      "Linear-Margin",
+      "Mlp-Listwise"
+    ],
+    "branches": [
+      "G1_Base_CurrentDINO-Linear-Margin",
+      "G1_Base_CurrentDINO-Mlp-Listwise"
+    ]
+  },
+  "G6_DeployableAll": {
+    "status": "COMPLETED",
+    "models": [
+      "Linear-Margin",
+      "Mlp-Listwise"
+    ],
+    "branches": [
+      "G6_DeployableAll-Linear-Margin",
+      "G6_DeployableAll-Mlp-Listwise"
+    ]
+  },
+  "G2_Base_SceneOcclusion": {
+    "status": "NOT_AVAILABLE",
+    "reason": "Existing physical/visibility caches cover Moving Val only; Train coverage is absent and no expensive re-rendering was performed.",
+    "deployable": false
+  },
+  "G3_Base_HumanVisibility": {
+    "status": "NOT_AVAILABLE",
+    "reason": "Existing physical/visibility caches cover Moving Val only; Train coverage is absent and no expensive re-rendering was performed.",
+    "deployable": false
+  },
+  "G4_Base_SceneHuman": {
+    "status": "NOT_AVAILABLE",
+    "reason": "Existing physical/visibility caches cover Moving Val only; Train coverage is absent and no expensive re-rendering was performed.",
+    "deployable": false
+  },
+  "G5_AllPrivilegedPhysical": {
+    "status": "NOT_AVAILABLE",
+    "reason": "Existing physical/visibility caches cover Moving Val only; Train coverage is absent and no expensive re-rendering was performed.",
+    "deployable": false
+  }
+}

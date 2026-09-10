@@ -1,0 +1,1370 @@
+{
+  "walk": {
+    "S0-only": {
+      "support": 1071,
+      "recall": 0.5042016806722689,
+      "f1": 0.2621995630007283
+    },
+    "FrozenStageCv0": {
+      "support": 1071,
+      "recall": 0.5929038281979458,
+      "f1": 0.4006309148264984
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 1071,
+      "recall": 0.5714285714285714,
+      "f1": 0.44868035190615835
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 1071,
+      "recall": 0.8571428571428571,
+      "f1": 0.6515259048970901
+    },
+    "AnyCorrect Oracle": {
+      "support": 1071,
+      "recall": 0.9551820728291317,
+      "f1": 0.6450189155107188
+    },
+    "SceneVisibility": {
+      "label_id": 0,
+      "count": 1071,
+      "recall": 0.6013071895424836,
+      "precision": 0.32974910394265233,
+      "f1": 0.42592592592592593
+    },
+    "Real-GTMargin Oracle": {
+      "support": 1071,
+      "recall": 0.9290382819794585,
+      "f1": 0.7104605498036416
+    },
+    "Real-GTTrueLogP": {
+      "support": 1071,
+      "recall": 0.9290382819794585,
+      "f1": 0.6829100892244337
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 1071,
+      "recall": 0.5723622782446312,
+      "f1": 0.4781591263650546
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 1071,
+      "recall": 0.5891690009337068,
+      "f1": 0.46914498141263944
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 1071,
+      "recall": 0.6106442577030813,
+      "f1": 0.4106750392464678
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 1071,
+      "recall": 0.6050420168067226,
+      "f1": 0.41941747572815535
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 1071,
+      "recall": 0.5667600373482726,
+      "f1": 0.43826714801444044
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 1071,
+      "recall": 0.5686274509803921,
+      "f1": 0.4450127877237851
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 1071,
+      "recall": 0.6097105508870215,
+      "f1": 0.4114681789540013
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 1071,
+      "recall": 0.6013071895424836,
+      "f1": 0.41696341858206537
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 1071,
+      "recall": 0.5676937441643324,
+      "f1": 0.4498705142434332
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 1071,
+      "recall": 0.5639589169000934,
+      "f1": 0.4415204678362573
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 1071,
+      "recall": 0.5555555555555556,
+      "f1": 0.41405706332637443
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 1071,
+      "recall": 0.5490196078431373,
+      "f1": 0.41481481481481486
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 1071,
+      "recall": 0.5396825396825397,
+      "f1": 0.4397109166983644
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 1071,
+      "recall": 0.5602240896358543,
+      "f1": 0.45402951191827473
+    }
+  },
+  "sit": {
+    "S0-only": {
+      "support": 786,
+      "recall": 0.3346055979643766,
+      "f1": 0.3620096352374398
+    },
+    "FrozenStageCv0": {
+      "support": 786,
+      "recall": 0.7201017811704835,
+      "f1": 0.7214786488209051
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 786,
+      "recall": 0.7697201017811705,
+      "f1": 0.7581453634085213
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 786,
+      "recall": 0.8905852417302799,
+      "f1": 0.8641975308641975
+    },
+    "AnyCorrect Oracle": {
+      "support": 786,
+      "recall": 0.9007633587786259,
+      "f1": 0.8740740740740741
+    },
+    "SceneVisibility": {
+      "label_id": 1,
+      "count": 786,
+      "recall": 0.7582697201017812,
+      "precision": 0.764102564102564,
+      "f1": 0.7611749680715197
+    },
+    "Real-GTMargin Oracle": {
+      "support": 786,
+      "recall": 0.8931297709923665,
+      "f1": 0.8682745825602969
+    },
+    "Real-GTTrueLogP": {
+      "support": 786,
+      "recall": 0.8931297709923665,
+      "f1": 0.8693498452012384
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 786,
+      "recall": 0.8015267175572519,
+      "f1": 0.7558488302339532
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 786,
+      "recall": 0.8524173027989822,
+      "f1": 0.7060063224446786
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 786,
+      "recall": 0.7633587786259542,
+      "f1": 0.759974667511083
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 786,
+      "recall": 0.7659033078880407,
+      "f1": 0.7586641461877757
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 786,
+      "recall": 0.7735368956743003,
+      "f1": 0.7571606475716065
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 786,
+      "recall": 0.7582697201017812,
+      "f1": 0.7506297229219142
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 786,
+      "recall": 0.7595419847328244,
+      "f1": 0.758576874205845
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 786,
+      "recall": 0.7684478371501272,
+      "f1": 0.7607052896725441
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 786,
+      "recall": 0.7620865139949109,
+      "f1": 0.7539332913782252
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 786,
+      "recall": 0.7544529262086515,
+      "f1": 0.7487373737373738
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 786,
+      "recall": 0.7366412213740458,
+      "f1": 0.6934131736526946
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 786,
+      "recall": 0.767175572519084,
+      "f1": 0.7191413237924866
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 786,
+      "recall": 0.7620865139949109,
+      "f1": 0.738139248305607
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 786,
+      "recall": 0.7709923664122137,
+      "f1": 0.7565543071161049
+    }
+  },
+  "stand up": {
+    "S0-only": {
+      "support": 907,
+      "recall": 0.29988974641675853,
+      "f1": 0.37133105802047783
+    },
+    "FrozenStageCv0": {
+      "support": 907,
+      "recall": 0.61742006615215,
+      "f1": 0.6800242865816637
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 907,
+      "recall": 0.6438809261300992,
+      "f1": 0.6977299880525686
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 907,
+      "recall": 0.772877618522602,
+      "f1": 0.8048220436280136
+    },
+    "AnyCorrect Oracle": {
+      "support": 907,
+      "recall": 0.8136714443219405,
+      "f1": 0.8477886272257323
+    },
+    "SceneVisibility": {
+      "label_id": 2,
+      "count": 907,
+      "recall": 0.6504961411245865,
+      "precision": 0.7593307593307593,
+      "f1": 0.7007125890736342
+    },
+    "Real-GTMargin Oracle": {
+      "support": 907,
+      "recall": 0.802646085997795,
+      "f1": 0.8367816091954023
+    },
+    "Real-GTTrueLogP": {
+      "support": 907,
+      "recall": 0.802646085997795,
+      "f1": 0.8401615695326023
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 907,
+      "recall": 0.7552370452039692,
+      "f1": 0.7705286839145108
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 907,
+      "recall": 0.7684674751929438,
+      "f1": 0.7426744805540757
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 907,
+      "recall": 0.6438809261300992,
+      "f1": 0.6956521739130436
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 907,
+      "recall": 0.6438809261300992,
+      "f1": 0.6952380952380951
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 907,
+      "recall": 0.649393605292172,
+      "f1": 0.6941661756040071
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 907,
+      "recall": 0.6372657111356119,
+      "f1": 0.6885050625372245
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 907,
+      "recall": 0.6383682469680264,
+      "f1": 0.6905187835420392
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 907,
+      "recall": 0.6482910694597575,
+      "f1": 0.6983372921615202
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 907,
+      "recall": 0.6527012127894156,
+      "f1": 0.6907817969661609
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 907,
+      "recall": 0.6449834619625138,
+      "f1": 0.695187165775401
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 907,
+      "recall": 0.6295479603087101,
+      "f1": 0.6717647058823529
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 907,
+      "recall": 0.6515986769570011,
+      "f1": 0.6965232763700648
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 907,
+      "recall": 0.6427783902976847,
+      "f1": 0.6720461095100865
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 907,
+      "recall": 0.6626240352811467,
+      "f1": 0.705399061032864
+    }
+  },
+  "bend": {
+    "S0-only": {
+      "support": 1012,
+      "recall": 0.29150197628458496,
+      "f1": 0.1880777813197322
+    },
+    "FrozenStageCv0": {
+      "support": 1012,
+      "recall": 0.2826086956521739,
+      "f1": 0.319910514541387
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 1012,
+      "recall": 0.32707509881422925,
+      "f1": 0.30036297640653353
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 1012,
+      "recall": 0.5612648221343873,
+      "f1": 0.4715649647156496
+    },
+    "AnyCorrect Oracle": {
+      "support": 1012,
+      "recall": 0.817193675889328,
+      "f1": 0.6685529506871464
+    },
+    "SceneVisibility": {
+      "label_id": 3,
+      "count": 1012,
+      "recall": 0.2845849802371542,
+      "precision": 0.3650190114068441,
+      "f1": 0.3198223209328151
+    },
+    "Real-GTMargin Oracle": {
+      "support": 1012,
+      "recall": 0.7786561264822134,
+      "f1": 0.6066204772902233
+    },
+    "Real-GTTrueLogP": {
+      "support": 1012,
+      "recall": 0.7766798418972332,
+      "f1": 0.6348949919224555
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 1012,
+      "recall": 0.31620553359683795,
+      "f1": 0.33862433862433866
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 1012,
+      "recall": 0.31225296442687744,
+      "f1": 0.36238532110091737
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 1012,
+      "recall": 0.26976284584980237,
+      "f1": 0.328322309079976
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 1012,
+      "recall": 0.2816205533596838,
+      "f1": 0.3216704288939051
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 1012,
+      "recall": 0.3300395256916996,
+      "f1": 0.3124415341440599
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 1012,
+      "recall": 0.3339920948616601,
+      "f1": 0.30382022471910114
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 1012,
+      "recall": 0.2737154150197628,
+      "f1": 0.32995830851697433
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 1012,
+      "recall": 0.28063241106719367,
+      "f1": 0.32054176072234764
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 1012,
+      "recall": 0.3310276679841897,
+      "f1": 0.30413073082160685
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 1012,
+      "recall": 0.3290513833992095,
+      "f1": 0.30027051397655546
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 1012,
+      "recall": 0.27964426877470355,
+      "f1": 0.31270718232044203
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 1012,
+      "recall": 0.2816205533596838,
+      "f1": 0.3166666666666667
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 1012,
+      "recall": 0.3300395256916996,
+      "f1": 0.2857142857142857
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 1012,
+      "recall": 0.3290513833992095,
+      "f1": 0.30286493860845837
+    }
+  },
+  "crawl": {
+    "S0-only": {
+      "support": 446,
+      "recall": 0.2556053811659193,
+      "f1": 0.3540372670807454
+    },
+    "FrozenStageCv0": {
+      "support": 446,
+      "recall": 0.7354260089686099,
+      "f1": 0.7672514619883041
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 446,
+      "recall": 0.7511210762331838,
+      "f1": 0.775462962962963
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 446,
+      "recall": 0.8385650224215246,
+      "f1": 0.8748538011695906
+    },
+    "AnyCorrect Oracle": {
+      "support": 446,
+      "recall": 0.8497757847533632,
+      "f1": 0.9056152927120669
+    },
+    "SceneVisibility": {
+      "label_id": 4,
+      "count": 446,
+      "recall": 0.7556053811659192,
+      "precision": 0.7910798122065728,
+      "f1": 0.7729357798165137
+    },
+    "Real-GTMargin Oracle": {
+      "support": 446,
+      "recall": 0.8452914798206278,
+      "f1": 0.8944246737841044
+    },
+    "Real-GTTrueLogP": {
+      "support": 446,
+      "recall": 0.8452914798206278,
+      "f1": 0.8933649289099527
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 446,
+      "recall": 0.7825112107623319,
+      "f1": 0.7878103837471784
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 446,
+      "recall": 0.8071748878923767,
+      "f1": 0.8256880733944955
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 446,
+      "recall": 0.7668161434977578,
+      "f1": 0.7835051546391752
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 446,
+      "recall": 0.7645739910313901,
+      "f1": 0.78300803673938
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 446,
+      "recall": 0.7533632286995515,
+      "f1": 0.7832167832167831
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 446,
+      "recall": 0.7533632286995515,
+      "f1": 0.7813953488372093
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 446,
+      "recall": 0.7668161434977578,
+      "f1": 0.7826086956521738
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 446,
+      "recall": 0.7556053811659192,
+      "f1": 0.7791907514450866
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 446,
+      "recall": 0.7533632286995515,
+      "f1": 0.7804878048780487
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 446,
+      "recall": 0.7533632286995515,
+      "f1": 0.7777777777777777
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 446,
+      "recall": 0.7130044843049327,
+      "f1": 0.7491166077738515
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 446,
+      "recall": 0.7309417040358744,
+      "f1": 0.7572590011614403
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 446,
+      "recall": 0.7443946188340808,
+      "f1": 0.7820965842167255
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 446,
+      "recall": 0.773542600896861,
+      "f1": 0.7912844036697247
+    }
+  },
+  "stumble": {
+    "S0-only": {
+      "support": 849,
+      "recall": 0.02237926972909305,
+      "f1": 0.04288939051918736
+    },
+    "FrozenStageCv0": {
+      "support": 849,
+      "recall": 0.160188457008245,
+      "f1": 0.23734729493891796
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 849,
+      "recall": 0.17550058892815076,
+      "f1": 0.25823223570190645
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 849,
+      "recall": 0.31802120141342755,
+      "f1": 0.4545454545454546
+    },
+    "AnyCorrect Oracle": {
+      "support": 849,
+      "recall": 0.4098939929328622,
+      "f1": 0.5790349417637272
+    },
+    "SceneVisibility": {
+      "label_id": 5,
+      "count": 849,
+      "recall": 0.16607773851590105,
+      "precision": 0.46381578947368424,
+      "f1": 0.24457935819601037
+    },
+    "Real-GTMargin Oracle": {
+      "support": 849,
+      "recall": 0.4016489988221437,
+      "f1": 0.5526742301458671
+    },
+    "Real-GTTrueLogP": {
+      "support": 849,
+      "recall": 0.4016489988221437,
+      "f1": 0.5544715447154471
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 849,
+      "recall": 0.28032979976442873,
+      "f1": 0.35978835978835977
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 849,
+      "recall": 0.18845700824499412,
+      "f1": 0.27586206896551724
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 849,
+      "recall": 0.17432273262661954,
+      "f1": 0.2567215958369471
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 849,
+      "recall": 0.1707891637220259,
+      "f1": 0.25086505190311414
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 849,
+      "recall": 0.15665488810365136,
+      "f1": 0.2345679012345679
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 849,
+      "recall": 0.18138987043580684,
+      "f1": 0.2657463330457291
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 849,
+      "recall": 0.17550058892815076,
+      "f1": 0.2577854671280277
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 849,
+      "recall": 0.1707891637220259,
+      "f1": 0.25086505190311414
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 849,
+      "recall": 0.1684334511189635,
+      "f1": 0.24891209747606619
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 849,
+      "recall": 0.1790341578327444,
+      "f1": 0.26411815812337097
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 849,
+      "recall": 0.1425206124852768,
+      "f1": 0.22080291970802923
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 849,
+      "recall": 0.15901060070671377,
+      "f1": 0.2383053839364519
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 849,
+      "recall": 0.1625441696113074,
+      "f1": 0.24686940966010734
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 849,
+      "recall": 0.17196702002355713,
+      "f1": 0.25569176882662
+    }
+  },
+  "clap": {
+    "S0-only": {
+      "support": 486,
+      "recall": 0.11522633744855967,
+      "f1": 0.1627906976744186
+    },
+    "FrozenStageCv0": {
+      "support": 486,
+      "recall": 0.39300411522633744,
+      "f1": 0.42024202420242024
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 486,
+      "recall": 0.3950617283950617,
+      "f1": 0.4329199549041714
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 486,
+      "recall": 0.5699588477366255,
+      "f1": 0.6108048511576626
+    },
+    "AnyCorrect Oracle": {
+      "support": 486,
+      "recall": 0.6502057613168725,
+      "f1": 0.7340301974448317
+    },
+    "SceneVisibility": {
+      "label_id": 6,
+      "count": 486,
+      "recall": 0.3786008230452675,
+      "precision": 0.454320987654321,
+      "f1": 0.41301907968574636
+    },
+    "Real-GTMargin Oracle": {
+      "support": 486,
+      "recall": 0.6378600823045267,
+      "f1": 0.6724511930585683
+    },
+    "Real-GTTrueLogP": {
+      "support": 486,
+      "recall": 0.6378600823045267,
+      "f1": 0.670995670995671
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 486,
+      "recall": 0.49382716049382713,
+      "f1": 0.4624277456647399
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 486,
+      "recall": 0.5061728395061729,
+      "f1": 0.46812559467174125
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 486,
+      "recall": 0.3868312757201646,
+      "f1": 0.42152466367713004
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 486,
+      "recall": 0.38477366255144035,
+      "f1": 0.4245175936435869
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 486,
+      "recall": 0.411522633744856,
+      "f1": 0.44296788482835
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 486,
+      "recall": 0.42592592592592593,
+      "f1": 0.46051167964404893
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 486,
+      "recall": 0.39094650205761317,
+      "f1": 0.43035107587768967
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 486,
+      "recall": 0.39094650205761317,
+      "f1": 0.4288939051918736
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 486,
+      "recall": 0.41975308641975306,
+      "f1": 0.4498346196251378
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 486,
+      "recall": 0.4218106995884774,
+      "f1": 0.4565701559020045
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 486,
+      "recall": 0.3374485596707819,
+      "f1": 0.37657864523536166
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 486,
+      "recall": 0.3868312757201646,
+      "f1": 0.41455347298787215
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 486,
+      "recall": 0.4074074074074074,
+      "f1": 0.439511653718091
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 486,
+      "recall": 0.41358024691358025,
+      "f1": 0.4496644295302013
+    }
+  },
+  "throw": {
+    "S0-only": {
+      "support": 969,
+      "recall": 0.24045407636738905,
+      "f1": 0.3075907590759076
+    },
+    "FrozenStageCv0": {
+      "support": 969,
+      "recall": 0.5717234262125903,
+      "f1": 0.5009041591320073
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 969,
+      "recall": 0.5933952528379773,
+      "f1": 0.5145413870246085
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 969,
+      "recall": 0.7120743034055728,
+      "f1": 0.6774668630338734
+    },
+    "AnyCorrect Oracle": {
+      "support": 969,
+      "recall": 0.7316821465428277,
+      "f1": 0.7970770095559304
+    },
+    "SceneVisibility": {
+      "label_id": 7,
+      "count": 969,
+      "recall": 0.5902992776057792,
+      "precision": 0.45288994457640536,
+      "f1": 0.5125448028673835
+    },
+    "Real-GTMargin Oracle": {
+      "support": 969,
+      "recall": 0.7192982456140351,
+      "f1": 0.7344573234984194
+    },
+    "Real-GTTrueLogP": {
+      "support": 969,
+      "recall": 0.7192982456140351,
+      "f1": 0.732912723449001
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 969,
+      "recall": 0.6222910216718266,
+      "f1": 0.5504335919671383
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 969,
+      "recall": 0.6408668730650154,
+      "f1": 0.5648021828103684
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 969,
+      "recall": 0.5964912280701754,
+      "f1": 0.5126385809312639
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 969,
+      "recall": 0.5975232198142415,
+      "f1": 0.5135254988913526
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 969,
+      "recall": 0.6037151702786377,
+      "f1": 0.5204626334519572
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 969,
+      "recall": 0.5954592363261094,
+      "f1": 0.5262197902416781
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 969,
+      "recall": 0.5923632610939112,
+      "f1": 0.509542831779849
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 969,
+      "recall": 0.6006191950464397,
+      "f1": 0.5161862527716187
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 969,
+      "recall": 0.6026831785345718,
+      "f1": 0.5195729537366549
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 969,
+      "recall": 0.5902992776057792,
+      "f1": 0.5230909922267946
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 969,
+      "recall": 0.543859649122807,
+      "f1": 0.49506810709253174
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 969,
+      "recall": 0.56656346749226,
+      "f1": 0.500912408759124
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 969,
+      "recall": 0.5851393188854489,
+      "f1": 0.5133544590312359
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 969,
+      "recall": 0.5902992776057792,
+      "f1": 0.5167118337850044
+    }
+  },
+  "kick": {
+    "S0-only": {
+      "support": 1152,
+      "recall": 0.4522569444444444,
+      "f1": 0.37095051619793523
+    },
+    "FrozenStageCv0": {
+      "support": 1152,
+      "recall": 0.7543402777777778,
+      "f1": 0.5768337205443079
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 1152,
+      "recall": 0.7569444444444444,
+      "f1": 0.5993127147766323
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 1152,
+      "recall": 0.8828125,
+      "f1": 0.7808061420345489
+    },
+    "AnyCorrect Oracle": {
+      "support": 1152,
+      "recall": 0.9105902777777778,
+      "f1": 0.8160248930377285
+    },
+    "SceneVisibility": {
+      "label_id": 8,
+      "count": 1152,
+      "recall": 0.7847222222222222,
+      "precision": 0.4811069717935072,
+      "f1": 0.5965028043549984
+    },
+    "Real-GTMargin Oracle": {
+      "support": 1152,
+      "recall": 0.8940972222222222,
+      "f1": 0.822027134876297
+    },
+    "Real-GTTrueLogP": {
+      "support": 1152,
+      "recall": 0.8940972222222222,
+      "f1": 0.8187599364069953
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 1152,
+      "recall": 0.6927083333333334,
+      "f1": 0.6303317535545023
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 1152,
+      "recall": 0.7890625,
+      "f1": 0.6031851360318514
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 1152,
+      "recall": 0.7630208333333334,
+      "f1": 0.5957302609284988
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 1152,
+      "recall": 0.7638888888888888,
+      "f1": 0.599250936329588
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 1152,
+      "recall": 0.7569444444444444,
+      "f1": 0.5962393162393164
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 1152,
+      "recall": 0.7543402777777778,
+      "f1": 0.5964310226492794
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 1152,
+      "recall": 0.765625,
+      "f1": 0.5963488843813387
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 1152,
+      "recall": 0.7638888888888888,
+      "f1": 0.6010928961748634
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 1152,
+      "recall": 0.7612847222222222,
+      "f1": 0.6077616077616078
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 1152,
+      "recall": 0.7517361111111112,
+      "f1": 0.5960082587749483
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 1152,
+      "recall": 0.765625,
+      "f1": 0.5483369599005284
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 1152,
+      "recall": 0.7734375,
+      "f1": 0.5718870346598203
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 1152,
+      "recall": 0.7586805555555556,
+      "f1": 0.5943556613396804
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 1152,
+      "recall": 0.7612847222222222,
+      "f1": 0.5982264665757162
+    }
+  },
+  "knock": {
+    "S0-only": {
+      "support": 443,
+      "recall": 0.06320541760722348,
+      "f1": 0.10606060606060606
+    },
+    "FrozenStageCv0": {
+      "support": 443,
+      "recall": 0.16252821670428894,
+      "f1": 0.24615384615384614
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 443,
+      "recall": 0.19187358916478556,
+      "f1": 0.2809917355371901
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 443,
+      "recall": 0.3340857787810384,
+      "f1": 0.44984802431610943
+    },
+    "AnyCorrect Oracle": {
+      "support": 443,
+      "recall": 0.45598194130925507,
+      "f1": 0.6102719033232629
+    },
+    "SceneVisibility": {
+      "label_id": 9,
+      "count": 443,
+      "recall": 0.16252821670428894,
+      "precision": 0.5034965034965035,
+      "f1": 0.24573378839590443
+    },
+    "Real-GTMargin Oracle": {
+      "support": 443,
+      "recall": 0.44243792325056436,
+      "f1": 0.5705967976710336
+    },
+    "Real-GTTrueLogP": {
+      "support": 443,
+      "recall": 0.44243792325056436,
+      "f1": 0.5705967976710336
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 443,
+      "recall": 0.2708803611738149,
+      "f1": 0.3366058906030856
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 443,
+      "recall": 0.2144469525959368,
+      "f1": 0.3109656301145663
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 443,
+      "recall": 0.17381489841986456,
+      "f1": 0.26324786324786326
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 443,
+      "recall": 0.17607223476297967,
+      "f1": 0.26351351351351354
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 443,
+      "recall": 0.16930022573363432,
+      "f1": 0.25295109612141653
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 443,
+      "recall": 0.1873589164785553,
+      "f1": 0.27805695142378556
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 443,
+      "recall": 0.17832957110609482,
+      "f1": 0.268251273344652
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 443,
+      "recall": 0.17832957110609482,
+      "f1": 0.2673434856175973
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 443,
+      "recall": 0.17381489841986456,
+      "f1": 0.2614601018675721
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 443,
+      "recall": 0.19413092550790068,
+      "f1": 0.2861896838602329
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 443,
+      "recall": 0.1670428893905192,
+      "f1": 0.2525597269624574
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 443,
+      "recall": 0.17607223476297967,
+      "f1": 0.26218487394957984
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 443,
+      "recall": 0.17607223476297967,
+      "f1": 0.2666666666666667
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 443,
+      "recall": 0.19413092550790068,
+      "f1": 0.2861896838602329
+    }
+  },
+  "punch": {
+    "S0-only": {
+      "support": 955,
+      "recall": 0.07539267015706806,
+      "f1": 0.10698365527488855
+    },
+    "FrozenStageCv0": {
+      "support": 955,
+      "recall": 0.17486910994764399,
+      "f1": 0.21019509125236
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 955,
+      "recall": 0.18848167539267016,
+      "f1": 0.22799240025332487
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 955,
+      "recall": 0.374869109947644,
+      "f1": 0.4616376531270148
+    },
+    "AnyCorrect Oracle": {
+      "support": 955,
+      "recall": 0.45968586387434557,
+      "f1": 0.5952542372881356
+    },
+    "SceneVisibility": {
+      "label_id": 10,
+      "count": 955,
+      "recall": 0.17905759162303664,
+      "precision": 0.27895595432300163,
+      "f1": 0.2181122448979592
+    },
+    "Real-GTMargin Oracle": {
+      "support": 955,
+      "recall": 0.43664921465968587,
+      "f1": 0.5504950495049505
+    },
+    "Real-GTTrueLogP": {
+      "support": 955,
+      "recall": 0.43664921465968587,
+      "f1": 0.5508586525759577
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 955,
+      "recall": 0.2628272251308901,
+      "f1": 0.26645435244161364
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 955,
+      "recall": 0.19267015706806281,
+      "f1": 0.24533333333333335
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 955,
+      "recall": 0.187434554973822,
+      "f1": 0.222636815920398
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 955,
+      "recall": 0.1905759162303665,
+      "f1": 0.22679127725856696
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 955,
+      "recall": 0.18534031413612564,
+      "f1": 0.2220828105395232
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 955,
+      "recall": 0.18534031413612564,
+      "f1": 0.22490470139771282
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 955,
+      "recall": 0.187434554973822,
+      "f1": 0.2227753578095831
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 955,
+      "recall": 0.19267015706806281,
+      "f1": 0.22956955708047408
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 955,
+      "recall": 0.19162303664921465,
+      "f1": 0.22662538699690402
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 955,
+      "recall": 0.187434554973822,
+      "f1": 0.22615287428932407
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 955,
+      "recall": 0.17486910994764399,
+      "f1": 0.21301020408163265
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 955,
+      "recall": 0.18848167539267016,
+      "f1": 0.22542266750156542
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 955,
+      "recall": 0.17382198952879582,
+      "f1": 0.2133676092544987
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 955,
+      "recall": 0.19267015706806281,
+      "f1": 0.2310106716886378
+    }
+  },
+  "touching face": {
+    "S0-only": {
+      "support": 1004,
+      "recall": 0.14940239043824702,
+      "f1": 0.1910828025477707
+    },
+    "FrozenStageCv0": {
+      "support": 1004,
+      "recall": 0.21414342629482072,
+      "f1": 0.2564102564102564
+    },
+    "Candidate-Conditioned Spatial": {
+      "support": 1004,
+      "recall": 0.23207171314741035,
+      "f1": 0.2703016241299304
+    },
+    "Top3-GTSequentialVerifier": {
+      "support": 1004,
+      "recall": 0.450199203187251,
+      "f1": 0.5107344632768361
+    },
+    "AnyCorrect Oracle": {
+      "support": 1004,
+      "recall": 0.600597609561753,
+      "f1": 0.6828992072480181
+    },
+    "SceneVisibility": {
+      "label_id": 11,
+      "count": 1004,
+      "recall": 0.23306772908366533,
+      "precision": 0.31283422459893045,
+      "f1": 0.26712328767123283
+    },
+    "Real-GTMargin Oracle": {
+      "support": 1004,
+      "recall": 0.5697211155378487,
+      "f1": 0.6359088382434686
+    },
+    "Real-GTTrueLogP": {
+      "support": 1004,
+      "recall": 0.5687250996015937,
+      "f1": 0.6326869806094184
+    },
+    "RealEvidence-GTMarginListwise": {
+      "support": 1004,
+      "recall": 0.2201195219123506,
+      "f1": 0.2609208972845336
+    },
+    "RealEvidence-CorrectnessBCE": {
+      "support": 1004,
+      "recall": 0.16633466135458166,
+      "f1": 0.21632124352331605
+    },
+    "G0_Base-Linear-Margin": {
+      "support": 1004,
+      "recall": 0.2360557768924303,
+      "f1": 0.27288428324697755
+    },
+    "G0_Base-Linear-Correctness": {
+      "support": 1004,
+      "recall": 0.2340637450199203,
+      "f1": 0.2710495963091119
+    },
+    "G0_Base-Mlp-Margin": {
+      "support": 1004,
+      "recall": 0.23107569721115537,
+      "f1": 0.2739079102715466
+    },
+    "G0_Base-Mlp-Listwise": {
+      "support": 1004,
+      "recall": 0.2340637450199203,
+      "f1": 0.27089337175792505
+    },
+    "G1_Base_CurrentDINO-Linear-Margin": {
+      "support": 1004,
+      "recall": 0.2410358565737052,
+      "f1": 0.2788018433179723
+    },
+    "G1_Base_CurrentDINO-Linear-Correctness": {
+      "support": 1004,
+      "recall": 0.2400398406374502,
+      "f1": 0.27653471026965004
+    },
+    "G1_Base_CurrentDINO-Mlp-Margin": {
+      "support": 1004,
+      "recall": 0.2340637450199203,
+      "f1": 0.277122641509434
+    },
+    "G1_Base_CurrentDINO-Mlp-Listwise": {
+      "support": 1004,
+      "recall": 0.2350597609561753,
+      "f1": 0.2698684962835906
+    },
+    "G6_DeployableAll-Linear-Margin": {
+      "support": 1004,
+      "recall": 0.22609561752988047,
+      "f1": 0.2536312849162011
+    },
+    "G6_DeployableAll-Linear-Correctness": {
+      "support": 1004,
+      "recall": 0.2350597609561753,
+      "f1": 0.26971428571428574
+    },
+    "G6_DeployableAll-Mlp-Margin": {
+      "support": 1004,
+      "recall": 0.21314741035856574,
+      "f1": 0.2553699284009546
+    },
+    "G6_DeployableAll-Mlp-Listwise": {
+      "support": 1004,
+      "recall": 0.24900398406374502,
+      "f1": 0.2834467120181406
+    }
+  }
+}

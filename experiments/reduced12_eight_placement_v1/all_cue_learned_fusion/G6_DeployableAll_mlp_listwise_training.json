@@ -1,0 +1,112 @@
+{
+  "kind": "mlp",
+  "objective": "listwise",
+  "input_dim": 364,
+  "epochs": 20,
+  "selected_epoch": 2,
+  "best_val_loss": 1.8036474227905273,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/reduced12_eight_placement_v1/all_cue_learned_fusion/G6_DeployableAll_mlp_listwise_best.pth",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.8251030226548512,
+      "val_loss": 1.8052667081356049
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.7881786982218424,
+      "val_loss": 1.8036474227905273
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.7804185668627421,
+      "val_loss": 1.8038721799850463
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.7733832538127898,
+      "val_loss": 1.8109726309776306
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.767268317937851,
+      "val_loss": 1.8098162293434144
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.7596495827039083,
+      "val_loss": 1.8103930175304412
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.7496790826320647,
+      "val_loss": 1.813619178533554
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.7382965743541718,
+      "val_loss": 1.8393586337566377
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.728282364209493,
+      "val_loss": 1.8326287508010863
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.7119993686676025,
+      "val_loss": 1.8408850610256196
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.6988991320133209,
+      "val_loss": 1.8470218420028686
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.6802297135194142,
+      "val_loss": 1.854879915714264
+    },
+    {
+      "epoch": 13,
+      "train_loss": 1.661261103550593,
+      "val_loss": 1.8800659835338593
+    },
+    {
+      "epoch": 14,
+      "train_loss": 1.6443393051624298,
+      "val_loss": 1.8993600189685822
+    },
+    {
+      "epoch": 15,
+      "train_loss": 1.622381873925527,
+      "val_loss": 1.907044380903244
+    },
+    {
+      "epoch": 16,
+      "train_loss": 1.606336655219396,
+      "val_loss": 1.9433677613735199
+    },
+    {
+      "epoch": 17,
+      "train_loss": 1.5880821386973063,
+      "val_loss": 1.9623920023441315
+    },
+    {
+      "epoch": 18,
+      "train_loss": 1.5685417890548705,
+      "val_loss": 1.9772819697856903
+    },
+    {
+      "epoch": 19,
+      "train_loss": 1.55216397245725,
+      "val_loss": 2.0098047614097596
+    },
+    {
+      "epoch": 20,
+      "train_loss": 1.534658678372701,
+      "val_loss": 2.023229014873505
+    }
+  ],
+  "test_used": false
+}

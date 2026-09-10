@@ -1,0 +1,182 @@
+{
+  "groups": {
+    "G0_Base": {
+      "features": [
+        {
+          "name": "current_stgcn_feature",
+          "dim": 256,
+          "deployable": true,
+          "source": "visited s0 frozen ST-GCN penultimate feature"
+        },
+        {
+          "name": "current_logp",
+          "dim": 12,
+          "deployable": true,
+          "source": "visited s0 frozen ST-GCN posterior"
+        },
+        {
+          "name": "current_entropy_margin_maxprob",
+          "dim": 3,
+          "deployable": true,
+          "source": "derived from current_logp"
+        },
+        {
+          "name": "candidate_geometry",
+          "dim": 11,
+          "deployable": true,
+          "source": "existing candidate geometry descriptor"
+        },
+        {
+          "name": "proposal_score",
+          "dim": 1,
+          "deployable": true,
+          "source": "frozen Candidate-Conditioned Spatial proposal"
+        },
+        {
+          "name": "frozen_stage_score",
+          "dim": 1,
+          "deployable": true,
+          "source": "frozen Stage-C-v0 score"
+        },
+        {
+          "name": "stay_indicator",
+          "dim": 1,
+          "deployable": true,
+          "source": "candidate action-set indicator"
+        }
+      ],
+      "dim": 285,
+      "deployable": true
+    },
+    "G1_Base_CurrentDINO": {
+      "features": [
+        {
+          "name": "current_stgcn_feature",
+          "dim": 256,
+          "deployable": true,
+          "source": "visited s0 frozen ST-GCN penultimate feature"
+        },
+        {
+          "name": "current_logp",
+          "dim": 12,
+          "deployable": true,
+          "source": "visited s0 frozen ST-GCN posterior"
+        },
+        {
+          "name": "current_entropy_margin_maxprob",
+          "dim": 3,
+          "deployable": true,
+          "source": "derived from current_logp"
+        },
+        {
+          "name": "candidate_geometry",
+          "dim": 11,
+          "deployable": true,
+          "source": "existing candidate geometry descriptor"
+        },
+        {
+          "name": "proposal_score",
+          "dim": 1,
+          "deployable": true,
+          "source": "frozen Candidate-Conditioned Spatial proposal"
+        },
+        {
+          "name": "frozen_stage_score",
+          "dim": 1,
+          "deployable": true,
+          "source": "frozen Stage-C-v0 score"
+        },
+        {
+          "name": "stay_indicator",
+          "dim": 1,
+          "deployable": true,
+          "source": "candidate action-set indicator"
+        },
+        {
+          "name": "current_dino_projected_mean",
+          "dim": 64,
+          "deployable": true,
+          "source": "existing visited-s0 DINO spatial cache and frozen projector"
+        }
+      ],
+      "dim": 349,
+      "deployable": true
+    },
+    "G6_DeployableAll": {
+      "features": [
+        {
+          "name": "current_stgcn_feature",
+          "dim": 256,
+          "deployable": true,
+          "source": "visited s0 frozen ST-GCN penultimate feature"
+        },
+        {
+          "name": "current_logp",
+          "dim": 12,
+          "deployable": true,
+          "source": "visited s0 frozen ST-GCN posterior"
+        },
+        {
+          "name": "current_entropy_margin_maxprob",
+          "dim": 3,
+          "deployable": true,
+          "source": "derived from current_logp"
+        },
+        {
+          "name": "candidate_geometry",
+          "dim": 11,
+          "deployable": true,
+          "source": "existing candidate geometry descriptor"
+        },
+        {
+          "name": "proposal_score",
+          "dim": 1,
+          "deployable": true,
+          "source": "frozen Candidate-Conditioned Spatial proposal"
+        },
+        {
+          "name": "frozen_stage_score",
+          "dim": 1,
+          "deployable": true,
+          "source": "frozen Stage-C-v0 score"
+        },
+        {
+          "name": "stay_indicator",
+          "dim": 1,
+          "deployable": true,
+          "source": "candidate action-set indicator"
+        },
+        {
+          "name": "current_dino_projected_mean",
+          "dim": 64,
+          "deployable": true,
+          "source": "existing visited-s0 DINO spatial cache and frozen projector"
+        },
+        {
+          "name": "predicted_future_logp",
+          "dim": 12,
+          "deployable": true,
+          "source": "existing deployable future-recognition evidence predictor"
+        },
+        {
+          "name": "predicted_future_entropy_margin_maxprob",
+          "dim": 3,
+          "deployable": true,
+          "source": "derived from predicted_future_logp"
+        }
+      ],
+      "dim": 364,
+      "deployable": true
+    }
+  },
+  "target": {
+    "gt_margin": "true frozen ST-GCN candidate log p(y_gt) minus strongest competing class",
+    "correct": "1[argmax frozen ST-GCN candidate posterior == y_gt]"
+  },
+  "forbidden_inputs": [
+    "real future ST-GCN evidence",
+    "future candidate skeleton",
+    "GT action one-hot",
+    "GT future physical visibility"
+  ]
+}
