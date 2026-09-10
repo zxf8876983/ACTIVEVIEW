@@ -1,0 +1,26 @@
+{
+  "angular": {
+    "pairs": 18158,
+    "pearson": 0.46843613560262615,
+    "spearman": 0.4661053911983101,
+    "p_neighbor_correct_given_center_correct": 0.5882352941176471,
+    "p_neighbor_correct_given_center_wrong": 0.20455115870492763,
+    "mean_abs_margin_difference": 5.4367267343854255
+  },
+  "radial": {
+    "pairs": 27920,
+    "pearson": 0.6852015328183552,
+    "spearman": 0.6882400430804216,
+    "p_neighbor_correct_given_center_correct": 0.6607897153351698,
+    "p_neighbor_correct_given_center_wrong": 0.13358778625954199,
+    "mean_abs_margin_difference": 4.201708620322106
+  },
+  "all_1hop": {
+    "pairs": 46078,
+    "pearson": 0.6004545643167319,
+    "spearman": 0.6009078980873885,
+    "p_neighbor_correct_given_center_correct": 0.6344545188651652,
+    "p_neighbor_correct_given_center_wrong": 0.162854086878515,
+    "mean_abs_margin_difference": 4.688393348720945
+  }
+}

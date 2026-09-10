@@ -1,0 +1,16 @@
+{
+  "counts": {
+    "h1_itself": 2920,
+    "one_hop": 1783,
+    "within_two_hops": 1395,
+    "over_two_hops": 3982
+  },
+  "proportions": {
+    "h1_itself": 0.2896825396825397,
+    "one_hop": 0.17688492063492064,
+    "within_two_hops": 0.13839285714285715,
+    "over_two_hops": 0.3950396825396825
+  },
+  "mean_lattice_distance": 2.0248015873015874,
+  "median_lattice_distance": 2.0
+}
