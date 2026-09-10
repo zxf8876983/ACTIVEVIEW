@@ -1,0 +1,1054 @@
+{
+  "records": [
+    {
+      "record_id": "reduced12kc_official_val_00163_007_8ae0592ec2",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub015/0013_knocking1_poses.npz",
+      "start_frame": 258,
+      "end_frame": 469,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_00268_002_ae586d5f93",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub015/0013_knocking1_poses.npz",
+      "start_frame": 313,
+      "end_frame": 423,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_00427_000_95f9521e70",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_34_F_MoSh/Subject_34_F_5_poses.npz",
+      "start_frame": 0,
+      "end_frame": 492,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_00456_004_77d12f4429",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/3/crawl08_poses.npz",
+      "start_frame": 402,
+      "end_frame": 570,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_00871_007_b3f379407d",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/144/144_16_poses.npz",
+      "start_frame": 1878,
+      "end_frame": 2844,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_01445_000_2754f7b48b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_20_F_MoSh/Subject_20_F_10_poses.npz",
+      "start_frame": 0,
+      "end_frame": 288,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_01478_000_de4ddd022d",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_31_F_MoSh/Subject_31_F_7_poses.npz",
+      "start_frame": 0,
+      "end_frame": 536,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_01486_013_3741ae1fbe",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub095/0031_rom_poses.npz",
+      "start_frame": 8901,
+      "end_frame": 9092,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02122_002_098c10821c",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub015/0013_knocking1_poses.npz",
+      "start_frame": 298,
+      "end_frame": 373,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02138_000_298df5200b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/DFaust_67/50027/50027_punching_poses.npz",
+      "start_frame": 90,
+      "end_frame": 134,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02179_015_42d7aed562",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/79/79_22_poses.npz",
+      "start_frame": 446,
+      "end_frame": 519,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02391_010_5c5609393b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/378/push_recovery_front03_poses.npz",
+      "start_frame": 232,
+      "end_frame": 343,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02589_002_cb3f3d4795",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/SFU/0008/0008_Yoga001_poses.npz",
+      "start_frame": 1363,
+      "end_frame": 1772,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02596_000_996dfed77b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub101/0023_throwing_hard3_poses.npz",
+      "start_frame": 0,
+      "end_frame": 277,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02831_002_15e3b6235b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/shiono/pose-04-drank-shiono_poses.npz",
+      "start_frame": 468,
+      "end_frame": 1237,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02831_005_707e0e35bc",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/shiono/pose-04-drank-shiono_poses.npz",
+      "start_frame": 1998,
+      "end_frame": 2473,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02888_002_2f406bd13e",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/kaiwa/pose-18-applause-kaiwa_poses.npz",
+      "start_frame": 483,
+      "end_frame": 1189,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_02899_006_dc51cc74f8",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/987/Experiment3a_05_poses.npz",
+      "start_frame": 8456,
+      "end_frame": 8628,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_03290_005_44e32ec521",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/MPI_HDM05/tr/HDM_tr_03-02_03_120_poses.npz",
+      "start_frame": 3203,
+      "end_frame": 3512,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_03742_000_47e51fdfd1",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/ACCAD/s007/QkWalk1_poses.npz",
+      "start_frame": 0,
+      "end_frame": 306,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_03823_000_d410ba5a12",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/442/Aufstehen04_poses.npz",
+      "start_frame": 0,
+      "end_frame": 131,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_03838_000_f2c852a0e9",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/291/push_recovery_right04_poses.npz",
+      "start_frame": 298,
+      "end_frame": 435,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_03893_024_f4e94a4187",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/144/144_06_poses.npz",
+      "start_frame": 3202,
+      "end_frame": 3424,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_04301_000_72367d48ef",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_57_F_MoSh/Subject_57_F_7_poses.npz",
+      "start_frame": 300,
+      "end_frame": 1139,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_04306_014_09704b218a",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/hamada/gesture_etc-47-big drum-hamada_poses.npz",
+      "start_frame": 588,
+      "end_frame": 664,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_04600_002_24f9406c1a",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_22_F_MoSh/Subject_22_F_20_poses.npz",
+      "start_frame": 535,
+      "end_frame": 906,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_04600_004_128c92b8d0",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_22_F_MoSh/Subject_22_F_20_poses.npz",
+      "start_frame": 402,
+      "end_frame": 534,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_04799_010_d1dcecb41f",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/141/141_15_poses.npz",
+      "start_frame": 1025,
+      "end_frame": 1087,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05026_024_dd7abcc9fb",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/kaiwa/accident-12-twist foot-kaiwa_poses.npz",
+      "start_frame": 455,
+      "end_frame": 597,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05026_029_689a5f0bb0",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/kaiwa/accident-12-twist foot-kaiwa_poses.npz",
+      "start_frame": 2970,
+      "end_frame": 3067,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05192_021_d3e7310b24",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/aita/accident-15-knock head 2-aita_poses.npz",
+      "start_frame": 1338,
+      "end_frame": 1492,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05393_009_20672db509",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/shiono/gesture_etc-05-touch nose-shiono_poses.npz",
+      "start_frame": 1409,
+      "end_frame": 2277,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05393_011_e57c5e65fd",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/shiono/gesture_etc-05-touch nose-shiono_poses.npz",
+      "start_frame": 811,
+      "end_frame": 1391,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05443_001_fc8bd8c5b1",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub022/0014_sitting1_poses.npz",
+      "start_frame": 210,
+      "end_frame": 306,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05825_007_c5bff58b92",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/HumanEva/S1/Box_3_poses.npz",
+      "start_frame": 67,
+      "end_frame": 215,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05825_008_ed1c66fb33",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/HumanEva/S1/Box_3_poses.npz",
+      "start_frame": 574,
+      "end_frame": 630,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05825_009_ff0f2905e0",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/HumanEva/S1/Box_3_poses.npz",
+      "start_frame": 749,
+      "end_frame": 793,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05825_017_23e42d8dac",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/HumanEva/S1/Box_3_poses.npz",
+      "start_frame": 1454,
+      "end_frame": 1506,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05836_006_974abc77b6",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/86/86_15_poses.npz",
+      "start_frame": 1273,
+      "end_frame": 1604,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05908_001_0dae7aada7",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub022/0015_sitting2_poses.npz",
+      "start_frame": 384,
+      "end_frame": 704,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05908_004_b4b1a2ed46",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub022/0015_sitting2_poses.npz",
+      "start_frame": 739,
+      "end_frame": 817,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_05938_000_f679b9f051",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_87_F_MoSh/Subject_87_F_5_poses.npz",
+      "start_frame": 0,
+      "end_frame": 432,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_06180_003_416bfa07a4",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/378/push_recovery_stand_right09_poses.npz",
+      "start_frame": 218,
+      "end_frame": 316,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_06214_001_d3063f9135",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/hamada/throw_toss-02-side-hamada_poses.npz",
+      "start_frame": 1339,
+      "end_frame": 1751,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_06214_002_ebedccf998",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/hamada/throw_toss-02-side-hamada_poses.npz",
+      "start_frame": 2311,
+      "end_frame": 2637,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_06301_000_6ddbd22d2b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/572/kick_low_left04_poses.npz",
+      "start_frame": 0,
+      "end_frame": 512,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_06366_000_48476a2831",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_25_F_MoSh/Subject_25_F_11_poses.npz",
+      "start_frame": 98,
+      "end_frame": 189,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_06771_000_0948e7105f",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/17/17_03_poses.npz",
+      "start_frame": 0,
+      "end_frame": 6352,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_06874_005_efd4381865",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/32/32_14_poses.npz",
+      "start_frame": 1320,
+      "end_frame": 1397,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07141_003_3eb97dc2ca",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Transitions_mocap/mazen_c3d/jumpinplace_jumpingtwist360_poses.npz",
+      "start_frame": 282,
+      "end_frame": 313,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07161_012_bbcde48935",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/32/32_13_poses.npz",
+      "start_frame": 140,
+      "end_frame": 1466,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07565_006_0a67d9bd31",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/kaiwa/greeting-03-election-kaiwa_poses.npz",
+      "start_frame": 553,
+      "end_frame": 2659,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07697_000_2da7638291",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_50_F_MoSh/Subject_50_F_21_poses.npz",
+      "start_frame": 150,
+      "end_frame": 802,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07697_002_857733d014",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_50_F_MoSh/Subject_50_F_21_poses.npz",
+      "start_frame": 803,
+      "end_frame": 882,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07752_000_4fb530c491",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/572/tennis_forehand_right04_poses.npz",
+      "start_frame": 0,
+      "end_frame": 663,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07760_004_225ca729ea",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/MPI_HDM05/dg/HDM_dg_03-02_03_120_poses.npz",
+      "start_frame": 2000,
+      "end_frame": 2150,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07760_018_584ce13221",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/MPI_HDM05/dg/HDM_dg_03-02_03_120_poses.npz",
+      "start_frame": 692,
+      "end_frame": 905,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07877_004_ceb6b3e5c6",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/141/141_14_poses.npz",
+      "start_frame": 223,
+      "end_frame": 535,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_07895_002_d61312f0de",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_67_F_MoSh/Subject_67_F_19_poses.npz",
+      "start_frame": 51,
+      "end_frame": 546,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_08000_005_f24af36aac",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/MPI_HDM05/mm/HDM_mm_04-01_02_120_poses.npz",
+      "start_frame": 6541,
+      "end_frame": 6650,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_08167_001_d0530f056b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub095/0019_lifting_heavy1_poses.npz",
+      "start_frame": 154,
+      "end_frame": 414,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_08214_002_546f9799af",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub015/0014_knocking2_poses.npz",
+      "start_frame": 216,
+      "end_frame": 343,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_08982_000_b36fd70a37",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_45_F_MoSh/Subject_45_F_8_poses.npz",
+      "start_frame": 83,
+      "end_frame": 213,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_08988_009_39c28fab77",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/TotalCapture/s3/acting2_poses.npz",
+      "start_frame": 3432,
+      "end_frame": 3563,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_08988_036_726ce71f96",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/TotalCapture/s3/acting2_poses.npz",
+      "start_frame": 2693,
+      "end_frame": 2784,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09049_009_84433e6cb1",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/hamada/gesture_etc-21-clapping-hamada_poses.npz",
+      "start_frame": 554,
+      "end_frame": 2704,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09244_001_0ed1f80f13",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_77_F_MoSh/Subject_77_F_21_poses.npz",
+      "start_frame": 996,
+      "end_frame": 1392,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09282_000_126f5c065e",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_83_F_MoSh/Subject_83_F_2_poses.npz",
+      "start_frame": 238,
+      "end_frame": 944,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09282_003_2596e030f9",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_83_F_MoSh/Subject_83_F_2_poses.npz",
+      "start_frame": 945,
+      "end_frame": 1129,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09402_003_14b2796891",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_8_F_MoSh/Subject_8_F_18_poses.npz",
+      "start_frame": 8,
+      "end_frame": 152,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09498_008_a5b40e0d34",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub036/0022_catching_and_throwing_poses.npz",
+      "start_frame": 1918,
+      "end_frame": 1960,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09598_000_a43013006c",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/3/tennis_forehand_left02_poses.npz",
+      "start_frame": 0,
+      "end_frame": 355,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09665_006_16c7aae8cc",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/MPI_HDM05/dg/HDM_dg_05-02_03_120_poses.npz",
+      "start_frame": 211,
+      "end_frame": 678,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09860_002_4dd112baee",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub015/0013_knocking1_poses.npz",
+      "start_frame": 328,
+      "end_frame": 517,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_09879_000_bef2c4f500",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_17_F_MoSh/Subject_17_F_14_poses.npz",
+      "start_frame": 440,
+      "end_frame": 529,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10112_001_bb599edc97",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/kaiwa/accident-14-dodge turn down-kaiwa_poses.npz",
+      "start_frame": 1626,
+      "end_frame": 1999,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10174_005_b66815d121",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/183/go_over_beam_n10_poses.npz",
+      "start_frame": 295,
+      "end_frame": 744,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10339_004_a07c9c1c7c",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/28/28_04_poses.npz",
+      "start_frame": 6373,
+      "end_frame": 7030,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10390_001_b9748ed1ec",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/75/75_16_poses.npz",
+      "start_frame": 298,
+      "end_frame": 342,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10459_012_80f1ff93c9",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/674/shower_left_arm14_poses.npz",
+      "start_frame": 359,
+      "end_frame": 778,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10503_009_163938720f",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/kudo/gesture_etc-18-eat-kudo_poses.npz",
+      "start_frame": 2950,
+      "end_frame": 3072,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10672_011_4e4a2cb431",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/takiguchi/accident-11-fall down-takiguchi_poses.npz",
+      "start_frame": 2863,
+      "end_frame": 3052,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10780_067_f9b40e9085",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/15/15_04_poses.npz",
+      "start_frame": 20061,
+      "end_frame": 20240,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_10780_079_0eb6664edd",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/15/15_04_poses.npz",
+      "start_frame": 17821,
+      "end_frame": 17897,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11192_000_574d6afd7b",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_65_F_MoSh/Subject_65_F_10_poses.npz",
+      "start_frame": 115,
+      "end_frame": 524,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11197_001_a1b1d78138",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_57_F_MoSh/Subject_57_F_10_poses.npz",
+      "start_frame": 70,
+      "end_frame": 638,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11421_000_a506668042",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_71_F_MoSh/Subject_71_F_8_poses.npz",
+      "start_frame": 0,
+      "end_frame": 488,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11464_003_f23987ef5e",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/111/111_38_poses.npz",
+      "start_frame": 2256,
+      "end_frame": 2442,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11544_004_a5e888134e",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub101/0023_throwing_hard3_poses.npz",
+      "start_frame": 0,
+      "end_frame": 169,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11620_000_1885393ec3",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_5_F_MoSh/Subject_5_F_19_poses.npz",
+      "start_frame": 0,
+      "end_frame": 432,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11628_000_557f296fcb",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/11/11_01_poses.npz",
+      "start_frame": 367,
+      "end_frame": 459,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_11709_029_abff79fb1c",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/MPI_HDM05/tr/HDM_tr_04-01_01_120_poses.npz",
+      "start_frame": 10576,
+      "end_frame": 10897,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12044_013_a6d10f1a2c",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/takiguchi/walk-11-baggage on the head-takiguchi_poses.npz",
+      "start_frame": 1102,
+      "end_frame": 1409,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12255_008_bf9d660f2f",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/ACCAD/Male2Walking_c3d/B19 -  Walk to pickup box_poses.npz",
+      "start_frame": 655,
+      "end_frame": 800,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12441_006_ec428f2300",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/137/137_03_poses.npz",
+      "start_frame": 840,
+      "end_frame": 2318,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12609_020_4e036ab9b0",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/MPI_HDM05/mm/HDM_mm_02-01_02_120_poses.npz",
+      "start_frame": 1698,
+      "end_frame": 1757,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12625_000_7988abbda7",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/35/35_32_poses.npz",
+      "start_frame": 0,
+      "end_frame": 391,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12688_002_5c6eef5e0e",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_44_F_MoSh/Subject_44_F_20_poses.npz",
+      "start_frame": 466,
+      "end_frame": 1215,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12719_018_c907ff540f",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/56/56_08_poses.npz",
+      "start_frame": 4054,
+      "end_frame": 4173,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12737_001_a47046a66f",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BMLmovi/Subject_76_F_MoSh/Subject_76_F_13_poses.npz",
+      "start_frame": 68,
+      "end_frame": 180,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12822_000_8ed70afccb",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/317/walking_slow05_poses.npz",
+      "start_frame": 0,
+      "end_frame": 652,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12929_008_c51601ecd0",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/Eyes_Japan_Dataset/hamada/turn-05-turn-hamada_poses.npz",
+      "start_frame": 393,
+      "end_frame": 537,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_12964_002_d6561143e2",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/KIT/675/walk_with_handrail_table_beam_left04_poses.npz",
+      "start_frame": 50,
+      "end_frame": 497,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_13218_000_d63de633a6",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/CMU/132/132_09_poses.npz",
+      "start_frame": 0,
+      "end_frame": 1181,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    },
+    {
+      "record_id": "reduced12kc_official_val_13222_000_2b9ae56fa8",
+      "clean_sample_index": null,
+      "clean_label": null,
+      "source_path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/amass/BioMotionLab_NTroje/rub095/0026_kicking2_poses.npz",
+      "start_frame": 0,
+      "end_frame": 583,
+      "mapping_status": "unmapped_no_exact_match",
+      "historical_exact_candidate_count": 0
+    }
+  ]
+}

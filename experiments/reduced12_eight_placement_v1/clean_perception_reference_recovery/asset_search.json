@@ -1,0 +1,150 @@
+{
+  "expected": [
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train_data.npy",
+      "exists": true,
+      "bytes": 13537568,
+      "sha256": "7d9aa61e129ef75095b026357ce88953fd36d4a0fcd771aa4d31f8ba608272f8"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val_data.npy",
+      "exists": true,
+      "bytes": 1499528,
+      "sha256": "2a85b041a10d37aacc3dea16fb46d27880a96eaec5ac8a5503e2a52962c76229"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val_labels.npy",
+      "exists": true,
+      "bytes": 2088,
+      "sha256": "727b93d665de35a645058fb7e59e1e277ba59fd365ecd8754b91caf009b6be53"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val_metadata.json",
+      "exists": true,
+      "bytes": 221373,
+      "sha256": "702c328d043b215e890f556c7a3730e6e832ad9928b4c59885b868548642d504"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-val/train_data.npy",
+      "exists": false
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-val/val_data.npy",
+      "exists": false
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-val/val_labels.npy",
+      "exists": false
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-val/val_metadata.json",
+      "exists": false
+    }
+  ],
+  "discovered_val_data": [
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_00/val_data.npy",
+      "exists": true,
+      "bytes": 98048,
+      "sha256": "0bd81a293f888e5e017c0af1765170110fabb7bed6e9bf162b95466d83344bbe"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_01/val_data.npy",
+      "exists": true,
+      "bytes": 98048,
+      "sha256": "024cf8cbf8e9f938b0de6a4faa24c3814f4b3d9f6406439302196f4255165153"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_02/val_data.npy",
+      "exists": true,
+      "bytes": 98048,
+      "sha256": "e1743e9302c9318ff7cb2607e3b0bb77ff4997c0da486973ea331cd35462c652"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_03/val_data.npy",
+      "exists": true,
+      "bytes": 98048,
+      "sha256": "bcab1e49c8c027617047fa7ba51899c9ecc9bfeb1b1a913095399923e25897d6"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_04/val_data.npy",
+      "exists": true,
+      "bytes": 98048,
+      "sha256": "70ad21b762e494be3e376b3df4f2c71b22153bbed9b51aaff17d4212ac81896c"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_05/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "70c9f55759889237e00f690a44a3b682e1c3e285f61fae16444d4382179af0b2"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_06/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "9058227bc2fb7542327358d057dc19bf3217eb0d08d16fe9a4b1c2814c7b901e"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_07/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "cd28bc7894bad0b1071b11e40c03fdf042187fce47eec05f17986502aa6aa9bc"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_08/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "e901b363975d823531709aa238fedbf73af94c571fa61ee3139e8bbf90747337"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_09/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "051a9309c4fa7d4c870e571af9428c84edf5324dd31b9de25a7d5729515734a0"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_10/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "9df471239689806f9eb06102dccd1d717b4a6e61067da9dc165cf173039a194f"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_11/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "c0c932bd4cbedba3c3cf6c161dfee8092ceffe7be8120cb83f39436405b0dcce"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_12/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "253de74f89bf2dc803d88c0cd1b7d59348c9fef392b6e355bd77feecda8d9513"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_13/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "251b94793a058ad43eec9b15f03b78b17198addb0fa263905c828013d06e1395"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_14/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "133e6898e8f77c24bf7ed5678ca433ccc2ecd4e8a2050adab4e3bd7288705e9a"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/_parallel_workers/val/worker_15/val_data.npy",
+      "exists": true,
+      "bytes": 91928,
+      "sha256": "68fdae219df85dfe1ec867514ea30d40d427f87a07cd760818e03db95c495147"
+    },
+    {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val_data.npy",
+      "exists": true,
+      "bytes": 1499528,
+      "sha256": "2a85b041a10d37aacc3dea16fb46d27880a96eaec5ac8a5503e2a52962c76229"
+    }
+  ],
+  "historical_clean_candidate": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train",
+  "raw_val_clean_tensor_present": false
+}

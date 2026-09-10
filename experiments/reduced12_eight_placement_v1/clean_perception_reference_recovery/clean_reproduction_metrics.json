@@ -1,0 +1,310 @@
+{
+  "historical_clean_val": {
+    "count": 245,
+    "accuracy": 0.7673469387755102,
+    "macro_f1": 0.7810686897207318,
+    "per_class": [
+      {
+        "action": "walk",
+        "action_id": 0,
+        "support": 30,
+        "accuracy": 0.6666666666666666,
+        "precision": 0.6896551724137931,
+        "f1": 0.6779661016949153
+      },
+      {
+        "action": "sit",
+        "action_id": 1,
+        "support": 30,
+        "accuracy": 0.8,
+        "precision": 0.8888888888888888,
+        "f1": 0.8421052631578948
+      },
+      {
+        "action": "stand up",
+        "action_id": 2,
+        "support": 30,
+        "accuracy": 0.7666666666666667,
+        "precision": 0.8214285714285714,
+        "f1": 0.793103448275862
+      },
+      {
+        "action": "bend",
+        "action_id": 3,
+        "support": 30,
+        "accuracy": 0.6333333333333333,
+        "precision": 0.6551724137931034,
+        "f1": 0.6440677966101694
+      },
+      {
+        "action": "crawl",
+        "action_id": 4,
+        "support": 7,
+        "accuracy": 0.8571428571428571,
+        "precision": 1.0,
+        "f1": 0.923076923076923
+      },
+      {
+        "action": "stumble",
+        "action_id": 5,
+        "support": 12,
+        "accuracy": 0.6666666666666666,
+        "precision": 0.6666666666666666,
+        "f1": 0.6666666666666666
+      },
+      {
+        "action": "clap",
+        "action_id": 6,
+        "support": 10,
+        "accuracy": 0.8,
+        "precision": 0.8,
+        "f1": 0.8000000000000002
+      },
+      {
+        "action": "throw",
+        "action_id": 7,
+        "support": 30,
+        "accuracy": 0.9,
+        "precision": 0.7105263157894737,
+        "f1": 0.7941176470588235
+      },
+      {
+        "action": "kick",
+        "action_id": 8,
+        "support": 30,
+        "accuracy": 0.8666666666666667,
+        "precision": 0.8125,
+        "f1": 0.8387096774193549
+      },
+      {
+        "action": "knock",
+        "action_id": 9,
+        "support": 7,
+        "accuracy": 1.0,
+        "precision": 0.875,
+        "f1": 0.9333333333333333
+      },
+      {
+        "action": "punch",
+        "action_id": 10,
+        "support": 14,
+        "accuracy": 0.6428571428571429,
+        "precision": 0.9,
+        "f1": 0.75
+      },
+      {
+        "action": "touching face",
+        "action_id": 11,
+        "support": 15,
+        "accuracy": 0.7333333333333333,
+        "precision": 0.6875,
+        "f1": 0.7096774193548386
+      }
+    ],
+    "confusion_matrix": [
+      [
+        20,
+        0,
+        0,
+        2,
+        0,
+        2,
+        0,
+        4,
+        1,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        24,
+        0,
+        3,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        23,
+        2,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        1,
+        19,
+        0,
+        1,
+        0,
+        2,
+        1,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        1,
+        0,
+        8,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        27,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        26,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        9,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        11
+      ]
+    ]
+  },
+  "recorded": {
+    "accuracy": 0.7673469387755102,
+    "macro_f1": 0.7810686897207318
+  },
+  "absolute_difference": {
+    "accuracy": 0.0,
+    "macro_f1": 0.0
+  },
+  "tensor_checks": {
+    "shape": [
+      245,
+      3,
+      30,
+      17,
+      1
+    ],
+    "dtype": "float32",
+    "shape_ok": true,
+    "labels_ok": true,
+    "finite": true,
+    "record_ids_unique": true
+  },
+  "current_moving_val_unique_records": 105,
+  "current_moving_val_contexts": 10080,
+  "stage_d_record_set_exact": true,
+  "moving_unique_metrics": {
+    "status": "BLOCKED_NO_EXACT_MAPPING",
+    "count": 0
+  },
+  "moving_context_weighted_metrics": {
+    "status": "BLOCKED_NO_EXACT_MAPPING",
+    "count": 0
+  },
+  "device": "cuda:0",
+  "no_renormalization": true
+}
