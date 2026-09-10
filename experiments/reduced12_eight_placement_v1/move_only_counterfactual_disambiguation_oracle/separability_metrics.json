@@ -1,0 +1,35 @@
+{
+  "FullBelief-JSD": {
+    "candidate_level_spearman_mean": 0.180964619673985,
+    "context_ranking_spearman_mean": 0.180964619673985,
+    "p_selected_gt_best": 0.30793650793650795,
+    "p_selected_gt_top2": 0.5245039682539683,
+    "p_selected_gt_top3": 0.6547619047619048,
+    "mean_normalized_regret": 0.4049618729302641,
+    "median_normalized_regret": 0.2954455315942632,
+    "mean_regret": 5.1073623213673685,
+    "median_regret": 2.9514125585020565
+  },
+  "Top3Belief-JSD": {
+    "candidate_level_spearman_mean": 0.17678333965471849,
+    "context_ranking_spearman_mean": 0.17678333965471849,
+    "p_selected_gt_best": 0.30158730158730157,
+    "p_selected_gt_top2": 0.516170634920635,
+    "p_selected_gt_top3": 0.643154761904762,
+    "mean_normalized_regret": 0.41664902995073977,
+    "median_normalized_regret": 0.30959566116137294,
+    "mean_regret": 5.300909190622441,
+    "median_regret": 3.065940782427788
+  },
+  "Top5Belief-JSD": {
+    "candidate_level_spearman_mean": 0.1808190857212308,
+    "context_ranking_spearman_mean": 0.1808190857212308,
+    "p_selected_gt_best": 0.30456349206349204,
+    "p_selected_gt_top2": 0.5201388888888889,
+    "p_selected_gt_top3": 0.6509920634920635,
+    "mean_normalized_regret": 0.4095471648410701,
+    "median_normalized_regret": 0.3017625580399082,
+    "mean_regret": 5.154741621901059,
+    "median_regret": 2.968082655221224
+  }
+}

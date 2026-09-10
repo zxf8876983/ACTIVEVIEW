@@ -1,0 +1,14 @@
+{
+  "Frozen-Move": {
+    "status": "NOT_AVAILABLE",
+    "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+  },
+  "CandidateSpatial-Move": {
+    "status": "NOT_AVAILABLE",
+    "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+  },
+  "DeployableAll-Move": {
+    "status": "NOT_AVAILABLE",
+    "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+  }
+}

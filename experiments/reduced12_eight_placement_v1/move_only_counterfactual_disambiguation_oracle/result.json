@@ -1,0 +1,1878 @@
+{
+  "experiment_id": "REDUCED12_MOVE_ONLY_COUNTERFACTUAL_DISAMBIGUATION_ORACLE",
+  "status": "COMPLETED",
+  "population": {
+    "moving_val_contexts": 10080,
+    "move_only": true,
+    "candidate_pairs": 68702
+  },
+  "labels": [
+    "walk",
+    "sit",
+    "stand up",
+    "bend",
+    "crawl",
+    "stumble",
+    "clap",
+    "throw",
+    "kick",
+    "knock",
+    "punch",
+    "touching face"
+  ],
+  "metrics_moving": {
+    "Random-Move": {
+      "n": 10080,
+      "accuracy": 0.32708333333333334,
+      "macro_f1": 0.31915035138746345,
+      "per_class": {
+        "walk": {
+          "support": 1071,
+          "recall": 0.3996265172735761,
+          "f1": 0.24697057126370453
+        },
+        "sit": {
+          "support": 786,
+          "recall": 0.5572519083969466,
+          "f1": 0.46129541864139023
+        },
+        "stand up": {
+          "support": 907,
+          "recall": 0.535832414553473,
+          "f1": 0.6071205496564646
+        },
+        "bend": {
+          "support": 1012,
+          "recall": 0.325098814229249,
+          "f1": 0.2468117029257314
+        },
+        "crawl": {
+          "support": 446,
+          "recall": 0.45964125560538116,
+          "f1": 0.5310880829015544
+        },
+        "stumble": {
+          "support": 849,
+          "recall": 0.05535924617196702,
+          "f1": 0.09801876955161627
+        },
+        "clap": {
+          "support": 486,
+          "recall": 0.294238683127572,
+          "f1": 0.3153252480705622
+        },
+        "throw": {
+          "support": 969,
+          "recall": 0.39525283797729616,
+          "f1": 0.4699386503067485
+        },
+        "kick": {
+          "support": 1152,
+          "recall": 0.5251736111111112,
+          "f1": 0.4251581166549543
+        },
+        "knock": {
+          "support": 443,
+          "recall": 0.10158013544018059,
+          "f1": 0.16635859519408502
+        },
+        "punch": {
+          "support": 955,
+          "recall": 0.10890052356020942,
+          "f1": 0.1446453407510431
+        },
+        "touching face": {
+          "support": 1004,
+          "recall": 0.08366533864541832,
+          "f1": 0.11707317073170731
+        }
+      },
+      "confusion_matrix": [
+        [
+          428,
+          27,
+          13,
+          155,
+          1,
+          12,
+          10,
+          34,
+          166,
+          4,
+          152,
+          69
+        ],
+        [
+          138,
+          438,
+          17,
+          105,
+          5,
+          0,
+          31,
+          13,
+          27,
+          2,
+          2,
+          8
+        ],
+        [
+          153,
+          19,
+          486,
+          86,
+          3,
+          5,
+          0,
+          22,
+          124,
+          0,
+          0,
+          9
+        ],
+        [
+          158,
+          142,
+          8,
+          329,
+          79,
+          8,
+          2,
+          35,
+          223,
+          0,
+          14,
+          14
+        ],
+        [
+          95,
+          7,
+          11,
+          95,
+          205,
+          0,
+          0,
+          0,
+          31,
+          1,
+          1,
+          0
+        ],
+        [
+          189,
+          17,
+          23,
+          150,
+          1,
+          47,
+          2,
+          59,
+          282,
+          2,
+          55,
+          22
+        ],
+        [
+          112,
+          11,
+          21,
+          65,
+          0,
+          1,
+          143,
+          26,
+          21,
+          31,
+          14,
+          41
+        ],
+        [
+          244,
+          13,
+          14,
+          104,
+          3,
+          9,
+          3,
+          383,
+          74,
+          3,
+          56,
+          63
+        ],
+        [
+          254,
+          60,
+          17,
+          133,
+          8,
+          14,
+          2,
+          28,
+          605,
+          2,
+          25,
+          4
+        ],
+        [
+          88,
+          8,
+          5,
+          45,
+          2,
+          3,
+          77,
+          22,
+          16,
+          45,
+          35,
+          97
+        ],
+        [
+          372,
+          22,
+          71,
+          231,
+          16,
+          8,
+          6,
+          27,
+          74,
+          4,
+          104,
+          20
+        ],
+        [
+          164,
+          349,
+          8,
+          156,
+          3,
+          3,
+          145,
+          12,
+          51,
+          4,
+          25,
+          84
+        ]
+      ],
+      "move_rate": 1.0,
+      "selector": "Random-Move",
+      "mean_gt_rank": 3.9287698412698413,
+      "median_gt_rank": 3.0,
+      "p_selected_gt_best": 0.19404761904761905,
+      "p_selected_gt_top2": 0.3929563492063492,
+      "p_selected_gt_top3": 0.549702380952381,
+      "mean_normalized_regret": 0.5103462652932642,
+      "median_normalized_regret": 0.5150207752596975,
+      "oracle_any_correct_contexts": 7376,
+      "oracle_correct_selector_wrong_count": 4079,
+      "severe_miss_fraction": 0.8229958323118411
+    },
+    "FullBelief-JSD": {
+      "n": 10080,
+      "accuracy": 0.462202380952381,
+      "macro_f1": 0.4395822405579806,
+      "per_class": {
+        "walk": {
+          "support": 1071,
+          "recall": 0.39869281045751637,
+          "f1": 0.33062330623306235
+        },
+        "sit": {
+          "support": 786,
+          "recall": 0.7353689567430025,
+          "f1": 0.5675012272950417
+        },
+        "stand up": {
+          "support": 907,
+          "recall": 0.8037486218302095,
+          "f1": 0.8037486218302095
+        },
+        "bend": {
+          "support": 1012,
+          "recall": 0.3893280632411067,
+          "f1": 0.39399999999999996
+        },
+        "crawl": {
+          "support": 446,
+          "recall": 0.726457399103139,
+          "f1": 0.6937901498929335
+        },
+        "stumble": {
+          "support": 849,
+          "recall": 0.08598351001177856,
+          "f1": 0.14512922465208747
+        },
+        "clap": {
+          "support": 486,
+          "recall": 0.4176954732510288,
+          "f1": 0.3812206572769953
+        },
+        "throw": {
+          "support": 969,
+          "recall": 0.6460268317853457,
+          "f1": 0.6483687208700155
+        },
+        "kick": {
+          "support": 1152,
+          "recall": 0.7638888888888888,
+          "f1": 0.5778069599474721
+        },
+        "knock": {
+          "support": 443,
+          "recall": 0.20316027088036118,
+          "f1": 0.3098106712564544
+        },
+        "punch": {
+          "support": 955,
+          "recall": 0.19790575916230366,
+          "f1": 0.23580786026200876
+        },
+        "touching face": {
+          "support": 1004,
+          "recall": 0.1454183266932271,
+          "f1": 0.18717948717948718
+        }
+      },
+      "confusion_matrix": [
+        [
+          427,
+          14,
+          15,
+          38,
+          0,
+          17,
+          6,
+          41,
+          126,
+          0,
+          274,
+          113
+        ],
+        [
+          66,
+          578,
+          15,
+          22,
+          8,
+          0,
+          45,
+          13,
+          18,
+          2,
+          6,
+          13
+        ],
+        [
+          56,
+          17,
+          729,
+          11,
+          3,
+          6,
+          0,
+          14,
+          61,
+          1,
+          2,
+          7
+        ],
+        [
+          50,
+          158,
+          2,
+          394,
+          103,
+          7,
+          1,
+          68,
+          202,
+          0,
+          19,
+          8
+        ],
+        [
+          40,
+          2,
+          4,
+          49,
+          324,
+          0,
+          0,
+          0,
+          20,
+          1,
+          0,
+          6
+        ],
+        [
+          122,
+          10,
+          25,
+          92,
+          0,
+          73,
+          1,
+          92,
+          362,
+          3,
+          53,
+          16
+        ],
+        [
+          91,
+          6,
+          21,
+          24,
+          0,
+          2,
+          203,
+          22,
+          31,
+          34,
+          9,
+          43
+        ],
+        [
+          117,
+          3,
+          16,
+          37,
+          0,
+          10,
+          0,
+          626,
+          66,
+          2,
+          35,
+          57
+        ],
+        [
+          123,
+          38,
+          6,
+          39,
+          11,
+          12,
+          9,
+          11,
+          880,
+          1,
+          16,
+          6
+        ],
+        [
+          35,
+          2,
+          1,
+          8,
+          0,
+          10,
+          88,
+          30,
+          25,
+          90,
+          30,
+          124
+        ],
+        [
+          317,
+          24,
+          67,
+          183,
+          36,
+          17,
+          4,
+          43,
+          56,
+          2,
+          189,
+          17
+        ],
+        [
+          68,
+          399,
+          6,
+          91,
+          3,
+          3,
+          222,
+          2,
+          47,
+          2,
+          15,
+          146
+        ]
+      ],
+      "move_rate": 1.0,
+      "selector": "FullBelief-JSD",
+      "mean_gt_rank": 3.321527777777778,
+      "median_gt_rank": 2.0,
+      "p_selected_gt_best": 0.30793650793650795,
+      "p_selected_gt_top2": 0.5245039682539683,
+      "p_selected_gt_top3": 0.6547619047619048,
+      "mean_normalized_regret": 0.4049618729302641,
+      "median_normalized_regret": 0.2954455315942632,
+      "oracle_any_correct_contexts": 7376,
+      "oracle_correct_selector_wrong_count": 2717,
+      "severe_miss_fraction": 0.7953625322046375,
+      "ranking_diagnostics": {
+        "candidate_level_spearman_mean": 0.180964619673985,
+        "context_ranking_spearman_mean": 0.180964619673985,
+        "p_selected_gt_best": 0.30793650793650795,
+        "p_selected_gt_top2": 0.5245039682539683,
+        "p_selected_gt_top3": 0.6547619047619048,
+        "mean_normalized_regret": 0.4049618729302641,
+        "median_normalized_regret": 0.2954455315942632,
+        "mean_regret": 5.1073623213673685,
+        "median_regret": 2.9514125585020565
+      },
+      "hypothesis_subset_accuracy": {
+        "gt_in_top3": 0.5389209225700164,
+        "gt_in_top5": 0.5342039800995025,
+        "gt_not_in_top5": 0.3352521929824561
+      }
+    },
+    "Top3Belief-JSD": {
+      "n": 10080,
+      "accuracy": 0.4507936507936508,
+      "macro_f1": 0.42959830448974184,
+      "per_class": {
+        "walk": {
+          "support": 1071,
+          "recall": 0.3800186741363212,
+          "f1": 0.3140432098765432
+        },
+        "sit": {
+          "support": 786,
+          "recall": 0.7137404580152672,
+          "f1": 0.556271690629648
+        },
+        "stand up": {
+          "support": 907,
+          "recall": 0.7750826901874311,
+          "f1": 0.7815453029460812
+        },
+        "bend": {
+          "support": 1012,
+          "recall": 0.3705533596837945,
+          "f1": 0.382262996941896
+        },
+        "crawl": {
+          "support": 446,
+          "recall": 0.6995515695067265,
+          "f1": 0.6767895878524945
+        },
+        "stumble": {
+          "support": 849,
+          "recall": 0.08833922261484099,
+          "f1": 0.14851485148514854
+        },
+        "clap": {
+          "support": 486,
+          "recall": 0.4176954732510288,
+          "f1": 0.38229755178907726
+        },
+        "throw": {
+          "support": 969,
+          "recall": 0.6408668730650154,
+          "f1": 0.643190056965303
+        },
+        "kick": {
+          "support": 1152,
+          "recall": 0.7543402777777778,
+          "f1": 0.5597423510466989
+        },
+        "knock": {
+          "support": 443,
+          "recall": 0.18961625282167044,
+          "f1": 0.29116117850953205
+        },
+        "punch": {
+          "support": 955,
+          "recall": 0.19581151832460733,
+          "f1": 0.23316708229426436
+        },
+        "touching face": {
+          "support": 1004,
+          "recall": 0.14641434262948208,
+          "f1": 0.1861937935402153
+        }
+      },
+      "confusion_matrix": [
+        [
+          407,
+          12,
+          16,
+          38,
+          0,
+          15,
+          9,
+          45,
+          142,
+          0,
+          271,
+          116
+        ],
+        [
+          68,
+          561,
+          14,
+          25,
+          7,
+          0,
+          44,
+          13,
+          18,
+          5,
+          6,
+          25
+        ],
+        [
+          55,
+          21,
+          703,
+          11,
+          3,
+          6,
+          0,
+          17,
+          79,
+          1,
+          2,
+          9
+        ],
+        [
+          53,
+          144,
+          4,
+          375,
+          102,
+          9,
+          1,
+          67,
+          234,
+          0,
+          15,
+          8
+        ],
+        [
+          47,
+          3,
+          3,
+          50,
+          312,
+          0,
+          0,
+          0,
+          26,
+          0,
+          0,
+          5
+        ],
+        [
+          125,
+          12,
+          24,
+          80,
+          0,
+          75,
+          0,
+          93,
+          361,
+          3,
+          58,
+          18
+        ],
+        [
+          96,
+          7,
+          19,
+          26,
+          0,
+          2,
+          203,
+          18,
+          32,
+          33,
+          9,
+          41
+        ],
+        [
+          117,
+          3,
+          19,
+          37,
+          2,
+          13,
+          0,
+          621,
+          65,
+          3,
+          33,
+          56
+        ],
+        [
+          127,
+          36,
+          7,
+          38,
+          13,
+          15,
+          8,
+          14,
+          869,
+          1,
+          17,
+          7
+        ],
+        [
+          35,
+          2,
+          1,
+          8,
+          0,
+          8,
+          89,
+          30,
+          31,
+          84,
+          31,
+          124
+        ],
+        [
+          322,
+          22,
+          74,
+          182,
+          34,
+          15,
+          4,
+          41,
+          54,
+          1,
+          187,
+          19
+        ],
+        [
+          69,
+          408,
+          8,
+          80,
+          3,
+          3,
+          218,
+          3,
+          42,
+          3,
+          20,
+          147
+        ]
+      ],
+      "move_rate": 1.0,
+      "selector": "Top3Belief-JSD",
+      "mean_gt_rank": 3.393253968253968,
+      "median_gt_rank": 2.0,
+      "p_selected_gt_best": 0.30158730158730157,
+      "p_selected_gt_top2": 0.516170634920635,
+      "p_selected_gt_top3": 0.643154761904762,
+      "mean_normalized_regret": 0.41664902995073977,
+      "median_normalized_regret": 0.30959566116137294,
+      "oracle_any_correct_contexts": 7376,
+      "oracle_correct_selector_wrong_count": 2832,
+      "severe_miss_fraction": 0.8089689265536724,
+      "ranking_diagnostics": {
+        "candidate_level_spearman_mean": 0.17678333965471849,
+        "context_ranking_spearman_mean": 0.17678333965471849,
+        "p_selected_gt_best": 0.30158730158730157,
+        "p_selected_gt_top2": 0.516170634920635,
+        "p_selected_gt_top3": 0.643154761904762,
+        "mean_normalized_regret": 0.41664902995073977,
+        "median_normalized_regret": 0.30959566116137294,
+        "mean_regret": 5.300909190622441,
+        "median_regret": 3.065940782427788
+      },
+      "hypothesis_subset_accuracy": {
+        "gt_in_top3": 0.5282125205930808,
+        "gt_in_top5": 0.5183457711442786,
+        "gt_not_in_top5": 0.33168859649122806
+      }
+    },
+    "Top5Belief-JSD": {
+      "n": 10080,
+      "accuracy": 0.45902777777777776,
+      "macro_f1": 0.4363931379094627,
+      "per_class": {
+        "walk": {
+          "support": 1071,
+          "recall": 0.3949579831932773,
+          "f1": 0.32613723978411724
+        },
+        "sit": {
+          "support": 786,
+          "recall": 0.7290076335877863,
+          "f1": 0.5653675382338432
+        },
+        "stand up": {
+          "support": 907,
+          "recall": 0.7960308710033076,
+          "f1": 0.7986725663716814
+        },
+        "bend": {
+          "support": 1012,
+          "recall": 0.3883399209486166,
+          "f1": 0.3933933933933934
+        },
+        "crawl": {
+          "support": 446,
+          "recall": 0.7085201793721974,
+          "f1": 0.6825053995680346
+        },
+        "stumble": {
+          "support": 849,
+          "recall": 0.08716136631330977,
+          "f1": 0.1466798810703667
+        },
+        "clap": {
+          "support": 486,
+          "recall": 0.411522633744856,
+          "f1": 0.3770028275212064
+        },
+        "throw": {
+          "support": 969,
+          "recall": 0.6388028895768834,
+          "f1": 0.6427829698857737
+        },
+        "kick": {
+          "support": 1152,
+          "recall": 0.7664930555555556,
+          "f1": 0.5752442996742672
+        },
+        "knock": {
+          "support": 443,
+          "recall": 0.1986455981941309,
+          "f1": 0.3044982698961938
+        },
+        "punch": {
+          "support": 955,
+          "recall": 0.19581151832460733,
+          "f1": 0.23389618511569732
+        },
+        "touching face": {
+          "support": 1004,
+          "recall": 0.14840637450199204,
+          "f1": 0.19053708439897699
+        }
+      },
+      "confusion_matrix": [
+        [
+          423,
+          12,
+          15,
+          39,
+          0,
+          17,
+          6,
+          42,
+          131,
+          0,
+          272,
+          114
+        ],
+        [
+          66,
+          573,
+          15,
+          22,
+          9,
+          0,
+          46,
+          13,
+          18,
+          2,
+          6,
+          16
+        ],
+        [
+          55,
+          18,
+          722,
+          11,
+          3,
+          6,
+          0,
+          15,
+          67,
+          1,
+          2,
+          7
+        ],
+        [
+          52,
+          151,
+          4,
+          393,
+          101,
+          7,
+          1,
+          68,
+          212,
+          0,
+          17,
+          6
+        ],
+        [
+          43,
+          3,
+          4,
+          50,
+          316,
+          0,
+          0,
+          0,
+          23,
+          1,
+          0,
+          6
+        ],
+        [
+          123,
+          11,
+          24,
+          90,
+          0,
+          74,
+          1,
+          95,
+          359,
+          3,
+          53,
+          16
+        ],
+        [
+          93,
+          6,
+          21,
+          25,
+          0,
+          2,
+          200,
+          22,
+          32,
+          34,
+          9,
+          42
+        ],
+        [
+          118,
+          3,
+          18,
+          39,
+          0,
+          10,
+          0,
+          619,
+          66,
+          2,
+          37,
+          57
+        ],
+        [
+          125,
+          37,
+          6,
+          37,
+          11,
+          12,
+          8,
+          11,
+          883,
+          1,
+          15,
+          6
+        ],
+        [
+          35,
+          2,
+          0,
+          8,
+          0,
+          10,
+          91,
+          27,
+          26,
+          88,
+          31,
+          125
+        ],
+        [
+          322,
+          24,
+          67,
+          182,
+          37,
+          18,
+          4,
+          42,
+          55,
+          1,
+          187,
+          16
+        ],
+        [
+          68,
+          401,
+          5,
+          90,
+          3,
+          4,
+          218,
+          3,
+          46,
+          2,
+          15,
+          149
+        ]
+      ],
+      "move_rate": 1.0,
+      "selector": "Top5Belief-JSD",
+      "mean_gt_rank": 3.342857142857143,
+      "median_gt_rank": 2.0,
+      "p_selected_gt_best": 0.30456349206349204,
+      "p_selected_gt_top2": 0.5201388888888889,
+      "p_selected_gt_top3": 0.6509920634920635,
+      "mean_normalized_regret": 0.4095471648410701,
+      "median_normalized_regret": 0.3017625580399082,
+      "oracle_any_correct_contexts": 7376,
+      "oracle_correct_selector_wrong_count": 2749,
+      "severe_miss_fraction": 0.7984721716987996,
+      "ranking_diagnostics": {
+        "candidate_level_spearman_mean": 0.1808190857212308,
+        "context_ranking_spearman_mean": 0.1808190857212308,
+        "p_selected_gt_best": 0.30456349206349204,
+        "p_selected_gt_top2": 0.5201388888888889,
+        "p_selected_gt_top3": 0.6509920634920635,
+        "mean_normalized_regret": 0.4095471648410701,
+        "median_normalized_regret": 0.3017625580399082,
+        "mean_regret": 5.154741621901059,
+        "median_regret": 2.968082655221224
+      },
+      "hypothesis_subset_accuracy": {
+        "gt_in_top3": 0.535831960461285,
+        "gt_in_top5": 0.5304726368159204,
+        "gt_not_in_top5": 0.33305921052631576
+      }
+    },
+    "MoveOnly-GTTrueLogP Oracle": {
+      "n": 10080,
+      "accuracy": 0.7316468253968254,
+      "macro_f1": 0.7177955883732267,
+      "per_class": {
+        "walk": {
+          "support": 1071,
+          "recall": 0.9084967320261438,
+          "f1": 0.7030346820809249
+        },
+        "sit": {
+          "support": 786,
+          "recall": 0.8931297709923665,
+          "f1": 0.8302779420461265
+        },
+        "stand up": {
+          "support": 907,
+          "recall": 0.8809261300992283,
+          "f1": 0.908470722001137
+        },
+        "bend": {
+          "support": 1012,
+          "recall": 0.8725296442687747,
+          "f1": 0.6779270633397313
+        },
+        "crawl": {
+          "support": 446,
+          "recall": 0.8587443946188341,
+          "f1": 0.8704545454545455
+        },
+        "stumble": {
+          "support": 849,
+          "recall": 0.31566548881036516,
+          "f1": 0.46894138232720906
+        },
+        "clap": {
+          "support": 486,
+          "recall": 0.7489711934156379,
+          "f1": 0.6993275696445725
+        },
+        "throw": {
+          "support": 969,
+          "recall": 0.868937048503612,
+          "f1": 0.8627049180327869
+        },
+        "kick": {
+          "support": 1152,
+          "recall": 0.90625,
+          "f1": 0.8285714285714286
+        },
+        "knock": {
+          "support": 443,
+          "recall": 0.43792325056433407,
+          "f1": 0.5896656534954408
+        },
+        "punch": {
+          "support": 955,
+          "recall": 0.5130890052356021,
+          "f1": 0.6186868686868686
+        },
+        "touching face": {
+          "support": 1004,
+          "recall": 0.4312749003984064,
+          "f1": 0.5554842847979474
+        }
+      },
+      "confusion_matrix": [
+        [
+          973,
+          4,
+          4,
+          41,
+          0,
+          0,
+          6,
+          0,
+          18,
+          0,
+          18,
+          7
+        ],
+        [
+          19,
+          702,
+          0,
+          50,
+          0,
+          0,
+          1,
+          0,
+          6,
+          0,
+          8,
+          0
+        ],
+        [
+          39,
+          8,
+          799,
+          46,
+          0,
+          0,
+          0,
+          7,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          61,
+          23,
+          6,
+          883,
+          15,
+          0,
+          0,
+          2,
+          13,
+          0,
+          7,
+          2
+        ],
+        [
+          13,
+          4,
+          0,
+          35,
+          383,
+          0,
+          0,
+          3,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          80,
+          1,
+          11,
+          179,
+          0,
+          268,
+          0,
+          69,
+          191,
+          2,
+          38,
+          10
+        ],
+        [
+          63,
+          2,
+          6,
+          12,
+          0,
+          0,
+          364,
+          6,
+          0,
+          2,
+          7,
+          24
+        ],
+        [
+          19,
+          8,
+          0,
+          62,
+          6,
+          0,
+          0,
+          842,
+          15,
+          0,
+          5,
+          12
+        ],
+        [
+          41,
+          8,
+          0,
+          44,
+          0,
+          6,
+          0,
+          1,
+          1044,
+          0,
+          3,
+          5
+        ],
+        [
+          48,
+          6,
+          9,
+          6,
+          0,
+          0,
+          77,
+          6,
+          1,
+          194,
+          43,
+          53
+        ],
+        [
+          150,
+          27,
+          9,
+          140,
+          30,
+          15,
+          2,
+          40,
+          37,
+          6,
+          490,
+          9
+        ],
+        [
+          191,
+          112,
+          8,
+          95,
+          0,
+          5,
+          105,
+          7,
+          27,
+          11,
+          10,
+          433
+        ]
+      ],
+      "move_rate": 1.0,
+      "selector": "MoveOnly-GTTrueLogP Oracle",
+      "mean_gt_rank": 1.078968253968254,
+      "median_gt_rank": 1.0,
+      "p_selected_gt_best": 0.9388888888888889,
+      "p_selected_gt_top2": 0.9887896825396826,
+      "p_selected_gt_top3": 0.9941468253968254,
+      "mean_normalized_regret": 0.007890606898787742,
+      "median_normalized_regret": 0.0,
+      "oracle_any_correct_contexts": 7376,
+      "oracle_correct_selector_wrong_count": 1,
+      "severe_miss_fraction": 0.0
+    },
+    "MoveOnly-GTMargin Oracle": {
+      "n": 10080,
+      "accuracy": 0.7317460317460317,
+      "macro_f1": 0.7188884166466908,
+      "per_class": {
+        "walk": {
+          "support": 1071,
+          "recall": 0.9084967320261438,
+          "f1": 0.7335092348284961
+        },
+        "sit": {
+          "support": 786,
+          "recall": 0.8931297709923665,
+          "f1": 0.833729216152019
+        },
+        "stand up": {
+          "support": 907,
+          "recall": 0.8809261300992283,
+          "f1": 0.9033352176370831
+        },
+        "bend": {
+          "support": 1012,
+          "recall": 0.8735177865612648,
+          "f1": 0.6384976525821596
+        },
+        "crawl": {
+          "support": 446,
+          "recall": 0.8587443946188341,
+          "f1": 0.8704545454545455
+        },
+        "stumble": {
+          "support": 849,
+          "recall": 0.31566548881036516,
+          "f1": 0.46894138232720906
+        },
+        "clap": {
+          "support": 486,
+          "recall": 0.7489711934156379,
+          "f1": 0.7109374999999999
+        },
+        "throw": {
+          "support": 969,
+          "recall": 0.868937048503612,
+          "f1": 0.8675940236991241
+        },
+        "kick": {
+          "support": 1152,
+          "recall": 0.90625,
+          "f1": 0.8348660535785686
+        },
+        "knock": {
+          "support": 443,
+          "recall": 0.43792325056433407,
+          "f1": 0.5878787878787879
+        },
+        "punch": {
+          "support": 955,
+          "recall": 0.5130890052356021,
+          "f1": 0.6214331008243501
+        },
+        "touching face": {
+          "support": 1004,
+          "recall": 0.4312749003984064,
+          "f1": 0.5554842847979474
+        }
+      },
+      "confusion_matrix": [
+        [
+          973,
+          4,
+          4,
+          47,
+          0,
+          0,
+          6,
+          0,
+          18,
+          0,
+          12,
+          7
+        ],
+        [
+          19,
+          702,
+          0,
+          50,
+          0,
+          0,
+          1,
+          0,
+          6,
+          0,
+          8,
+          0
+        ],
+        [
+          39,
+          8,
+          799,
+          46,
+          0,
+          0,
+          0,
+          7,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          61,
+          23,
+          6,
+          884,
+          14,
+          0,
+          0,
+          2,
+          13,
+          0,
+          7,
+          2
+        ],
+        [
+          13,
+          4,
+          0,
+          35,
+          383,
+          0,
+          0,
+          3,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          95,
+          1,
+          20,
+          186,
+          0,
+          268,
+          0,
+          54,
+          175,
+          2,
+          38,
+          10
+        ],
+        [
+          40,
+          2,
+          6,
+          34,
+          0,
+          0,
+          364,
+          6,
+          0,
+          3,
+          4,
+          27
+        ],
+        [
+          19,
+          8,
+          0,
+          64,
+          6,
+          0,
+          0,
+          842,
+          13,
+          0,
+          7,
+          10
+        ],
+        [
+          41,
+          8,
+          0,
+          43,
+          0,
+          6,
+          0,
+          1,
+          1044,
+          1,
+          3,
+          5
+        ],
+        [
+          46,
+          6,
+          10,
+          17,
+          0,
+          0,
+          76,
+          6,
+          1,
+          194,
+          41,
+          46
+        ],
+        [
+          147,
+          27,
+          9,
+          141,
+          31,
+          15,
+          2,
+          36,
+          36,
+          6,
+          490,
+          15
+        ],
+        [
+          89,
+          105,
+          8,
+          210,
+          0,
+          5,
+          89,
+          15,
+          27,
+          11,
+          12,
+          433
+        ]
+      ],
+      "move_rate": 1.0,
+      "selector": "MoveOnly-GTMargin Oracle",
+      "mean_gt_rank": 1.0,
+      "median_gt_rank": 1.0,
+      "p_selected_gt_best": 1.0,
+      "p_selected_gt_top2": 1.0,
+      "p_selected_gt_top3": 1.0,
+      "mean_normalized_regret": 0.0,
+      "median_normalized_regret": 0.0,
+      "oracle_any_correct_contexts": 7376,
+      "oracle_correct_selector_wrong_count": 0,
+      "severe_miss_fraction": 0.0
+    },
+    "MoveOnly-AnyCorrect Oracle": {
+      "n": 10080,
+      "accuracy": 0.7317460317460317,
+      "macro_f1": 0.7220342150268914,
+      "per_class": {
+        "walk": {
+          "support": 1071,
+          "recall": 0.9084967320261438,
+          "f1": 0.6320233842156545
+        },
+        "sit": {
+          "support": 786,
+          "recall": 0.8931297709923665,
+          "f1": 0.7701590784421284
+        },
+        "stand up": {
+          "support": 907,
+          "recall": 0.8809261300992283,
+          "f1": 0.9215686274509804
+        },
+        "bend": {
+          "support": 1012,
+          "recall": 0.8735177865612648,
+          "f1": 0.8211797491871806
+        },
+        "crawl": {
+          "support": 446,
+          "recall": 0.8587443946188341,
+          "f1": 0.8754285714285714
+        },
+        "stumble": {
+          "support": 849,
+          "recall": 0.31566548881036516,
+          "f1": 0.4660869565217391
+        },
+        "clap": {
+          "support": 486,
+          "recall": 0.7489711934156379,
+          "f1": 0.7360970677451972
+        },
+        "throw": {
+          "support": 969,
+          "recall": 0.868937048503612,
+          "f1": 0.857870606214977
+        },
+        "kick": {
+          "support": 1152,
+          "recall": 0.90625,
+          "f1": 0.7912087912087912
+        },
+        "knock": {
+          "support": 443,
+          "recall": 0.43792325056433407,
+          "f1": 0.60625
+        },
+        "punch": {
+          "support": 955,
+          "recall": 0.5130890052356021,
+          "f1": 0.6384364820846905
+        },
+        "touching face": {
+          "support": 1004,
+          "recall": 0.4312749003984064,
+          "f1": 0.5481012658227848
+        }
+      },
+      "confusion_matrix": [
+        [
+          973,
+          5,
+          0,
+          24,
+          0,
+          0,
+          6,
+          1,
+          25,
+          0,
+          21,
+          16
+        ],
+        [
+          66,
+          702,
+          7,
+          4,
+          0,
+          0,
+          1,
+          0,
+          6,
+          0,
+          0,
+          0
+        ],
+        [
+          74,
+          8,
+          799,
+          2,
+          0,
+          6,
+          0,
+          0,
+          12,
+          0,
+          6,
+          0
+        ],
+        [
+          35,
+          37,
+          0,
+          884,
+          13,
+          0,
+          0,
+          19,
+          24,
+          0,
+          0,
+          0
+        ],
+        [
+          44,
+          2,
+          0,
+          12,
+          383,
+          0,
+          0,
+          0,
+          3,
+          0,
+          0,
+          2
+        ],
+        [
+          148,
+          6,
+          7,
+          53,
+          0,
+          268,
+          0,
+          52,
+          288,
+          0,
+          23,
+          4
+        ],
+        [
+          60,
+          1,
+          2,
+          3,
+          0,
+          1,
+          364,
+          25,
+          7,
+          3,
+          2,
+          18
+        ],
+        [
+          87,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          842,
+          31,
+          0,
+          3,
+          2
+        ],
+        [
+          62,
+          8,
+          0,
+          8,
+          0,
+          6,
+          7,
+          3,
+          1044,
+          0,
+          12,
+          2
+        ],
+        [
+          51,
+          0,
+          3,
+          1,
+          0,
+          0,
+          62,
+          14,
+          3,
+          194,
+          22,
+          93
+        ],
+        [
+          286,
+          1,
+          9,
+          79,
+          22,
+          15,
+          0,
+          32,
+          15,
+          0,
+          490,
+          6
+        ],
+        [
+          122,
+          267,
+          0,
+          67,
+          11,
+          5,
+          63,
+          6,
+          29,
+          0,
+          1,
+          433
+        ]
+      ],
+      "move_rate": 1.0,
+      "selector": "MoveOnly-AnyCorrect Oracle",
+      "mean_gt_rank": 2.27609126984127,
+      "median_gt_rank": 2.0,
+      "p_selected_gt_best": 0.4753968253968254,
+      "p_selected_gt_top2": 0.7032738095238096,
+      "p_selected_gt_top3": 0.8172619047619047,
+      "mean_normalized_regret": 0.2379722765185573,
+      "median_normalized_regret": 0.02920409269337568,
+      "oracle_any_correct_contexts": 7376,
+      "oracle_correct_selector_wrong_count": 0,
+      "severe_miss_fraction": 0.0
+    },
+    "Frozen-Move": {
+      "status": "NOT_AVAILABLE",
+      "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+    },
+    "CandidateSpatial-Move": {
+      "status": "NOT_AVAILABLE",
+      "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+    },
+    "DeployableAll-Move": {
+      "status": "NOT_AVAILABLE",
+      "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+    }
+  },
+  "pairing_audit": {
+    "status": "PASSED",
+    "stay_excluded": true,
+    "moving_contexts": 10080,
+    "candidate_pairs": 68702,
+    "full_12_pairs": 68702,
+    "counterfactual_move_coverage": 1.0,
+    "coverage_counts": {
+      "12": 68702
+    },
+    "legal_set_mismatch_tolerated": 134
+  },
+  "hypothesis_coverage": {
+    "p_gt_in_top1": 0.254265873015873,
+    "p_gt_in_top2": 0.38353174603174606,
+    "p_gt_in_top3": 0.48174603174603176,
+    "p_gt_in_top5": 0.638095238095238,
+    "contexts": 10080
+  },
+  "selector_integrity": {
+    "gt_action_used_for_selector": false,
+    "predicted_action_used": false,
+    "stay_used": false,
+    "multiple_action_hypotheses_retained": true
+  },
+  "protocol_flags": {
+    "test_used": false,
+    "training_used": false,
+    "counterfactual_future_skeleton_used_for_privileged_oracle_only": true,
+    "actual_future_candidate_skeleton_used_for_terminal_evaluation_only": true,
+    "deployable": false
+  },
+  "reference_status": {
+    "Frozen-Move": {
+      "status": "NOT_AVAILABLE",
+      "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+    },
+    "CandidateSpatial-Move": {
+      "status": "NOT_AVAILABLE",
+      "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+    },
+    "DeployableAll-Move": {
+      "status": "NOT_AVAILABLE",
+      "reason": "No per-context frozen score cache is present; CUDA was unavailable, so no model inference was run."
+    }
+  },
+  "cuda_check": {
+    "available": false,
+    "nvidia_smi": "driver unavailable; cache-only analysis run"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASSED",
+  "stay_excluded": true,
+  "moving_contexts": 10080,
+  "candidate_pairs": 68702,
+  "full_12_pairs": 68702,
+  "counterfactual_move_coverage": 1.0,
+  "coverage_counts": {
+    "12": 68702
+  },
+  "legal_set_mismatch_tolerated": 134
+}
