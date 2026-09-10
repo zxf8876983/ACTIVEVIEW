@@ -69,6 +69,8 @@ def _lattice_diverse(context: Mapping[str, Any], k: int) -> list[int]:
     if not ordered:
         return []
     selected = [ordered[0]]
+    if k == 1:
+        return selected
     for candidate in ordered[1:]:
         if all(lattice_distance(candidate, chosen) >= 2 for chosen in selected):
             selected.append(candidate)
