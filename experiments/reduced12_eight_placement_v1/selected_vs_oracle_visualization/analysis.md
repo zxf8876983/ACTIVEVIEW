@@ -21,7 +21,8 @@ This is a 12-case qualitative audit, not a population estimate. The figures shou
 ## RGB availability and targeted rendering
 
 The RGB loader enforces `available_view_mask`; unavailable zero-filled slots are rendered as N/A/gray and are never interpreted as black RGB. Targeted rendering was limited to 12 cases × 2 viewpoints × frames [0, 15, 29].
-Targeted renderer status: `BLOCKED_GPU` (PyTorch CUDA is unavailable).
+Targeted renderer status: `BLOCKED_EXTERNAL_RUNTIME` (External Habitat environment cannot access CUDA/NVIDIA driver).
+Representative case available: `False`; it is created only when all six targeted RGB images pass validation.
 No full-dataset RGB regeneration was performed.
 
 ## Additional protocol flags

@@ -1,0 +1,23 @@
+{
+  "launcher_python": "/home/zxf/anaconda3/bin/python",
+  "habitat_python": "/home/zxf/anaconda3/envs/habitat/bin/python3.9",
+  "habitat_import_ok": true,
+  "magnum_import_ok": true,
+  "cuda_available_in_habitat_env": false,
+  "gpu_name": null,
+  "renderer_initialized": false,
+  "rendered_cases": 0,
+  "rendered_images": 0,
+  "targeted_cases": 12,
+  "targeted_viewpoints_per_case": 2,
+  "frame_ids": [
+    0,
+    15,
+    29
+  ],
+  "full_dataset_rgb_regenerated": false,
+  "test_used": false,
+  "training_used": false,
+  "status": "BLOCKED_EXTERNAL_RUNTIME",
+  "reason": "External Habitat environment cannot access CUDA/NVIDIA driver"
+}

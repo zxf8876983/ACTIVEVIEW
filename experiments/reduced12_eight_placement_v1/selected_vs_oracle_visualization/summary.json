@@ -14,21 +14,15 @@
     "motion_fidelity": "motion_fidelity_gt_alignment_unavailable",
     "rgb_archive": "frame_index=15 only; available_view_mask enforced; unrendered slots are unavailable",
     "targeted_rgb_render_status": {
-      "status": "BLOCKED_GPU",
-      "reason": "PyTorch CUDA is unavailable",
-      "targeted_cases": 12,
-      "targeted_viewpoints_per_case": 2,
-      "frame_ids": [
-        0,
-        15,
-        29
-      ],
+      "status": "BLOCKED_EXTERNAL_RUNTIME",
+      "reason": "External Habitat environment cannot access CUDA/NVIDIA driver",
+      "habitat_python": "/home/zxf/anaconda3/envs/habitat/bin/python3.9",
       "new_rgb_rendered": false,
       "full_dataset_rgb_regenerated": false,
-      "original_rgb_cache_modified": false,
       "test_used": false,
       "training_used": false
     },
+    "representative_case_available": false,
     "scene_map": "scene_map_unavailable"
   },
   "protocol_flags": {

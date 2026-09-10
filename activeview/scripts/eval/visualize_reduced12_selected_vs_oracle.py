@@ -97,6 +97,19 @@ def _load_qualitative_rgb(case_id: str, output: Path) -> tuple[np.ndarray | None
     return payload["rgb"], np.asarray(payload["viewpoint_ids"], dtype=np.int64), [int(value) for value in payload["frame_ids"]]
 
 
+def _qualitative_case_valid(case: Mapping[str, Any], output: Path) -> bool:
+    rgb, viewpoint_ids, frame_ids = _load_qualitative_rgb(str(case["case_id"]), output)
+    if rgb is None or viewpoint_ids is None or frame_ids is None or tuple(frame_ids) != (0, 15, 29):
+        return False
+    if rgb.ndim != 5 or rgb.shape[0:2] != (2, 3) or rgb.shape[-1] != 3 or rgb.dtype != np.uint8:
+        return False
+    if not np.isfinite(rgb).all() or any(int(image.max()) <= 0 or float(image.mean()) <= 1.0 for image in rgb.reshape(-1, *rgb.shape[2:])):
+        return False
+    selected_id = int(case.get("figure_record", {}).get("selected_viewpoint_id", case.get("selected_id")))
+    oracle_id = int(case.get("figure_record", {}).get("oracle_viewpoint_id", case.get("oracle_id")))
+    return np.array_equal(viewpoint_ids, np.asarray([selected_id, oracle_id], dtype=np.int64))
+
+
 def _archive_record(data_root: Path, scene_id: str, placement_id: str, record_id: str) -> dict[str, np.ndarray]:
     path = data_root / ARCHIVE_RELATIVE / scene_id / placement_id / f"{record_id}.npz"
     if not path.is_file():
@@ -258,14 +271,33 @@ def _case_figure(case: Mapping[str, Any], row: Mapping[str, Any], data_root: Pat
 
 
 def _overview(cases: Sequence[Mapping[str, Any]], output: Path) -> None:
-    fig, axes = plt.subplots(3, 4, figsize=(16, 10), constrained_layout=True)
-    for ax, case in zip(axes.ravel(), cases):
-        image_path = output / "figures" / f"{case['case_id']}.png"
-        if image_path.is_file():
-            image = plt.imread(image_path); ax.imshow(image[image.shape[0] // 8: image.shape[0] // 2])
-        azimuth = case.get("figure_record", {}).get("azimuth_difference_deg", 0.0)
-        ax.set_title(f"{case['case_id']} {LABELS[case['label']]}\nS={case['selected_id']} G={case['oracle_id']} Δaz={azimuth:.0f}°", fontsize=8); ax.axis("off")
-    fig.savefig(output / "overview.png", dpi=120); plt.close(fig)
+    fig = plt.figure(figsize=(20, 10), constrained_layout=True)
+    grid = fig.add_gridspec(3, 8, wspace=0.08, hspace=0.42)
+    for index, case in enumerate(cases[:12]):
+        row, pair = divmod(index, 4)
+        left_col = pair * 2
+        selected_id = case.get("figure_record", {}).get("selected_viewpoint_id", case.get("selected_id"))
+        oracle_id = case.get("figure_record", {}).get("oracle_viewpoint_id", case.get("oracle_id"))
+        selected_image: np.ndarray | None = None
+        oracle_image: np.ndarray | None = None
+        qualitative_rgb, qualitative_viewpoints, qualitative_frames = _load_qualitative_rgb(str(case["case_id"]), output)
+        if qualitative_rgb is not None and qualitative_viewpoints is not None and qualitative_frames is not None and 15 in qualitative_frames:
+            frame_slot = qualitative_frames.index(15)
+            selected_slot = np.flatnonzero(qualitative_viewpoints == int(selected_id))
+            oracle_slot = np.flatnonzero(qualitative_viewpoints == int(oracle_id))
+            if selected_slot.size:
+                selected_image = qualitative_rgb[int(selected_slot[0]), frame_slot]
+            if oracle_slot.size:
+                oracle_image = qualitative_rgb[int(oracle_slot[0]), frame_slot]
+        selected_ax = fig.add_subplot(grid[row, left_col])
+        oracle_ax = fig.add_subplot(grid[row, left_col + 1])
+        _rgb_panel(selected_ax, selected_image, "Selected frame15")
+        _rgb_panel(oracle_ax, oracle_image, "GT-best frame15")
+        azimuth = float(case.get("figure_record", {}).get("azimuth_difference_deg", 0.0))
+        margin_delta = float(case["oracle_margin"] - case["selected_margin"])
+        selected_ax.text(0.0, 1.18, f"{case['case_id']} | {LABELS[case['label']]}\nS={selected_id} / G={oracle_id} / Δaz={azimuth:.0f}°", transform=selected_ax.transAxes, fontsize=8, va="bottom")
+        oracle_ax.text(0.0, 1.18, f"GT-margin {case['selected_margin']:.3f} → {case['oracle_margin']:.3f} (Δ={margin_delta:.3f})", transform=oracle_ax.transAxes, fontsize=8, va="bottom")
+    fig.savefig(output / "overview.png", dpi=140); plt.close(fig)
 
 
 def run(data_root: Path) -> dict[str, Any]:
@@ -286,8 +318,12 @@ def run(data_root: Path) -> dict[str, Any]:
         figure_records.append(_case_figure(case, row, data_root, manifest_by_scene[str(row["scene_id"])], metrics, OUTPUT)); manifest.append({key: value for key, value in case.items() if key not in {"candidate_logp"}} | {"figure_record": figure_records[-1]})
     _overview(manifest, OUTPUT)
     representative = max(manifest, key=lambda item: float(item["oracle_margin"] - item["selected_margin"])) if manifest else None
-    if representative:
-        source = OUTPUT / "figures" / f"{representative['case_id']}.png"; target = OUTPUT / "representative_case.png"; Image.open(source).save(target)
+    representative_available = bool(representative and _qualitative_case_valid(representative, OUTPUT))
+    target = OUTPUT / "representative_case.png"
+    if representative_available and representative:
+        source = OUTPUT / "figures" / f"{representative['case_id']}.png"; Image.open(source).save(target)
+    else:
+        target.unlink(missing_ok=True)
     render_status_path = OUTPUT / "qualitative_rgb" / "render_status.json"
     if render_status_path.is_file():
         render_status = json.loads(render_status_path.read_text(encoding="utf-8"))
@@ -296,11 +332,11 @@ def run(data_root: Path) -> dict[str, Any]:
     azimuth = [float(record["figure_record"]["azimuth_difference_deg"]) for record in manifest]
     scene_better = sum((record["selected_scene_visibility"] is not None and record["oracle_scene_visibility"] is not None and record["oracle_scene_visibility"] > record["selected_scene_visibility"]) for record in manifest)
     human_better = sum((record["selected_human_observability"] is not None and record["oracle_human_observability"] is not None and record["oracle_human_observability"] > record["selected_human_observability"]) for record in manifest)
-    summary = {"cases": len(manifest), "groups": {group: sum(record["group"] == group for record in manifest) for group in ("A", "B", "C", "fallback")}, "mean_abs_azimuth_difference_deg": float(np.mean(np.abs(azimuth))) if azimuth else None, "oracle_scene_visibility_higher_fraction": float(scene_better / max(len(manifest), 1)), "oracle_human_observability_higher_fraction": float(human_better / max(len(manifest), 1)), "mean_margin_difference": float(np.mean([record["oracle_margin"] - record["selected_margin"] for record in manifest])) if manifest else None, "motion_fidelity": "motion_fidelity_gt_alignment_unavailable", "rgb_archive": "frame_index=15 only; available_view_mask enforced; unrendered slots are unavailable", "targeted_rgb_render_status": render_status, "scene_map": "scene_map_unavailable"}
+    summary = {"cases": len(manifest), "groups": {group: sum(record["group"] == group for record in manifest) for group in ("A", "B", "C", "fallback")}, "mean_abs_azimuth_difference_deg": float(np.mean(np.abs(azimuth))) if azimuth else None, "oracle_scene_visibility_higher_fraction": float(scene_better / max(len(manifest), 1)), "oracle_human_observability_higher_fraction": float(human_better / max(len(manifest), 1)), "mean_margin_difference": float(np.mean([record["oracle_margin"] - record["selected_margin"] for record in manifest])) if manifest else None, "motion_fidelity": "motion_fidelity_gt_alignment_unavailable", "rgb_archive": "frame_index=15 only; available_view_mask enforced; unrendered slots are unavailable", "targeted_rgb_render_status": render_status, "representative_case_available": representative_available, "scene_map": "scene_map_unavailable"}
     flags = {"test_used": False, "training_used": False, "new_rgb_rendered": False, "full_dataset_rgb_regenerated": False, "targeted_rgb_rendering_only": True, "targeted_cases": 12, "targeted_viewpoints_per_case": 2, "targeted_frames": [0, 15, 29], "new_pose_estimation": False, "gt_action_used_for_posthoc_diagnostic_only": True, "gt_margin_used_for_case_selection_and_visualization_only": True, "selector_remains_unchanged": True, "deployable": False}
     (OUTPUT / "case_manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"); (OUTPUT / "summary.json").write_text(json.dumps({"summary": summary, "protocol_flags": flags, "representative_case": representative["case_id"] if representative else None}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     lines = ["# Selected-vs-GT-best Failure Case Visualization Audit", "", f"Generated {len(manifest)} Moving-Val cases from the existing Candidate-Conditioned Spatial selections and Real-GTMargin oracle. No Test data were read, no models were trained, and no RGB/skeleton data were regenerated.", "", f"- Mean absolute selected-vs-GT-best azimuth difference: {summary['mean_abs_azimuth_difference_deg']}", f"- Oracle SceneVisibility higher fraction: {summary['oracle_scene_visibility_higher_fraction']:.3f}", f"- Oracle HumanObservability higher fraction: {summary['oracle_human_observability_higher_fraction']:.3f}", f"- Mean GT-margin difference (oracle - selected): {summary['mean_margin_difference']:.4f}", "- Motion fidelity: `motion_fidelity_gt_alignment_unavailable` (no reliable GT world-space canonical alignment in current archive).", "- RGB: archived visited files contain frame_index=15 only; t0/t29 panels are explicitly N/A.", "- Scene occupancy map: unavailable; geometry panels show human and candidate positions only.", "", "## Interpretation", "", "This is a 12-case qualitative audit, not a population estimate. The figures should be used to inspect whether visibility, viewing angle, reconstruction distortion, or temporal evidence plausibly explains selected-vs-oracle failures. Missing caches are shown as N/A rather than reconstructed.", "", "## Protocol flags", "", "`test_used=false`; `training_used=false`; `new_rgb_rendered=false`; `new_pose_estimation=false`; `gt_action_used_for_posthoc_diagnostic_only=true`; `gt_margin_used_for_case_selection_and_visualization_only=true`; `selector_remains_unchanged=true`; `deployable=false`."]
-    lines.extend(["", "## RGB availability and targeted rendering", "", "The RGB loader enforces `available_view_mask`; unavailable zero-filled slots are rendered as N/A/gray and are never interpreted as black RGB. Targeted rendering was limited to 12 cases × 2 viewpoints × frames [0, 15, 29].", f"Targeted renderer status: `{render_status.get('status', 'NOT_RUN')}` ({render_status.get('reason', 'no status reason')}).", "No full-dataset RGB regeneration was performed.", "", "## Additional protocol flags", "", "`full_dataset_rgb_regenerated=false`; `targeted_rgb_rendering_only=true`; `targeted_cases=12`; `targeted_viewpoints_per_case=2`; `targeted_frames=[0,15,29]`."])
+    lines.extend(["", "## RGB availability and targeted rendering", "", "The RGB loader enforces `available_view_mask`; unavailable zero-filled slots are rendered as N/A/gray and are never interpreted as black RGB. Targeted rendering was limited to 12 cases × 2 viewpoints × frames [0, 15, 29].", f"Targeted renderer status: `{render_status.get('status', 'NOT_RUN')}` ({render_status.get('reason', 'no status reason')}).", f"Representative case available: `{representative_available}`; it is created only when all six targeted RGB images pass validation.", "No full-dataset RGB regeneration was performed.", "", "## Additional protocol flags", "", "`full_dataset_rgb_regenerated=false`; `targeted_rgb_rendering_only=true`; `targeted_cases=12`; `targeted_viewpoints_per_case=2`; `targeted_frames=[0,15,29]`."])
     (OUTPUT / "analysis.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return {"status": "COMPLETED", "summary": summary, "cases": len(manifest), "output": str(OUTPUT)}
 
