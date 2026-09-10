@@ -1,0 +1,45 @@
+{
+  "status": "BLOCKED",
+  "total_contexts": 10080,
+  "unique_context_record_ids": 105,
+  "official_val_records": 523,
+  "unique_official_record_ids": 523,
+  "record_mapping_contexts": 10080,
+  "exact_clean_motion_matched": 0,
+  "unmatched": 0,
+  "ambiguous": 0,
+  "exact_frame_resampling_mapping_confirmed": true,
+  "source_files_present": 523,
+  "source_files_missing": [],
+  "invalid_intervals": [],
+  "clean_cache_hits": [],
+  "formal_clean_backend": {
+    "module": "activeview.data.motion.babel_official150_true_skeleton",
+    "available": false,
+    "converter_symbol": "AMASSTrueSkeletonConverter",
+    "error": "AMASSTrueSkeletonConverter is not defined"
+  },
+  "clean_instance_alignment_confirmed": false,
+  "blockers": [
+    "no explicit clean/true H36M17 skeleton cache was found",
+    "formal AMASS-to-H36M17 clean converter is unavailable"
+  ],
+  "paths": {
+    "official_val_manifest": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-val/official_val.json",
+    "stage_d_val_features": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/stage_d/features/val.jsonl",
+    "dataset_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1"
+  },
+  "protocol": {
+    "split": "val_moving",
+    "target_frames": 30,
+    "resampling_rule": "np.linspace(start_frame, end_frame, 30, dtype=int64)",
+    "test_used": false,
+    "training_used": false,
+    "new_rgb_rendered": false,
+    "new_pose_estimation": false,
+    "exact_clean_motion_instance_required": true,
+    "clean_motion_used_for_privileged_reference_only": true,
+    "clean_reference_used_as_deployable_input": false,
+    "deployable": false
+  }
+}

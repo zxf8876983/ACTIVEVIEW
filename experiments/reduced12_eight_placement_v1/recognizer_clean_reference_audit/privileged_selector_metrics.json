@@ -1,0 +1,8 @@
+{
+  "status": "BLOCKED",
+  "reason": "alignment gate blocked clean-reference privileged selectors: no explicit clean/true H36M17 skeleton cache was found; formal AMASS-to-H36M17 clean converter is unavailable",
+  "alignment_status": "BLOCKED",
+  "test_used": false,
+  "training_used": false,
+  "metrics_computed": false
+}
