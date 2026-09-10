@@ -1,0 +1,112 @@
+{
+  "mode": "listwise",
+  "epochs": 20,
+  "selected_epoch": 6,
+  "internal_holdout_loss": 0.6267029047012329,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/reduced12_eight_placement_v1/action_agnostic_transition_utility/listwise_h2.pth",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6400007555882136,
+      "internal_holdout_loss": 0.6327677965164185
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6351083206633726,
+      "internal_holdout_loss": 0.6325300931930542
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6347615619500478,
+      "internal_holdout_loss": 0.6308578848838806
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6319034633537134,
+      "internal_holdout_loss": 0.6299106478691101
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6303560249507427,
+      "internal_holdout_loss": 0.6292487978935242
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6276046832402548,
+      "internal_holdout_loss": 0.6267029047012329
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.6248364907999834,
+      "internal_holdout_loss": 0.6273472309112549
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.620765977849563,
+      "internal_holdout_loss": 0.6282563805580139
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.6231603535513083,
+      "internal_holdout_loss": 0.6297508478164673
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.620109599083662,
+      "internal_holdout_loss": 0.6287719011306763
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.6157450936734676,
+      "internal_holdout_loss": 0.6283999085426331
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.61425523335735,
+      "internal_holdout_loss": 0.6344181299209595
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.6121790533264478,
+      "internal_holdout_loss": 0.632041871547699
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.607846774160862,
+      "internal_holdout_loss": 0.6333401203155518
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.6043765172362328,
+      "internal_holdout_loss": 0.6337665319442749
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.6031827529271444,
+      "internal_holdout_loss": 0.6385044455528259
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.5955360357960066,
+      "internal_holdout_loss": 0.6363823413848877
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.5890426536401113,
+      "internal_holdout_loss": 0.6440654993057251
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.584795605391264,
+      "internal_holdout_loss": 0.6449576616287231
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.5769670928517977,
+      "internal_holdout_loss": 0.6503621935844421
+    }
+  ],
+  "train_contexts": 24083,
+  "internal_holdout_contexts": 6497,
+  "test_used": false
+}
