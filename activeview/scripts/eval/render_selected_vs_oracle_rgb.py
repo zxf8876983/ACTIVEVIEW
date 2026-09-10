@@ -13,6 +13,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 OUTPUT_DEFAULT = REPO_ROOT / "experiments/reduced12_eight_placement_v1/selected_vs_oracle_visualization"
+HABITAT_PYTHON_DEFAULT = Path("/home/zxf/anaconda3/envs/habitat/bin/python3.9")
 FRAME_IDS = (0, 15, 29)
 
 
@@ -22,7 +23,7 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
 
 
 def _python_candidates() -> list[Path]:
-    candidates: list[Path] = []
+    candidates: list[Path] = [Path(os.environ.get("HABITAT_PYTHON", str(HABITAT_PYTHON_DEFAULT)))]
     conda = Path("/home/zxf/anaconda3/bin/conda")
     if conda.is_file():
         try:
@@ -77,6 +78,7 @@ def _status_base(habitat_python: Path | None, probe: dict[str, Any]) -> dict[str
         "renderer_initialized": False,
         "rendered_cases": 0,
         "rendered_images": 0,
+        "invalid_images": 0,
         "targeted_cases": 12,
         "targeted_viewpoints_per_case": 2,
         "frame_ids": list(FRAME_IDS),
@@ -90,7 +92,7 @@ def _run_visualization(output: Path) -> None:
     script = REPO_ROOT / "activeview/scripts/eval/visualize_reduced12_selected_vs_oracle.py"
     env = dict(os.environ)
     env.setdefault("MPLCONFIGDIR", "/tmp/activeview-mplconfig")
-    subprocess.run([sys.executable, str(script)], cwd=str(REPO_ROOT), check=True, env=env)
+    subprocess.run([str(HABITAT_PYTHON_DEFAULT), str(script)], cwd=str(REPO_ROOT), check=True, env=env)
 
 
 def run(habitat_python: Path | None, output: Path, data_root: Path, scene_root: Path, archive_root: Path, motion_manifest: Path) -> int:
@@ -105,16 +107,11 @@ def run(habitat_python: Path | None, output: Path, data_root: Path, scene_root: 
         _write_json(render_status_path, {"status": status["status"], "reason": status["reason"], "new_rgb_rendered": False, "full_dataset_rgb_regenerated": False, "test_used": False, "training_used": False})
         _run_visualization(output)
         return 2
-    if not status["cuda_available_in_habitat_env"]:
-        status.update({"status": "BLOCKED_EXTERNAL_RUNTIME", "reason": "External Habitat environment cannot access CUDA/NVIDIA driver"})
-        _write_json(runtime_status_path, status)
-        _write_json(render_status_path, {"status": status["status"], "reason": status["reason"], "habitat_python": str(selected), "new_rgb_rendered": False, "full_dataset_rgb_regenerated": False, "test_used": False, "training_used": False})
-        _run_visualization(output)
-        return 2
     worker = REPO_ROOT / "activeview/scripts/eval/render_selected_vs_oracle_rgb_worker.py"
     command = [str(selected), str(worker), "--case-manifest", str(output / "case_manifest.json"), "--output", str(output / "qualitative_rgb"), "--data-root", str(data_root.resolve()), "--scene-root", str(scene_root.resolve()), "--archive-root", str(archive_root.resolve()), "--motion-manifest", str(motion_manifest.resolve()), "--runtime-status", str(runtime_status_path)]
     env = dict(os.environ)
     env["PYTHONPATH"] = str(REPO_ROOT) + os.pathsep + env.get("PYTHONPATH", "")
+    env["ACTIVEVIEW_HOST_RUNNER"] = str(Path(__file__).resolve())
     try:
         subprocess.run(command, cwd=str(REPO_ROOT), check=True, env=env)
     except subprocess.CalledProcessError as exc:
@@ -123,6 +120,12 @@ def run(habitat_python: Path | None, output: Path, data_root: Path, scene_root: 
         _write_json(render_status_path, {"status": status["status"], "reason": status["reason"], "habitat_python": str(selected), "new_rgb_rendered": False, "full_dataset_rgb_regenerated": False, "test_used": False, "training_used": False})
         _run_visualization(output)
         return exc.returncode or 2
+    runtime = json.loads(runtime_status_path.read_text(encoding="utf-8"))
+    completed = runtime.get("status") == "COMPLETED" and runtime.get("rendered_cases") == 12 and runtime.get("rendered_images") == 72 and runtime.get("invalid_images") == 0
+    _write_json(render_status_path, {"status": "COMPLETED" if completed else "RENDER_FAILED", "reason": None if completed else "worker did not produce all validated RGB images", "habitat_python": str(selected), "new_rgb_rendered": completed, "rendered_cases": runtime.get("rendered_cases", 0), "rendered_images": runtime.get("rendered_images", 0), "invalid_images": runtime.get("invalid_images", 0), "full_dataset_rgb_regenerated": False, "test_used": False, "training_used": False})
+    if not completed:
+        _run_visualization(output)
+        return 2
     _run_visualization(output)
     return 0
 

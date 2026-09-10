@@ -1,8 +1,11 @@
 {
-  "status": "BLOCKED_EXTERNAL_RUNTIME",
-  "reason": "External Habitat environment cannot access CUDA/NVIDIA driver",
+  "status": "COMPLETED",
+  "reason": null,
   "habitat_python": "/home/zxf/anaconda3/envs/habitat/bin/python3.9",
-  "new_rgb_rendered": false,
+  "new_rgb_rendered": true,
+  "rendered_cases": 12,
+  "rendered_images": 72,
+  "invalid_images": 0,
   "full_dataset_rgb_regenerated": false,
   "test_used": false,
   "training_used": false
