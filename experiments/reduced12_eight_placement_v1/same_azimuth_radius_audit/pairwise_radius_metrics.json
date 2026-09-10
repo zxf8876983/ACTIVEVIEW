@@ -1,0 +1,56 @@
+{
+  "1.5_vs_2.0": {
+    "groups": 10803,
+    "mean_delta_farther_minus_closer": -0.12965214849972392,
+    "median_delta_farther_minus_closer": 0.27355726063251495,
+    "p_farther_better": 0.5211515319818569,
+    "p_closer_better": 0.4788484680181431,
+    "p_wrong_to_correct": 0.08377302601129316,
+    "p_correct_to_wrong": 0.11820790521151532
+  },
+  "1.5_vs_2.5": {
+    "groups": 7043,
+    "mean_delta_farther_minus_closer": -1.3735946431310098,
+    "median_delta_farther_minus_closer": -0.8600778754334897,
+    "p_farther_better": 0.4510861848644044,
+    "p_closer_better": 0.5489138151355957,
+    "p_wrong_to_correct": 0.0837711202612523,
+    "p_correct_to_wrong": 0.19750106488712196
+  },
+  "1.5_vs_3.0": {
+    "groups": 5598,
+    "mean_delta_farther_minus_closer": -2.7356347497812843,
+    "median_delta_farther_minus_closer": -2.240182064473629,
+    "p_farther_better": 0.3879957127545552,
+    "p_closer_better": 0.6120042872454448,
+    "p_wrong_to_correct": 0.08377992140050018,
+    "p_correct_to_wrong": 0.27295462665237585
+  },
+  "2.0_vs_2.5": {
+    "groups": 8970,
+    "mean_delta_farther_minus_closer": -1.0605542347738495,
+    "median_delta_farther_minus_closer": -0.18763538205530494,
+    "p_farther_better": 0.48539576365663323,
+    "p_closer_better": 0.5146042363433668,
+    "p_wrong_to_correct": 0.06967670011148272,
+    "p_correct_to_wrong": 0.13132664437012262
+  },
+  "2.0_vs_3.0": {
+    "groups": 6142,
+    "mean_delta_farther_minus_closer": -2.4460504227048734,
+    "median_delta_farther_minus_closer": -1.47375890344847,
+    "p_farther_better": 0.4093129273852165,
+    "p_closer_better": 0.5906870726147835,
+    "p_wrong_to_correct": 0.08450016281341582,
+    "p_correct_to_wrong": 0.217193096711169
+  },
+  "2.5_vs_3.0": {
+    "groups": 8147,
+    "mean_delta_farther_minus_closer": -1.030966753706736,
+    "median_delta_farther_minus_closer": 0.033031582832336426,
+    "p_farther_better": 0.5129495519823248,
+    "p_closer_better": 0.4870504480176752,
+    "p_wrong_to_correct": 0.09144470357186694,
+    "p_correct_to_wrong": 0.15208052043697065
+  }
+}
