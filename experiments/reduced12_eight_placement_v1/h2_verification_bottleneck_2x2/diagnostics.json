@@ -1,0 +1,42 @@
+{
+  "gaps_pp": {
+    "total_verification_gap_pp": 15.476190476190482,
+    "action_inference_gap_pp": 13.343253968253975,
+    "utility_prediction_gap_pp": 9.890873015873025,
+    "deployable_interaction_gap_pp": 2.132936507936506
+  },
+  "utility_diagnostics": {
+    "STOP": {
+      "pearson": 0.9767284762545023,
+      "spearman": 0.9828180059519958,
+      "mae": 1.1941297054290771
+    },
+    "rank2": {
+      "pearson": 0.6285968893660127,
+      "spearman": 0.6462533001278506,
+      "mae": 4.405702590942383
+    },
+    "rank3": {
+      "pearson": 0.6100971661485356,
+      "spearman": 0.6274133127701741,
+      "mae": 4.23180627822876
+    },
+    "context_ranking": {
+      "spearman_mean": 0.3746527777777778,
+      "predicted_argmax_is_real_best": 0.5365079365079365,
+      "real_best_in_predicted_top2": 0.835218253968254
+    },
+    "h1_wrong_top3_contains_correct": {
+      "n": 1720,
+      "predicted_action_class_accuracy": 0.35755813953488375,
+      "predicted_utility_top1_is_real_best": 0.41569767441860467
+    },
+    "focus_action_inference": {
+      "n": 1720,
+      "pred_action_correct_rate": 0.35755813953488375,
+      "pred_action_real_evidence_success_if_pred_action_correct": 1.0,
+      "pred_action_real_evidence_success_if_pred_action_wrong": 0.08778280542986425
+    }
+  },
+  "focus_contexts": 1720
+}

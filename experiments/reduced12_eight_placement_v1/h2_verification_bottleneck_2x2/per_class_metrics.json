@@ -1,0 +1,386 @@
+{
+  "walk": {
+    "PredAction-RealEvidence": {
+      "support": 1071,
+      "recall": 0.6601307189542484,
+      "f1": 0.4529147982062781
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 1071,
+      "recall": 0.6162464985994398,
+      "f1": 0.47826086956521746
+    },
+    "GTAction-RealEvidence": {
+      "support": 1071,
+      "recall": 0.8571428571428571,
+      "f1": 0.6515259048970901
+    },
+    "GTAction-PredUtility": {
+      "support": 1071,
+      "recall": 0.7124183006535948,
+      "f1": 0.5333799370849354
+    },
+    "PredAction-PredUtility": {
+      "support": 1071,
+      "recall": 0.6311858076563959,
+      "f1": 0.43711606854186874
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 1071,
+      "recall": 0.6106442577030813,
+      "f1": 0.45416666666666666
+    }
+  },
+  "sit": {
+    "PredAction-RealEvidence": {
+      "support": 786,
+      "recall": 0.8193384223918575,
+      "f1": 0.7721822541966428
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 786,
+      "recall": 0.8091603053435115,
+      "f1": 0.7621330137807071
+    },
+    "GTAction-RealEvidence": {
+      "support": 786,
+      "recall": 0.8905852417302799,
+      "f1": 0.8641975308641975
+    },
+    "GTAction-PredUtility": {
+      "support": 786,
+      "recall": 0.8155216284987278,
+      "f1": 0.7807551766138855
+    },
+    "PredAction-PredUtility": {
+      "support": 786,
+      "recall": 0.7888040712468194,
+      "f1": 0.7560975609756098
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 786,
+      "recall": 0.7862595419847328,
+      "f1": 0.7509113001215066
+    }
+  },
+  "stand up": {
+    "PredAction-RealEvidence": {
+      "support": 907,
+      "recall": 0.7155457552370452,
+      "f1": 0.7446930579460699
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 907,
+      "recall": 0.7122381477398015,
+      "f1": 0.7349260523321958
+    },
+    "GTAction-RealEvidence": {
+      "support": 907,
+      "recall": 0.772877618522602,
+      "f1": 0.8048220436280136
+    },
+    "GTAction-PredUtility": {
+      "support": 907,
+      "recall": 0.701212789415656,
+      "f1": 0.7386759581881533
+    },
+    "PredAction-PredUtility": {
+      "support": 907,
+      "recall": 0.6890848952590959,
+      "f1": 0.7263219058686808
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 907,
+      "recall": 0.6769570011025359,
+      "f1": 0.719812426729191
+    }
+  },
+  "bend": {
+    "PredAction-RealEvidence": {
+      "support": 1012,
+      "recall": 0.3231225296442688,
+      "f1": 0.33886010362694297
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 1012,
+      "recall": 0.3547430830039526,
+      "f1": 0.31353711790393013
+    },
+    "GTAction-RealEvidence": {
+      "support": 1012,
+      "recall": 0.5612648221343873,
+      "f1": 0.4715649647156496
+    },
+    "GTAction-PredUtility": {
+      "support": 1012,
+      "recall": 0.4535573122529644,
+      "f1": 0.39416058394160586
+    },
+    "PredAction-PredUtility": {
+      "support": 1012,
+      "recall": 0.30434782608695654,
+      "f1": 0.3196678775298391
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 1012,
+      "recall": 0.3231225296442688,
+      "f1": 0.30617977528089885
+    }
+  },
+  "crawl": {
+    "PredAction-RealEvidence": {
+      "support": 446,
+      "recall": 0.7802690582959642,
+      "f1": 0.8285714285714286
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 446,
+      "recall": 0.7847533632286996,
+      "f1": 0.8254716981132075
+    },
+    "GTAction-RealEvidence": {
+      "support": 446,
+      "recall": 0.8385650224215246,
+      "f1": 0.8748538011695906
+    },
+    "GTAction-PredUtility": {
+      "support": 446,
+      "recall": 0.7668161434977578,
+      "f1": 0.8162291169451075
+    },
+    "PredAction-PredUtility": {
+      "support": 446,
+      "recall": 0.742152466367713,
+      "f1": 0.7937649880095923
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 446,
+      "recall": 0.7399103139013453,
+      "f1": 0.7885304659498209
+    }
+  },
+  "stumble": {
+    "PredAction-RealEvidence": {
+      "support": 849,
+      "recall": 0.21554770318021202,
+      "f1": 0.31069609507640067
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 849,
+      "recall": 0.22379269729093051,
+      "f1": 0.31587697423108896
+    },
+    "GTAction-RealEvidence": {
+      "support": 849,
+      "recall": 0.31802120141342755,
+      "f1": 0.4545454545454546
+    },
+    "GTAction-PredUtility": {
+      "support": 849,
+      "recall": 0.21908127208480566,
+      "f1": 0.3274647887323944
+    },
+    "PredAction-PredUtility": {
+      "support": 849,
+      "recall": 0.2037691401648999,
+      "f1": 0.295221843003413
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 849,
+      "recall": 0.21908127208480566,
+      "f1": 0.3087136929460581
+    }
+  },
+  "clap": {
+    "PredAction-RealEvidence": {
+      "support": 486,
+      "recall": 0.4012345679012346,
+      "f1": 0.44982698961937717
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 486,
+      "recall": 0.3950617283950617,
+      "f1": 0.44755244755244755
+    },
+    "GTAction-RealEvidence": {
+      "support": 486,
+      "recall": 0.5699588477366255,
+      "f1": 0.6108048511576626
+    },
+    "GTAction-PredUtility": {
+      "support": 486,
+      "recall": 0.4567901234567901,
+      "f1": 0.49664429530201337
+    },
+    "PredAction-PredUtility": {
+      "support": 486,
+      "recall": 0.4012345679012346,
+      "f1": 0.4318936877076412
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 486,
+      "recall": 0.4094650205761317,
+      "f1": 0.44075304540420823
+    }
+  },
+  "throw": {
+    "PredAction-RealEvidence": {
+      "support": 969,
+      "recall": 0.5799793601651186,
+      "f1": 0.5469586374695864
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 969,
+      "recall": 0.5706914344685242,
+      "f1": 0.5376762275157997
+    },
+    "GTAction-RealEvidence": {
+      "support": 969,
+      "recall": 0.7120743034055728,
+      "f1": 0.6774668630338734
+    },
+    "GTAction-PredUtility": {
+      "support": 969,
+      "recall": 0.6501547987616099,
+      "f1": 0.5937794533459
+    },
+    "PredAction-PredUtility": {
+      "support": 969,
+      "recall": 0.5995872033023736,
+      "f1": 0.5352372178719483
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 969,
+      "recall": 0.5964912280701754,
+      "f1": 0.5188509874326751
+    }
+  },
+  "kick": {
+    "PredAction-RealEvidence": {
+      "support": 1152,
+      "recall": 0.7430555555555556,
+      "f1": 0.6462816157040393
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 1152,
+      "recall": 0.7335069444444444,
+      "f1": 0.6430745814307459
+    },
+    "GTAction-RealEvidence": {
+      "support": 1152,
+      "recall": 0.8828125,
+      "f1": 0.7808061420345489
+    },
+    "GTAction-PredUtility": {
+      "support": 1152,
+      "recall": 0.8072916666666666,
+      "f1": 0.6763636363636364
+    },
+    "PredAction-PredUtility": {
+      "support": 1152,
+      "recall": 0.7404513888888888,
+      "f1": 0.6230825420014608
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 1152,
+      "recall": 0.7083333333333334,
+      "f1": 0.6064659977703455
+    }
+  },
+  "knock": {
+    "PredAction-RealEvidence": {
+      "support": 443,
+      "recall": 0.28442437923250563,
+      "f1": 0.3789473684210526
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 443,
+      "recall": 0.2799097065462754,
+      "f1": 0.37125748502994005
+    },
+    "GTAction-RealEvidence": {
+      "support": 443,
+      "recall": 0.3340857787810384,
+      "f1": 0.44984802431610943
+    },
+    "GTAction-PredUtility": {
+      "support": 443,
+      "recall": 0.22121896162528218,
+      "f1": 0.3261231281198003
+    },
+    "PredAction-PredUtility": {
+      "support": 443,
+      "recall": 0.21896162528216703,
+      "f1": 0.3094098883572568
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 443,
+      "recall": 0.22121896162528218,
+      "f1": 0.31309904153354634
+    }
+  },
+  "punch": {
+    "PredAction-RealEvidence": {
+      "support": 955,
+      "recall": 0.2680628272251309,
+      "f1": 0.30658682634730544
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 955,
+      "recall": 0.2481675392670157,
+      "f1": 0.2851985559566787
+    },
+    "GTAction-RealEvidence": {
+      "support": 955,
+      "recall": 0.374869109947644,
+      "f1": 0.4616376531270148
+    },
+    "GTAction-PredUtility": {
+      "support": 955,
+      "recall": 0.25759162303664923,
+      "f1": 0.32031249999999994
+    },
+    "PredAction-PredUtility": {
+      "support": 955,
+      "recall": 0.2094240837696335,
+      "f1": 0.25015634771732337
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 955,
+      "recall": 0.20837696335078534,
+      "f1": 0.24312767257177767
+    }
+  },
+  "touching face": {
+    "PredAction-RealEvidence": {
+      "support": 1004,
+      "recall": 0.2739043824701195,
+      "f1": 0.31020868584320355
+    },
+    "SoftPredAction-RealEvidence": {
+      "support": 1004,
+      "recall": 0.25199203187250996,
+      "f1": 0.28766344513928366
+    },
+    "GTAction-RealEvidence": {
+      "support": 1004,
+      "recall": 0.450199203187251,
+      "f1": 0.5107344632768361
+    },
+    "GTAction-PredUtility": {
+      "support": 1004,
+      "recall": 0.32171314741035856,
+      "f1": 0.3736263736263736
+    },
+    "PredAction-PredUtility": {
+      "support": 1004,
+      "recall": 0.25298804780876494,
+      "f1": 0.29279538904899133
+    },
+    "SoftPredAction-PredUtility": {
+      "support": 1004,
+      "recall": 0.22211155378486055,
+      "f1": 0.26786786786786787
+    }
+  }
+}
