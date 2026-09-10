@@ -1,0 +1,134 @@
+{
+  "FrozenStageCv0": {
+    "0": {
+      "contexts": 2739,
+      "accuracy": 0.0,
+      "selected_correct": 0.0
+    },
+    "1": {
+      "contexts": 1699,
+      "accuracy": 0.35197174808711007,
+      "selected_correct": 0.35197174808711007
+    },
+    "2": {
+      "contexts": 1500,
+      "accuracy": 0.5533333333333333,
+      "selected_correct": 0.5533333333333333
+    },
+    "3+": {
+      "contexts": 4142,
+      "accuracy": 0.7607436021245775,
+      "selected_correct": 0.7607436021245775
+    }
+  },
+  "Candidate-Conditioned Spatial": {
+    "0": {
+      "contexts": 2739,
+      "accuracy": 0.0,
+      "selected_correct": 0.0
+    },
+    "1": {
+      "contexts": 1699,
+      "accuracy": 0.3790464979399647,
+      "selected_correct": 0.3790464979399647
+    },
+    "2": {
+      "contexts": 1500,
+      "accuracy": 0.58,
+      "selected_correct": 0.58
+    },
+    "3+": {
+      "contexts": 4142,
+      "accuracy": 0.781989377112506,
+      "selected_correct": 0.781989377112506
+    }
+  },
+  "RealEvidence-GTMarginListwise": {
+    "0": {
+      "contexts": 2739,
+      "accuracy": 0.0,
+      "selected_correct": 0.0
+    },
+    "1": {
+      "contexts": 1699,
+      "accuracy": 0.418481459682166,
+      "selected_correct": 0.418481459682166
+    },
+    "2": {
+      "contexts": 1500,
+      "accuracy": 0.628,
+      "selected_correct": 0.628
+    },
+    "3+": {
+      "contexts": 4142,
+      "accuracy": 0.8244809270883631,
+      "selected_correct": 0.8244809270883631
+    }
+  },
+  "RealEvidence-CorrectnessBCE": {
+    "0": {
+      "contexts": 2739,
+      "accuracy": 0.0,
+      "selected_correct": 0.0
+    },
+    "1": {
+      "contexts": 1699,
+      "accuracy": 0.38434373160682755,
+      "selected_correct": 0.38434373160682755
+    },
+    "2": {
+      "contexts": 1500,
+      "accuracy": 0.6126666666666667,
+      "selected_correct": 0.6126666666666667
+    },
+    "3+": {
+      "contexts": 4142,
+      "accuracy": 0.8411395461129889,
+      "selected_correct": 0.8411395461129889
+    }
+  },
+  "ConfidenceWeightedConsensus": {
+    "0": {
+      "contexts": 2739,
+      "accuracy": 0.0,
+      "selected_correct": 0.0
+    },
+    "1": {
+      "contexts": 1699,
+      "accuracy": 0.1353737492642731,
+      "selected_correct": 0.1353737492642731
+    },
+    "2": {
+      "contexts": 1500,
+      "accuracy": 0.526,
+      "selected_correct": 0.526
+    },
+    "3+": {
+      "contexts": 4142,
+      "accuracy": 0.9072911636890391,
+      "selected_correct": 0.9072911636890391
+    }
+  },
+  "Real-GTMargin Oracle": {
+    "0": {
+      "contexts": 2739,
+      "accuracy": 0.0,
+      "selected_correct": 0.0
+    },
+    "1": {
+      "contexts": 1699,
+      "accuracy": 1.0,
+      "selected_correct": 1.0
+    },
+    "2": {
+      "contexts": 1500,
+      "accuracy": 1.0,
+      "selected_correct": 1.0
+    },
+    "3+": {
+      "contexts": 4142,
+      "accuracy": 1.0,
+      "selected_correct": 1.0
+    }
+  }
+}

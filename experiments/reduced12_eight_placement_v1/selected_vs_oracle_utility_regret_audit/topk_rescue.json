@@ -1,0 +1,110 @@
+{
+  "FrozenStageCv0": {
+    "1": {
+      "any_correct_coverage": 0.454265873015873,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "2": {
+      "any_correct_coverage": 0.5750992063492063,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "3": {
+      "any_correct_coverage": 0.6357142857142857,
+      "top3_oracle_recovery_accuracy": 0.6357142857142857
+    },
+    "5": {
+      "any_correct_coverage": 0.6893849206349206,
+      "top3_oracle_recovery_accuracy": null
+    }
+  },
+  "Candidate-Conditioned Spatial": {
+    "1": {
+      "any_correct_coverage": 0.47152777777777777,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "2": {
+      "any_correct_coverage": 0.5846230158730159,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "3": {
+      "any_correct_coverage": 0.6421626984126985,
+      "top3_oracle_recovery_accuracy": 0.6421626984126985
+    },
+    "5": {
+      "any_correct_coverage": 0.6923611111111111,
+      "top3_oracle_recovery_accuracy": null
+    }
+  },
+  "RealEvidence-GTMarginListwise": {
+    "1": {
+      "any_correct_coverage": 0.5027777777777778,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "2": {
+      "any_correct_coverage": 0.5971230158730159,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "3": {
+      "any_correct_coverage": 0.6514880952380953,
+      "top3_oracle_recovery_accuracy": 0.6514880952380953
+    },
+    "5": {
+      "any_correct_coverage": 0.6987103174603174,
+      "top3_oracle_recovery_accuracy": null
+    }
+  },
+  "RealEvidence-CorrectnessBCE": {
+    "1": {
+      "any_correct_coverage": 0.5015873015873016,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "2": {
+      "any_correct_coverage": 0.5876984126984127,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "3": {
+      "any_correct_coverage": 0.6374007936507936,
+      "top3_oracle_recovery_accuracy": 0.6374007936507936
+    },
+    "5": {
+      "any_correct_coverage": 0.6881944444444444,
+      "top3_oracle_recovery_accuracy": null
+    }
+  },
+  "ConfidenceWeightedConsensus": {
+    "1": {
+      "any_correct_coverage": 0.47390873015873014,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "2": {
+      "any_correct_coverage": 0.4824404761904762,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "3": {
+      "any_correct_coverage": 0.5139880952380952,
+      "top3_oracle_recovery_accuracy": 0.5139880952380952
+    },
+    "5": {
+      "any_correct_coverage": 0.6001984126984127,
+      "top3_oracle_recovery_accuracy": null
+    }
+  },
+  "Real-GTMargin Oracle": {
+    "1": {
+      "any_correct_coverage": 0.7282738095238095,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "2": {
+      "any_correct_coverage": 0.7282738095238095,
+      "top3_oracle_recovery_accuracy": null
+    },
+    "3": {
+      "any_correct_coverage": 0.7282738095238095,
+      "top3_oracle_recovery_accuracy": 0.7282738095238095
+    },
+    "5": {
+      "any_correct_coverage": 0.7282738095238095,
+      "top3_oracle_recovery_accuracy": null
+    }
+  }
+}
