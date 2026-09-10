@@ -1,0 +1,16 @@
+{
+  "status": "BLOCKED_GPU",
+  "reason": "PyTorch CUDA is unavailable",
+  "targeted_cases": 12,
+  "targeted_viewpoints_per_case": 2,
+  "frame_ids": [
+    0,
+    15,
+    29
+  ],
+  "new_rgb_rendered": false,
+  "full_dataset_rgb_regenerated": false,
+  "original_rgb_cache_modified": false,
+  "test_used": false,
+  "training_used": false
+}

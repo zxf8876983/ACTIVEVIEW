@@ -17,3 +17,13 @@ This is a 12-case qualitative audit, not a population estimate. The figures shou
 ## Protocol flags
 
 `test_used=false`; `training_used=false`; `new_rgb_rendered=false`; `new_pose_estimation=false`; `gt_action_used_for_posthoc_diagnostic_only=true`; `gt_margin_used_for_case_selection_and_visualization_only=true`; `selector_remains_unchanged=true`; `deployable=false`.
+
+## RGB availability and targeted rendering
+
+The RGB loader enforces `available_view_mask`; unavailable zero-filled slots are rendered as N/A/gray and are never interpreted as black RGB. Targeted rendering was limited to 12 cases × 2 viewpoints × frames [0, 15, 29].
+Targeted renderer status: `BLOCKED_GPU` (PyTorch CUDA is unavailable).
+No full-dataset RGB regeneration was performed.
+
+## Additional protocol flags
+
+`full_dataset_rgb_regenerated=false`; `targeted_rgb_rendering_only=true`; `targeted_cases=12`; `targeted_viewpoints_per_case=2`; `targeted_frames=[0,15,29]`.

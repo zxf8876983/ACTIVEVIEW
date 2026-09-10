@@ -12,13 +12,38 @@
     "oracle_human_observability_higher_fraction": 0.0,
     "mean_margin_difference": 9.590479858851268,
     "motion_fidelity": "motion_fidelity_gt_alignment_unavailable",
-    "rgb_archive": "frame_index=15 only; t0/t29 marked unavailable",
+    "rgb_archive": "frame_index=15 only; available_view_mask enforced; unrendered slots are unavailable",
+    "targeted_rgb_render_status": {
+      "status": "BLOCKED_GPU",
+      "reason": "PyTorch CUDA is unavailable",
+      "targeted_cases": 12,
+      "targeted_viewpoints_per_case": 2,
+      "frame_ids": [
+        0,
+        15,
+        29
+      ],
+      "new_rgb_rendered": false,
+      "full_dataset_rgb_regenerated": false,
+      "original_rgb_cache_modified": false,
+      "test_used": false,
+      "training_used": false
+    },
     "scene_map": "scene_map_unavailable"
   },
   "protocol_flags": {
     "test_used": false,
     "training_used": false,
     "new_rgb_rendered": false,
+    "full_dataset_rgb_regenerated": false,
+    "targeted_rgb_rendering_only": true,
+    "targeted_cases": 12,
+    "targeted_viewpoints_per_case": 2,
+    "targeted_frames": [
+      0,
+      15,
+      29
+    ],
     "new_pose_estimation": false,
     "gt_action_used_for_posthoc_diagnostic_only": true,
     "gt_margin_used_for_case_selection_and_visualization_only": true,
