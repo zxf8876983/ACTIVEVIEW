@@ -1,0 +1,8 @@
+{
+  "contexts": 10080,
+  "p_gt_in_top1": 0.254265873015873,
+  "p_gt_in_top2": 0.38353174603174606,
+  "p_gt_in_top3": 0.48174603174603176,
+  "p_gt_in_top5": 0.638095238095238,
+  "definition": "coverage of the frozen s0 posterior; no predicted class is supplied to a selector"
+}

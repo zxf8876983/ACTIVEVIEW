@@ -1,0 +1,4 @@
+{
+  "status": "NOT_RUN",
+  "reason": "Strict same-camera counterfactual pairing is incomplete; no selector was evaluated."
+}
