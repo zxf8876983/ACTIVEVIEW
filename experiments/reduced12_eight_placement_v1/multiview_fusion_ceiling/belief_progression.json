@@ -1,0 +1,33 @@
+{
+  "fusion": "MeanLogP",
+  "budgets": {
+    "B1": {
+      "accuracy": 0.7096230158730159,
+      "macro_f1": 0.704597704969356,
+      "mean_gt_probability": 0.6811483760228368,
+      "mean_entropy": 0.3916094151762777,
+      "mean_gt_margin": 3.755899954091078
+    },
+    "B2": {
+      "accuracy": 0.7405753968253969,
+      "macro_f1": 0.7362446777636736,
+      "mean_gt_probability": 0.7059081722627363,
+      "mean_entropy": 0.43261713776393407,
+      "mean_gt_margin": 4.218658742978933
+    },
+    "B3": {
+      "accuracy": 0.7451388888888889,
+      "macro_f1": 0.7419709352520553,
+      "mean_gt_probability": 0.7076966792491242,
+      "mean_entropy": 0.44500740351245294,
+      "mean_gt_margin": 4.269414997082787
+    },
+    "B4": {
+      "accuracy": 0.745734126984127,
+      "macro_f1": 0.7424967040498903,
+      "mean_gt_probability": 0.7077349244575531,
+      "mean_entropy": 0.4472208165626986,
+      "mean_gt_margin": 4.275794475012597
+    }
+  }
+}

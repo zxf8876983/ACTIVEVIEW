@@ -1,0 +1,68 @@
+{
+  "MeanLogP-B2": {
+    "budget": 2,
+    "fusion": "MeanLogP",
+    "contexts": 10080,
+    "all_single_wrong_contexts": 2927,
+    "all_single_wrong_to_fusion_correct_count": 312,
+    "all_single_wrong_to_fusion_correct_fraction": 0.030952380952380953,
+    "at_least_one_single_correct_to_fusion_wrong_count": 0,
+    "at_least_one_single_correct_to_fusion_wrong_fraction": 0.0,
+    "fusion_correct_count": 7465
+  },
+  "MeanLogP-B3": {
+    "budget": 3,
+    "fusion": "MeanLogP",
+    "contexts": 10080,
+    "all_single_wrong_contexts": 2927,
+    "all_single_wrong_to_fusion_correct_count": 358,
+    "all_single_wrong_to_fusion_correct_fraction": 0.035515873015873015,
+    "at_least_one_single_correct_to_fusion_wrong_count": 0,
+    "at_least_one_single_correct_to_fusion_wrong_fraction": 0.0,
+    "fusion_correct_count": 7511
+  },
+  "MeanLogP-B4": {
+    "budget": 4,
+    "fusion": "MeanLogP",
+    "contexts": 10080,
+    "all_single_wrong_contexts": 2927,
+    "all_single_wrong_to_fusion_correct_count": 364,
+    "all_single_wrong_to_fusion_correct_fraction": 0.03611111111111111,
+    "at_least_one_single_correct_to_fusion_wrong_count": 0,
+    "at_least_one_single_correct_to_fusion_wrong_fraction": 0.0,
+    "fusion_correct_count": 7517
+  },
+  "SumLogP-B2": {
+    "budget": 2,
+    "fusion": "SumLogP",
+    "contexts": 10080,
+    "all_single_wrong_contexts": 2927,
+    "all_single_wrong_to_fusion_correct_count": 312,
+    "all_single_wrong_to_fusion_correct_fraction": 0.030952380952380953,
+    "at_least_one_single_correct_to_fusion_wrong_count": 0,
+    "at_least_one_single_correct_to_fusion_wrong_fraction": 0.0,
+    "fusion_correct_count": 7465
+  },
+  "SumLogP-B3": {
+    "budget": 3,
+    "fusion": "SumLogP",
+    "contexts": 10080,
+    "all_single_wrong_contexts": 2927,
+    "all_single_wrong_to_fusion_correct_count": 358,
+    "all_single_wrong_to_fusion_correct_fraction": 0.035515873015873015,
+    "at_least_one_single_correct_to_fusion_wrong_count": 0,
+    "at_least_one_single_correct_to_fusion_wrong_fraction": 0.0,
+    "fusion_correct_count": 7511
+  },
+  "SumLogP-B4": {
+    "budget": 4,
+    "fusion": "SumLogP",
+    "contexts": 10080,
+    "all_single_wrong_contexts": 2927,
+    "all_single_wrong_to_fusion_correct_count": 364,
+    "all_single_wrong_to_fusion_correct_fraction": 0.03611111111111111,
+    "at_least_one_single_correct_to_fusion_wrong_count": 0,
+    "at_least_one_single_correct_to_fusion_wrong_fraction": 0.0,
+    "fusion_correct_count": 7517
+  }
+}
