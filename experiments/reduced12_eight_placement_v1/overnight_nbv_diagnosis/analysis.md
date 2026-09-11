@@ -88,3 +88,56 @@ new_rgb_generated=false
 new_skeleton_generated=false
 frozen_stgcn_modified=false
 ```
+
+## Utility source structure (Val-only follow-up)
+
+The placement/camera convention was numerically confirmed on sampled
+contexts: candidate azimuth is measured from +Z toward +X, positive placement
+yaw rotates the body +Z basis toward +X, and body-relative azimuth is
+`wrap(world_candidate_azimuth - placement_yaw)`. The 4×8 maps retained only
+actually legal cells (68,702 candidate samples; no interpolation).
+
+Across different scene/placement assignments of the same motion, map-level
+Spearman averaged 0.268 (median 0.400), compared with 0.148 (median 0.190)
+for the matched different-motion baseline. Same scene/placement maps across
+all actions were weaker (0.148), but restricting to the same action raised the
+Spearman mean to 0.281. Thus motion state is a stronger stable source than
+scene placement alone, while action-conditioned scene effects are not
+negligible.
+
+The leave-one-sample-out additive decomposition explained 47.9% of utility
+variance with motion-only effects, 10.4% with scene-placement-only effects,
+and 55.9% with motion+scene effects; the remaining interaction residual was
+44.1%. Motion+scene was consistently strongest by radius (72.8% explained at
+1.5 m, falling to 31.3% at 3.0 m), indicating that long-range views contain
+more unmodeled interaction. Class patterns are heterogeneous: `throw` had
+the largest additive explained variance (64.3%), while `bend` and `touching
+face` retained roughly 74% interaction residual; `knock` showed the strongest
+same-scene same-action consistency (Spearman 0.669).
+
+## Reachability and sequential oracle structure
+
+Starting from FrozenStageCv0 H1, the candidate-only K-hop oracle reached
+0.538790 / 0.529863 at K=1, 0.597222 / 0.591727 at K=2, 0.654762 / 0.650562
+at K=3, and 0.688393 / 0.683594 at K=4 (Accuracy / Macro-F1). The Full
+candidate oracle was 0.709623 / 0.704598; hence K=3 remained 5.49 pp below
+Full Accuracy and K=4 remained 2.12 pp below. K=6 was already close at
+0.708234 Accuracy. The minimum-hop distribution to any correct candidate was
+45.43% at hop 0, 8.45% at hop 1, 5.84% at hop 2, 5.75% at hop 3, 3.36% at
+hop 4, 2.12% at hop 5+, and 29.04% unreachable.
+
+Privileged greedy local search improved to 0.538790 at one step,
+0.554663 at two, 0.557937 at three, and 0.558234 at four—well below the
+corresponding reachability ceilings. Correct candidates formed small but
+nontrivial basins: among contexts with at least one correct candidate, the
+mean largest component had 2.23 nodes, 1.07 correct nodes were isolated on
+average, and 76.3% of correct nodes lay in the largest component. This is
+consistent with a mixed picture: local continuity exists, but monotonic
+greedy exploration often stops before the reachable correct basin.
+
+Taken together, the strongest current evidence is **D: strong
+motion×scene×view interaction**, with a secondary motion contribution. A
+sequential embodied protocol is better motivated than another one-shot scalar
+utility predictor; however, the basin statistics indicate that local search
+would still need non-greedy information acquisition. These conclusions are
+diagnostic only and do not alter the frozen method.
