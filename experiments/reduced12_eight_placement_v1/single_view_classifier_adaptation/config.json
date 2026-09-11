@@ -1,0 +1,10 @@
+{
+  "seed": 42,
+  "feature_dim": 256,
+  "num_classes": 12,
+  "classifier": "Linear(256,256) -> GELU -> Linear(256,12)",
+  "viewpoint": "Stage-D s1_viewpoint_id (matched FrozenStageCv0)",
+  "train_file": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/stage_d/features/train.jsonl",
+  "moving_val_file": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/stage_d/features/val.jsonl",
+  "policy_test_used": false
+}
