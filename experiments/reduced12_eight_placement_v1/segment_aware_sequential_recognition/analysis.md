@@ -36,7 +36,7 @@ Feature/log-probability transition deltas for same-view and switched-view transi
 
 ## Answers
 
-1. Without raw stitching, MeanFeature rises from 0.232341 at t5 to 0.311210 at t30 (monotonic=False); MeanLogP is lower and not monotonic (monotonic=False). Thus cumulative recognition remains possible, but feature fusion is substantially more stable than posterior averaging.
+1. Without raw stitching, MeanFeature rises from 0.232341 at t5 to 0.311210 at t30 (strictly monotonic=False; only the final t25→t30 step dips slightly); MeanLogP is lower and not monotonic (monotonic=False). Thus cumulative recognition remains possible, but feature fusion is substantially more stable than posterior averaging.
 2. Segment-aware Oracle gains over Stay are reported for both fusion rules; this is the direct sequential information-gain estimate.
 3. The retained fraction relative to the previous raw-stitch +14.34pp is stated for each fusion rule. Both segment-aware gains exceed the old gain, so the sequential signal is not explained by raw stitching alone.
 4. MeanFeature is the more stable fusion: it is far stronger in fixed-view recognition and has a slightly higher Stay/Random/Oracle final profile than MeanLogP; MeanLogP posterior averaging is poorly calibrated for these chunk logits.

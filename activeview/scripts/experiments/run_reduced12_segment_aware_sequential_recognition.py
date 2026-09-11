@@ -680,7 +680,7 @@ def _analysis(result: Mapping[str, Any]) -> str:
         "",
         "## Answers",
         "",
-        f"1. Without raw stitching, MeanFeature rises from {mean_feature_values[0]:.6f} at t5 to {mean_feature_values[-1]:.6f} at t30 (monotonic={mean_feature_stable}); MeanLogP is lower and not monotonic (monotonic={mean_logp_stable}). Thus cumulative recognition remains possible, but feature fusion is substantially more stable than posterior averaging.",
+        f"1. Without raw stitching, MeanFeature rises from {mean_feature_values[0]:.6f} at t5 to {mean_feature_values[-1]:.6f} at t30 (strictly monotonic={mean_feature_stable}; only the final t25→t30 step dips slightly); MeanLogP is lower and not monotonic (monotonic={mean_logp_stable}). Thus cumulative recognition remains possible, but feature fusion is substantially more stable than posterior averaging.",
         "2. Segment-aware Oracle gains over Stay are reported for both fusion rules; this is the direct sequential information-gain estimate.",
         "3. The retained fraction relative to the previous raw-stitch +14.34pp is stated for each fusion rule. Both segment-aware gains exceed the old gain, so the sequential signal is not explained by raw stitching alone.",
         "4. MeanFeature is the more stable fusion: it is far stronger in fixed-view recognition and has a slightly higher Stay/Random/Oracle final profile than MeanLogP; MeanLogP posterior averaging is poorly calibrated for these chunk logits.",
