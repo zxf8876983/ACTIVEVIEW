@@ -1,0 +1,7 @@
+{
+  "gt_label_in_policy_input": false,
+  "future_candidate_observation_in_policy_input": false,
+  "future_candidate_feature_or_logits_in_policy_input": false,
+  "hard_predicted_action_in_policy_input": false,
+  "policy_test_used": false
+}

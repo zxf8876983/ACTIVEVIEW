@@ -1,0 +1,61 @@
+{
+  "epochs": 12,
+  "batch_size": 4096,
+  "input_dim": 282,
+  "hidden_dim": 256,
+  "optimizer": "AdamW(lr=1e-3, weight_decay=1e-4)",
+  "loss": "SmoothL1(predicted candidate quality, archived true-class log-probability gain)",
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1/learned_h2_selector_v1/h2_candidate_scorer_final.pth",
+  "seed": 42,
+  "test_used": false,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.149628049135208
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.1183060586452482
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.0986442029476167
+    },
+    {
+      "epoch": 4,
+      "train_loss": 2.0809886336326597
+    },
+    {
+      "epoch": 5,
+      "train_loss": 2.068894478678703
+    },
+    {
+      "epoch": 6,
+      "train_loss": 2.0543957889080047
+    },
+    {
+      "epoch": 7,
+      "train_loss": 2.0424542367458343
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.0364507377147674
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.0290904492139816
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.026347705721855
+    },
+    {
+      "epoch": 11,
+      "train_loss": 2.0188996881246566
+    },
+    {
+      "epoch": 12,
+      "train_loss": 2.0123763620853423
+    }
+  ]
+}
