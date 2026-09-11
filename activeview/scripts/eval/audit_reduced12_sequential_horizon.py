@@ -298,12 +298,14 @@ def _evaluate_group(
 def _merge_metrics(items: Sequence[Mapping[str, Any]], labels: np.ndarray) -> dict[str, Any]:
     if not items:
         return {}
-    accuracy = float(np.average([float(item["accuracy"]) for item in items], weights=[int(item["n"]) for item in items]))
-    macro_f1 = float(np.average([float(item["macro_f1"]) for item in items], weights=[int(item["n"]) for item in items]))
+    weights = [int(item["n"]) for item in items]
+    accuracy = float(np.average([float(item["accuracy"]) for item in items], weights=weights))
     metrics: dict[str, Any] = {
         "n": int(sum(int(item["n"]) for item in items)),
         "accuracy": accuracy,
-        "macro_f1": macro_f1,
+        # Macro-F1 is nonlinear: it must be computed after summing the full
+        # 12x12 confusion matrix, never as a mean of per-group F1 values.
+        "macro_f1": 0.0,
         "mean_entropy": float(np.average([float(item["mean_entropy"]) for item in items], weights=[int(item["n"]) for item in items])),
         "mean_gt_probability": float(np.average([float(item["mean_gt_probability"]) for item in items], weights=[int(item["n"]) for item in items])),
         "move_rate": float(np.average([float(item["move_rate"]) for item in items], weights=[int(item["n"]) for item in items])),
@@ -323,6 +325,8 @@ def _merge_metrics(items: Sequence[Mapping[str, Any]], labels: np.ndarray) -> di
             targets.extend([target] * int(count))
             predictions.extend([prediction] * int(count))
     merged = classification(targets, predictions)
+    metrics["accuracy"] = merged["accuracy"]
+    metrics["macro_f1"] = merged["macro_f1"]
     metrics["per_class"] = merged["per_class"]
     metrics["confusion_matrix"] = merged["confusion_matrix"]
     return metrics
