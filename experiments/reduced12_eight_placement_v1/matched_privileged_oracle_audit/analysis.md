@@ -1,38 +1,31 @@
-# Matched Privileged Oracle Audit
+# Matched Privileged Viewpoint Oracle (fresh recomputation)
 
-Moving Val only (10,080 contexts). The formal action set is each context's separate stay/current action plus its Stage-A legal reachable candidate pool; all-32 is reported only as an adapted-head coverage diagnostic.
+This report was recomputed by `run_reduced12_matched_privileged_oracle_audit.py` from runtime Val artifacts; no prior experiment `result.json` was read.
 
-## Action-set alignment
+## Protocol and action set
 
-Candidate actions (excluding stay): mean/min/max=6.816/2/21; legal actions including stay: mean/min/max=7.816/3/22. Stage-A/Stage-C/cache alignment errors: 0.
+Moving Val contexts: 10080. Each action set is exactly `stay/current + Stage-A candidate_pool`; candidate count mean/min/max=6.816/2/21, including-stay action count mean/min/max=7.816/3/22. Stage-A/Stage-C/cache action-set errors: 0.
 
-## Overall metrics
+## Required metrics
 
-| Recognizer / method | Accuracy | Macro-F1 | Move rate |
-|---|---:|---:|---:|
-| Frozen original ST-GCN / Current/Stay | 0.254266 | 0.235500 | 0.000000 |
-| Frozen original ST-GCN / GT-TrueLogP Oracle | 0.727976 | 0.721495 | 0.884425 |
-| Frozen original ST-GCN / GTMargin Oracle | 0.728274 | 0.722059 | 0.887401 |
-| Adapted single-view head / Current/Stay | 0.285714 | 0.293422 | 0.000000 |
-| Adapted single-view head / GT-TrueLogP Oracle | 0.774802 | 0.788596 | 0.885020 |
-| Adapted single-view head / GTMargin Oracle | 0.803968 | 0.820770 | 0.884425 |
-| Adapted single-view head / MaxConfidence | 0.534623 | 0.539143 | 0.875198 |
+| Recognizer | Current/Stay Acc/F1 | GT-TrueLogP Acc/F1 | GT-Margin Acc/F1 | MaxConfidence Acc/F1 | Legal AnyCorrect Coverage |
+|---|---:|---:|---:|---:|---:|
+| Frozen | 0.254266/0.235500 | 0.727976/0.721495 | 0.728274/0.722059 | 0.461706/0.443670 | 0.728274 |
+| Adapted | 0.285714/0.293422 | 0.774802/0.788596 | 0.803968/0.820770 | 0.534623/0.539143 | 0.803968 |
 
-Frozen legal AnyCorrect Coverage: 0.728274 (7341/10080). Adapted legal AnyCorrect Coverage: 0.803968 (8104/10080). Adapted unrestricted all-32 AnyCorrect Coverage: 0.957540 (9652/10080).
+Adapted unrestricted-all32 AnyCorrect Coverage: 0.957540 (9652/10080); diagnostic-only, not the formal policy action set.
 
-## Formal oracle interpretation
+## Sanity and interpretation
 
-The frozen GT-TrueLogP legal oracle Accuracy is 0.727976; compared with the historical ~72.8% reference, the discrepancy is -0.030pp. Frozen GTMargin is 0.728274. Because the action set and final prediction rule are matched, this is the formal privileged H0 oracle for the frozen recognizer. AnyCorrect is coverage only, not Oracle Accuracy.
+Frozen GT-TrueLogP legal oracle differs from the historical 0.728274 reference by -0.030pp; GT-Margin is 0.728274. This is within the requested 1pp sanity bound, so action-set alignment is accepted. The formal privileged legal oracle should be reported as the actual selected-view GT-Margin/GT-TrueLogP result, while AnyCorrect is coverage only and is never presented as Oracle Accuracy.
 
-The adapted-head legal oracle uses the same action set and actual selected-view argmax; its MaxConfidence row is a no-GT selector. The unrestricted all-32 adapted number is not a formal policy oracle and should not be mixed with the legal-action result.
+GT-TrueLogP and GT-Margin always select the maximum score and then report that selected view's actual recognizer argmax; no correct-candidate shortcut is used. MaxConfidence is GT-free scoring but still reports the selected view's actual argmax.
 
-## Historical/protocol audit
+The 0.957540 adapted all-32 coverage is protocol-inflated relative to the formal Stage-A reachable action space: allowing all 32 lattice viewpoints raises coverage from the legal 0.803968 to 0.957540.
 
-The 95.754% adapted all-32 coverage (if reproduced) is inflated relative to the formal legal action space because it permits every lattice viewpoint rather than Stage-A reachable candidates. Legal candidate count and stay/current alignment are therefore reported explicitly.
+## Boundaries
 
-## Leakage and boundaries
-
-- `policy_test_used=false`; only Stage-A/Stage-C/Stage-D Val and Val counterfactual/archive artifacts were opened.
-- No model was trained, no selector was trained, and no RGB/skeleton/perception data was generated.
-- GT label and true candidate logp are used only for privileged oracle selection/coverage; final predictions always come from the selected recognizer output.
-- Future archived skeletons are used for terminal evidence and adapted all-32 diagnostic inference only; they are not deployable policy inputs.
+- `policy_test_used=false`; only Moving Val Stage-A/Stage-C/Stage-D and Val counterfactual/archive artifacts were read.
+- `training_used=false`; no selector, recognizer, or checkpoint was trained or modified.
+- No RGB, skeleton, DINO, or perception data was generated.
+- Future archived skeletons were used only for frozen terminal evidence and the adapted all-32 diagnostic, never as deployable policy input.

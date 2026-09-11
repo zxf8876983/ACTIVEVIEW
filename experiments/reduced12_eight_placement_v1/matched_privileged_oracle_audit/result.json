@@ -1,6 +1,8 @@
 {
-  "experiment_id": "REDUCED12_MATCHED_PRIVILEGED_ORACLE_AUDIT",
+  "experiment_id": "REDUCED12_MATCHED_PRIVILEGED_ORACLE_AUDIT_FRESH",
   "status": "COMPLETED",
+  "recomputed_from_scratch": true,
+  "prior_result_read": false,
   "population": {
     "split": "Moving Val",
     "moving_val_contexts": 10080
@@ -20,7 +22,7 @@
     "touching face"
   ],
   "legal_action_set": {
-    "definition": "stay/current + Stage-A legal reachable candidates; invalid/nonfinite archives rejected",
+    "definition": "Stage-A candidate_pool plus separate current/stay action; archived skeletons required finite",
     "candidate_count_mean": 6.815674603174603,
     "candidate_count_min": 2,
     "candidate_count_max": 21,
@@ -29,7 +31,7 @@
     "legal_action_count_max": 22
   },
   "recognizers": {
-    "Frozen original ST-GCN": {
+    "Frozen": {
       "Current/Stay": {
         "n": 10080,
         "accuracy": 0.254265873015873,
@@ -268,9 +270,10 @@
         ],
         "method": "Current/Stay",
         "move_rate": 0.0,
-        "stay_rate": 1.0
+        "stay_rate": 1.0,
+        "mean_selected_score": -5.495111782510007
       },
-      "GT-TrueLogP Oracle": {
+      "GT-TrueLogP": {
         "n": 10080,
         "accuracy": 0.7279761904761904,
         "macro_f1": 0.7214947720279441,
@@ -506,11 +509,12 @@
             602
           ]
         ],
-        "method": "GT-TrueLogP Oracle",
+        "method": "GT-TrueLogP",
         "move_rate": 0.8844246031746031,
-        "stay_rate": 0.11557539682539686
+        "stay_rate": 0.11557539682539683,
+        "mean_selected_score": -1.2821364349828996
       },
-      "GTMargin Oracle": {
+      "GT-Margin": {
         "n": 10080,
         "accuracy": 0.7282738095238095,
         "macro_f1": 0.7220587088748981,
@@ -746,9 +750,251 @@
             603
           ]
         ],
-        "method": "GTMargin Oracle",
+        "method": "GT-Margin",
         "move_rate": 0.8874007936507936,
-        "stay_rate": 0.1125992063492064
+        "stay_rate": 0.11259920634920635,
+        "mean_selected_score": 4.056223399685526
+      },
+      "MaxConfidence": {
+        "n": 10080,
+        "accuracy": 0.46170634920634923,
+        "macro_f1": 0.44366951856385733,
+        "per_class": {
+          "walk": {
+            "support": 1071,
+            "recall": 0.5658263305322129,
+            "f1": 0.42796610169491517
+          },
+          "sit": {
+            "support": 786,
+            "recall": 0.7608142493638677,
+            "f1": 0.6949447995351539
+          },
+          "stand up": {
+            "support": 907,
+            "recall": 0.6968026460859978,
+            "f1": 0.7285302593659941
+          },
+          "bend": {
+            "support": 1012,
+            "recall": 0.2490118577075099,
+            "f1": 0.30434782608695654
+          },
+          "crawl": {
+            "support": 446,
+            "recall": 0.7017937219730942,
+            "f1": 0.7373380447585395
+          },
+          "stumble": {
+            "support": 849,
+            "recall": 0.13427561837455831,
+            "f1": 0.21986499517839925
+          },
+          "clap": {
+            "support": 486,
+            "recall": 0.4218106995884774,
+            "f1": 0.44565217391304346
+          },
+          "throw": {
+            "support": 969,
+            "recall": 0.5562435500515995,
+            "f1": 0.5341922695738355
+          },
+          "kick": {
+            "support": 1152,
+            "recall": 0.8081597222222222,
+            "f1": 0.5126651982378856
+          },
+          "knock": {
+            "support": 443,
+            "recall": 0.1399548532731377,
+            "f1": 0.22302158273381292
+          },
+          "punch": {
+            "support": 955,
+            "recall": 0.16335078534031414,
+            "f1": 0.22065063649222066
+          },
+          "touching face": {
+            "support": 1004,
+            "recall": 0.2450199203187251,
+            "f1": 0.27486033519553077
+          }
+        },
+        "confusion_matrix": [
+          [
+            606,
+            28,
+            15,
+            70,
+            4,
+            24,
+            3,
+            14,
+            194,
+            3,
+            58,
+            52
+          ],
+          [
+            58,
+            598,
+            23,
+            17,
+            11,
+            2,
+            0,
+            5,
+            60,
+            0,
+            3,
+            9
+          ],
+          [
+            123,
+            6,
+            632,
+            5,
+            5,
+            8,
+            0,
+            7,
+            118,
+            0,
+            1,
+            2
+          ],
+          [
+            167,
+            96,
+            57,
+            252,
+            36,
+            0,
+            3,
+            53,
+            225,
+            4,
+            55,
+            64
+          ],
+          [
+            47,
+            5,
+            3,
+            7,
+            313,
+            0,
+            0,
+            0,
+            66,
+            0,
+            0,
+            5
+          ],
+          [
+            182,
+            31,
+            20,
+            43,
+            5,
+            114,
+            0,
+            49,
+            332,
+            0,
+            38,
+            35
+          ],
+          [
+            56,
+            9,
+            3,
+            12,
+            2,
+            0,
+            205,
+            19,
+            40,
+            18,
+            10,
+            112
+          ],
+          [
+            99,
+            4,
+            5,
+            12,
+            3,
+            9,
+            2,
+            539,
+            236,
+            2,
+            35,
+            23
+          ],
+          [
+            102,
+            26,
+            4,
+            23,
+            6,
+            5,
+            5,
+            13,
+            931,
+            0,
+            16,
+            21
+          ],
+          [
+            37,
+            5,
+            5,
+            4,
+            4,
+            2,
+            122,
+            21,
+            40,
+            62,
+            23,
+            118
+          ],
+          [
+            152,
+            39,
+            17,
+            51,
+            10,
+            12,
+            13,
+            292,
+            105,
+            9,
+            156,
+            99
+          ],
+          [
+            132,
+            88,
+            44,
+            148,
+            4,
+            12,
+            81,
+            37,
+            133,
+            15,
+            64,
+            246
+          ]
+        ],
+        "method": "MaxConfidence",
+        "move_rate": 0.8612103174603175,
+        "stay_rate": 0.13878968253968255,
+        "mean_selected_score": 0.9678701333051163
       },
       "AnyCorrect Coverage": {
         "method": "AnyCorrect Coverage",
@@ -756,12 +1002,10 @@
         "macro_f1": null,
         "coverage_count": 7341,
         "coverage_rate": 0.7282738095238095,
-        "contexts": 10080,
-        "move_rate": null,
-        "stay_rate": null
+        "contexts": 10080
       }
     },
-    "Adapted single-view head": {
+    "Adapted": {
       "Current/Stay": {
         "n": 10080,
         "accuracy": 0.2857142857142857,
@@ -1000,9 +1244,10 @@
         ],
         "method": "Current/Stay",
         "move_rate": 0.0,
-        "stay_rate": 1.0
+        "stay_rate": 1.0,
+        "mean_selected_score": -2.147200661724549
       },
-      "GT-TrueLogP Oracle": {
+      "GT-TrueLogP": {
         "n": 10080,
         "accuracy": 0.7748015873015873,
         "macro_f1": 0.7885958387477078,
@@ -1238,11 +1483,12 @@
             783
           ]
         ],
-        "method": "GT-TrueLogP Oracle",
+        "method": "GT-TrueLogP",
         "move_rate": 0.8850198412698412,
-        "stay_rate": 0.11498015873015877
+        "stay_rate": 0.11498015873015872,
+        "mean_selected_score": -0.8503224345810257
       },
-      "GTMargin Oracle": {
+      "GT-Margin": {
         "n": 10080,
         "accuracy": 0.803968253968254,
         "macro_f1": 0.8207698472320842,
@@ -1478,9 +1724,10 @@
             884
           ]
         ],
-        "method": "GTMargin Oracle",
+        "method": "GT-Margin",
         "move_rate": 0.8844246031746031,
-        "stay_rate": 0.11557539682539686
+        "stay_rate": 0.11557539682539683,
+        "mean_selected_score": 1.3561692010929935
       },
       "MaxConfidence": {
         "n": 10080,
@@ -1720,7 +1967,8 @@
         ],
         "method": "MaxConfidence",
         "move_rate": 0.8751984126984127,
-        "stay_rate": 0.1248015873015873
+        "stay_rate": 0.1248015873015873,
+        "mean_selected_score": 0.6689369812777769
       },
       "AnyCorrect Coverage": {
         "method": "AnyCorrect Coverage",
@@ -1728,23 +1976,84 @@
         "macro_f1": null,
         "coverage_count": 8104,
         "coverage_rate": 0.803968253968254,
-        "contexts": 10080,
-        "move_rate": null,
-        "stay_rate": null
+        "contexts": 10080
       },
       "All-32 AnyCorrect Coverage": {
+        "method": "Adapted unrestricted-all32 AnyCorrect Coverage",
         "count": 9652,
         "rate": 0.9575396825396826,
         "contexts": 10080,
-        "viewpoints_per_context": 32
+        "viewpoints_per_context": 32,
+        "diagnostic_only": true
       }
     }
   },
+  "summary_table": {
+    "Frozen": {
+      "Current/Stay": {
+        "accuracy": 0.254265873015873,
+        "macro_f1": 0.2355003110008198,
+        "move_rate": 0.0,
+        "stay_rate": 1.0
+      },
+      "GT-TrueLogP": {
+        "accuracy": 0.7279761904761904,
+        "macro_f1": 0.7214947720279441,
+        "move_rate": 0.8844246031746031,
+        "stay_rate": 0.11557539682539683
+      },
+      "GT-Margin": {
+        "accuracy": 0.7282738095238095,
+        "macro_f1": 0.7220587088748981,
+        "move_rate": 0.8874007936507936,
+        "stay_rate": 0.11259920634920635
+      },
+      "MaxConfidence": {
+        "accuracy": 0.46170634920634923,
+        "macro_f1": 0.44366951856385733,
+        "move_rate": 0.8612103174603175,
+        "stay_rate": 0.13878968253968255
+      },
+      "AnyCorrect Coverage": {
+        "coverage_rate": 0.7282738095238095
+      }
+    },
+    "Adapted": {
+      "Current/Stay": {
+        "accuracy": 0.2857142857142857,
+        "macro_f1": 0.29342172512253606,
+        "move_rate": 0.0,
+        "stay_rate": 1.0
+      },
+      "GT-TrueLogP": {
+        "accuracy": 0.7748015873015873,
+        "macro_f1": 0.7885958387477078,
+        "move_rate": 0.8850198412698412,
+        "stay_rate": 0.11498015873015872
+      },
+      "GT-Margin": {
+        "accuracy": 0.803968253968254,
+        "macro_f1": 0.8207698472320842,
+        "move_rate": 0.8844246031746031,
+        "stay_rate": 0.11557539682539683
+      },
+      "MaxConfidence": {
+        "accuracy": 0.5346230158730159,
+        "macro_f1": 0.539142827909732,
+        "move_rate": 0.8751984126984127,
+        "stay_rate": 0.1248015873015873
+      },
+      "AnyCorrect Coverage": {
+        "coverage_rate": 0.803968253968254
+      },
+      "All-32 AnyCorrect Coverage": {}
+    }
+  },
   "alignment": {
-    "stage_a_stage_c_cache_order": true,
     "action_set_errors": 0,
+    "stage_a_stage_c_cache_order_matched": true,
     "cache_episode_order_matches_stage_d": true,
-    "candidate_feature_cache": {
+    "candidate_feature_cache_check": {
       "samples": 68702,
       "max_logp_abs_error": 0.004718780517578125,
       "prediction_mismatches": 0
@@ -1755,41 +2064,31 @@
       "archives_checked": 10080
     }
   },
-  "historical_references": {
-    "frozen_legal_oracle_accuracy": 0.7282738095238095,
-    "old_frozen_anycorrect_coverage": 0.7282738095238095,
-    "adapted_all32_anycorrect_reference": 0.95754
-  },
-  "gaps": {
-    "frozen_gt_true_logp_minus_current_accuracy": 0.47371031746031744,
-    "adapted_gt_true_logp_minus_current_accuracy": 0.4890873015873016,
-    "adapted_all32_minus_adapted_legal_coverage": 0.15357142857142858
+  "sanity": {
+    "historical_frozen_legal_oracle_accuracy": 0.7282738095238095,
+    "frozen_gt_true_logp_delta_pp": -0.029761904761904656,
+    "within_one_pp": true
   },
   "leakage_audit": {
     "policy_test_used": false,
     "training_used": false,
-    "selector_training_used": false,
     "new_rgb_or_skeleton_generated": false,
-    "gt_label_used_for_privileged_selection_only": true,
-    "true_candidate_logp_used_for_privileged_selection_only": true,
-    "future_skeleton_used_for_terminal_or_all32_adapted_diagnostic": true,
+    "gt_label_used_for_oracle_selection_or_coverage_only": true,
+    "future_candidate_skeleton_used_for_terminal_and_adapted_all32_diagnostic_only": true,
     "deployable": false
   },
   "artifacts": {
-    "stage_a_val": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/stage_a/episodes/val_episodes.jsonl",
-    "stage_c_val": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/stage_c/features/val.jsonl",
-    "stage_d_val": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/stage_d/features/val.jsonl",
-    "counterfactual_val": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/counterfactual_cache/val.npz",
     "stgcn_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
     "stgcn_checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
     "adapted_head_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/single_view_classifier_adaptation/learned_head_best.pth",
-    "adapted_head_checkpoint_sha256": "8965bf27aea8e4c7963eecdbb0ce3481022387219fcbbf31b2dbb5c9eebe6bc4"
+    "adapted_head_checkpoint_sha256": "8965bf27aea8e4c7963eecdbb0ce3481022387219fcbbf31b2dbb5c9eebe6bc4",
+    "counterfactual_val": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/policy_reduced12_eight_placement_v1/counterfactual_cache/val.npz"
   },
   "runtime": {
     "device": "cuda:0",
+    "gpu": "NVIDIA GeForce RTX 4090",
     "torch": "2.6.0+cu124",
     "cuda": "12.4",
-    "gpu": "NVIDIA GeForce RTX 4090",
-    "elapsed_seconds": 30.33174705505371
+    "elapsed_seconds": 30.214739561080933
   }
 }

@@ -3,6 +3,8 @@
   "device": "cuda:0",
   "inference_batch_size": 256,
   "moving_val_contexts": 10080,
+  "action_set": "Stage-A candidate_pool + current/stay",
+  "prior_result_read": false,
   "policy_test_used": false,
   "training_used": false
 }
