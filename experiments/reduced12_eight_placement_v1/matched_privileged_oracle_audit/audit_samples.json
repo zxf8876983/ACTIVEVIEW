@@ -1,0 +1,2163 @@
+[
+  {
+    "episode_id": "reduced12kc_official_val_12929_008_c51601ecd0__00009-vLpv2VX547B__p06__v16",
+    "record_id": "reduced12kc_official_val_12929_008_c51601ecd0",
+    "scene_id": "00009-vLpv2VX547B",
+    "placement_id": "p06",
+    "label_id": 0,
+    "current_viewpoint_id": 16,
+    "legal_viewpoint_ids": [
+      2,
+      3,
+      6,
+      8,
+      11,
+      12,
+      14,
+      24
+    ],
+    "current_frozen_predicted_class": 0,
+    "current_adapted_predicted_class": 11,
+    "views": [
+      {
+        "viewpoint_id": 2,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.18212269246578217,
+        "frozen_gt_margin": 1.9058971554040909,
+        "frozen_max_confidence": 0.8334990739822388,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.017157793045044,
+        "adapted_max_confidence": 0.14000952243804932
+      },
+      {
+        "viewpoint_id": 3,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.15156984329223633,
+        "frozen_gt_margin": 2.2236480712890625,
+        "frozen_max_confidence": 0.8593579530715942,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -1.2287559509277344,
+        "adapted_max_confidence": 0.29265642166137695
+      },
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.0031974404118955135,
+        "frozen_gt_margin": 6.184189072344452,
+        "frozen_max_confidence": 0.9968076944351196,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -0.6130850911140442,
+        "adapted_max_confidence": 0.5416771769523621
+      },
+      {
+        "viewpoint_id": 8,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.35751500725746155,
+        "frozen_gt_margin": 1.055068701505661,
+        "frozen_max_confidence": 0.6994122266769409,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.1094465255737305,
+        "adapted_max_confidence": 0.12802399694919586
+      },
+      {
+        "viewpoint_id": 11,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.7885946035385132,
+        "frozen_gt_margin": 0.2709312438964844,
+        "frozen_max_confidence": 0.45448315143585205,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -1.1917229890823364,
+        "adapted_max_confidence": 0.31674274802207947
+      },
+      {
+        "viewpoint_id": 12,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.3575419485569,
+        "frozen_gt_margin": 1.0549587905406952,
+        "frozen_max_confidence": 0.6993933320045471,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.1094741821289062,
+        "adapted_max_confidence": 0.128022700548172
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.00417931517586112,
+        "frozen_gt_margin": 6.149768991861492,
+        "frozen_max_confidence": 0.9958295226097107,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -0.888180673122406,
+        "adapted_max_confidence": 0.4114035367965698
+      },
+      {
+        "viewpoint_id": 24,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -0.8430158495903015,
+        "frozen_gt_margin": -0.15094423294067383,
+        "frozen_max_confidence": 0.5005380511283875,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.169496774673462,
+        "adapted_max_confidence": 0.1274414360523224
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 6,
+      "GTMargin Oracle": 6
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 6,
+      "GTMargin Oracle": 6,
+      "MaxConfidence": 6
+    },
+    "frozen_any_correct_viewpoints": [
+      16,
+      2,
+      3,
+      6,
+      8,
+      11,
+      12,
+      14
+    ],
+    "adapted_any_correct_viewpoints": [
+      3,
+      6,
+      14
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_07760_004_225ca729ea__00009-vLpv2VX547B__p07__v16",
+    "record_id": "reduced12kc_official_val_07760_004_225ca729ea",
+    "scene_id": "00009-vLpv2VX547B",
+    "placement_id": "p07",
+    "label_id": 10,
+    "current_viewpoint_id": 16,
+    "legal_viewpoint_ids": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "current_frozen_predicted_class": 0,
+    "current_adapted_predicted_class": 11,
+    "views": [
+      {
+        "viewpoint_id": 1,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -7.413527488708496,
+        "frozen_gt_margin": -7.330830380320549,
+        "frozen_max_confidence": 0.9206299781799316,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -2.7062747478485107,
+        "adapted_max_confidence": 0.23630578815937042
+      },
+      {
+        "viewpoint_id": 4,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -0.0021453716326504946,
+        "frozen_gt_margin": 6.303979792399332,
+        "frozen_max_confidence": 0.9978569149971008,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -0.6279684901237488,
+        "adapted_max_confidence": 0.5336748957633972
+      },
+      {
+        "viewpoint_id": 7,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -13.045341491699219,
+        "frozen_gt_margin": -13.04529094823738,
+        "frozen_max_confidence": 0.9999494552612305,
+        "adapted_predicted_class": 7,
+        "adapted_true_class_logp": -1.2412549257278442,
+        "adapted_max_confidence": 0.48423218727111816
+      },
+      {
+        "viewpoint_id": 9,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -3.831043243408203,
+        "frozen_gt_margin": -3.319383978843689,
+        "frozen_max_confidence": 0.5995000004768372,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -1.317474603652954,
+        "adapted_max_confidence": 0.26781076192855835
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 4,
+      "GTMargin Oracle": 4
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 4,
+      "GTMargin Oracle": 4,
+      "MaxConfidence": 4
+    },
+    "frozen_any_correct_viewpoints": [
+      4
+    ],
+    "adapted_any_correct_viewpoints": [
+      4,
+      9
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_06771_000_0948e7105f__00016-qk9eeNeR4vw__p00__v30",
+    "record_id": "reduced12kc_official_val_06771_000_0948e7105f",
+    "scene_id": "00016-qk9eeNeR4vw",
+    "placement_id": "p00",
+    "label_id": 3,
+    "current_viewpoint_id": 30,
+    "legal_viewpoint_ids": [
+      6,
+      12,
+      14,
+      21,
+      22,
+      29
+    ],
+    "current_frozen_predicted_class": 4,
+    "current_adapted_predicted_class": 3,
+    "views": [
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -3.3054261207580566,
+        "frozen_gt_margin": -3.150936707854271,
+        "frozen_max_confidence": 0.8568525910377502,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -1.9932353496551514,
+        "adapted_max_confidence": 0.5757914185523987
+      },
+      {
+        "viewpoint_id": 12,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -5.940593242645264,
+        "frozen_gt_margin": -5.3877854347229,
+        "frozen_max_confidence": 0.5753321647644043,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -2.6149816513061523,
+        "adapted_max_confidence": 0.2994191348552704
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -0.8674414157867432,
+        "frozen_gt_margin": 0.1569530963897705,
+        "frozen_max_confidence": 0.42002490162849426,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -1.9423245191574097,
+        "adapted_max_confidence": 0.6039004325866699
+      },
+      {
+        "viewpoint_id": 21,
+        "frozen_predicted_class": 1,
+        "frozen_true_class_logp": -9.707196235656738,
+        "frozen_gt_margin": -9.67901579849422,
+        "frozen_max_confidence": 0.9722129106521606,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -2.9059081077575684,
+        "adapted_max_confidence": 0.5916274785995483
+      },
+      {
+        "viewpoint_id": 22,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -4.179786682128906,
+        "frozen_gt_margin": -3.7224975526332855,
+        "frozen_max_confidence": 0.6329972743988037,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -2.3337819576263428,
+        "adapted_max_confidence": 0.5480096936225891
+      },
+      {
+        "viewpoint_id": 29,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -6.5010986328125,
+        "frozen_gt_margin": -6.336521178483963,
+        "frozen_max_confidence": 0.8482521176338196,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -2.632283926010132,
+        "adapted_max_confidence": 0.65313321352005
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 14,
+      "GTMargin Oracle": 14
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": -1,
+      "GTMargin Oracle": -1,
+      "MaxConfidence": 29
+    },
+    "frozen_any_correct_viewpoints": [
+      14
+    ],
+    "adapted_any_correct_viewpoints": [
+      30
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_05938_000_f679b9f051__00016-qk9eeNeR4vw__p05__v26",
+    "record_id": "reduced12kc_official_val_05938_000_f679b9f051",
+    "scene_id": "00016-qk9eeNeR4vw",
+    "placement_id": "p05",
+    "label_id": 8,
+    "current_viewpoint_id": 26,
+    "legal_viewpoint_ids": [
+      2,
+      12,
+      17,
+      19,
+      20,
+      25
+    ],
+    "current_frozen_predicted_class": 3,
+    "current_adapted_predicted_class": 3,
+    "views": [
+      {
+        "viewpoint_id": 2,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -9.912049293518066,
+        "frozen_gt_margin": -9.729924812912941,
+        "frozen_max_confidence": 0.8334975838661194,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.4131011962890625,
+        "adapted_max_confidence": 0.14001473784446716
+      },
+      {
+        "viewpoint_id": 12,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -8.877431869506836,
+        "frozen_gt_margin": -8.51993378996849,
+        "frozen_max_confidence": 0.6994240880012512,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.3851211071014404,
+        "adapted_max_confidence": 0.12802369892597198
+      },
+      {
+        "viewpoint_id": 17,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -8.514120101928711,
+        "frozen_gt_margin": -7.925342917442322,
+        "frozen_max_confidence": 0.5550054907798767,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.392975330352783,
+        "adapted_max_confidence": 0.12430304288864136
+      },
+      {
+        "viewpoint_id": 19,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -8.514134407043457,
+        "frozen_gt_margin": -7.925345838069916,
+        "frozen_max_confidence": 0.5549991726875305,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.393005847930908,
+        "adapted_max_confidence": 0.12429865449666977
+      },
+      {
+        "viewpoint_id": 20,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -8.51412582397461,
+        "frozen_gt_margin": -7.925363123416901,
+        "frozen_max_confidence": 0.5550135970115662,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.3929550647735596,
+        "adapted_max_confidence": 0.12429685890674591
+      },
+      {
+        "viewpoint_id": 25,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -3.073493242263794,
+        "frozen_gt_margin": -2.821539729833603,
+        "frozen_max_confidence": 0.7772808074951172,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -2.6734981536865234,
+        "adapted_max_confidence": 0.19980356097221375
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 25,
+      "GTMargin Oracle": 25
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 12,
+      "GTMargin Oracle": 20,
+      "MaxConfidence": 25
+    },
+    "frozen_any_correct_viewpoints": [],
+    "adapted_any_correct_viewpoints": []
+  },
+  {
+    "episode_id": "reduced12kc_official_val_07760_018_584ce13221__00020-XYyR54sxe6b__p02__v09",
+    "record_id": "reduced12kc_official_val_07760_018_584ce13221",
+    "scene_id": "00020-XYyR54sxe6b",
+    "placement_id": "p02",
+    "label_id": 8,
+    "current_viewpoint_id": 9,
+    "legal_viewpoint_ids": [
+      0,
+      4,
+      5,
+      6,
+      8,
+      16,
+      20,
+      28,
+      31
+    ],
+    "current_frozen_predicted_class": 0,
+    "current_adapted_predicted_class": 11,
+    "views": [
+      {
+        "viewpoint_id": 0,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -5.006777428206988e-06,
+        "frozen_gt_margin": 12.294677495969154,
+        "frozen_max_confidence": 0.9999949932098389,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -0.28484997153282166,
+        "adapted_max_confidence": 0.7521271705627441
+      },
+      {
+        "viewpoint_id": 4,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -5.960462772236497e-07,
+        "frozen_gt_margin": 14.506483435630969,
+        "frozen_max_confidence": 0.9999994039535522,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -0.08940396457910538,
+        "adapted_max_confidence": 0.9144759774208069
+      },
+      {
+        "viewpoint_id": 5,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -9.912049293518066,
+        "frozen_gt_margin": -9.729924812912941,
+        "frozen_max_confidence": 0.8334975838661194,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.4131524562835693,
+        "adapted_max_confidence": 0.1400146186351776
+      },
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -2.4318398573086597e-05,
+        "frozen_gt_margin": 10.645966053305528,
+        "frozen_max_confidence": 0.9999756813049316,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -1.043256402015686,
+        "adapted_max_confidence": 0.3523055613040924
+      },
+      {
+        "viewpoint_id": 8,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -1.1920922133867862e-06,
+        "frozen_gt_margin": 14.249798536301341,
+        "frozen_max_confidence": 0.9999988079071045,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -0.26565733551979065,
+        "adapted_max_confidence": 0.7667018175125122
+      },
+      {
+        "viewpoint_id": 16,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -3.576278118089249e-07,
+        "frozen_gt_margin": 15.231935143470821,
+        "frozen_max_confidence": 0.9999996423721313,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -0.1281667947769165,
+        "adapted_max_confidence": 0.8797067999839783
+      },
+      {
+        "viewpoint_id": 20,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -0.12775090336799622,
+        "frozen_gt_margin": 2.0977358520030975,
+        "frozen_max_confidence": 0.8800725936889648,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -1.9683979749679565,
+        "adapted_max_confidence": 0.21299074590206146
+      },
+      {
+        "viewpoint_id": 28,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -1.346623182296753,
+        "frozen_gt_margin": -0.2841787338256836,
+        "frozen_max_confidence": 0.34560999274253845,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -2.578244209289551,
+        "adapted_max_confidence": 0.39401689171791077
+      },
+      {
+        "viewpoint_id": 31,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -8.344042778015137,
+        "frozen_gt_margin": -7.651937365531921,
+        "frozen_max_confidence": 0.500521183013916,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.4147887229919434,
+        "adapted_max_confidence": 0.12744131684303284
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 16,
+      "GTMargin Oracle": 16
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 4,
+      "GTMargin Oracle": 4,
+      "MaxConfidence": 4
+    },
+    "frozen_any_correct_viewpoints": [
+      0,
+      4,
+      6,
+      8,
+      16,
+      20
+    ],
+    "adapted_any_correct_viewpoints": [
+      0,
+      4,
+      6,
+      8,
+      16
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_12441_006_ec428f2300__00031-Wo6kuutE9i7__p04__v04",
+    "record_id": "reduced12kc_official_val_12441_006_ec428f2300",
+    "scene_id": "00031-Wo6kuutE9i7",
+    "placement_id": "p04",
+    "label_id": 0,
+    "current_viewpoint_id": 4,
+    "legal_viewpoint_ids": [
+      11,
+      26
+    ],
+    "current_frozen_predicted_class": 3,
+    "current_adapted_predicted_class": 3,
+    "views": [
+      {
+        "viewpoint_id": 11,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -10.673526763916016,
+        "frozen_gt_margin": -10.664495720528066,
+        "frozen_max_confidence": 0.9910095930099487,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -1.1034934520721436,
+        "adapted_max_confidence": 0.33171024918556213
+      },
+      {
+        "viewpoint_id": 26,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -0.8429951667785645,
+        "frozen_gt_margin": -0.15090131759643555,
+        "frozen_max_confidence": 0.5005269646644592,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.169516086578369,
+        "adapted_max_confidence": 0.1274442821741104
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 26,
+      "GTMargin Oracle": 26
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 11,
+      "GTMargin Oracle": 11,
+      "MaxConfidence": 11
+    },
+    "frozen_any_correct_viewpoints": [],
+    "adapted_any_correct_viewpoints": [
+      11
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_10112_001_bb599edc97__00031-Wo6kuutE9i7__p05__v22",
+    "record_id": "reduced12kc_official_val_10112_001_bb599edc97",
+    "scene_id": "00031-Wo6kuutE9i7",
+    "placement_id": "p05",
+    "label_id": 2,
+    "current_viewpoint_id": 22,
+    "legal_viewpoint_ids": [
+      0,
+      2,
+      6,
+      7,
+      14,
+      21
+    ],
+    "current_frozen_predicted_class": 2,
+    "current_adapted_predicted_class": 2,
+    "views": [
+      {
+        "viewpoint_id": 0,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -4.618812561035156,
+        "frozen_gt_margin": -4.436689272522926,
+        "frozen_max_confidence": 0.833498477935791,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.4874794483184814,
+        "adapted_max_confidence": 0.14000283181667328
+      },
+      {
+        "viewpoint_id": 2,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.0002896366349887103,
+        "frozen_gt_margin": 8.504648488975363,
+        "frozen_max_confidence": 0.9997105002403259,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.045098837465047836,
+        "adapted_max_confidence": 0.9559029936790466
+      },
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.32191452383995056,
+        "frozen_gt_margin": 1.1369145214557648,
+        "frozen_max_confidence": 0.7247602343559265,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.4417373538017273,
+        "adapted_max_confidence": 0.6429185271263123
+      },
+      {
+        "viewpoint_id": 7,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -1.7586466073989868,
+        "frozen_gt_margin": -1.5527646839618683,
+        "frozen_max_confidence": 0.8139292001724243,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.8319793343544006,
+        "adapted_max_confidence": 0.4351870119571686
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -1.4305104514278355e-06,
+        "frozen_gt_margin": 14.023875713349412,
+        "frozen_max_confidence": 0.9999985694885254,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.019925549626350403,
+        "adapted_max_confidence": 0.9802716374397278
+      },
+      {
+        "viewpoint_id": 21,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -3.8693690299987793,
+        "frozen_gt_margin": -3.2805583477020264,
+        "frozen_max_confidence": 0.5549869537353516,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.3249356746673584,
+        "adapted_max_confidence": 0.1242993175983429
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": -1,
+      "GTMargin Oracle": -1
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": -1,
+      "GTMargin Oracle": -1,
+      "MaxConfidence": -1
+    },
+    "frozen_any_correct_viewpoints": [
+      22,
+      2,
+      6,
+      14
+    ],
+    "adapted_any_correct_viewpoints": [
+      22,
+      2,
+      6,
+      7,
+      14
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_06214_002_ebedccf998__00031-Wo6kuutE9i7__p07__v22",
+    "record_id": "reduced12kc_official_val_06214_002_ebedccf998",
+    "scene_id": "00031-Wo6kuutE9i7",
+    "placement_id": "p07",
+    "label_id": 7,
+    "current_viewpoint_id": 22,
+    "legal_viewpoint_ids": [
+      5,
+      6,
+      14,
+      24,
+      30
+    ],
+    "current_frozen_predicted_class": 7,
+    "current_adapted_predicted_class": 7,
+    "views": [
+      {
+        "viewpoint_id": 5,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -0.02990823984146118,
+        "frozen_gt_margin": 3.5705026984214783,
+        "frozen_max_confidence": 0.9705345630645752,
+        "adapted_predicted_class": 7,
+        "adapted_true_class_logp": -0.580045223236084,
+        "adapted_max_confidence": 0.5598730444908142
+      },
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -7.10462118149735e-05,
+        "frozen_gt_margin": 9.727027418754005,
+        "frozen_max_confidence": 0.9999289512634277,
+        "adapted_predicted_class": 7,
+        "adapted_true_class_logp": -0.251668244600296,
+        "adapted_max_confidence": 0.777502715587616
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -0.21704983711242676,
+        "frozen_gt_margin": 1.4815096855163574,
+        "frozen_max_confidence": 0.8048897981643677,
+        "adapted_predicted_class": 7,
+        "adapted_true_class_logp": -1.1677439212799072,
+        "adapted_max_confidence": 0.31106793880462646
+      },
+      {
+        "viewpoint_id": 24,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -0.00580980209633708,
+        "frozen_gt_margin": 5.983716469723731,
+        "frozen_max_confidence": 0.9942072629928589,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -1.9796996116638184,
+        "adapted_max_confidence": 0.4922064244747162
+      },
+      {
+        "viewpoint_id": 30,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -0.0070983367040753365,
+        "frozen_gt_margin": 6.171432356350124,
+        "frozen_max_confidence": 0.9929268956184387,
+        "adapted_predicted_class": 7,
+        "adapted_true_class_logp": -1.2791513204574585,
+        "adapted_max_confidence": 0.278273344039917
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": -1,
+      "GTMargin Oracle": -1
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 6,
+      "GTMargin Oracle": 6,
+      "MaxConfidence": 6
+    },
+    "frozen_any_correct_viewpoints": [
+      22,
+      5,
+      6,
+      14,
+      24,
+      30
+    ],
+    "adapted_any_correct_viewpoints": [
+      22,
+      5,
+      6,
+      14,
+      30
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_10112_001_bb599edc97__00034-6imZUJGRUq4__p00__v18",
+    "record_id": "reduced12kc_official_val_10112_001_bb599edc97",
+    "scene_id": "00034-6imZUJGRUq4",
+    "placement_id": "p00",
+    "label_id": 2,
+    "current_viewpoint_id": 18,
+    "legal_viewpoint_ids": [
+      2,
+      5,
+      9,
+      10,
+      13,
+      26
+    ],
+    "current_frozen_predicted_class": 2,
+    "current_adapted_predicted_class": 2,
+    "views": [
+      {
+        "viewpoint_id": 2,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.003325648372992873,
+        "frozen_gt_margin": 6.143449597293511,
+        "frozen_max_confidence": 0.9966799020767212,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.20230276882648468,
+        "adapted_max_confidence": 0.8168476819992065
+      },
+      {
+        "viewpoint_id": 5,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.13628961145877838,
+        "frozen_gt_margin": 2.586407646536827,
+        "frozen_max_confidence": 0.8725900053977966,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.42243391275405884,
+        "adapted_max_confidence": 0.6554495096206665
+      },
+      {
+        "viewpoint_id": 9,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -7.723664283752441,
+        "frozen_gt_margin": -7.522613376379013,
+        "frozen_max_confidence": 0.8178707361221313,
+        "adapted_predicted_class": 5,
+        "adapted_true_class_logp": -3.8059158325195312,
+        "adapted_max_confidence": 0.2552758455276489
+      },
+      {
+        "viewpoint_id": 10,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -4.0531076592742465e-06,
+        "frozen_gt_margin": 12.874996900566657,
+        "frozen_max_confidence": 0.9999960660934448,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.02713821269571781,
+        "adapted_max_confidence": 0.9732266068458557
+      },
+      {
+        "viewpoint_id": 13,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -9.536738616588991e-07,
+        "frozen_gt_margin": 14.76621532440231,
+        "frozen_max_confidence": 0.9999991655349731,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.026094205677509308,
+        "adapted_max_confidence": 0.9742434024810791
+      },
+      {
+        "viewpoint_id": 26,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": 0.0,
+        "frozen_gt_margin": 16.982593536376953,
+        "frozen_max_confidence": 1.0,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.0034671451430767775,
+        "adapted_max_confidence": 0.9965389966964722
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": -1,
+      "GTMargin Oracle": -1
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 26,
+      "GTMargin Oracle": 26,
+      "MaxConfidence": 26
+    },
+    "frozen_any_correct_viewpoints": [
+      18,
+      2,
+      5,
+      10,
+      13,
+      26
+    ],
+    "adapted_any_correct_viewpoints": [
+      18,
+      2,
+      5,
+      10,
+      13,
+      26
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_08988_009_39c28fab77__00034-6imZUJGRUq4__p02__v06",
+    "record_id": "reduced12kc_official_val_08988_009_39c28fab77",
+    "scene_id": "00034-6imZUJGRUq4",
+    "placement_id": "p02",
+    "label_id": 0,
+    "current_viewpoint_id": 6,
+    "legal_viewpoint_ids": [
+      1,
+      4,
+      5,
+      7,
+      11,
+      13,
+      14,
+      19
+    ],
+    "current_frozen_predicted_class": 0,
+    "current_adapted_predicted_class": 5,
+    "views": [
+      {
+        "viewpoint_id": 1,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -1.6082489490509033,
+        "frozen_gt_margin": -1.382118284702301,
+        "frozen_max_confidence": 0.797613799571991,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -1.0383213758468628,
+        "adapted_max_confidence": 0.354048490524292
+      },
+      {
+        "viewpoint_id": 4,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.18212269246578217,
+        "frozen_gt_margin": 1.9058971554040909,
+        "frozen_max_confidence": 0.8334990739822388,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.017157793045044,
+        "adapted_max_confidence": 0.14000952243804932
+      },
+      {
+        "viewpoint_id": 5,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.9246510863304138,
+        "frozen_gt_margin": 0.16442114114761353,
+        "frozen_max_confidence": 0.39666977524757385,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -1.3068445920944214,
+        "adapted_max_confidence": 0.2706727683544159
+      },
+      {
+        "viewpoint_id": 7,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.00428128382191062,
+        "frozen_gt_margin": 5.9092743382789195,
+        "frozen_max_confidence": 0.9957278966903687,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -0.5047402381896973,
+        "adapted_max_confidence": 0.603662371635437
+      },
+      {
+        "viewpoint_id": 11,
+        "frozen_predicted_class": 1,
+        "frozen_true_class_logp": -6.113795280456543,
+        "frozen_gt_margin": -6.058235805481672,
+        "frozen_max_confidence": 0.945955753326416,
+        "adapted_predicted_class": 4,
+        "adapted_true_class_logp": -6.178712368011475,
+        "adapted_max_confidence": 0.624555230140686
+      },
+      {
+        "viewpoint_id": 13,
+        "frozen_predicted_class": 7,
+        "frozen_true_class_logp": -1.5360527038574219,
+        "frozen_gt_margin": -1.081413447856903,
+        "frozen_max_confidence": 0.6346768736839294,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -1.1819512844085693,
+        "adapted_max_confidence": 0.30667975544929504
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -3.056624412536621,
+        "frozen_gt_margin": -2.298008918762207,
+        "frozen_max_confidence": 0.46831440925598145,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -1.3476659059524536,
+        "adapted_max_confidence": 0.2598460614681244
+      },
+      {
+        "viewpoint_id": 19,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.5887849926948547,
+        "frozen_gt_margin": 0.37615299224853516,
+        "frozen_max_confidence": 0.5550012588500977,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.1459476947784424,
+        "adapted_max_confidence": 0.12429323047399521
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 7,
+      "GTMargin Oracle": 7
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 7,
+      "GTMargin Oracle": 7,
+      "MaxConfidence": 11
+    },
+    "frozen_any_correct_viewpoints": [
+      6,
+      4,
+      5,
+      7,
+      19
+    ],
+    "adapted_any_correct_viewpoints": [
+      1,
+      5,
+      7,
+      13,
+      14
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_11628_000_557f296fcb__00043-Jfyvj3xn2aJ__p07__v27",
+    "record_id": "reduced12kc_official_val_11628_000_557f296fcb",
+    "scene_id": "00043-Jfyvj3xn2aJ",
+    "placement_id": "p07",
+    "label_id": 8,
+    "current_viewpoint_id": 27,
+    "legal_viewpoint_ids": [
+      2,
+      10,
+      12,
+      20,
+      30
+    ],
+    "current_frozen_predicted_class": 3,
+    "current_adapted_predicted_class": 3,
+    "views": [
+      {
+        "viewpoint_id": 2,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -3.707340147229843e-05,
+        "frozen_gt_margin": 10.91483414241884,
+        "frozen_max_confidence": 0.9999628067016602,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -0.7499205470085144,
+        "adapted_max_confidence": 0.4724041521549225
+      },
+      {
+        "viewpoint_id": 10,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -0.0005498804384842515,
+        "frozen_gt_margin": 7.7521514020627365,
+        "frozen_max_confidence": 0.9994503855705261,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -1.2716267108917236,
+        "adapted_max_confidence": 0.2803751528263092
+      },
+      {
+        "viewpoint_id": 12,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -8.877431869506836,
+        "frozen_gt_margin": -8.51993378996849,
+        "frozen_max_confidence": 0.6994240880012512,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.385103225708008,
+        "adapted_max_confidence": 0.1280236542224884
+      },
+      {
+        "viewpoint_id": 20,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -8.51412582397461,
+        "frozen_gt_margin": -7.925363123416901,
+        "frozen_max_confidence": 0.5550135970115662,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.392962694168091,
+        "adapted_max_confidence": 0.12429844588041306
+      },
+      {
+        "viewpoint_id": 30,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -8.344053268432617,
+        "frozen_gt_margin": -7.651947915554047,
+        "frozen_max_confidence": 0.5005212426185608,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.414813280105591,
+        "adapted_max_confidence": 0.1274336874485016
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 2,
+      "GTMargin Oracle": 2
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 2,
+      "GTMargin Oracle": 2,
+      "MaxConfidence": 2
+    },
+    "frozen_any_correct_viewpoints": [
+      2,
+      10
+    ],
+    "adapted_any_correct_viewpoints": [
+      2,
+      10
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_12737_001_a47046a66f__00055-HxmXPBbFCkH__p06__v30",
+    "record_id": "reduced12kc_official_val_12737_001_a47046a66f",
+    "scene_id": "00055-HxmXPBbFCkH",
+    "placement_id": "p06",
+    "label_id": 8,
+    "current_viewpoint_id": 30,
+    "legal_viewpoint_ids": [
+      2,
+      5,
+      10,
+      18,
+      26,
+      28
+    ],
+    "current_frozen_predicted_class": 8,
+    "current_adapted_predicted_class": 8,
+    "views": [
+      {
+        "viewpoint_id": 2,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -3.8146324157714844,
+        "frozen_gt_margin": -3.791219849139452,
+        "frozen_max_confidence": 0.9768593907356262,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -1.1945492029190063,
+        "adapted_max_confidence": 0.3512817919254303
+      },
+      {
+        "viewpoint_id": 5,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -0.05901554599404335,
+        "frozen_gt_margin": 2.843216385692358,
+        "frozen_max_confidence": 0.9426921010017395,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -2.1821417808532715,
+        "adapted_max_confidence": 0.3654158413410187
+      },
+      {
+        "viewpoint_id": 10,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -5.807202339172363,
+        "frozen_gt_margin": -5.769632928073406,
+        "frozen_max_confidence": 0.9631274342536926,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -2.1335322856903076,
+        "adapted_max_confidence": 0.36733436584472656
+      },
+      {
+        "viewpoint_id": 18,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -7.697474002838135,
+        "frozen_gt_margin": -6.923794865608215,
+        "frozen_max_confidence": 0.4613127112388611,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -3.225126266479492,
+        "adapted_max_confidence": 0.28742340207099915
+      },
+      {
+        "viewpoint_id": 26,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -9.120129585266113,
+        "frozen_gt_margin": -8.265491306781769,
+        "frozen_max_confidence": 0.4254370927810669,
+        "adapted_predicted_class": 7,
+        "adapted_true_class_logp": -4.764522552490234,
+        "adapted_max_confidence": 0.2727947533130646
+      },
+      {
+        "viewpoint_id": 28,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -0.0986625924706459,
+        "frozen_gt_margin": 2.2811103090643883,
+        "frozen_max_confidence": 0.9060483574867249,
+        "adapted_predicted_class": 5,
+        "adapted_true_class_logp": -1.4435653686523438,
+        "adapted_max_confidence": 0.242131307721138
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": -1,
+      "GTMargin Oracle": -1
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": -1,
+      "GTMargin Oracle": -1,
+      "MaxConfidence": -1
+    },
+    "frozen_any_correct_viewpoints": [
+      30,
+      5,
+      28
+    ],
+    "adapted_any_correct_viewpoints": [
+      30
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_00871_007_b3f379407d__00057-1UnKg1rAb8A__p02__v03",
+    "record_id": "reduced12kc_official_val_00871_007_b3f379407d",
+    "scene_id": "00057-1UnKg1rAb8A",
+    "placement_id": "p02",
+    "label_id": 10,
+    "current_viewpoint_id": 3,
+    "legal_viewpoint_ids": [
+      4,
+      5,
+      7,
+      11,
+      13,
+      15,
+      19,
+      23,
+      31
+    ],
+    "current_frozen_predicted_class": 8,
+    "current_adapted_predicted_class": 1,
+    "views": [
+      {
+        "viewpoint_id": 4,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -0.17079785466194153,
+        "frozen_gt_margin": 1.7703365981578827,
+        "frozen_max_confidence": 0.8429919481277466,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -2.322103500366211,
+        "adapted_max_confidence": 0.5080184936523438
+      },
+      {
+        "viewpoint_id": 5,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -0.040004972368478775,
+        "frozen_gt_margin": 3.595412965863943,
+        "frozen_max_confidence": 0.9607846736907959,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -2.6893768310546875,
+        "adapted_max_confidence": 0.25721272826194763
+      },
+      {
+        "viewpoint_id": 7,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -7.338033199310303,
+        "frozen_gt_margin": -7.070690900087357,
+        "frozen_max_confidence": 0.7654110193252563,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -4.513474464416504,
+        "adapted_max_confidence": 0.5302175879478455
+      },
+      {
+        "viewpoint_id": 11,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -10.589430809020996,
+        "frozen_gt_margin": -10.56757360137999,
+        "frozen_max_confidence": 0.9783798456192017,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -6.142158508300781,
+        "adapted_max_confidence": 0.32565540075302124
+      },
+      {
+        "viewpoint_id": 13,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -8.2752046585083,
+        "frozen_gt_margin": -8.1823321133852,
+        "frozen_max_confidence": 0.9113097190856934,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -4.071231842041016,
+        "adapted_max_confidence": 0.4169284999370575
+      },
+      {
+        "viewpoint_id": 15,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -18.455263137817383,
+        "frozen_gt_margin": -18.344642780721188,
+        "frozen_max_confidence": 0.8952785730361938,
+        "adapted_predicted_class": 0,
+        "adapted_true_class_logp": -6.669812202453613,
+        "adapted_max_confidence": 0.2871339023113251
+      },
+      {
+        "viewpoint_id": 19,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -10.806549072265625,
+        "frozen_gt_margin": -10.791063196025789,
+        "frozen_max_confidence": 0.9846333861351013,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -5.250921249389648,
+        "adapted_max_confidence": 0.22075457870960236
+      },
+      {
+        "viewpoint_id": 23,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -7.123915672302246,
+        "frozen_gt_margin": -6.364323794841766,
+        "frozen_max_confidence": 0.46785739064216614,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -3.829460382461548,
+        "adapted_max_confidence": 0.5792950987815857
+      },
+      {
+        "viewpoint_id": 31,
+        "frozen_predicted_class": 5,
+        "frozen_true_class_logp": -11.64440631866455,
+        "frozen_gt_margin": -11.436390593647957,
+        "frozen_max_confidence": 0.8121941685676575,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -6.142838001251221,
+        "adapted_max_confidence": 0.30206331610679626
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 5,
+      "GTMargin Oracle": 5
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 4,
+      "GTMargin Oracle": 5,
+      "MaxConfidence": 23
+    },
+    "frozen_any_correct_viewpoints": [
+      4,
+      5
+    ],
+    "adapted_any_correct_viewpoints": []
+  },
+  {
+    "episode_id": "reduced12kc_official_val_09860_002_4dd112baee__00057-1UnKg1rAb8A__p04__v30",
+    "record_id": "reduced12kc_official_val_09860_002_4dd112baee",
+    "scene_id": "00057-1UnKg1rAb8A",
+    "placement_id": "p04",
+    "label_id": 9,
+    "current_viewpoint_id": 30,
+    "legal_viewpoint_ids": [
+      5,
+      6,
+      7,
+      9,
+      13,
+      14,
+      17,
+      22,
+      25
+    ],
+    "current_frozen_predicted_class": 6,
+    "current_adapted_predicted_class": 9,
+    "views": [
+      {
+        "viewpoint_id": 5,
+        "frozen_predicted_class": 9,
+        "frozen_true_class_logp": -0.004603383596986532,
+        "frozen_gt_margin": 5.393290522042662,
+        "frozen_max_confidence": 0.9954073429107666,
+        "adapted_predicted_class": 9,
+        "adapted_true_class_logp": -0.32513079047203064,
+        "adapted_max_confidence": 0.7224329113960266
+      },
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -5.9464216232299805,
+        "frozen_gt_margin": -5.460784196853638,
+        "frozen_max_confidence": 0.6153048872947693,
+        "adapted_predicted_class": 9,
+        "adapted_true_class_logp": -0.621819794178009,
+        "adapted_max_confidence": 0.5369663834571838
+      },
+      {
+        "viewpoint_id": 7,
+        "frozen_predicted_class": 6,
+        "frozen_true_class_logp": -5.343690395355225,
+        "frozen_gt_margin": -5.337379384785891,
+        "frozen_max_confidence": 0.9937088489532471,
+        "adapted_predicted_class": 9,
+        "adapted_true_class_logp": -0.5051328539848328,
+        "adapted_max_confidence": 0.6034253835678101
+      },
+      {
+        "viewpoint_id": 9,
+        "frozen_predicted_class": 11,
+        "frozen_true_class_logp": -5.838339805603027,
+        "frozen_gt_margin": -5.823778234422207,
+        "frozen_max_confidence": 0.9855438470840454,
+        "adapted_predicted_class": 9,
+        "adapted_true_class_logp": -0.9161021709442139,
+        "adapted_max_confidence": 0.4000754654407501
+      },
+      {
+        "viewpoint_id": 13,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -0.8646528720855713,
+        "frozen_gt_margin": -0.15255260467529297,
+        "frozen_max_confidence": 0.490612655878067,
+        "adapted_predicted_class": 9,
+        "adapted_true_class_logp": -0.8063067197799683,
+        "adapted_max_confidence": 0.4465040862560272
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 6,
+        "frozen_true_class_logp": -11.12311840057373,
+        "frozen_gt_margin": -11.122429846378509,
+        "frozen_max_confidence": 0.9993116855621338,
+        "adapted_predicted_class": 6,
+        "adapted_true_class_logp": -1.930760145187378,
+        "adapted_max_confidence": 0.7639707922935486
+      },
+      {
+        "viewpoint_id": 17,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -7.827396392822266,
+        "frozen_gt_margin": -7.301925301551819,
+        "frozen_max_confidence": 0.5912768244743347,
+        "adapted_predicted_class": 9,
+        "adapted_true_class_logp": -1.3948355913162231,
+        "adapted_max_confidence": 0.24787381291389465
+      },
+      {
+        "viewpoint_id": 22,
+        "frozen_predicted_class": 6,
+        "frozen_true_class_logp": -5.614872455596924,
+        "frozen_gt_margin": -5.610279039479792,
+        "frozen_max_confidence": 0.9954169988632202,
+        "adapted_predicted_class": 9,
+        "adapted_true_class_logp": -0.36045029759407043,
+        "adapted_max_confidence": 0.6973622441291809
+      },
+      {
+        "viewpoint_id": 25,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -9.333548545837402,
+        "frozen_gt_margin": -8.560844421386719,
+        "frozen_max_confidence": 0.4617626667022705,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -4.426809310913086,
+        "adapted_max_confidence": 0.2213483452796936
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 5,
+      "GTMargin Oracle": 5
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 5,
+      "GTMargin Oracle": 5,
+      "MaxConfidence": 14
+    },
+    "frozen_any_correct_viewpoints": [
+      5
+    ],
+    "adapted_any_correct_viewpoints": [
+      30,
+      5,
+      6,
+      7,
+      9,
+      13,
+      17,
+      22
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_06874_005_efd4381865__00059-kJxT5qssH4H__p00__v21",
+    "record_id": "reduced12kc_official_val_06874_005_efd4381865",
+    "scene_id": "00059-kJxT5qssH4H",
+    "placement_id": "p00",
+    "label_id": 11,
+    "current_viewpoint_id": 21,
+    "legal_viewpoint_ids": [
+      0,
+      1,
+      4,
+      8,
+      12,
+      20,
+      29
+    ],
+    "current_frozen_predicted_class": 0,
+    "current_adapted_predicted_class": 11,
+    "views": [
+      {
+        "viewpoint_id": 0,
+        "frozen_predicted_class": 11,
+        "frozen_true_class_logp": -0.0005353448214009404,
+        "frozen_gt_margin": 8.007205629604869,
+        "frozen_max_confidence": 0.9994648098945618,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -1.0682452917099,
+        "adapted_max_confidence": 0.343610942363739
+      },
+      {
+        "viewpoint_id": 1,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -3.0344903469085693,
+        "frozen_gt_margin": -2.8537531048059464,
+        "frozen_max_confidence": 0.8346544504165649,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -2.332340717315674,
+        "adapted_max_confidence": 0.46461308002471924
+      },
+      {
+        "viewpoint_id": 4,
+        "frozen_predicted_class": 11,
+        "frozen_true_class_logp": -0.12083247303962708,
+        "frozen_gt_margin": 2.8390259444713593,
+        "frozen_max_confidence": 0.886182427406311,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -2.081141948699951,
+        "adapted_max_confidence": 0.29568833112716675
+      },
+      {
+        "viewpoint_id": 8,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -4.042487144470215,
+        "frozen_gt_margin": -4.024372186511755,
+        "frozen_max_confidence": 0.9820481538772583,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -1.341360092163086,
+        "adapted_max_confidence": 0.2818047106266022
+      },
+      {
+        "viewpoint_id": 12,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -9.161965370178223,
+        "frozen_gt_margin": -9.062135770916939,
+        "frozen_max_confidence": 0.9049916863441467,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -2.732316493988037,
+        "adapted_max_confidence": 0.29547083377838135
+      },
+      {
+        "viewpoint_id": 20,
+        "frozen_predicted_class": 5,
+        "frozen_true_class_logp": -9.412205696105957,
+        "frozen_gt_margin": -9.20261912047863,
+        "frozen_max_confidence": 0.810919463634491,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.5675253868103027,
+        "adapted_max_confidence": 0.30337199568748474
+      },
+      {
+        "viewpoint_id": 29,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -3.5277554988861084,
+        "frozen_gt_margin": -2.835655629634857,
+        "frozen_max_confidence": 0.5005239248275757,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.107403039932251,
+        "adapted_max_confidence": 0.12743496894836426
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 0,
+      "GTMargin Oracle": 0
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 0,
+      "GTMargin Oracle": 0,
+      "MaxConfidence": 1
+    },
+    "frozen_any_correct_viewpoints": [
+      0,
+      4
+    ],
+    "adapted_any_correct_viewpoints": [
+      21,
+      0
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_04799_010_d1dcecb41f__00059-kJxT5qssH4H__p02__v01",
+    "record_id": "reduced12kc_official_val_04799_010_d1dcecb41f",
+    "scene_id": "00059-kJxT5qssH4H",
+    "placement_id": "p02",
+    "label_id": 2,
+    "current_viewpoint_id": 1,
+    "legal_viewpoint_ids": [
+      6,
+      14,
+      22,
+      30
+    ],
+    "current_frozen_predicted_class": 2,
+    "current_adapted_predicted_class": 2,
+    "views": [
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.5698758959770203,
+        "frozen_gt_margin": 0.4088602066040039,
+        "frozen_max_confidence": 0.5655956268310547,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.12506678700447083,
+        "adapted_max_confidence": 0.882438063621521
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.00046528480015695095,
+        "frozen_gt_margin": 7.7762080321554095,
+        "frozen_max_confidence": 0.9995348453521729,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.02670525759458542,
+        "adapted_max_confidence": 0.973648190498352
+      },
+      {
+        "viewpoint_id": 22,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.007429943419992924,
+        "frozen_gt_margin": 5.527429713867605,
+        "frozen_max_confidence": 0.9925975799560547,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.23445692658424377,
+        "adapted_max_confidence": 0.791000247001648
+      },
+      {
+        "viewpoint_id": 30,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.018619399517774582,
+        "frozen_gt_margin": 5.012085098773241,
+        "frozen_max_confidence": 0.98155277967453,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.20591957867145538,
+        "adapted_max_confidence": 0.813898503780365
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 14,
+      "GTMargin Oracle": 14
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 14,
+      "GTMargin Oracle": 14,
+      "MaxConfidence": 14
+    },
+    "frozen_any_correct_viewpoints": [
+      1,
+      6,
+      14,
+      22,
+      30
+    ],
+    "adapted_any_correct_viewpoints": [
+      1,
+      6,
+      14,
+      22,
+      30
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_02391_010_5c5609393b__00059-kJxT5qssH4H__p04__v28",
+    "record_id": "reduced12kc_official_val_02391_010_5c5609393b",
+    "scene_id": "00059-kJxT5qssH4H",
+    "placement_id": "p04",
+    "label_id": 5,
+    "current_viewpoint_id": 28,
+    "legal_viewpoint_ids": [
+      3,
+      6
+    ],
+    "current_frozen_predicted_class": 10,
+    "current_adapted_predicted_class": 10,
+    "views": [
+      {
+        "viewpoint_id": 3,
+        "frozen_predicted_class": 10,
+        "frozen_true_class_logp": -12.522212982177734,
+        "frozen_gt_margin": -12.283116683363914,
+        "frozen_max_confidence": 0.7873390913009644,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -1.8309149742126465,
+        "adapted_max_confidence": 0.3421678841114044
+      },
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 5,
+        "frozen_true_class_logp": -0.024445882067084312,
+        "frozen_gt_margin": 3.820983776822686,
+        "frozen_max_confidence": 0.975850522518158,
+        "adapted_predicted_class": 5,
+        "adapted_true_class_logp": -0.5445930361747742,
+        "adapted_max_confidence": 0.5800777673721313
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 6,
+      "GTMargin Oracle": 6
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 6,
+      "GTMargin Oracle": 6,
+      "MaxConfidence": 6
+    },
+    "frozen_any_correct_viewpoints": [
+      6
+    ],
+    "adapted_any_correct_viewpoints": [
+      6
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00062-ACZZiU6BXLz__p03__v15",
+    "record_id": "reduced12kc_official_val_05908_001_0dae7aada7",
+    "scene_id": "00062-ACZZiU6BXLz",
+    "placement_id": "p03",
+    "label_id": 1,
+    "current_viewpoint_id": 15,
+    "legal_viewpoint_ids": [
+      1,
+      2,
+      7,
+      9,
+      10,
+      17,
+      20,
+      23,
+      28
+    ],
+    "current_frozen_predicted_class": 1,
+    "current_adapted_predicted_class": 2,
+    "views": [
+      {
+        "viewpoint_id": 1,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -1.8872199058532715,
+        "frozen_gt_margin": -1.7130412757396698,
+        "frozen_max_confidence": 0.8401469588279724,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -3.200012683868408,
+        "adapted_max_confidence": 0.8573815226554871
+      },
+      {
+        "viewpoint_id": 2,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -1.98595130443573,
+        "frozen_gt_margin": -1.8289840668439865,
+        "frozen_max_confidence": 0.8547319769859314,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -4.0110673904418945,
+        "adapted_max_confidence": 0.933260977268219
+      },
+      {
+        "viewpoint_id": 7,
+        "frozen_predicted_class": 1,
+        "frozen_true_class_logp": -0.004398670978844166,
+        "frozen_gt_margin": 5.575710448436439,
+        "frozen_max_confidence": 0.9956108927726746,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -1.5907995700836182,
+        "adapted_max_confidence": 0.5365084409713745
+      },
+      {
+        "viewpoint_id": 9,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -2.0764994621276855,
+        "frozen_gt_margin": -1.8425262868404388,
+        "frozen_max_confidence": 0.7913830280303955,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -2.6066317558288574,
+        "adapted_max_confidence": 0.5886644721031189
+      },
+      {
+        "viewpoint_id": 10,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -2.8017935752868652,
+        "frozen_gt_margin": -2.3887168169021606,
+        "frozen_max_confidence": 0.6616114974021912,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -4.775106430053711,
+        "adapted_max_confidence": 0.9012683033943176
+      },
+      {
+        "viewpoint_id": 17,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -1.200434923171997,
+        "frozen_gt_margin": -0.17094707489013672,
+        "frozen_max_confidence": 0.3571898937225342,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.1709301471710205,
+        "adapted_max_confidence": 0.324688583612442
+      },
+      {
+        "viewpoint_id": 20,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -0.9819968938827515,
+        "frozen_gt_margin": -0.30747365951538086,
+        "frozen_max_confidence": 0.5093991756439209,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -0.9885314702987671,
+        "adapted_max_confidence": 0.37212279438972473
+      },
+      {
+        "viewpoint_id": 23,
+        "frozen_predicted_class": 1,
+        "frozen_true_class_logp": -2.062299427052494e-05,
+        "frozen_gt_margin": 11.387444853995476,
+        "frozen_max_confidence": 0.9999796152114868,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -0.320050984621048,
+        "adapted_max_confidence": 0.7261119484901428
+      },
+      {
+        "viewpoint_id": 28,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -5.129090309143066,
+        "frozen_gt_margin": -5.122964704409242,
+        "frozen_max_confidence": 0.9938933253288269,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -1.60239577293396,
+        "adapted_max_confidence": 0.643161952495575
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 23,
+      "GTMargin Oracle": 23
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 23,
+      "GTMargin Oracle": 23,
+      "MaxConfidence": 2
+    },
+    "frozen_any_correct_viewpoints": [
+      15,
+      7,
+      23
+    ],
+    "adapted_any_correct_viewpoints": [
+      20,
+      23
+    ]
+  },
+  {
+    "episode_id": "reduced12kc_official_val_13218_000_d63de633a6__00062-ACZZiU6BXLz__p05__v13",
+    "record_id": "reduced12kc_official_val_13218_000_d63de633a6",
+    "scene_id": "00062-ACZZiU6BXLz",
+    "placement_id": "p05",
+    "label_id": 0,
+    "current_viewpoint_id": 13,
+    "legal_viewpoint_ids": [
+      0,
+      4,
+      15,
+      23,
+      30
+    ],
+    "current_frozen_predicted_class": 0,
+    "current_adapted_predicted_class": 11,
+    "views": [
+      {
+        "viewpoint_id": 0,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -5.087212562561035,
+        "frozen_gt_margin": -4.710140436887741,
+        "frozen_max_confidence": 0.68586665391922,
+        "adapted_predicted_class": 5,
+        "adapted_true_class_logp": -1.1732317209243774,
+        "adapted_max_confidence": 0.3251762390136719
+      },
+      {
+        "viewpoint_id": 4,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -8.578459739685059,
+        "frozen_gt_margin": -8.549554400146008,
+        "frozen_max_confidence": 0.9715084433555603,
+        "adapted_predicted_class": 10,
+        "adapted_true_class_logp": -1.9858553409576416,
+        "adapted_max_confidence": 0.2911200225353241
+      },
+      {
+        "viewpoint_id": 15,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.3575441837310791,
+        "frozen_gt_margin": 1.0549342632293701,
+        "frozen_max_confidence": 0.6993917226791382,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.109473943710327,
+        "adapted_max_confidence": 0.12802405655384064
+      },
+      {
+        "viewpoint_id": 23,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -0.5887657999992371,
+        "frozen_gt_margin": 0.37619996070861816,
+        "frozen_max_confidence": 0.5550118088722229,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.1459431648254395,
+        "adapted_max_confidence": 0.12429426610469818
+      },
+      {
+        "viewpoint_id": 30,
+        "frozen_predicted_class": 1,
+        "frozen_true_class_logp": -9.740829467773438,
+        "frozen_gt_margin": -9.697527337819338,
+        "frozen_max_confidence": 0.957622230052948,
+        "adapted_predicted_class": 1,
+        "adapted_true_class_logp": -4.7482686042785645,
+        "adapted_max_confidence": 0.47446227073669434
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 15,
+      "GTMargin Oracle": 15
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 0,
+      "GTMargin Oracle": 0,
+      "MaxConfidence": 30
+    },
+    "frozen_any_correct_viewpoints": [
+      13,
+      15,
+      23
+    ],
+    "adapted_any_correct_viewpoints": []
+  },
+  {
+    "episode_id": "reduced12kc_official_val_07697_002_857733d014__00087-YY8rqV6L6rf__p04__v30",
+    "record_id": "reduced12kc_official_val_07697_002_857733d014",
+    "scene_id": "00087-YY8rqV6L6rf",
+    "placement_id": "p04",
+    "label_id": 2,
+    "current_viewpoint_id": 30,
+    "legal_viewpoint_ids": [
+      0,
+      1,
+      3,
+      4,
+      6,
+      8,
+      9,
+      12,
+      14,
+      16,
+      17,
+      19,
+      20,
+      22,
+      24,
+      26
+    ],
+    "current_frozen_predicted_class": 2,
+    "current_adapted_predicted_class": 0,
+    "views": [
+      {
+        "viewpoint_id": 0,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.0017372767906636,
+        "frozen_gt_margin": 7.19987948727794,
+        "frozen_max_confidence": 0.9982643723487854,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.24845433235168457,
+        "adapted_max_confidence": 0.7800055146217346
+      },
+      {
+        "viewpoint_id": 1,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.0008337597246281803,
+        "frozen_gt_margin": 7.205503692210186,
+        "frozen_max_confidence": 0.9991666078567505,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.19306454062461853,
+        "adapted_max_confidence": 0.8244288563728333
+      },
+      {
+        "viewpoint_id": 3,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -5.893640518188477,
+        "frozen_gt_margin": -5.819377422332764,
+        "frozen_max_confidence": 0.9284272789955139,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -1.110066533088684,
+        "adapted_max_confidence": 0.3295370638370514
+      },
+      {
+        "viewpoint_id": 4,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -4.618809223175049,
+        "frozen_gt_margin": -4.436686530709267,
+        "frozen_max_confidence": 0.8334990739822388,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.487485408782959,
+        "adapted_max_confidence": 0.14000952243804932
+      },
+      {
+        "viewpoint_id": 6,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.0010003806091845036,
+        "frozen_gt_margin": 7.356955552008003,
+        "frozen_max_confidence": 0.9990002512931824,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.036966342478990555,
+        "adapted_max_confidence": 0.9637084603309631
+      },
+      {
+        "viewpoint_id": 8,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.01432927418500185,
+        "frozen_gt_margin": 4.349571387283504,
+        "frozen_max_confidence": 0.9857729077339172,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.1746656596660614,
+        "adapted_max_confidence": 0.839737594127655
+      },
+      {
+        "viewpoint_id": 9,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.0033282621297985315,
+        "frozen_gt_margin": 5.708954872330651,
+        "frozen_max_confidence": 0.9966771602630615,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.05618209019303322,
+        "adapted_max_confidence": 0.9453670978546143
+      },
+      {
+        "viewpoint_id": 12,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -4.0646820068359375,
+        "frozen_gt_margin": -3.7071400582790375,
+        "frozen_max_confidence": 0.6993933320045471,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.3975448608398438,
+        "adapted_max_confidence": 0.128022700548172
+      },
+      {
+        "viewpoint_id": 14,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -4.684815212385729e-05,
+        "frozen_gt_margin": 11.165697933342017,
+        "frozen_max_confidence": 0.9999531507492065,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.0538715124130249,
+        "adapted_max_confidence": 0.9475537538528442
+      },
+      {
+        "viewpoint_id": 16,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.6101723909378052,
+        "frozen_gt_margin": 0.47646164894104004,
+        "frozen_max_confidence": 0.5432572364807129,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.648301899433136,
+        "adapted_max_confidence": 0.5229330658912659
+      },
+      {
+        "viewpoint_id": 17,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.00012468514614738524,
+        "frozen_gt_margin": 9.899229295871919,
+        "frozen_max_confidence": 0.9998754262924194,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.03623829409480095,
+        "adapted_max_confidence": 0.9644104242324829
+      },
+      {
+        "viewpoint_id": 19,
+        "frozen_predicted_class": 8,
+        "frozen_true_class_logp": -12.400081634521484,
+        "frozen_gt_margin": -12.3878652472049,
+        "frozen_max_confidence": 0.9878579378128052,
+        "adapted_predicted_class": 8,
+        "adapted_true_class_logp": -2.5734331607818604,
+        "adapted_max_confidence": 0.2231450080871582
+      },
+      {
+        "viewpoint_id": 20,
+        "frozen_predicted_class": 0,
+        "frozen_true_class_logp": -3.8693814277648926,
+        "frozen_gt_margin": -3.280632972717285,
+        "frozen_max_confidence": 0.5550215244293213,
+        "adapted_predicted_class": 11,
+        "adapted_true_class_logp": -2.3250699043273926,
+        "adapted_max_confidence": 0.12429901212453842
+      },
+      {
+        "viewpoint_id": 22,
+        "frozen_predicted_class": 2,
+        "frozen_true_class_logp": -0.00027366707217879593,
+        "frozen_gt_margin": 8.878084220195888,
+        "frozen_max_confidence": 0.9997264742851257,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.20637276768684387,
+        "adapted_max_confidence": 0.8135296702384949
+      },
+      {
+        "viewpoint_id": 24,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -2.6989803314208984,
+        "frozen_gt_margin": -2.0828301906585693,
+        "frozen_max_confidence": 0.5400194525718689,
+        "adapted_predicted_class": 2,
+        "adapted_true_class_logp": -0.8729813694953918,
+        "adapted_max_confidence": 0.41770437359809875
+      },
+      {
+        "viewpoint_id": 26,
+        "frozen_predicted_class": 3,
+        "frozen_true_class_logp": -3.801663398742676,
+        "frozen_gt_margin": -3.109569549560547,
+        "frozen_max_confidence": 0.5005269646644592,
+        "adapted_predicted_class": 3,
+        "adapted_true_class_logp": -2.267108917236328,
+        "adapted_max_confidence": 0.12744125723838806
+      }
+    ],
+    "frozen_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 14,
+      "GTMargin Oracle": 14
+    },
+    "adapted_selected_viewpoints": {
+      "Current/Stay": -1,
+      "GT-TrueLogP Oracle": 17,
+      "GTMargin Oracle": 6,
+      "MaxConfidence": 17
+    },
+    "frozen_any_correct_viewpoints": [
+      30,
+      0,
+      1,
+      6,
+      8,
+      9,
+      14,
+      16,
+      17,
+      22
+    ],
+    "adapted_any_correct_viewpoints": [
+      0,
+      1,
+      3,
+      6,
+      8,
+      9,
+      14,
+      16,
+      17,
+      22,
+      24
+    ]
+  }
+]
