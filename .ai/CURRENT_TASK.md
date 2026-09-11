@@ -1,10 +1,12 @@
 # Current Task
 
-## Context synchronization — completed 2026-09-11
+## Overnight dual-route experiment — completed 2026-09-12
 
-No experiment is currently running.  The latest request was to synchronize the
-research goal, frozen protocol, current assets and scientific progress into the
-AI context; this update changes context documentation only.
+The reduced12 eight-placement dual-route Train/Val experiment is complete.
+Shared recognizer, Route-1 retrieval NBV and Route-2 observe/verify/continue
+artifacts are recorded under `experiments/reduced12_eight_placement_v1/`.
+Policy Test was not read. Runtime feature caches and checkpoints remain
+external under `ACTIVEVIEW_DATA_ROOT`.
 
 ## Current research question
 

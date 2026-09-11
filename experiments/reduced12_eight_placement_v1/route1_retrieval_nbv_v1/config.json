@@ -1,0 +1,8 @@
+{
+  "retrieval_k_primary": 32,
+  "robustness_k": [
+    16,
+    64
+  ],
+  "test_used": false
+}

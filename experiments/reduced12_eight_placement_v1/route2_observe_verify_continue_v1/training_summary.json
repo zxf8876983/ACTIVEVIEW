@@ -1,0 +1,103 @@
+{
+  "seed": 42,
+  "input_dim": 272,
+  "model": "Linear(272,256)->GELU->Linear(256,1)",
+  "max_epochs": 15,
+  "train_records": 282,
+  "calibration_records": 31,
+  "threshold": 0.7698527574539185,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7585552930831909,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6911053657531738,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.7282013297080994,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6566643118858337,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6214419603347778,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6407400965690613,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.644230306148529,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.625377893447876,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5906481146812439,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5949285626411438,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5971388816833496,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.6000959873199463,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.5897665619850159,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.5915151834487915,
+      "train_records": 282,
+      "observations": 4512
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.5812771320343018,
+      "train_records": 282,
+      "observations": 4512
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/route2_observe_verify_continue_v1/verifier_best.pth",
+  "test_used": false
+}

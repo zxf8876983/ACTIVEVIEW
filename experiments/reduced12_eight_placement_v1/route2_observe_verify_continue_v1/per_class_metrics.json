@@ -1,0 +1,626 @@
+{
+  "walk": {
+    "Stay only": {
+      "support": 1071,
+      "recall": 0.3753501400560224,
+      "f1": 0.3470004315925766
+    },
+    "Random-1": {
+      "support": 1071,
+      "recall": 0.3968253968253968,
+      "f1": 0.3839205058717254
+    },
+    "Random-2": {
+      "support": 1071,
+      "recall": 0.3753501400560224,
+      "f1": 0.36151079136690645
+    },
+    "Random-3": {
+      "support": 1071,
+      "recall": 0.37815126050420167,
+      "f1": 0.35968028419182946
+    },
+    "Angular-Diversity always-1": {
+      "support": 1071,
+      "recall": 0.44164332399626516,
+      "f1": 0.41802916482545294
+    },
+    "Angular-Diversity always-2": {
+      "support": 1071,
+      "recall": 0.3818860877684407,
+      "f1": 0.37800369685767093
+    },
+    "Angular-Diversity always-3": {
+      "support": 1071,
+      "recall": 0.4042950513538749,
+      "f1": 0.37767117313563026
+    },
+    "MaxConfidence over observed views": {
+      "support": 1071,
+      "recall": 0.5499533146591971,
+      "f1": 0.48899958488999584
+    },
+    "Verifier-best over observed views": {
+      "support": 1071,
+      "recall": 0.2549019607843137,
+      "f1": 0.3309090909090909
+    },
+    "Verifier stop/continue": {
+      "support": 1071,
+      "recall": 0.28291316526610644,
+      "f1": 0.3600713012477718
+    }
+  },
+  "sit": {
+    "Stay only": {
+      "support": 786,
+      "recall": 0.5750636132315522,
+      "f1": 0.30386554621848744
+    },
+    "Random-1": {
+      "support": 786,
+      "recall": 0.6704834605597965,
+      "f1": 0.4021365890881343
+    },
+    "Random-2": {
+      "support": 786,
+      "recall": 0.6997455470737913,
+      "f1": 0.41809198023565186
+    },
+    "Random-3": {
+      "support": 786,
+      "recall": 0.7010178117048346,
+      "f1": 0.4175824175824176
+    },
+    "Angular-Diversity always-1": {
+      "support": 786,
+      "recall": 0.6984732824427481,
+      "f1": 0.46843003412969286
+    },
+    "Angular-Diversity always-2": {
+      "support": 786,
+      "recall": 0.6234096692111959,
+      "f1": 0.36309744349759177
+    },
+    "Angular-Diversity always-3": {
+      "support": 786,
+      "recall": 0.6819338422391857,
+      "f1": 0.41566498642884836
+    },
+    "MaxConfidence over observed views": {
+      "support": 786,
+      "recall": 0.8358778625954199,
+      "f1": 0.5829636202307009
+    },
+    "Verifier-best over observed views": {
+      "support": 786,
+      "recall": 0.7735368956743003,
+      "f1": 0.48953301127214166
+    },
+    "Verifier stop/continue": {
+      "support": 786,
+      "recall": 0.767175572519084,
+      "f1": 0.4774346793349169
+    }
+  },
+  "stand up": {
+    "Stay only": {
+      "support": 907,
+      "recall": 0.40683572216097025,
+      "f1": 0.49265687583444595
+    },
+    "Random-1": {
+      "support": 907,
+      "recall": 0.5292171995589857,
+      "f1": 0.6114649681528663
+    },
+    "Random-2": {
+      "support": 907,
+      "recall": 0.5534729878721059,
+      "f1": 0.6326402016383113
+    },
+    "Random-3": {
+      "support": 907,
+      "recall": 0.5170893054024256,
+      "f1": 0.6036036036036035
+    },
+    "Angular-Diversity always-1": {
+      "support": 907,
+      "recall": 0.535832414553473,
+      "f1": 0.6242774566473989
+    },
+    "Angular-Diversity always-2": {
+      "support": 907,
+      "recall": 0.4884233737596472,
+      "f1": 0.5821287779237845
+    },
+    "Angular-Diversity always-3": {
+      "support": 907,
+      "recall": 0.5633958103638368,
+      "f1": 0.6403508771929824
+    },
+    "MaxConfidence over observed views": {
+      "support": 907,
+      "recall": 0.7574421168687983,
+      "f1": 0.7595356550580431
+    },
+    "Verifier-best over observed views": {
+      "support": 907,
+      "recall": 0.7364939360529217,
+      "f1": 0.6802443991853361
+    },
+    "Verifier stop/continue": {
+      "support": 907,
+      "recall": 0.7309812568908489,
+      "f1": 0.6730964467005075
+    }
+  },
+  "bend": {
+    "Stay only": {
+      "support": 1012,
+      "recall": 0.42292490118577075,
+      "f1": 0.253780017788319
+    },
+    "Random-1": {
+      "support": 1012,
+      "recall": 0.41798418972332013,
+      "f1": 0.2853288364249579
+    },
+    "Random-2": {
+      "support": 1012,
+      "recall": 0.4357707509881423,
+      "f1": 0.2984771573604061
+    },
+    "Random-3": {
+      "support": 1012,
+      "recall": 0.4318181818181818,
+      "f1": 0.3015873015873016
+    },
+    "Angular-Diversity always-1": {
+      "support": 1012,
+      "recall": 0.4199604743083004,
+      "f1": 0.27969726883843365
+    },
+    "Angular-Diversity always-2": {
+      "support": 1012,
+      "recall": 0.4357707509881423,
+      "f1": 0.2702205882352941
+    },
+    "Angular-Diversity always-3": {
+      "support": 1012,
+      "recall": 0.42193675889328064,
+      "f1": 0.2940771349862259
+    },
+    "MaxConfidence over observed views": {
+      "support": 1012,
+      "recall": 0.41798418972332013,
+      "f1": 0.4590341833966359
+    },
+    "Verifier-best over observed views": {
+      "support": 1012,
+      "recall": 0.41304347826086957,
+      "f1": 0.422862923621649
+    },
+    "Verifier stop/continue": {
+      "support": 1012,
+      "recall": 0.3922924901185771,
+      "f1": 0.3938492063492064
+    }
+  },
+  "crawl": {
+    "Stay only": {
+      "support": 446,
+      "recall": 0.3654708520179372,
+      "f1": 0.4801178203240059
+    },
+    "Random-1": {
+      "support": 446,
+      "recall": 0.5336322869955157,
+      "f1": 0.6423751686909581
+    },
+    "Random-2": {
+      "support": 446,
+      "recall": 0.5650224215246636,
+      "f1": 0.6737967914438502
+    },
+    "Random-3": {
+      "support": 446,
+      "recall": 0.5627802690582959,
+      "f1": 0.6605263157894737
+    },
+    "Angular-Diversity always-1": {
+      "support": 446,
+      "recall": 0.5852017937219731,
+      "f1": 0.6932270916334663
+    },
+    "Angular-Diversity always-2": {
+      "support": 446,
+      "recall": 0.47085201793721976,
+      "f1": 0.5898876404494382
+    },
+    "Angular-Diversity always-3": {
+      "support": 446,
+      "recall": 0.5493273542600897,
+      "f1": 0.6693989071038252
+    },
+    "MaxConfidence over observed views": {
+      "support": 446,
+      "recall": 0.8295964125560538,
+      "f1": 0.8342728297632469
+    },
+    "Verifier-best over observed views": {
+      "support": 446,
+      "recall": 0.7197309417040358,
+      "f1": 0.7270668176670442
+    },
+    "Verifier stop/continue": {
+      "support": 446,
+      "recall": 0.6973094170403588,
+      "f1": 0.7124856815578464
+    }
+  },
+  "stumble": {
+    "Stay only": {
+      "support": 849,
+      "recall": 0.0636042402826855,
+      "f1": 0.10714285714285712
+    },
+    "Random-1": {
+      "support": 849,
+      "recall": 0.18374558303886926,
+      "f1": 0.24586288416075652
+    },
+    "Random-2": {
+      "support": 849,
+      "recall": 0.2061248527679623,
+      "f1": 0.27386541471048514
+    },
+    "Random-3": {
+      "support": 849,
+      "recall": 0.1872791519434629,
+      "f1": 0.2488262910798122
+    },
+    "Angular-Diversity always-1": {
+      "support": 849,
+      "recall": 0.232037691401649,
+      "f1": 0.2955738934733683
+    },
+    "Angular-Diversity always-2": {
+      "support": 849,
+      "recall": 0.16725559481743227,
+      "f1": 0.2281124497991968
+    },
+    "Angular-Diversity always-3": {
+      "support": 849,
+      "recall": 0.20848056537102475,
+      "f1": 0.266566265060241
+    },
+    "MaxConfidence over observed views": {
+      "support": 849,
+      "recall": 0.22143698468786807,
+      "f1": 0.2998405103668262
+    },
+    "Verifier-best over observed views": {
+      "support": 849,
+      "recall": 0.23792697290930506,
+      "f1": 0.2807505211952745
+    },
+    "Verifier stop/continue": {
+      "support": 849,
+      "recall": 0.26030624263839813,
+      "f1": 0.2962466487935657
+    }
+  },
+  "clap": {
+    "Stay only": {
+      "support": 486,
+      "recall": 0.10905349794238683,
+      "f1": 0.1598793363499246
+    },
+    "Random-1": {
+      "support": 486,
+      "recall": 0.2345679012345679,
+      "f1": 0.30440587449933243
+    },
+    "Random-2": {
+      "support": 486,
+      "recall": 0.1646090534979424,
+      "f1": 0.2247191011235955
+    },
+    "Random-3": {
+      "support": 486,
+      "recall": 0.1934156378600823,
+      "f1": 0.2568306010928961
+    },
+    "Angular-Diversity always-1": {
+      "support": 486,
+      "recall": 0.22839506172839505,
+      "f1": 0.30081300813008127
+    },
+    "Angular-Diversity always-2": {
+      "support": 486,
+      "recall": 0.17078189300411523,
+      "f1": 0.2344632768361582
+    },
+    "Angular-Diversity always-3": {
+      "support": 486,
+      "recall": 0.25308641975308643,
+      "f1": 0.32156862745098036
+    },
+    "MaxConfidence over observed views": {
+      "support": 486,
+      "recall": 0.2839506172839506,
+      "f1": 0.34629861982434135
+    },
+    "Verifier-best over observed views": {
+      "support": 486,
+      "recall": 0.31893004115226337,
+      "f1": 0.3613053613053613
+    },
+    "Verifier stop/continue": {
+      "support": 486,
+      "recall": 0.31275720164609055,
+      "f1": 0.3584905660377359
+    }
+  },
+  "throw": {
+    "Stay only": {
+      "support": 969,
+      "recall": 0.27038183694530443,
+      "f1": 0.3314358001265022
+    },
+    "Random-1": {
+      "support": 969,
+      "recall": 0.3684210526315789,
+      "f1": 0.4101091326823665
+    },
+    "Random-2": {
+      "support": 969,
+      "recall": 0.3457172342621259,
+      "f1": 0.3983353151010702
+    },
+    "Random-3": {
+      "support": 969,
+      "recall": 0.3302373581011352,
+      "f1": 0.38027332144979203
+    },
+    "Angular-Diversity always-1": {
+      "support": 969,
+      "recall": 0.4117647058823529,
+      "f1": 0.4396694214876033
+    },
+    "Angular-Diversity always-2": {
+      "support": 969,
+      "recall": 0.3323013415892673,
+      "f1": 0.38265002970885326
+    },
+    "Angular-Diversity always-3": {
+      "support": 969,
+      "recall": 0.3384932920536636,
+      "f1": 0.3890865954922895
+    },
+    "MaxConfidence over observed views": {
+      "support": 969,
+      "recall": 0.5510835913312694,
+      "f1": 0.5353383458646617
+    },
+    "Verifier-best over observed views": {
+      "support": 969,
+      "recall": 0.5479876160990712,
+      "f1": 0.48010849909584086
+    },
+    "Verifier stop/continue": {
+      "support": 969,
+      "recall": 0.5583075335397317,
+      "f1": 0.48585541086663675
+    }
+  },
+  "kick": {
+    "Stay only": {
+      "support": 1152,
+      "recall": 0.390625,
+      "f1": 0.4066877541798463
+    },
+    "Random-1": {
+      "support": 1152,
+      "recall": 0.4322916666666667,
+      "f1": 0.4537585421412301
+    },
+    "Random-2": {
+      "support": 1152,
+      "recall": 0.4175347222222222,
+      "f1": 0.4449583718778908
+    },
+    "Random-3": {
+      "support": 1152,
+      "recall": 0.4583333333333333,
+      "f1": 0.4743935309973046
+    },
+    "Angular-Diversity always-1": {
+      "support": 1152,
+      "recall": 0.5034722222222222,
+      "f1": 0.5204127411395244
+    },
+    "Angular-Diversity always-2": {
+      "support": 1152,
+      "recall": 0.4175347222222222,
+      "f1": 0.4427059364933272
+    },
+    "Angular-Diversity always-3": {
+      "support": 1152,
+      "recall": 0.4366319444444444,
+      "f1": 0.4703132304815334
+    },
+    "MaxConfidence over observed views": {
+      "support": 1152,
+      "recall": 0.6727430555555556,
+      "f1": 0.5809595202398801
+    },
+    "Verifier-best over observed views": {
+      "support": 1152,
+      "recall": 0.5859375,
+      "f1": 0.5044843049327353
+    },
+    "Verifier stop/continue": {
+      "support": 1152,
+      "recall": 0.578125,
+      "f1": 0.5184896847022189
+    }
+  },
+  "knock": {
+    "Stay only": {
+      "support": 443,
+      "recall": 0.12641083521444696,
+      "f1": 0.1917808219178082
+    },
+    "Random-1": {
+      "support": 443,
+      "recall": 0.20316027088036118,
+      "f1": 0.28081123244929795
+    },
+    "Random-2": {
+      "support": 443,
+      "recall": 0.2054176072234763,
+      "f1": 0.28482003129890454
+    },
+    "Random-3": {
+      "support": 443,
+      "recall": 0.1873589164785553,
+      "f1": 0.26731078904991945
+    },
+    "Angular-Diversity always-1": {
+      "support": 443,
+      "recall": 0.18058690744920994,
+      "f1": 0.26315789473684215
+    },
+    "Angular-Diversity always-2": {
+      "support": 443,
+      "recall": 0.15575620767494355,
+      "f1": 0.22697368421052633
+    },
+    "Angular-Diversity always-3": {
+      "support": 443,
+      "recall": 0.17381489841986456,
+      "f1": 0.24838709677419354
+    },
+    "MaxConfidence over observed views": {
+      "support": 443,
+      "recall": 0.27313769751693,
+      "f1": 0.37059724349157736
+    },
+    "Verifier-best over observed views": {
+      "support": 443,
+      "recall": 0.24604966139954854,
+      "f1": 0.3273273273273274
+    },
+    "Verifier stop/continue": {
+      "support": 443,
+      "recall": 0.2144469525959368,
+      "f1": 0.29827315541601257
+    }
+  },
+  "punch": {
+    "Stay only": {
+      "support": 955,
+      "recall": 0.20523560209424083,
+      "f1": 0.23728813559322035
+    },
+    "Random-1": {
+      "support": 955,
+      "recall": 0.3036649214659686,
+      "f1": 0.30590717299578063
+    },
+    "Random-2": {
+      "support": 955,
+      "recall": 0.3225130890052356,
+      "f1": 0.32150313152400833
+    },
+    "Random-3": {
+      "support": 955,
+      "recall": 0.30261780104712044,
+      "f1": 0.3024594453165882
+    },
+    "Angular-Diversity always-1": {
+      "support": 955,
+      "recall": 0.35602094240837695,
+      "f1": 0.3429147755925365
+    },
+    "Angular-Diversity always-2": {
+      "support": 955,
+      "recall": 0.2963350785340314,
+      "f1": 0.31030701754385964
+    },
+    "Angular-Diversity always-3": {
+      "support": 955,
+      "recall": 0.3068062827225131,
+      "f1": 0.30473218928757156
+    },
+    "MaxConfidence over observed views": {
+      "support": 955,
+      "recall": 0.41047120418848165,
+      "f1": 0.38262567105905315
+    },
+    "Verifier-best over observed views": {
+      "support": 955,
+      "recall": 0.3193717277486911,
+      "f1": 0.3175429463820927
+    },
+    "Verifier stop/continue": {
+      "support": 955,
+      "recall": 0.32356020942408376,
+      "f1": 0.3257775434897206
+    }
+  },
+  "touching face": {
+    "Stay only": {
+      "support": 1004,
+      "recall": 0.1643426294820717,
+      "f1": 0.2040816326530612
+    },
+    "Random-1": {
+      "support": 1004,
+      "recall": 0.16135458167330677,
+      "f1": 0.2079589216944801
+    },
+    "Random-2": {
+      "support": 1004,
+      "recall": 0.16533864541832669,
+      "f1": 0.20418204182041821
+    },
+    "Random-3": {
+      "support": 1004,
+      "recall": 0.15338645418326693,
+      "f1": 0.19178082191780824
+    },
+    "Angular-Diversity always-1": {
+      "support": 1004,
+      "recall": 0.1454183266932271,
+      "f1": 0.19492656875834447
+    },
+    "Angular-Diversity always-2": {
+      "support": 1004,
+      "recall": 0.16334661354581673,
+      "f1": 0.2105263157894737
+    },
+    "Angular-Diversity always-3": {
+      "support": 1004,
+      "recall": 0.16633466135458166,
+      "f1": 0.20940438871473355
+    },
+    "MaxConfidence over observed views": {
+      "support": 1004,
+      "recall": 0.16533864541832669,
+      "f1": 0.21530479896238652
+    },
+    "Verifier-best over observed views": {
+      "support": 1004,
+      "recall": 0.11155378486055777,
+      "f1": 0.15664335664335663
+    },
+    "Verifier stop/continue": {
+      "support": 1004,
+      "recall": 0.11254980079681275,
+      "f1": 0.15893108298171588
+    }
+  }
+}

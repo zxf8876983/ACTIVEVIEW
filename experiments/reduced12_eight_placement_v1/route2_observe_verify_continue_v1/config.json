@@ -1,0 +1,5 @@
+{
+  "max_moves": 3,
+  "calibration_precision": 0.75,
+  "test_used": false
+}

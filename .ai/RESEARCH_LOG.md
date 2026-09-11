@@ -939,3 +939,20 @@ The combined interpretation is strong motion×scene×view interaction: a
 sequential information-acquisition route is more promising than another
 one-shot scalar predictor, but it must handle non-greedy/global exploration.
 No follow-up experiment was started automatically; Test was not read.
+
+## Overnight dual-route experiment (2026-09-12)
+
+Completed the reduced12 eight-placement Train/Val dual-route run using a
+shared frozen ST-GCN plus a record-balanced 16-observation-per-record
+lightweight head. The head improved Moving Val s1/legal/all32 Accuracy from
+0.454266/0.334474/0.290867 to 0.507044/0.375418/0.323214 and was selected as
+the shared recognizer (legal and all32 gains both exceeded 2pp without clear
+s1-only specialization). Route-1 retrieval-NBV K=32 achieved Accuracy/F1
+0.484325/0.487705 versus Random 0.365079/0.364567; K=16/64 were
+0.477381/0.482178 and 0.489782/0.489388. Route-2 verifier quality was
+AUROC/AUPRC/ECE 0.722272/0.606913/0.056462. Verifier stop/continue reached
+0.433929/0.421583 versus Random-3 0.371032/0.372071, while verifier-best
+observed reached 0.434226/0.423232. The pre-registered rules therefore keep
+both routes for human review; no Test artifact was read and no formal frozen
+ST-GCN/WM-E/JR checkpoint or perception data was modified. Reports are under
+`experiments/reduced12_eight_placement_v1/{view_agnostic_frozen_encoder_head,route1_retrieval_nbv_v1,route2_observe_verify_continue_v1,dual_route_overnight_summary}/`.

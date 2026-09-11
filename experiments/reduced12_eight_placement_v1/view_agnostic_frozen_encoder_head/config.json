@@ -1,0 +1,7 @@
+{
+  "head": "Linear(256,256)->GELU->Linear(256,12)",
+  "head_lr": 0.001,
+  "epochs": 15,
+  "record_balanced_observations": 16,
+  "test_used": false
+}

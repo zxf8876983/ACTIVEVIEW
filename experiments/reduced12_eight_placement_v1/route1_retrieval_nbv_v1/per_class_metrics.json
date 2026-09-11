@@ -1,0 +1,386 @@
+{
+  "walk": {
+    "Stay/current": {
+      "support": 1071,
+      "recall": 0.3753501400560224,
+      "f1": 0.3470004315925766
+    },
+    "Random legal action": {
+      "support": 1071,
+      "recall": 0.38095238095238093,
+      "f1": 0.3724326791419443
+    },
+    "Nearest/lowest-cost": {
+      "support": 1071,
+      "recall": 0.3753501400560224,
+      "f1": 0.3470004315925766
+    },
+    "Old Direct-Correctness": {
+      "support": 1071,
+      "recall": 0.5760971055088702,
+      "f1": 0.4790372670807453
+    },
+    "Retrieval-NBV K=32": {
+      "support": 1071,
+      "recall": 0.5340802987861811,
+      "f1": 0.45039370078740154
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 1071,
+      "recall": 0.7703081232492998,
+      "f1": 0.6892230576441103
+    }
+  },
+  "sit": {
+    "Stay/current": {
+      "support": 786,
+      "recall": 0.5750636132315522,
+      "f1": 0.30386554621848744
+    },
+    "Random legal action": {
+      "support": 786,
+      "recall": 0.6743002544529262,
+      "f1": 0.4027355623100304
+    },
+    "Nearest/lowest-cost": {
+      "support": 786,
+      "recall": 0.5750636132315522,
+      "f1": 0.30386554621848744
+    },
+    "Old Direct-Correctness": {
+      "support": 786,
+      "recall": 0.7748091603053435,
+      "f1": 0.6360313315926893
+    },
+    "Retrieval-NBV K=32": {
+      "support": 786,
+      "recall": 0.7315521628498728,
+      "f1": 0.6556442417331813
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 786,
+      "recall": 0.9351145038167938,
+      "f1": 0.8072487644151566
+    }
+  },
+  "stand up": {
+    "Stay/current": {
+      "support": 907,
+      "recall": 0.40683572216097025,
+      "f1": 0.49265687583444595
+    },
+    "Random legal action": {
+      "support": 907,
+      "recall": 0.5093715545755237,
+      "f1": 0.5900383141762453
+    },
+    "Nearest/lowest-cost": {
+      "support": 907,
+      "recall": 0.40683572216097025,
+      "f1": 0.49265687583444595
+    },
+    "Old Direct-Correctness": {
+      "support": 907,
+      "recall": 0.6824696802646086,
+      "f1": 0.726099706744868
+    },
+    "Retrieval-NBV K=32": {
+      "support": 907,
+      "recall": 0.6868798235942668,
+      "f1": 0.7299355594610428
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 907,
+      "recall": 0.814773980154355,
+      "f1": 0.8598022105875508
+    }
+  },
+  "bend": {
+    "Stay/current": {
+      "support": 1012,
+      "recall": 0.42292490118577075,
+      "f1": 0.253780017788319
+    },
+    "Random legal action": {
+      "support": 1012,
+      "recall": 0.4189723320158103,
+      "f1": 0.2796833773087071
+    },
+    "Nearest/lowest-cost": {
+      "support": 1012,
+      "recall": 0.42292490118577075,
+      "f1": 0.253780017788319
+    },
+    "Old Direct-Correctness": {
+      "support": 1012,
+      "recall": 0.38735177865612647,
+      "f1": 0.40308483290488434
+    },
+    "Retrieval-NBV K=32": {
+      "support": 1012,
+      "recall": 0.42391304347826086,
+      "f1": 0.37434554973821993
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 1012,
+      "recall": 0.5968379446640316,
+      "f1": 0.5968379446640316
+    }
+  },
+  "crawl": {
+    "Stay/current": {
+      "support": 446,
+      "recall": 0.3654708520179372,
+      "f1": 0.4801178203240059
+    },
+    "Random legal action": {
+      "support": 446,
+      "recall": 0.5,
+      "f1": 0.6010781671159029
+    },
+    "Nearest/lowest-cost": {
+      "support": 446,
+      "recall": 0.3654708520179372,
+      "f1": 0.4801178203240059
+    },
+    "Old Direct-Correctness": {
+      "support": 446,
+      "recall": 0.773542600896861,
+      "f1": 0.8455882352941176
+    },
+    "Retrieval-NBV K=32": {
+      "support": 446,
+      "recall": 0.7488789237668162,
+      "f1": 0.8287841191066998
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 446,
+      "recall": 0.9013452914798207,
+      "f1": 0.9188571428571428
+    }
+  },
+  "stumble": {
+    "Stay/current": {
+      "support": 849,
+      "recall": 0.0636042402826855,
+      "f1": 0.10714285714285712
+    },
+    "Random legal action": {
+      "support": 849,
+      "recall": 0.18138987043580684,
+      "f1": 0.24798711755233493
+    },
+    "Nearest/lowest-cost": {
+      "support": 849,
+      "recall": 0.0636042402826855,
+      "f1": 0.10714285714285712
+    },
+    "Old Direct-Correctness": {
+      "support": 849,
+      "recall": 0.2779740871613663,
+      "f1": 0.3352272727272727
+    },
+    "Retrieval-NBV K=32": {
+      "support": 849,
+      "recall": 0.22968197879858657,
+      "f1": 0.29191616766467066
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 849,
+      "recall": 0.5535924617196702,
+      "f1": 0.6204620462046204
+    }
+  },
+  "clap": {
+    "Stay/current": {
+      "support": 486,
+      "recall": 0.10905349794238683,
+      "f1": 0.1598793363499246
+    },
+    "Random legal action": {
+      "support": 486,
+      "recall": 0.18106995884773663,
+      "f1": 0.2430939226519337
+    },
+    "Nearest/lowest-cost": {
+      "support": 486,
+      "recall": 0.10905349794238683,
+      "f1": 0.1598793363499246
+    },
+    "Old Direct-Correctness": {
+      "support": 486,
+      "recall": 0.35185185185185186,
+      "f1": 0.40909090909090906
+    },
+    "Retrieval-NBV K=32": {
+      "support": 486,
+      "recall": 0.3271604938271605,
+      "f1": 0.3989962358845671
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 486,
+      "recall": 0.5329218106995884,
+      "f1": 0.5704845814977973
+    }
+  },
+  "throw": {
+    "Stay/current": {
+      "support": 969,
+      "recall": 0.27038183694530443,
+      "f1": 0.3314358001265022
+    },
+    "Random legal action": {
+      "support": 969,
+      "recall": 0.3457172342621259,
+      "f1": 0.4007177033492823
+    },
+    "Nearest/lowest-cost": {
+      "support": 969,
+      "recall": 0.27038183694530443,
+      "f1": 0.3314358001265022
+    },
+    "Old Direct-Correctness": {
+      "support": 969,
+      "recall": 0.5748194014447885,
+      "f1": 0.5155020823692735
+    },
+    "Retrieval-NBV K=32": {
+      "support": 969,
+      "recall": 0.5087719298245614,
+      "f1": 0.49300000000000005
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 969,
+      "recall": 0.7265221878224974,
+      "f1": 0.7383324593602517
+    }
+  },
+  "kick": {
+    "Stay/current": {
+      "support": 1152,
+      "recall": 0.390625,
+      "f1": 0.4066877541798463
+    },
+    "Random legal action": {
+      "support": 1152,
+      "recall": 0.4548611111111111,
+      "f1": 0.46619217081850534
+    },
+    "Nearest/lowest-cost": {
+      "support": 1152,
+      "recall": 0.390625,
+      "f1": 0.4066877541798463
+    },
+    "Old Direct-Correctness": {
+      "support": 1152,
+      "recall": 0.6649305555555556,
+      "f1": 0.6276116345759934
+    },
+    "Retrieval-NBV K=32": {
+      "support": 1152,
+      "recall": 0.6310763888888888,
+      "f1": 0.5941969758888433
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 1152,
+      "recall": 0.8480902777777778,
+      "f1": 0.8182579564489113
+    }
+  },
+  "knock": {
+    "Stay/current": {
+      "support": 443,
+      "recall": 0.12641083521444696,
+      "f1": 0.1917808219178082
+    },
+    "Random legal action": {
+      "support": 443,
+      "recall": 0.18284424379232506,
+      "f1": 0.262987012987013
+    },
+    "Nearest/lowest-cost": {
+      "support": 443,
+      "recall": 0.12641083521444696,
+      "f1": 0.1917808219178082
+    },
+    "Old Direct-Correctness": {
+      "support": 443,
+      "recall": 0.23476297968397292,
+      "f1": 0.33440514469453375
+    },
+    "Retrieval-NBV K=32": {
+      "support": 443,
+      "recall": 0.27313769751693,
+      "f1": 0.3723076923076923
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 443,
+      "recall": 0.5282167042889391,
+      "f1": 0.6256684491978611
+    }
+  },
+  "punch": {
+    "Stay/current": {
+      "support": 955,
+      "recall": 0.20523560209424083,
+      "f1": 0.23728813559322035
+    },
+    "Random legal action": {
+      "support": 955,
+      "recall": 0.3057591623036649,
+      "f1": 0.3117992525360384
+    },
+    "Nearest/lowest-cost": {
+      "support": 955,
+      "recall": 0.20523560209424083,
+      "f1": 0.23728813559322035
+    },
+    "Old Direct-Correctness": {
+      "support": 955,
+      "recall": 0.4198952879581152,
+      "f1": 0.36671239140374945
+    },
+    "Retrieval-NBV K=32": {
+      "support": 955,
+      "recall": 0.4607329842931937,
+      "f1": 0.4038549793483249
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 955,
+      "recall": 0.7120418848167539,
+      "f1": 0.648236415633937
+    }
+  },
+  "touching face": {
+    "Stay/current": {
+      "support": 1004,
+      "recall": 0.1643426294820717,
+      "f1": 0.2040816326530612
+    },
+    "Random legal action": {
+      "support": 1004,
+      "recall": 0.15836653386454183,
+      "f1": 0.19605425400739826
+    },
+    "Nearest/lowest-cost": {
+      "support": 1004,
+      "recall": 0.1643426294820717,
+      "f1": 0.2040816326530612
+    },
+    "Old Direct-Correctness": {
+      "support": 1004,
+      "recall": 0.1852589641434263,
+      "f1": 0.2403100775193799
+    },
+    "Retrieval-NBV K=32": {
+      "support": 1004,
+      "recall": 0.21314741035856574,
+      "f1": 0.25907990314769974
+    },
+    "GT-TrueLogP Oracle": {
+      "support": 1004,
+      "recall": 0.45119521912350596,
+      "f1": 0.5138967668746455
+    }
+  }
+}

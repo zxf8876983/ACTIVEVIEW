@@ -1,0 +1,7 @@
+{
+  "seed": 42,
+  "device": "cuda:0",
+  "head_epochs": 15,
+  "verifier_epochs": 15,
+  "test_used": false
+}
