@@ -1,0 +1,12 @@
+{
+  "seed": 42,
+  "samples_per_record": 16,
+  "backbone_lr": 1e-05,
+  "classification_head_lr": 0.0001,
+  "max_epochs": 15,
+  "train_split": "Policy Train Stage-A multi-view observations",
+  "val_split": "Moving Val Stage-A/Stage-D matched contexts",
+  "validation_selection_criterion": "legal candidate global cross-entropy",
+  "policy_test_used": false,
+  "new_rgb_or_skeleton_generated": false
+}

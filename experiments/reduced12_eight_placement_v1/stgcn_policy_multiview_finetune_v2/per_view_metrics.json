@@ -1,0 +1,322 @@
+{
+  "0": {
+    "viewpoint_id": 0,
+    "viewpoint": "r1_a0",
+    "frozen_accuracy": 0.3398809523809524,
+    "adapted_accuracy": 0.38204365079365077,
+    "finetuned_accuracy": 0.3508928571428571,
+    "adapted_minus_frozen_accuracy": 0.042162698412698374,
+    "finetuned_minus_frozen_accuracy": 0.011011904761904723,
+    "s1_selection_frequency": 0.11071428571428571
+  },
+  "1": {
+    "viewpoint_id": 1,
+    "viewpoint": "r1_a1",
+    "frozen_accuracy": 0.34325396825396826,
+    "adapted_accuracy": 0.3867063492063492,
+    "finetuned_accuracy": 0.35962301587301587,
+    "adapted_minus_frozen_accuracy": 0.043452380952380965,
+    "finetuned_minus_frozen_accuracy": 0.016369047619047616,
+    "s1_selection_frequency": 0.06507936507936508
+  },
+  "2": {
+    "viewpoint_id": 2,
+    "viewpoint": "r1_a2",
+    "frozen_accuracy": 0.3713293650793651,
+    "adapted_accuracy": 0.41349206349206347,
+    "finetuned_accuracy": 0.3898809523809524,
+    "adapted_minus_frozen_accuracy": 0.042162698412698374,
+    "finetuned_minus_frozen_accuracy": 0.01855158730158729,
+    "s1_selection_frequency": 0.17936507936507937
+  },
+  "3": {
+    "viewpoint_id": 3,
+    "viewpoint": "r1_a3",
+    "frozen_accuracy": 0.3435515873015873,
+    "adapted_accuracy": 0.38184523809523807,
+    "finetuned_accuracy": 0.3547619047619048,
+    "adapted_minus_frozen_accuracy": 0.03829365079365077,
+    "finetuned_minus_frozen_accuracy": 0.011210317460317476,
+    "s1_selection_frequency": 0.07559523809523809
+  },
+  "4": {
+    "viewpoint_id": 4,
+    "viewpoint": "r1_a4",
+    "frozen_accuracy": 0.3464285714285714,
+    "adapted_accuracy": 0.38759920634920636,
+    "finetuned_accuracy": 0.3525793650793651,
+    "adapted_minus_frozen_accuracy": 0.04117063492063494,
+    "finetuned_minus_frozen_accuracy": 0.0061507936507936845,
+    "s1_selection_frequency": 0.13680555555555557
+  },
+  "5": {
+    "viewpoint_id": 5,
+    "viewpoint": "r1_a5",
+    "frozen_accuracy": 0.34672619047619047,
+    "adapted_accuracy": 0.38244047619047616,
+    "finetuned_accuracy": 0.35426587301587303,
+    "adapted_minus_frozen_accuracy": 0.0357142857142857,
+    "finetuned_minus_frozen_accuracy": 0.007539682539682568,
+    "s1_selection_frequency": 0.05515873015873016
+  },
+  "6": {
+    "viewpoint_id": 6,
+    "viewpoint": "r1_a6",
+    "frozen_accuracy": 0.37242063492063493,
+    "adapted_accuracy": 0.4266865079365079,
+    "finetuned_accuracy": 0.38839285714285715,
+    "adapted_minus_frozen_accuracy": 0.05426587301587299,
+    "finetuned_minus_frozen_accuracy": 0.01597222222222222,
+    "s1_selection_frequency": 0.1663690476190476
+  },
+  "7": {
+    "viewpoint_id": 7,
+    "viewpoint": "r1_a7",
+    "frozen_accuracy": 0.36448412698412697,
+    "adapted_accuracy": 0.4156746031746032,
+    "finetuned_accuracy": 0.399702380952381,
+    "adapted_minus_frozen_accuracy": 0.05119047619047623,
+    "finetuned_minus_frozen_accuracy": 0.03521825396825401,
+    "s1_selection_frequency": 0.07202380952380952
+  },
+  "8": {
+    "viewpoint_id": 8,
+    "viewpoint": "r2_a0",
+    "frozen_accuracy": 0.30029761904761904,
+    "adapted_accuracy": 0.32321428571428573,
+    "finetuned_accuracy": 0.3145833333333333,
+    "adapted_minus_frozen_accuracy": 0.022916666666666696,
+    "finetuned_minus_frozen_accuracy": 0.01428571428571429,
+    "s1_selection_frequency": 0.007341269841269841
+  },
+  "9": {
+    "viewpoint_id": 9,
+    "viewpoint": "r2_a1",
+    "frozen_accuracy": 0.31746031746031744,
+    "adapted_accuracy": 0.3447420634920635,
+    "finetuned_accuracy": 0.3382936507936508,
+    "adapted_minus_frozen_accuracy": 0.027281746031746046,
+    "finetuned_minus_frozen_accuracy": 0.02083333333333337,
+    "s1_selection_frequency": 0.017956349206349205
+  },
+  "10": {
+    "viewpoint_id": 10,
+    "viewpoint": "r2_a2",
+    "frozen_accuracy": 0.3375,
+    "adapted_accuracy": 0.3576388888888889,
+    "finetuned_accuracy": 0.35674603174603176,
+    "adapted_minus_frozen_accuracy": 0.020138888888888873,
+    "finetuned_minus_frozen_accuracy": 0.019246031746031733,
+    "s1_selection_frequency": 0.004861111111111111
+  },
+  "11": {
+    "viewpoint_id": 11,
+    "viewpoint": "r2_a3",
+    "frozen_accuracy": 0.310515873015873,
+    "adapted_accuracy": 0.32648809523809524,
+    "finetuned_accuracy": 0.3263888888888889,
+    "adapted_minus_frozen_accuracy": 0.01597222222222222,
+    "finetuned_minus_frozen_accuracy": 0.015873015873015872,
+    "s1_selection_frequency": 0.007341269841269841
+  },
+  "12": {
+    "viewpoint_id": 12,
+    "viewpoint": "r2_a4",
+    "frozen_accuracy": 0.32708333333333334,
+    "adapted_accuracy": 0.3492063492063492,
+    "finetuned_accuracy": 0.34384920634920635,
+    "adapted_minus_frozen_accuracy": 0.02212301587301585,
+    "finetuned_minus_frozen_accuracy": 0.016765873015873012,
+    "s1_selection_frequency": 0.020436507936507937
+  },
+  "13": {
+    "viewpoint_id": 13,
+    "viewpoint": "r2_a5",
+    "frozen_accuracy": 0.28134920634920635,
+    "adapted_accuracy": 0.30218253968253966,
+    "finetuned_accuracy": 0.2974206349206349,
+    "adapted_minus_frozen_accuracy": 0.020833333333333315,
+    "finetuned_minus_frozen_accuracy": 0.01607142857142857,
+    "s1_selection_frequency": 0.005753968253968254
+  },
+  "14": {
+    "viewpoint_id": 14,
+    "viewpoint": "r2_a6",
+    "frozen_accuracy": 0.33918650793650795,
+    "adapted_accuracy": 0.3717261904761905,
+    "finetuned_accuracy": 0.36527777777777776,
+    "adapted_minus_frozen_accuracy": 0.032539682539682535,
+    "finetuned_minus_frozen_accuracy": 0.026091269841269804,
+    "s1_selection_frequency": 0.029365079365079365
+  },
+  "15": {
+    "viewpoint_id": 15,
+    "viewpoint": "r2_a7",
+    "frozen_accuracy": 0.33670634920634923,
+    "adapted_accuracy": 0.3663690476190476,
+    "finetuned_accuracy": 0.3680555555555556,
+    "adapted_minus_frozen_accuracy": 0.029662698412698363,
+    "finetuned_minus_frozen_accuracy": 0.03134920634920635,
+    "s1_selection_frequency": 0.001488095238095238
+  },
+  "16": {
+    "viewpoint_id": 16,
+    "viewpoint": "r3_a0",
+    "frozen_accuracy": 0.2702380952380952,
+    "adapted_accuracy": 0.29156746031746034,
+    "finetuned_accuracy": 0.2926587301587302,
+    "adapted_minus_frozen_accuracy": 0.021329365079365115,
+    "finetuned_minus_frozen_accuracy": 0.022420634920634952,
+    "s1_selection_frequency": 0.006646825396825397
+  },
+  "17": {
+    "viewpoint_id": 17,
+    "viewpoint": "r3_a1",
+    "frozen_accuracy": 0.26339285714285715,
+    "adapted_accuracy": 0.28501984126984126,
+    "finetuned_accuracy": 0.2814484126984127,
+    "adapted_minus_frozen_accuracy": 0.021626984126984106,
+    "finetuned_minus_frozen_accuracy": 0.018055555555555547,
+    "s1_selection_frequency": 0.0006944444444444445
+  },
+  "18": {
+    "viewpoint_id": 18,
+    "viewpoint": "r3_a2",
+    "frozen_accuracy": 0.2671626984126984,
+    "adapted_accuracy": 0.28214285714285714,
+    "finetuned_accuracy": 0.2890873015873016,
+    "adapted_minus_frozen_accuracy": 0.014980158730158732,
+    "finetuned_minus_frozen_accuracy": 0.021924603174603208,
+    "s1_selection_frequency": 0.003869047619047619
+  },
+  "19": {
+    "viewpoint_id": 19,
+    "viewpoint": "r3_a3",
+    "frozen_accuracy": 0.24692460317460319,
+    "adapted_accuracy": 0.26706349206349206,
+    "finetuned_accuracy": 0.26904761904761904,
+    "adapted_minus_frozen_accuracy": 0.020138888888888873,
+    "finetuned_minus_frozen_accuracy": 0.02212301587301585,
+    "s1_selection_frequency": 0.009821428571428571
+  },
+  "20": {
+    "viewpoint_id": 20,
+    "viewpoint": "r3_a4",
+    "frozen_accuracy": 0.26587301587301587,
+    "adapted_accuracy": 0.27996031746031746,
+    "finetuned_accuracy": 0.29077380952380955,
+    "adapted_minus_frozen_accuracy": 0.014087301587301593,
+    "finetuned_minus_frozen_accuracy": 0.024900793650793673,
+    "s1_selection_frequency": 0.0012896825396825397
+  },
+  "21": {
+    "viewpoint_id": 21,
+    "viewpoint": "r3_a5",
+    "frozen_accuracy": 0.2439484126984127,
+    "adapted_accuracy": 0.24970238095238095,
+    "finetuned_accuracy": 0.2566468253968254,
+    "adapted_minus_frozen_accuracy": 0.005753968253968261,
+    "finetuned_minus_frozen_accuracy": 0.012698412698412681,
+    "s1_selection_frequency": 0.006845238095238095
+  },
+  "22": {
+    "viewpoint_id": 22,
+    "viewpoint": "r3_a6",
+    "frozen_accuracy": 0.2857142857142857,
+    "adapted_accuracy": 0.310218253968254,
+    "finetuned_accuracy": 0.3191468253968254,
+    "adapted_minus_frozen_accuracy": 0.024503968253968278,
+    "finetuned_minus_frozen_accuracy": 0.033432539682539675,
+    "s1_selection_frequency": 0.0003968253968253968
+  },
+  "23": {
+    "viewpoint_id": 23,
+    "viewpoint": "r3_a7",
+    "frozen_accuracy": 0.2808531746031746,
+    "adapted_accuracy": 0.30297619047619045,
+    "finetuned_accuracy": 0.3066468253968254,
+    "adapted_minus_frozen_accuracy": 0.02212301587301585,
+    "finetuned_minus_frozen_accuracy": 0.025793650793650813,
+    "s1_selection_frequency": 0.0021825396825396826
+  },
+  "24": {
+    "viewpoint_id": 24,
+    "viewpoint": "r4_a0",
+    "frozen_accuracy": 0.2443452380952381,
+    "adapted_accuracy": 0.2619047619047619,
+    "finetuned_accuracy": 0.27609126984126986,
+    "adapted_minus_frozen_accuracy": 0.01755952380952383,
+    "finetuned_minus_frozen_accuracy": 0.03174603174603177,
+    "s1_selection_frequency": 0.0
+  },
+  "25": {
+    "viewpoint_id": 25,
+    "viewpoint": "r4_a1",
+    "frozen_accuracy": 0.22827380952380952,
+    "adapted_accuracy": 0.23998015873015874,
+    "finetuned_accuracy": 0.2423611111111111,
+    "adapted_minus_frozen_accuracy": 0.01170634920634922,
+    "finetuned_minus_frozen_accuracy": 0.014087301587301593,
+    "s1_selection_frequency": 0.0
+  },
+  "26": {
+    "viewpoint_id": 26,
+    "viewpoint": "r4_a2",
+    "frozen_accuracy": 0.22757936507936508,
+    "adapted_accuracy": 0.23958333333333334,
+    "finetuned_accuracy": 0.2520833333333333,
+    "adapted_minus_frozen_accuracy": 0.012003968253968267,
+    "finetuned_minus_frozen_accuracy": 0.02450396825396825,
+    "s1_selection_frequency": 0.0035714285714285713
+  },
+  "27": {
+    "viewpoint_id": 27,
+    "viewpoint": "r4_a3",
+    "frozen_accuracy": 0.1986111111111111,
+    "adapted_accuracy": 0.2119047619047619,
+    "finetuned_accuracy": 0.2179563492063492,
+    "adapted_minus_frozen_accuracy": 0.013293650793650802,
+    "finetuned_minus_frozen_accuracy": 0.01934523809523811,
+    "s1_selection_frequency": 0.006150793650793651
+  },
+  "28": {
+    "viewpoint_id": 28,
+    "viewpoint": "r4_a4",
+    "frozen_accuracy": 0.23521825396825397,
+    "adapted_accuracy": 0.2463293650793651,
+    "finetuned_accuracy": 0.2577380952380952,
+    "adapted_minus_frozen_accuracy": 0.011111111111111127,
+    "finetuned_minus_frozen_accuracy": 0.022519841269841245,
+    "s1_selection_frequency": 0.002281746031746032
+  },
+  "29": {
+    "viewpoint_id": 29,
+    "viewpoint": "r4_a5",
+    "frozen_accuracy": 0.19166666666666668,
+    "adapted_accuracy": 0.1976190476190476,
+    "finetuned_accuracy": 0.20029761904761906,
+    "adapted_minus_frozen_accuracy": 0.005952380952380931,
+    "finetuned_minus_frozen_accuracy": 0.008630952380952378,
+    "s1_selection_frequency": 0.0001984126984126984
+  },
+  "30": {
+    "viewpoint_id": 30,
+    "viewpoint": "r4_a6",
+    "frozen_accuracy": 0.24573412698412697,
+    "adapted_accuracy": 0.2699404761904762,
+    "finetuned_accuracy": 0.2851190476190476,
+    "adapted_minus_frozen_accuracy": 0.024206349206349204,
+    "finetuned_minus_frozen_accuracy": 0.039384920634920634,
+    "s1_selection_frequency": 0.00029761904761904765
+  },
+  "31": {
+    "viewpoint_id": 31,
+    "viewpoint": "r4_a7",
+    "frozen_accuracy": 0.23373015873015873,
+    "adapted_accuracy": 0.25436507936507935,
+    "finetuned_accuracy": 0.26240079365079366,
+    "adapted_minus_frozen_accuracy": 0.020634920634920617,
+    "finetuned_minus_frozen_accuracy": 0.02867063492063493,
+    "s1_selection_frequency": 9.92063492063492e-05
+  }
+}
