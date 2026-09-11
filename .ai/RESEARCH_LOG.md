@@ -901,3 +901,41 @@ is not an automatic taxonomy decision; no final-policy or Test score was used.
 The report is in
 `experiments/reduced14_eight_placement_v1/per_class_recognizability_audit/`.
 No model was trained, no data was regenerated, and Test was not read.
+
+## Utility source decomposition (2026-09-11)
+
+Ran a Val-only audit on the current reduced12 eight-placement cache (10,080
+moving contexts; 68,702 legal candidate samples; 143 scene/placement groups).
+The body-relative azimuth convention was numerically verified as
+`wrap(world_candidate_azimuth - placement_yaw)` with world azimuth measured by
+`atan2(+X,+Z)`.  Same-motion utility-map Spearman mean/median was 0.268/0.400,
+versus 0.147/0.188 for matched different-motion maps.  Same scene/placement
+consistency was 0.148 across mixed actions and 0.281 for action-matched pairs.
+Leave-one-sample-out explained variance was 0.479 motion-only, 0.104
+scene-only and 0.559 additive motion+scene, leaving 0.441 interaction
+residual.  Motion+scene explained variance decreased from 0.728 at 1.5 m to
+0.313 at 3.0 m.  `throw` had the largest additive explained variance (0.643),
+while `bend` and `touching face` retained about 0.74 interaction residual.
+
+The report is in
+`experiments/reduced12_eight_placement_v1/utility_source_decomposition/`.
+This was diagnostic only: no training, perception regeneration or policy Test
+read; no formal checkpoint changed.
+
+## K-hop reachability and greedy oracle structure (2026-09-11)
+
+On the same Val moving population, candidate-only privileged Accuracy/Macro-F1
+rose from 0.454266/0.444782 at H1 to 0.538790/0.529863 at K1,
+0.597222/0.591727 at K2, 0.654762/0.650562 at K3, 0.688393/0.683594 at K4,
+0.701984/0.697100 at K5, 0.708234/0.702974 at K6 and 0.709623/0.704598 for
+the full candidate set.  Privileged greedy local search reached only 0.558234
+Accuracy after four steps.  Correct candidates formed fragmented but nontrivial
+basins (mean largest component 2.23 nodes; 76.3% of correct nodes in the
+largest component), while 29.04% of contexts had no reachable correct
+candidate.
+
+The report is in `experiments/reduced12_eight_placement_v1/khop_oracle_curve/`.
+The combined interpretation is strong motion×scene×view interaction: a
+sequential information-acquisition route is more promising than another
+one-shot scalar predictor, but it must handle non-greedy/global exploration.
+No follow-up experiment was started automatically; Test was not read.

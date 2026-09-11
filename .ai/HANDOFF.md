@@ -47,3 +47,26 @@ Habitat rendering should start automatically. `test_used=false` applies to the
 research experiments (EXP051-R2, EXP055 and EXP056); `test_used=true` applies
 only to the explicitly authorized official Final Test. No next experiment is
 currently authorized.
+
+## Current reduced12 handoff (2026-09-11)
+
+Current research uses the reduced12, 20-scene, eight-placement protocol with
+Official Train/Val caps 300/50 and policy records-only split 313/105/0.  The
+latest Val-only audits use 10,080 moving contexts and 68,702 legal candidates.
+The active question is whether the utility gap is best addressed by modelling
+motion×scene×view interaction or by a non-greedy sequential information-
+acquisition policy.  Utility decomposition and K-hop reachability reports are
+the latest source of truth:
+
+- `experiments/reduced12_eight_placement_v1/utility_source_decomposition/`
+- `experiments/reduced12_eight_placement_v1/khop_oracle_curve/`
+- `experiments/reduced12_eight_placement_v1/overnight_nbv_diagnosis/`
+
+Key numbers: additive motion+scene explained variance 0.558848 with 0.441152
+interaction residual; candidate-only H1/K0 and full-oracle Accuracy are
+0.454266 and 0.709623; K4 reachability is 0.688393 but privileged greedy
+four-step search is only 0.558234.  No current diagnostic read policy Test,
+modified a formal checkpoint, trained a model, or regenerated perception/data.
+
+Status: **CLEAN**.  Await explicit researcher authorization before starting a
+new experiment.
