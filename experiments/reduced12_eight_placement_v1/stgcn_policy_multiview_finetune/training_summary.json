@@ -1,0 +1,164 @@
+{
+  "max_epochs": 15,
+  "patience": 4,
+  "best_epoch": 15,
+  "best_val_loss": 2.5784027576446533,
+  "backbone_lr": 0.0001,
+  "classification_head_lr": 0.0005,
+  "weight_decay": 0.0001,
+  "batch_size": 64,
+  "seed": 42,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 4.549125671386719,
+      "val_loss": 5.023128032684326,
+      "val_accuracy": 0.29523809523809524,
+      "val_macro_f1": 0.2963403522136544,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 4.298200178146362,
+      "val_loss": 4.589261531829834,
+      "val_accuracy": 0.28095238095238095,
+      "val_macro_f1": 0.280327999924902,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 4.484063243865966,
+      "val_loss": 4.332301139831543,
+      "val_accuracy": 0.29523809523809524,
+      "val_macro_f1": 0.28537335794949187,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 3.4408493041992188,
+      "val_loss": 4.083796501159668,
+      "val_accuracy": 0.29523809523809524,
+      "val_macro_f1": 0.29475773872645566,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.6390527725219726,
+      "val_loss": 3.8773913383483887,
+      "val_accuracy": 0.2904761904761905,
+      "val_macro_f1": 0.2933738038808089,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.2761348247528077,
+      "val_loss": 3.6920604705810547,
+      "val_accuracy": 0.2904761904761905,
+      "val_macro_f1": 0.29059274201669527,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 3.3888904094696044,
+      "val_loss": 3.577777624130249,
+      "val_accuracy": 0.3142857142857143,
+      "val_macro_f1": 0.3165362619406737,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.934126138687134,
+      "val_loss": 3.421222686767578,
+      "val_accuracy": 0.319047619047619,
+      "val_macro_f1": 0.3083421545332233,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.849961185455322,
+      "val_loss": 3.319140672683716,
+      "val_accuracy": 0.30952380952380953,
+      "val_macro_f1": 0.2976439535624254,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.7120619773864747,
+      "val_loss": 3.1767735481262207,
+      "val_accuracy": 0.29523809523809524,
+      "val_macro_f1": 0.2968206078500196,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 2.544802713394165,
+      "val_loss": 3.066549062728882,
+      "val_accuracy": 0.29523809523809524,
+      "val_macro_f1": 0.2786874209284557,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 2.7699517250061034,
+      "val_loss": 2.972327470779419,
+      "val_accuracy": 0.3047619047619048,
+      "val_macro_f1": 0.29469791465214806,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 13,
+      "train_loss": 2.4364305973052978,
+      "val_loss": 2.8477773666381836,
+      "val_accuracy": 0.3047619047619048,
+      "val_macro_f1": 0.3058039561148235,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 14,
+      "train_loss": 2.511800479888916,
+      "val_loss": 2.723684310913086,
+      "val_accuracy": 0.3047619047619048,
+      "val_macro_f1": 0.3053151333048149,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    },
+    {
+      "epoch": 15,
+      "train_loss": 2.412177085876465,
+      "val_loss": 2.5784027576446533,
+      "val_accuracy": 0.3142857142857143,
+      "val_macro_f1": 0.3161924285600825,
+      "sampled_records": 313,
+      "sampled_observations": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/stgcn_policy_multiview_finetune/stgcn_finetuned_best.pth",
+  "train_contexts": 46324,
+  "train_unique_records": 313,
+  "train_available_observations": 351499,
+  "train_available_candidate_observations": 305175,
+  "sampler": "one uniformly sampled context then one uniformly sampled current/stay-or-legal-candidate viewpoint per record_id per epoch",
+  "samples_per_epoch": 313,
+  "samples_per_record_min": 1,
+  "samples_per_record_max": 1,
+  "val_selection": {
+    "records": 105,
+    "observations": 210,
+    "views_per_record": 2
+  },
+  "best_epoch_train_loss": 2.412177085876465,
+  "overfitting_flag": false
+}
