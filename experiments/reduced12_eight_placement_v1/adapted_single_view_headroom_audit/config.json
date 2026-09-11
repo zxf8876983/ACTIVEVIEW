@@ -1,0 +1,10 @@
+{
+  "seed": 42,
+  "contexts": 10080,
+  "viewpoints_per_context": 32,
+  "split": "Stage-D Moving Val",
+  "classifier_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/single_view_classifier_adaptation/learned_head_best.pth",
+  "stgcn_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+  "policy_test_used": false,
+  "training_used": false
+}
