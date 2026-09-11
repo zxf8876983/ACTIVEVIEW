@@ -1,0 +1,158 @@
+{
+  "same_scene_placement": {
+    "attempted_pair_count": 360548,
+    "usable_pair_count": 264551,
+    "pearson": {
+      "mean": 0.14718277991898923,
+      "median": 0.19202202919855524,
+      "p25": -0.2547647599933599,
+      "p75": 0.5869382283547845
+    },
+    "spearman": {
+      "mean": 0.14794252506340108,
+      "median": 0.19047619047619052,
+      "p25": -0.2,
+      "p75": 0.5636363636363637
+    },
+    "sign_agreement": {
+      "mean": 0.6188594114995202,
+      "median": 0.625,
+      "p25": 0.4444444444444444,
+      "p75": 0.8
+    },
+    "correct_jaccard": {
+      "mean": 0.3044014170620211,
+      "median": 0.2,
+      "p25": 0.0,
+      "p75": 0.5
+    },
+    "common_cells": {
+      "mean": 7.3446670018257345,
+      "median": 6.0,
+      "p25": 5.0,
+      "p75": 9.0
+    }
+  },
+  "same_scene_same_action": {
+    "attempted_pair_count": 360548,
+    "usable_pair_count": 21647,
+    "pearson": {
+      "mean": 0.2731877393134505,
+      "median": 0.35353803466716954,
+      "p25": -0.10486174198367665,
+      "p75": 0.7194392827898299
+    },
+    "spearman": {
+      "mean": 0.28059559539516005,
+      "median": 0.35664335664335667,
+      "p25": -0.09523809523809526,
+      "p75": 0.704532967032967
+    },
+    "sign_agreement": {
+      "mean": 0.7308286524808584,
+      "median": 0.75,
+      "p25": 0.6,
+      "p75": 0.9090909090909091
+    },
+    "correct_jaccard": {
+      "mean": 0.4594850058179478,
+      "median": 0.5,
+      "p25": 0.0,
+      "p75": 0.8
+    },
+    "common_cells": {
+      "mean": 7.355153139003095,
+      "median": 6.0,
+      "p25": 5.0,
+      "p75": 9.0
+    }
+  },
+  "per_radius": {
+    "0": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 557645,
+      "pearson": 0.09774536641062911,
+      "spearman": 0.10730247963295877,
+      "sign_agreement": 0.5445901962718217
+    },
+    "1": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 524461,
+      "pearson": 0.13490752690037572,
+      "spearman": 0.14601751468593513,
+      "sign_agreement": 0.5926732397642532
+    },
+    "2": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 449325,
+      "pearson": 0.10566898204170015,
+      "spearman": 0.10605498019362725,
+      "sign_agreement": 0.6434429421910643
+    },
+    "3": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 411608,
+      "pearson": 0.07003470654682277,
+      "spearman": 0.06257827961314498,
+      "sign_agreement": 0.7009338982721425
+    }
+  },
+  "per_azimuth": {
+    "0": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 197002,
+      "pearson": 0.20293385447872167,
+      "spearman": 0.2179979119467598,
+      "sign_agreement": 0.6392422411955209
+    },
+    "1": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 259727,
+      "pearson": 0.18225031957043242,
+      "spearman": 0.18981414803890445,
+      "sign_agreement": 0.6196467829682706
+    },
+    "2": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 294180,
+      "pearson": 0.11671544945952289,
+      "spearman": 0.11684961174247432,
+      "sign_agreement": 0.5947753076347815
+    },
+    "3": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 221727,
+      "pearson": 0.06428009250385132,
+      "spearman": 0.06650436339219125,
+      "sign_agreement": 0.5886969110663113
+    },
+    "4": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 218625,
+      "pearson": 0.11334697782069612,
+      "spearman": 0.11158507557017386,
+      "sign_agreement": 0.6182138364779874
+    },
+    "5": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 245320,
+      "pearson": 0.10448690296098198,
+      "spearman": 0.11152687431911223,
+      "sign_agreement": 0.5967756399804337
+    },
+    "6": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 244078,
+      "pearson": 0.12840389897963952,
+      "spearman": 0.1219345323077822,
+      "sign_agreement": 0.6266070682322864
+    },
+    "7": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 262380,
+      "pearson": 0.16085519040979201,
+      "spearman": 0.17423379682520207,
+      "sign_agreement": 0.6299108163731991
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "motion_only": {
+    "samples": 68702,
+    "explained_variance": 0.4794932428310468,
+    "pearson": 0.6933869124247923,
+    "spearman": 0.6812252670219966,
+    "residual_variance_fraction": 0.5205067571689532
+  },
+  "scene_only": {
+    "samples": 68702,
+    "explained_variance": 0.10415285509468974,
+    "pearson": 0.32521063553337554,
+    "spearman": 0.3183817768790802,
+    "residual_variance_fraction": 0.8958471449053104
+  },
+  "motion_scene": {
+    "samples": 68702,
+    "explained_variance": 0.5588478864931038,
+    "pearson": 0.7481544299331061,
+    "spearman": 0.7378532525368601,
+    "residual_variance_fraction": 0.4411521135068962
+  },
+  "cell_count": 32,
+  "candidate_sample_count": 68702
+}

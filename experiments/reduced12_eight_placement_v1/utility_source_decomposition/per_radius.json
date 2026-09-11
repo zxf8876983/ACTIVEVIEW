@@ -1,0 +1,156 @@
+{
+  "same_motion": {
+    "0": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 74795,
+      "pearson": 0.6759311749682522,
+      "spearman": 0.665195895804591,
+      "sign_agreement": 0.782191322949395
+    },
+    "1": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 69218,
+      "pearson": 0.5156264679386773,
+      "spearman": 0.5031538005746462,
+      "sign_agreement": 0.7266462480857581
+    },
+    "2": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 60706,
+      "pearson": 0.3885718252730485,
+      "spearman": 0.39592778286093006,
+      "sign_agreement": 0.7040160774882219
+    },
+    "3": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 47862,
+      "pearson": 0.31806327624145614,
+      "spearman": 0.3334548004827708,
+      "sign_agreement": 0.7297647402950148
+    }
+  },
+  "same_scene": {
+    "0": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 557645,
+      "pearson": 0.09774536641062911,
+      "spearman": 0.10730247963295877,
+      "sign_agreement": 0.5445901962718217
+    },
+    "1": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 524461,
+      "pearson": 0.13490752690037572,
+      "spearman": 0.14601751468593513,
+      "sign_agreement": 0.5926732397642532
+    },
+    "2": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 449325,
+      "pearson": 0.10566898204170015,
+      "spearman": 0.10605498019362725,
+      "sign_agreement": 0.6434429421910643
+    },
+    "3": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 411608,
+      "pearson": 0.07003470654682277,
+      "spearman": 0.06257827961314498,
+      "sign_agreement": 0.7009338982721425
+    }
+  },
+  "motion_scene_decomposition": {
+    "0": {
+      "motion_only": {
+        "samples": 19870,
+        "explained_variance": 0.6656045182670095,
+        "pearson": 0.8160333185370219,
+        "spearman": 0.8078261301901453,
+        "residual_variance_fraction": 0.3343954817329905
+      },
+      "scene_only": {
+        "samples": 19870,
+        "explained_variance": 0.06132475431762863,
+        "pearson": 0.25261601354162433,
+        "spearman": 0.21245580749109,
+        "residual_variance_fraction": 0.9386752456823714
+      },
+      "motion_scene": {
+        "samples": 19870,
+        "explained_variance": 0.727782326610779,
+        "pearson": 0.8531948569334762,
+        "spearman": 0.8599867212235393,
+        "residual_variance_fraction": 0.2722176733892209
+      }
+    },
+    "1": {
+      "motion_only": {
+        "samples": 18020,
+        "explained_variance": 0.4382633281770225,
+        "pearson": 0.6631148932983852,
+        "spearman": 0.6476653721855763,
+        "residual_variance_fraction": 0.5617366718229776
+      },
+      "scene_only": {
+        "samples": 18020,
+        "explained_variance": 0.10161475482604543,
+        "pearson": 0.3212556064351846,
+        "spearman": 0.2929232559200408,
+        "residual_variance_fraction": 0.8983852451739546
+      },
+      "motion_scene": {
+        "samples": 18020,
+        "explained_variance": 0.5586407569674184,
+        "pearson": 0.7478563282496218,
+        "spearman": 0.749972150310398,
+        "residual_variance_fraction": 0.44135924303258156
+      }
+    },
+    "2": {
+      "motion_only": {
+        "samples": 16002,
+        "explained_variance": 0.30908500848349574,
+        "pearson": 0.5590886154990156,
+        "spearman": 0.5577779285936079,
+        "residual_variance_fraction": 0.6909149915165043
+      },
+      "scene_only": {
+        "samples": 16002,
+        "explained_variance": 0.07386746079293771,
+        "pearson": 0.2759084669301131,
+        "spearman": 0.2498519233994679,
+        "residual_variance_fraction": 0.9261325392070622
+      },
+      "motion_scene": {
+        "samples": 16002,
+        "explained_variance": 0.40055972390654226,
+        "pearson": 0.6346355010770105,
+        "spearman": 0.6303518898050645,
+        "residual_variance_fraction": 0.5994402760934576
+      }
+    },
+    "3": {
+      "motion_only": {
+        "samples": 14810,
+        "explained_variance": 0.26283675964617015,
+        "pearson": 0.5176312101401052,
+        "spearman": 0.5306664027506761,
+        "residual_variance_fraction": 0.7371632403538299
+      },
+      "scene_only": {
+        "samples": 14810,
+        "explained_variance": 0.040334513010270134,
+        "pearson": 0.2098231008721471,
+        "spearman": 0.162913435098693,
+        "residual_variance_fraction": 0.95966548698973
+      },
+      "motion_scene": {
+        "samples": 14810,
+        "explained_variance": 0.31272761513201985,
+        "pearson": 0.5642523174692454,
+        "spearman": 0.5656494729536277,
+        "residual_variance_fraction": 0.6872723848679801
+      }
+    }
+  }
+}

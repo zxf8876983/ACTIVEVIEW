@@ -1,0 +1,547 @@
+{
+  "experiment_id": "REDUCED12_UTILITY_SOURCE_DECOMPOSITION",
+  "population": {
+    "split": "val_moving",
+    "contexts": 10080,
+    "candidate_samples": 68702,
+    "scene_placement_groups": 143,
+    "records": 105
+  },
+  "alignment": {
+    "convention_confirmed": true,
+    "world_azimuth_reference": "+Z is 0 degrees; atan2(+X,+Z), increasing toward +X",
+    "body_yaw_application": "compose_root_rotation prepends positive Y yaw; local +Z maps to world azimuth +yaw",
+    "body_relative_formula": "wrap(world_candidate_azimuth_deg - placement_yaw_deg) in [-180,180)",
+    "viewpoint_id_formula": "radius_index=viewpoint_id//8, azimuth_index=viewpoint_id%8",
+    "max_position_azimuth_error_deg": 1.9318688401881445e-05,
+    "max_forward_sign_error_deg": 7.62939453125e-06,
+    "sample_count": 30,
+    "samples": [
+      {
+        "episode_id": "reduced12kc_official_val_12964_002_d6561143e2__00009-vLpv2VX547B__p06__v02",
+        "scene_id": "00009-vLpv2VX547B",
+        "placement_id": "p06",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 315.0,
+        "body_relative_azimuth_deg": 45.0,
+        "body_relative_bin": 1,
+        "generator_forward_azimuth_deg": 315.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12964_002_d6561143e2__00009-vLpv2VX547B__p06__v02",
+        "scene_id": "00009-vLpv2VX547B",
+        "placement_id": "p06",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 315.0,
+        "body_relative_azimuth_deg": 90.0,
+        "body_relative_bin": 2,
+        "generator_forward_azimuth_deg": 315.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12964_002_d6561143e2__00009-vLpv2VX547B__p06__v02",
+        "scene_id": "00009-vLpv2VX547B",
+        "placement_id": "p06",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 315.0,
+        "body_relative_azimuth_deg": 135.0,
+        "body_relative_bin": 3,
+        "generator_forward_azimuth_deg": 315.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00059-kJxT5qssH4H__p02__v30",
+        "scene_id": "00059-kJxT5qssH4H",
+        "placement_id": "p02",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00059-kJxT5qssH4H__p02__v30",
+        "scene_id": "00059-kJxT5qssH4H",
+        "placement_id": "p02",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_05908_001_0dae7aada7__00059-kJxT5qssH4H__p02__v30",
+        "scene_id": "00059-kJxT5qssH4H",
+        "placement_id": "p02",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_07760_018_584ce13221__00009-vLpv2VX547B__p07__v04",
+        "scene_id": "00009-vLpv2VX547B",
+        "placement_id": "p07",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_07760_018_584ce13221__00009-vLpv2VX547B__p07__v04",
+        "scene_id": "00009-vLpv2VX547B",
+        "placement_id": "p07",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_07760_018_584ce13221__00009-vLpv2VX547B__p07__v04",
+        "scene_id": "00009-vLpv2VX547B",
+        "placement_id": "p07",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12719_018_c907ff540f__00043-Jfyvj3xn2aJ__p07__v12",
+        "scene_id": "00043-Jfyvj3xn2aJ",
+        "placement_id": "p07",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 270.0,
+        "body_relative_azimuth_deg": 90.0,
+        "body_relative_bin": 2,
+        "generator_forward_azimuth_deg": 270.00000762939453
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12719_018_c907ff540f__00043-Jfyvj3xn2aJ__p07__v12",
+        "scene_id": "00043-Jfyvj3xn2aJ",
+        "placement_id": "p07",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 270.0,
+        "body_relative_azimuth_deg": 135.0,
+        "body_relative_bin": 3,
+        "generator_forward_azimuth_deg": 270.00000762939453
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12719_018_c907ff540f__00043-Jfyvj3xn2aJ__p07__v12",
+        "scene_id": "00043-Jfyvj3xn2aJ",
+        "placement_id": "p07",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 270.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 270.00000762939453
+      },
+      {
+        "episode_id": "reduced12kc_official_val_11421_000_a506668042__00031-Wo6kuutE9i7__p05__v21",
+        "scene_id": "00031-Wo6kuutE9i7",
+        "placement_id": "p05",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_11421_000_a506668042__00031-Wo6kuutE9i7__p05__v21",
+        "scene_id": "00031-Wo6kuutE9i7",
+        "placement_id": "p05",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_11421_000_a506668042__00031-Wo6kuutE9i7__p05__v21",
+        "scene_id": "00031-Wo6kuutE9i7",
+        "placement_id": "p05",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12719_018_c907ff540f__00031-Wo6kuutE9i7__p04__v04",
+        "scene_id": "00031-Wo6kuutE9i7",
+        "placement_id": "p04",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 45.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 45.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12719_018_c907ff540f__00031-Wo6kuutE9i7__p04__v04",
+        "scene_id": "00031-Wo6kuutE9i7",
+        "placement_id": "p04",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 45.0,
+        "body_relative_azimuth_deg": 0.0,
+        "body_relative_bin": 0,
+        "generator_forward_azimuth_deg": 45.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12719_018_c907ff540f__00031-Wo6kuutE9i7__p04__v04",
+        "scene_id": "00031-Wo6kuutE9i7",
+        "placement_id": "p04",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 45.0,
+        "body_relative_azimuth_deg": 45.0,
+        "body_relative_bin": 1,
+        "generator_forward_azimuth_deg": 45.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01486_013_3741ae1fbe__00055-HxmXPBbFCkH__p07__v19",
+        "scene_id": "00055-HxmXPBbFCkH",
+        "placement_id": "p07",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01486_013_3741ae1fbe__00055-HxmXPBbFCkH__p07__v19",
+        "scene_id": "00055-HxmXPBbFCkH",
+        "placement_id": "p07",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01486_013_3741ae1fbe__00055-HxmXPBbFCkH__p07__v19",
+        "scene_id": "00055-HxmXPBbFCkH",
+        "placement_id": "p07",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_06874_005_efd4381865__00016-qk9eeNeR4vw__p00__v30",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p00",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": 135.0,
+        "body_relative_bin": 3,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_06874_005_efd4381865__00016-qk9eeNeR4vw__p00__v30",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p00",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_06874_005_efd4381865__00016-qk9eeNeR4vw__p00__v30",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p00",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_08000_005_f24af36aac__00020-XYyR54sxe6b__p02__v05",
+        "scene_id": "00020-XYyR54sxe6b",
+        "placement_id": "p02",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_08000_005_f24af36aac__00020-XYyR54sxe6b__p02__v05",
+        "scene_id": "00020-XYyR54sxe6b",
+        "placement_id": "p02",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_08000_005_f24af36aac__00020-XYyR54sxe6b__p02__v05",
+        "scene_id": "00020-XYyR54sxe6b",
+        "placement_id": "p02",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": 0.0,
+        "body_relative_bin": 0,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_02179_015_42d7aed562__00062-ACZZiU6BXLz__p06__v13",
+        "scene_id": "00062-ACZZiU6BXLz",
+        "placement_id": "p06",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_02179_015_42d7aed562__00062-ACZZiU6BXLz__p06__v13",
+        "scene_id": "00062-ACZZiU6BXLz",
+        "placement_id": "p06",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_02179_015_42d7aed562__00062-ACZZiU6BXLz__p06__v13",
+        "scene_id": "00062-ACZZiU6BXLz",
+        "placement_id": "p06",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 135.0
+      }
+    ]
+  },
+  "same_motion": {
+    "attempted_pair_count": 492463,
+    "usable_pair_count": 50635,
+    "pearson": {
+      "mean": 0.301664288588638,
+      "median": 0.42655771882597676,
+      "p25": -0.08799368446713457,
+      "p75": 0.7714307690072213
+    },
+    "spearman": {
+      "mean": 0.2680702929932712,
+      "median": 0.39999999999999997,
+      "p25": -0.10714285714285716,
+      "p75": 0.7999999999999999
+    },
+    "sign_agreement": {
+      "mean": 0.7385586009176413,
+      "median": 0.75,
+      "p25": 0.5714285714285714,
+      "p75": 1.0
+    },
+    "correct_jaccard": {
+      "mean": 0.520610497322258,
+      "median": 0.5,
+      "p25": 0.0,
+      "p75": 1.0
+    },
+    "common_cells": {
+      "mean": 4.988268983904414,
+      "median": 4.0,
+      "p25": 4.0,
+      "p75": 5.0
+    }
+  },
+  "different_motion_matched": {
+    "attempted_pair_count": 360548,
+    "usable_pair_count": 264551,
+    "pearson": {
+      "mean": 0.14718277991898923,
+      "median": 0.19202202919855524,
+      "p25": -0.2547647599933599,
+      "p75": 0.5869382283547845
+    },
+    "spearman": {
+      "mean": 0.14794252506340108,
+      "median": 0.19047619047619052,
+      "p25": -0.2,
+      "p75": 0.5636363636363637
+    },
+    "sign_agreement": {
+      "mean": 0.6188594114995202,
+      "median": 0.625,
+      "p25": 0.4444444444444444,
+      "p75": 0.8
+    },
+    "correct_jaccard": {
+      "mean": 0.3044014170620211,
+      "median": 0.2,
+      "p25": 0.0,
+      "p75": 0.5
+    },
+    "common_cells": {
+      "mean": 7.3446670018257345,
+      "median": 6.0,
+      "p25": 5.0,
+      "p75": 9.0
+    }
+  },
+  "same_scene_placement": {
+    "attempted_pair_count": 360548,
+    "usable_pair_count": 264551,
+    "pearson": {
+      "mean": 0.14718277991898923,
+      "median": 0.19202202919855524,
+      "p25": -0.2547647599933599,
+      "p75": 0.5869382283547845
+    },
+    "spearman": {
+      "mean": 0.14794252506340108,
+      "median": 0.19047619047619052,
+      "p25": -0.2,
+      "p75": 0.5636363636363637
+    },
+    "sign_agreement": {
+      "mean": 0.6188594114995202,
+      "median": 0.625,
+      "p25": 0.4444444444444444,
+      "p75": 0.8
+    },
+    "correct_jaccard": {
+      "mean": 0.3044014170620211,
+      "median": 0.2,
+      "p25": 0.0,
+      "p75": 0.5
+    },
+    "common_cells": {
+      "mean": 7.3446670018257345,
+      "median": 6.0,
+      "p25": 5.0,
+      "p75": 9.0
+    }
+  },
+  "same_scene_same_action": {
+    "attempted_pair_count": 360548,
+    "usable_pair_count": 21647,
+    "pearson": {
+      "mean": 0.2731877393134505,
+      "median": 0.35353803466716954,
+      "p25": -0.10486174198367665,
+      "p75": 0.7194392827898299
+    },
+    "spearman": {
+      "mean": 0.28059559539516005,
+      "median": 0.35664335664335667,
+      "p25": -0.09523809523809526,
+      "p75": 0.704532967032967
+    },
+    "sign_agreement": {
+      "mean": 0.7308286524808584,
+      "median": 0.75,
+      "p25": 0.6,
+      "p75": 0.9090909090909091
+    },
+    "correct_jaccard": {
+      "mean": 0.4594850058179478,
+      "median": 0.5,
+      "p25": 0.0,
+      "p75": 0.8
+    },
+    "common_cells": {
+      "mean": 7.355153139003095,
+      "median": 6.0,
+      "p25": 5.0,
+      "p75": 9.0
+    }
+  },
+  "additive_decomposition": {
+    "motion_only": {
+      "samples": 68702,
+      "explained_variance": 0.4794932428310468,
+      "pearson": 0.6933869124247923,
+      "spearman": 0.6812252670219966,
+      "residual_variance_fraction": 0.5205067571689532
+    },
+    "scene_only": {
+      "samples": 68702,
+      "explained_variance": 0.10415285509468974,
+      "pearson": 0.32521063553337554,
+      "spearman": 0.3183817768790802,
+      "residual_variance_fraction": 0.8958471449053104
+    },
+    "motion_scene": {
+      "samples": 68702,
+      "explained_variance": 0.5588478864931038,
+      "pearson": 0.7481544299331061,
+      "spearman": 0.7378532525368601,
+      "residual_variance_fraction": 0.4411521135068962
+    },
+    "cell_count": 32,
+    "candidate_sample_count": 68702
+  },
+  "labels": [
+    "walk",
+    "sit",
+    "stand up",
+    "bend",
+    "crawl",
+    "stumble",
+    "clap",
+    "throw",
+    "kick",
+    "knock",
+    "punch",
+    "touching face"
+  ],
+  "protocol": {
+    "map_shape": [
+      4,
+      8
+    ],
+    "missing_cells": "NaN/omitted; no interpolation",
+    "utility": "frozen ST-GCN GT-class margin",
+    "pair_common_cells_minimum": 4,
+    "different_motion_matching": "same scene/placement, seed 42"
+  },
+  "policy_test_used": false,
+  "policy_val_used_for_diagnostic_only": true,
+  "training_used": false,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "new_dino_generated": false,
+  "gt_action_used_for_posthoc_grouping_only": true,
+  "gt_margin_used_for_privileged_diagnostic_only": true,
+  "future_candidate_observation_used_at_inference": false,
+  "deployable": false
+}

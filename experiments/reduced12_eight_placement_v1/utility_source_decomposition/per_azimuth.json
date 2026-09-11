@@ -1,0 +1,304 @@
+{
+  "same_motion": {
+    "0": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 20599,
+      "pearson": 0.42472065003795445,
+      "spearman": 0.3884395442149822,
+      "sign_agreement": 0.6776057090150007
+    },
+    "1": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 32369,
+      "pearson": 0.5801259671445613,
+      "spearman": 0.5819696276518703,
+      "sign_agreement": 0.7580709938521425
+    },
+    "2": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 41010,
+      "pearson": 0.5699700657106208,
+      "spearman": 0.5713760747837915,
+      "sign_agreement": 0.7587417702999268
+    },
+    "3": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 24135,
+      "pearson": 0.6291649949446442,
+      "spearman": 0.6188319752622732,
+      "sign_agreement": 0.7623368551895587
+    },
+    "4": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 27553,
+      "pearson": 0.42195930586664465,
+      "spearman": 0.41883340475260983,
+      "sign_agreement": 0.7144412586651181
+    },
+    "5": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 34700,
+      "pearson": 0.5448889618749199,
+      "spearman": 0.5478553649313505,
+      "sign_agreement": 0.7379538904899136
+    },
+    "6": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 35052,
+      "pearson": 0.5167235343823641,
+      "spearman": 0.5026434686241232,
+      "sign_agreement": 0.7365913499942942
+    },
+    "7": {
+      "attempted_pair_count": 492463,
+      "candidate_cell_pairs": 37163,
+      "pearson": 0.4969740571830918,
+      "spearman": 0.46336512467244495,
+      "sign_agreement": 0.7358125016817803
+    }
+  },
+  "same_scene": {
+    "0": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 197002,
+      "pearson": 0.20293385447872167,
+      "spearman": 0.2179979119467598,
+      "sign_agreement": 0.6392422411955209
+    },
+    "1": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 259727,
+      "pearson": 0.18225031957043242,
+      "spearman": 0.18981414803890445,
+      "sign_agreement": 0.6196467829682706
+    },
+    "2": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 294180,
+      "pearson": 0.11671544945952289,
+      "spearman": 0.11684961174247432,
+      "sign_agreement": 0.5947753076347815
+    },
+    "3": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 221727,
+      "pearson": 0.06428009250385132,
+      "spearman": 0.06650436339219125,
+      "sign_agreement": 0.5886969110663113
+    },
+    "4": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 218625,
+      "pearson": 0.11334697782069612,
+      "spearman": 0.11158507557017386,
+      "sign_agreement": 0.6182138364779874
+    },
+    "5": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 245320,
+      "pearson": 0.10448690296098198,
+      "spearman": 0.11152687431911223,
+      "sign_agreement": 0.5967756399804337
+    },
+    "6": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 244078,
+      "pearson": 0.12840389897963952,
+      "spearman": 0.1219345323077822,
+      "sign_agreement": 0.6266070682322864
+    },
+    "7": {
+      "attempted_pair_count": 360548,
+      "candidate_cell_pairs": 262380,
+      "pearson": 0.16085519040979201,
+      "spearman": 0.17423379682520207,
+      "sign_agreement": 0.6299108163731991
+    }
+  },
+  "motion_scene_decomposition": {
+    "0": {
+      "motion_only": {
+        "samples": 7317,
+        "explained_variance": 0.4006232352055825,
+        "pearson": 0.6349950319183045,
+        "spearman": 0.5992277603327639,
+        "residual_variance_fraction": 0.5993767647944175
+      },
+      "scene_only": {
+        "samples": 7317,
+        "explained_variance": 0.17100857153886595,
+        "pearson": 0.41471448366134156,
+        "spearman": 0.4051283223945037,
+        "residual_variance_fraction": 0.8289914284611342
+      },
+      "motion_scene": {
+        "samples": 7317,
+        "explained_variance": 0.5240689680028334,
+        "pearson": 0.7245217347258883,
+        "spearman": 0.7068491289641218,
+        "residual_variance_fraction": 0.47593103199716663
+      }
+    },
+    "1": {
+      "motion_only": {
+        "samples": 8831,
+        "explained_variance": 0.5057359515295945,
+        "pearson": 0.7118654327673709,
+        "spearman": 0.7058632133202313,
+        "residual_variance_fraction": 0.49426404847040545
+      },
+      "scene_only": {
+        "samples": 8831,
+        "explained_variance": 0.14559740552707745,
+        "pearson": 0.3829920721478619,
+        "spearman": 0.3622586410248157,
+        "residual_variance_fraction": 0.8544025944729224
+      },
+      "motion_scene": {
+        "samples": 8831,
+        "explained_variance": 0.5927671910793502,
+        "pearson": 0.7704621223876686,
+        "spearman": 0.7678108693731336,
+        "residual_variance_fraction": 0.4072328089206499
+      }
+    },
+    "2": {
+      "motion_only": {
+        "samples": 10730,
+        "explained_variance": 0.508004383932567,
+        "pearson": 0.713271322509454,
+        "spearman": 0.7191081191452579,
+        "residual_variance_fraction": 0.491995616067433
+      },
+      "scene_only": {
+        "samples": 10730,
+        "explained_variance": 0.08045847319126498,
+        "pearson": 0.2872959899032676,
+        "spearman": 0.24032407679537887,
+        "residual_variance_fraction": 0.919541526808735
+      },
+      "motion_scene": {
+        "samples": 10730,
+        "explained_variance": 0.5742352776678872,
+        "pearson": 0.7583289554518917,
+        "spearman": 0.7631384540327171,
+        "residual_variance_fraction": 0.4257647223321128
+      }
+    },
+    "3": {
+      "motion_only": {
+        "samples": 7910,
+        "explained_variance": 0.5412266650880759,
+        "pearson": 0.7363804310806109,
+        "spearman": 0.7254104457906491,
+        "residual_variance_fraction": 0.45877333491192407
+      },
+      "scene_only": {
+        "samples": 7910,
+        "explained_variance": 0.038733292746010006,
+        "pearson": 0.20552487463605765,
+        "spearman": 0.17370398484708363,
+        "residual_variance_fraction": 0.9612667072539901
+      },
+      "motion_scene": {
+        "samples": 7910,
+        "explained_variance": 0.5853653813418451,
+        "pearson": 0.7656235612684157,
+        "spearman": 0.7576698497204546,
+        "residual_variance_fraction": 0.41463461865815493
+      }
+    },
+    "4": {
+      "motion_only": {
+        "samples": 8067,
+        "explained_variance": 0.39292453300744556,
+        "pearson": 0.6286638838200339,
+        "spearman": 0.6165336943150285,
+        "residual_variance_fraction": 0.6070754669925543
+      },
+      "scene_only": {
+        "samples": 8067,
+        "explained_variance": 0.09043116906399362,
+        "pearson": 0.30388250840918546,
+        "spearman": 0.27941520687179744,
+        "residual_variance_fraction": 0.9095688309360064
+      },
+      "motion_scene": {
+        "samples": 8067,
+        "explained_variance": 0.48182562006316965,
+        "pearson": 0.6951178528765888,
+        "spearman": 0.6838279421319107,
+        "residual_variance_fraction": 0.5181743799368304
+      }
+    },
+    "5": {
+      "motion_only": {
+        "samples": 8163,
+        "explained_variance": 0.508492441267955,
+        "pearson": 0.7139351932638139,
+        "spearman": 0.7033721375660787,
+        "residual_variance_fraction": 0.4915075587320451
+      },
+      "scene_only": {
+        "samples": 8163,
+        "explained_variance": 0.07712125587339647,
+        "pearson": 0.2812448757186879,
+        "spearman": 0.2597849360470388,
+        "residual_variance_fraction": 0.9228787441266035
+      },
+      "motion_scene": {
+        "samples": 8163,
+        "explained_variance": 0.5761254365599524,
+        "pearson": 0.7597592055441923,
+        "spearman": 0.7549114786376099,
+        "residual_variance_fraction": 0.4238745634400477
+      }
+    },
+    "6": {
+      "motion_only": {
+        "samples": 8279,
+        "explained_variance": 0.4743458717288376,
+        "pearson": 0.6897714374276915,
+        "spearman": 0.6764899562344505,
+        "residual_variance_fraction": 0.5256541282711624
+      },
+      "scene_only": {
+        "samples": 8279,
+        "explained_variance": 0.09265471634458056,
+        "pearson": 0.30731987313188,
+        "spearman": 0.2770742811964962,
+        "residual_variance_fraction": 0.9073452836554194
+      },
+      "motion_scene": {
+        "samples": 8279,
+        "explained_variance": 0.5507335761231199,
+        "pearson": 0.7426765376709762,
+        "spearman": 0.7208029114726067,
+        "residual_variance_fraction": 0.4492664238768801
+      }
+    },
+    "7": {
+      "motion_only": {
+        "samples": 9405,
+        "explained_variance": 0.47917884202338823,
+        "pearson": 0.6929771948405877,
+        "spearman": 0.6566971133523486,
+        "residual_variance_fraction": 0.5208211579766118
+      },
+      "scene_only": {
+        "samples": 9405,
+        "explained_variance": 0.12454665231011175,
+        "pearson": 0.3548284071300306,
+        "spearman": 0.3503855788692195,
+        "residual_variance_fraction": 0.8754533476898883
+      },
+      "motion_scene": {
+        "samples": 9405,
+        "explained_variance": 0.5658483344941554,
+        "pearson": 0.7526849809283349,
+        "spearman": 0.7245945882340711,
+        "residual_variance_fraction": 0.43415166550584466
+      }
+    }
+  }
+}

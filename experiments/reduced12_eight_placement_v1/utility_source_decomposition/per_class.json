@@ -1,0 +1,1550 @@
+{
+  "0": {
+    "action": "walk",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 6108,
+      "pearson": {
+        "mean": 0.33853896530540967,
+        "median": 0.47107904033338555,
+        "p25": -0.019520765775529816,
+        "p75": 0.7847904573125369
+      },
+      "spearman": {
+        "mean": 0.3381814512708422,
+        "median": 0.39999999999999997,
+        "p25": 0.0,
+        "p75": 0.7999999999999999
+      },
+      "sign_agreement": {
+        "mean": 0.6785249154723614,
+        "median": 0.75,
+        "p25": 0.5,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.5135294792342926,
+        "median": 0.5,
+        "p25": 0.25,
+        "p75": 0.75
+      },
+      "common_cells": {
+        "mean": 4.993287491814014,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 2755,
+      "pearson": {
+        "mean": 0.19256865139548648,
+        "median": 0.24577333257797152,
+        "p25": -0.1969087090324912,
+        "p75": 0.6269990094407215
+      },
+      "spearman": {
+        "mean": 0.1994358174606583,
+        "median": 0.23636363636363636,
+        "p25": -0.19047619047619052,
+        "p75": 0.6
+      },
+      "sign_agreement": {
+        "mean": 0.6450891410402545,
+        "median": 0.65,
+        "p25": 0.5,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.4695813569907112,
+        "median": 0.5,
+        "p25": 0.25,
+        "p75": 0.6666666666666666
+      },
+      "common_cells": {
+        "mean": 7.403629764065336,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 9718,
+      "pearson": {
+        "mean": 0.08263811466009063,
+        "median": 0.128074249228961,
+        "p25": -0.3008302196567275,
+        "p75": 0.501815800517742
+      },
+      "spearman": {
+        "mean": 0.054740921407983645,
+        "median": 0.08571428571428573,
+        "p25": -0.307554945054945,
+        "p75": 0.41818181818181815
+      },
+      "sign_agreement": {
+        "mean": 0.5501132811347188,
+        "median": 0.5454545454545454,
+        "p25": 0.4,
+        "p75": 0.7272727272727273
+      },
+      "correct_jaccard": {
+        "mean": 0.2954020378149671,
+        "median": 0.25,
+        "p25": 0.0,
+        "p75": 0.5
+      },
+      "common_cells": {
+        "mean": 7.4722165054537975,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "walk",
+      "motion_only": {
+        "samples": 7378,
+        "explained_variance": 0.3153076323149546,
+        "pearson": 0.5637201377539527,
+        "spearman": 0.5943342390040486,
+        "residual_variance_fraction": 0.6846923676850453
+      },
+      "scene_only": {
+        "samples": 7378,
+        "explained_variance": -0.09754164650013197,
+        "pearson": 0.2709955702850585,
+        "spearman": 0.20570772882876276,
+        "residual_variance_fraction": 0.9657146739455097
+      },
+      "motion_scene": {
+        "samples": 7378,
+        "explained_variance": 0.2942574066838527,
+        "pearson": 0.5635986556719206,
+        "spearman": 0.5425216921538032,
+        "residual_variance_fraction": 0.7057339059009847
+      }
+    }
+  },
+  "1": {
+    "action": "sit",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 2619,
+      "pearson": {
+        "mean": 0.2441495389541651,
+        "median": 0.353331523499724,
+        "p25": -0.19433801832382272,
+        "p75": 0.7514713488466713
+      },
+      "spearman": {
+        "mean": 0.21792852050584008,
+        "median": 0.39285714285714296,
+        "p25": -0.19999999999999998,
+        "p75": 0.7142857142857143
+      },
+      "sign_agreement": {
+        "mean": 0.6331015893444301,
+        "median": 0.6666666666666666,
+        "p25": 0.5,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.5151073259607051,
+        "median": 0.5,
+        "p25": 0.25,
+        "p75": 0.75
+      },
+      "common_cells": {
+        "mean": 4.917525773195877,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 1446,
+      "pearson": {
+        "mean": 0.44094821726266215,
+        "median": 0.5876514774717811,
+        "p25": 0.15224962283552668,
+        "p75": 0.8454477328019985
+      },
+      "spearman": {
+        "mean": 0.4215984449614962,
+        "median": 0.5,
+        "p25": 0.11553030303030302,
+        "p75": 0.7999999999999999
+      },
+      "sign_agreement": {
+        "mean": 0.760549632822509,
+        "median": 0.8,
+        "p25": 0.6153846153846154,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.6547121114712292,
+        "median": 0.6666666666666666,
+        "p25": 0.5,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 6.850622406639004,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 8.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 21148,
+      "pearson": {
+        "mean": 0.22440110942417332,
+        "median": 0.30075594591789767,
+        "p25": -0.15360071362972683,
+        "p75": 0.6660718059962187
+      },
+      "spearman": {
+        "mean": 0.2196549929742831,
+        "median": 0.29696969696969694,
+        "p25": -0.1567469295410472,
+        "p75": 0.642857142857143
+      },
+      "sign_agreement": {
+        "mean": 0.6153954702502337,
+        "median": 0.6153846153846154,
+        "p25": 0.42857142857142855,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.41150781174500933,
+        "median": 0.4,
+        "p25": 0.0,
+        "p75": 0.6666666666666666
+      },
+      "common_cells": {
+        "mean": 7.130556080953282,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "sit",
+      "motion_only": {
+        "samples": 5137,
+        "explained_variance": 0.16232271144928856,
+        "pearson": 0.41629305505553316,
+        "spearman": 0.39408003390992324,
+        "residual_variance_fraction": 0.8376772885507114
+      },
+      "scene_only": {
+        "samples": 5137,
+        "explained_variance": -0.11298225178533272,
+        "pearson": 0.6084697091174984,
+        "spearman": 0.6069083535815701,
+        "residual_variance_fraction": 0.6511344488775618
+      },
+      "motion_scene": {
+        "samples": 5137,
+        "explained_variance": 0.46336773670377984,
+        "pearson": 0.6835463932881541,
+        "spearman": 0.6923515407678313,
+        "residual_variance_fraction": 0.5362448891571497
+      }
+    }
+  },
+  "2": {
+    "action": "stand up",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 4312,
+      "pearson": {
+        "mean": 0.2296067449633581,
+        "median": 0.32127175712887024,
+        "p25": -0.2049579440127404,
+        "p75": 0.7276823193363209
+      },
+      "spearman": {
+        "mean": 0.2070478531981315,
+        "median": 0.3,
+        "p25": -0.19999999999999998,
+        "p75": 0.7
+      },
+      "sign_agreement": {
+        "mean": 0.6379335916093801,
+        "median": 0.6666666666666666,
+        "p25": 0.5,
+        "p75": 0.8333333333333334
+      },
+      "correct_jaccard": {
+        "mean": 0.5009048304560828,
+        "median": 0.5,
+        "p25": 0.2,
+        "p75": 0.75
+      },
+      "common_cells": {
+        "mean": 4.999536178107607,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 6.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 1974,
+      "pearson": {
+        "mean": 0.25137423160323624,
+        "median": 0.37681578285750417,
+        "p25": -0.16125267161707196,
+        "p75": 0.7292639924685804
+      },
+      "spearman": {
+        "mean": 0.2753047765672804,
+        "median": 0.3714285714285715,
+        "p25": -0.14285714285714288,
+        "p75": 0.7619047619047621
+      },
+      "sign_agreement": {
+        "mean": 0.7079932420961973,
+        "median": 0.75,
+        "p25": 0.5714285714285714,
+        "p75": 0.8888888888888888
+      },
+      "correct_jaccard": {
+        "mean": 0.5280710552153004,
+        "median": 0.6,
+        "p25": 0.16666666666666666,
+        "p75": 0.8333333333333334
+      },
+      "common_cells": {
+        "mean": 7.433130699088146,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 10.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 19705,
+      "pearson": {
+        "mean": 0.1600460236626536,
+        "median": 0.2220943130570453,
+        "p25": -0.25784630825901717,
+        "p75": 0.617967076181372
+      },
+      "spearman": {
+        "mean": 0.16231846676608933,
+        "median": 0.19999999999999998,
+        "p25": -0.20329670329670327,
+        "p75": 0.6
+      },
+      "sign_agreement": {
+        "mean": 0.6171291158177297,
+        "median": 0.625,
+        "p25": 0.42857142857142855,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.3850164097771945,
+        "median": 0.3333333333333333,
+        "p25": 0.0,
+        "p75": 0.6666666666666666
+      },
+      "common_cells": {
+        "mean": 7.426845978178127,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "stand up",
+      "motion_only": {
+        "samples": 6211,
+        "explained_variance": 0.31949674105761694,
+        "pearson": 0.5680405120268522,
+        "spearman": 0.5080903905918501,
+        "residual_variance_fraction": 0.680503258942383
+      },
+      "scene_only": {
+        "samples": 6211,
+        "explained_variance": -0.025138215132148867,
+        "pearson": 0.4423294817010931,
+        "spearman": 0.4758113513373737,
+        "residual_variance_fraction": 0.8138247352899768
+      },
+      "motion_scene": {
+        "samples": 6211,
+        "explained_variance": 0.49642126669007336,
+        "pearson": 0.7053956971887734,
+        "spearman": 0.7154351419168905,
+        "residual_variance_fraction": 0.5034748141418205
+      }
+    }
+  },
+  "3": {
+    "action": "bend",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 5366,
+      "pearson": {
+        "mean": 0.28973869669506325,
+        "median": 0.4027583939873578,
+        "p25": -0.09280275269429736,
+        "p75": 0.7422527329550384
+      },
+      "spearman": {
+        "mean": 0.2664537506225914,
+        "median": 0.39999999999999997,
+        "p25": -0.09999999999999999,
+        "p75": 0.7714285714285715
+      },
+      "sign_agreement": {
+        "mean": 0.7255003863697491,
+        "median": 0.75,
+        "p25": 0.6,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.4347527917272605,
+        "median": 0.4,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 5.021803950801342,
+        "median": 5.0,
+        "p25": 4.0,
+        "p75": 6.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 2351,
+      "pearson": {
+        "mean": 0.14376180995294424,
+        "median": 0.17516035895047416,
+        "p25": -0.25426432363393414,
+        "p75": 0.5384017508137096
+      },
+      "spearman": {
+        "mean": 0.17365756821498599,
+        "median": 0.19999999999999998,
+        "p25": -0.19999999999999998,
+        "p75": 0.5720779220779222
+      },
+      "sign_agreement": {
+        "mean": 0.691366849943531,
+        "median": 0.75,
+        "p25": 0.5,
+        "p75": 0.875
+      },
+      "correct_jaccard": {
+        "mean": 0.3932921042139766,
+        "median": 0.3333333333333333,
+        "p25": 0.0,
+        "p75": 0.6666666666666666
+      },
+      "common_cells": {
+        "mean": 7.420672054444917,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 27272,
+      "pearson": {
+        "mean": 0.03531743966800509,
+        "median": 0.03019178920034954,
+        "p25": -0.38424942003335727,
+        "p75": 0.4504574081318036
+      },
+      "spearman": {
+        "mean": 0.049893413648585155,
+        "median": 0.036226930963773066,
+        "p25": -0.3214285714285715,
+        "p75": 0.39999999999999997
+      },
+      "sign_agreement": {
+        "mean": 0.5410748197886222,
+        "median": 0.5454545454545454,
+        "p25": 0.375,
+        "p75": 0.75
+      },
+      "correct_jaccard": {
+        "mean": 0.21239988089134135,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 0.3333333333333333
+      },
+      "common_cells": {
+        "mean": 7.431834848929305,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "bend",
+      "motion_only": {
+        "samples": 6873,
+        "explained_variance": 0.39439483031410805,
+        "pearson": 0.6294926830914096,
+        "spearman": 0.6156334464091767,
+        "residual_variance_fraction": 0.605605169685892
+      },
+      "scene_only": {
+        "samples": 6873,
+        "explained_variance": -0.2827423059517564,
+        "pearson": 0.007191201829027862,
+        "spearman": -0.04363852167167678,
+        "residual_variance_fraction": 1.2722739592663495
+      },
+      "motion_scene": {
+        "samples": 6873,
+        "explained_variance": 0.25820783716683327,
+        "pearson": 0.5603817490647323,
+        "spearman": 0.5424834264483759,
+        "residual_variance_fraction": 0.7417898182166844
+      }
+    }
+  },
+  "4": {
+    "action": "crawl",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 1974,
+      "pearson": {
+        "mean": 0.24358969183483775,
+        "median": 0.35467293817253553,
+        "p25": -0.19120451997428023,
+        "p75": 0.736389295558685
+      },
+      "spearman": {
+        "mean": 0.19207101577922245,
+        "median": 0.3,
+        "p25": -0.2571428571428572,
+        "p75": 0.7
+      },
+      "sign_agreement": {
+        "mean": 0.6386593930666878,
+        "median": 0.6666666666666666,
+        "p25": 0.5,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.45344026821990346,
+        "median": 0.5,
+        "p25": 0.0,
+        "p75": 0.75
+      },
+      "common_cells": {
+        "mean": 4.990374873353597,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 434,
+      "pearson": {
+        "mean": 0.5696091069560821,
+        "median": 0.7084493031632787,
+        "p25": 0.3949996713900673,
+        "p75": 0.9157697509802925
+      },
+      "spearman": {
+        "mean": 0.540393006372055,
+        "median": 0.6083916083916086,
+        "p25": 0.319047619047619,
+        "p75": 0.8488636363636363
+      },
+      "sign_agreement": {
+        "mean": 0.8041360250294886,
+        "median": 0.8333333333333334,
+        "p25": 0.6666666666666666,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.6625344477591021,
+        "median": 0.6904761904761905,
+        "p25": 0.42857142857142855,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 7.2304147465437785,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 13237,
+      "pearson": {
+        "mean": 0.2519820056571584,
+        "median": 0.3432718460570575,
+        "p25": -0.12078552467733962,
+        "p75": 0.6981125851072258
+      },
+      "spearman": {
+        "mean": 0.24490369781966115,
+        "median": 0.3,
+        "p25": -0.09999999999999999,
+        "p75": 0.6571428571428573
+      },
+      "sign_agreement": {
+        "mean": 0.6420585619607249,
+        "median": 0.6666666666666666,
+        "p25": 0.5,
+        "p75": 0.8181818181818182
+      },
+      "correct_jaccard": {
+        "mean": 0.40666857248481464,
+        "median": 0.3333333333333333,
+        "p25": 0.0,
+        "p75": 0.6666666666666666
+      },
+      "common_cells": {
+        "mean": 7.2615396237818235,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "crawl",
+      "motion_only": {
+        "samples": 3029,
+        "explained_variance": 0.2766754943710352,
+        "pearson": 0.5298985977848352,
+        "spearman": 0.46139257762784713,
+        "residual_variance_fraction": 0.7233245056289648
+      },
+      "scene_only": {
+        "samples": 3029,
+        "explained_variance": 0.16283465423586285,
+        "pearson": 0.6493556369325371,
+        "spearman": 0.6679152046628203,
+        "residual_variance_fraction": 0.6391924433224516
+      },
+      "motion_scene": {
+        "samples": 3029,
+        "explained_variance": 0.5309389249931855,
+        "pearson": 0.7314852146692457,
+        "spearman": 0.705260060837369,
+        "residual_variance_fraction": 0.46875139144482436
+      }
+    }
+  },
+  "5": {
+    "action": "stumble",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 4340,
+      "pearson": {
+        "mean": 0.3010936105873415,
+        "median": 0.43327972651210306,
+        "p25": -0.08266947103956729,
+        "p75": 0.7586968097854381
+      },
+      "spearman": {
+        "mean": 0.2709235311539459,
+        "median": 0.39999999999999997,
+        "p25": -0.09999999999999999,
+        "p75": 0.7714285714285715
+      },
+      "sign_agreement": {
+        "mean": 0.8759015331826392,
+        "median": 1.0,
+        "p25": 0.75,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.6122992100065833,
+        "median": 1.0,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 4.9631336405529956,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 1702,
+      "pearson": {
+        "mean": 0.19592691419030245,
+        "median": 0.236991438638982,
+        "p25": -0.20218583794433148,
+        "p75": 0.6176318066233227
+      },
+      "spearman": {
+        "mean": 0.20893095705486336,
+        "median": 0.2380952380952381,
+        "p25": -0.19197994987468672,
+        "p75": 0.6
+      },
+      "sign_agreement": {
+        "mean": 0.8360022624215315,
+        "median": 0.8571428571428571,
+        "p25": 0.75,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.4120194728890381,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 7.468272620446533,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 33976,
+      "pearson": {
+        "mean": 0.1539312773617078,
+        "median": 0.1945741919928362,
+        "p25": -0.2247819176827955,
+        "p75": 0.5675958020820504
+      },
+      "spearman": {
+        "mean": 0.15051637530601922,
+        "median": 0.19047619047619052,
+        "p25": -0.19999999999999998,
+        "p75": 0.5244755244755246
+      },
+      "sign_agreement": {
+        "mean": 0.6519688368643555,
+        "median": 0.6666666666666666,
+        "p25": 0.5,
+        "p75": 0.8461538461538461
+      },
+      "correct_jaccard": {
+        "mean": 0.2504027104317575,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 0.3333333333333333
+      },
+      "common_cells": {
+        "mean": 7.380680480339063,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "stumble",
+      "motion_only": {
+        "samples": 5847,
+        "explained_variance": 0.3159987947862598,
+        "pearson": 0.5649884648788986,
+        "spearman": 0.5426049714958083,
+        "residual_variance_fraction": 0.6840012052137402
+      },
+      "scene_only": {
+        "samples": 5847,
+        "explained_variance": -0.5997037918821089,
+        "pearson": 0.39353978470351325,
+        "spearman": 0.37704699280339243,
+        "residual_variance_fraction": 0.8474942694069022
+      },
+      "motion_scene": {
+        "samples": 5847,
+        "explained_variance": 0.44161301508670303,
+        "pearson": 0.6656279244346177,
+        "spearman": 0.6561970204736368,
+        "residual_variance_fraction": 0.5583009302410636
+      }
+    }
+  },
+  "6": {
+    "action": "clap",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 1887,
+      "pearson": {
+        "mean": 0.3497433315443008,
+        "median": 0.49590049516770074,
+        "p25": -0.03270524426208205,
+        "p75": 0.8132329270152043
+      },
+      "spearman": {
+        "mean": 0.3083511436452613,
+        "median": 0.39999999999999997,
+        "p25": 0.0,
+        "p75": 0.7999999999999999
+      },
+      "sign_agreement": {
+        "mean": 0.7738433444315798,
+        "median": 0.8,
+        "p25": 0.625,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.4741123476417594,
+        "median": 0.5,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 4.9411764705882355,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 527,
+      "pearson": {
+        "mean": 0.282683973686779,
+        "median": 0.4229081537198821,
+        "p25": -0.23675461760694586,
+        "p75": 0.8405834768904605
+      },
+      "spearman": {
+        "mean": 0.2788236208484004,
+        "median": 0.39999999999999997,
+        "p25": -0.20979020979020982,
+        "p75": 0.7999999999999999
+      },
+      "sign_agreement": {
+        "mean": 0.7253227213491369,
+        "median": 0.7692307692307693,
+        "p25": 0.5773809523809523,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.40279434354386917,
+        "median": 0.25,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 7.352941176470588,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 14603,
+      "pearson": {
+        "mean": 0.16069638125986288,
+        "median": 0.20146769234938394,
+        "p25": -0.26092595131538276,
+        "p75": 0.6148455080669225
+      },
+      "spearman": {
+        "mean": 0.15485779968541366,
+        "median": 0.1868131868131868,
+        "p25": -0.20909090909090913,
+        "p75": 0.6
+      },
+      "sign_agreement": {
+        "mean": 0.6419915000633469,
+        "median": 0.6666666666666666,
+        "p25": 0.5,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.3018468647115344,
+        "median": 0.2,
+        "p25": 0.0,
+        "p75": 0.5
+      },
+      "common_cells": {
+        "mean": 7.381702389919879,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "clap",
+      "motion_only": {
+        "samples": 3262,
+        "explained_variance": 0.4244374667699201,
+        "pearson": 0.6534156634132278,
+        "spearman": 0.5682548610206638,
+        "residual_variance_fraction": 0.5755625332300799
+      },
+      "scene_only": {
+        "samples": 3262,
+        "explained_variance": 0.06433708740105304,
+        "pearson": 0.406765735559276,
+        "spearman": 0.39627843812808844,
+        "residual_variance_fraction": 0.8366767619402602
+      },
+      "motion_scene": {
+        "samples": 3262,
+        "explained_variance": 0.5451095764157468,
+        "pearson": 0.7385174831050355,
+        "spearman": 0.6883027715577346,
+        "residual_variance_fraction": 0.4547699146798969
+      }
+    }
+  },
+  "7": {
+    "action": "throw",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 5073,
+      "pearson": {
+        "mean": 0.3182506974195926,
+        "median": 0.4563929613778711,
+        "p25": -0.07565514210495954,
+        "p75": 0.7989985573401878
+      },
+      "spearman": {
+        "mean": 0.2706084703127873,
+        "median": 0.39999999999999997,
+        "p25": -0.10714285714285716,
+        "p75": 0.7999999999999999
+      },
+      "sign_agreement": {
+        "mean": 0.727038642961174,
+        "median": 0.75,
+        "p25": 0.5,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.5414565114890366,
+        "median": 0.5,
+        "p25": 0.2,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 5.0005913660555885,
+        "median": 5.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 2280,
+      "pearson": {
+        "mean": 0.24212245828911286,
+        "median": 0.36312180070244804,
+        "p25": -0.18024792124048022,
+        "p75": 0.7133344914848628
+      },
+      "spearman": {
+        "mean": 0.2459467774657403,
+        "median": 0.3545454545454546,
+        "p25": -0.17857142857142855,
+        "p75": 0.7068036130536131
+      },
+      "sign_agreement": {
+        "mean": 0.6822307431620818,
+        "median": 0.7142857142857143,
+        "p25": 0.5,
+        "p75": 0.8461538461538461
+      },
+      "correct_jaccard": {
+        "mean": 0.39755892477835203,
+        "median": 0.3333333333333333,
+        "p25": 0.0,
+        "p75": 0.6666666666666666
+      },
+      "common_cells": {
+        "mean": 7.432017543859649,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 24805,
+      "pearson": {
+        "mean": 0.17006014671480255,
+        "median": 0.23580944732705705,
+        "p25": -0.24129620289649598,
+        "p75": 0.6236718889150576
+      },
+      "spearman": {
+        "mean": 0.16688060091278883,
+        "median": 0.19999999999999998,
+        "p25": -0.19999999999999998,
+        "p75": 0.6
+      },
+      "sign_agreement": {
+        "mean": 0.6291957432275973,
+        "median": 0.625,
+        "p25": 0.5,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.3458664783300955,
+        "median": 0.2727272727272727,
+        "p25": 0.0,
+        "p75": 0.6
+      },
+      "common_cells": {
+        "mean": 7.3969764160451525,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "throw",
+      "motion_only": {
+        "samples": 6697,
+        "explained_variance": 0.5582535870945577,
+        "pearson": 0.7476926570639479,
+        "spearman": 0.6602657104605378,
+        "residual_variance_fraction": 0.44174641290544225
+      },
+      "scene_only": {
+        "samples": 6697,
+        "explained_variance": 0.10472758048880437,
+        "pearson": 0.3265161486508189,
+        "spearman": 0.38934400601632874,
+        "residual_variance_fraction": 0.8935485097527753
+      },
+      "motion_scene": {
+        "samples": 6697,
+        "explained_variance": 0.6430144746804182,
+        "pearson": 0.8018937702880448,
+        "spearman": 0.7632629528881819,
+        "residual_variance_fraction": 0.3569677534461058
+      }
+    }
+  },
+  "8": {
+    "action": "kick",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 6954,
+      "pearson": {
+        "mean": 0.3215685671980499,
+        "median": 0.4532112374651818,
+        "p25": -0.04927978727109644,
+        "p75": 0.7893667098554693
+      },
+      "spearman": {
+        "mean": 0.26467745536986265,
+        "median": 0.39999999999999997,
+        "p25": -0.14285714285714288,
+        "p75": 0.7999999999999999
+      },
+      "sign_agreement": {
+        "mean": 0.6674997640808685,
+        "median": 0.75,
+        "p25": 0.5,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.5163256346280505,
+        "median": 0.5,
+        "p25": 0.25,
+        "p75": 0.75
+      },
+      "common_cells": {
+        "mean": 4.985044578659764,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 3072,
+      "pearson": {
+        "mean": 0.4317333100851683,
+        "median": 0.5387304953461154,
+        "p25": 0.1689539782884265,
+        "p75": 0.7911509716189444
+      },
+      "spearman": {
+        "mean": 0.416991570198807,
+        "median": 0.4928571428571427,
+        "p25": 0.14285714285714288,
+        "p75": 0.7999999999999999
+      },
+      "sign_agreement": {
+        "mean": 0.6883460897256732,
+        "median": 0.7272727272727273,
+        "p25": 0.5454545454545454,
+        "p75": 0.8333333333333334
+      },
+      "correct_jaccard": {
+        "mean": 0.5387422646333401,
+        "median": 0.5,
+        "p25": 0.3333333333333333,
+        "p75": 0.75
+      },
+      "common_cells": {
+        "mean": 7.410807291666667,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 28323,
+      "pearson": {
+        "mean": 0.1781018280317864,
+        "median": 0.23984154343353317,
+        "p25": -0.21185114525157975,
+        "p75": 0.6181219723419131
+      },
+      "spearman": {
+        "mean": 0.18334500686027672,
+        "median": 0.2142857142857143,
+        "p25": -0.19999999999999998,
+        "p75": 0.6
+      },
+      "sign_agreement": {
+        "mean": 0.5957383067003168,
+        "median": 0.6,
+        "p25": 0.42857142857142855,
+        "p75": 0.75
+      },
+      "correct_jaccard": {
+        "mean": 0.36612394676663296,
+        "median": 0.3333333333333333,
+        "p25": 0.0,
+        "p75": 0.6
+      },
+      "common_cells": {
+        "mean": 7.318186632771952,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "kick",
+      "motion_only": {
+        "samples": 7853,
+        "explained_variance": 0.3635954762317637,
+        "pearson": 0.60437419066247,
+        "spearman": 0.5646039963479906,
+        "residual_variance_fraction": 0.6364045237682363
+      },
+      "scene_only": {
+        "samples": 7853,
+        "explained_variance": 0.07449908683471607,
+        "pearson": 0.5186260602591357,
+        "spearman": 0.5306700587747173,
+        "residual_variance_fraction": 0.7631057727269817
+      },
+      "motion_scene": {
+        "samples": 7853,
+        "explained_variance": 0.49264751293713294,
+        "pearson": 0.7019606817572945,
+        "spearman": 0.6827431909402673,
+        "residual_variance_fraction": 0.5073203678972457
+      }
+    }
+  },
+  "9": {
+    "action": "knock",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 1799,
+      "pearson": {
+        "mean": 0.29795666469231247,
+        "median": 0.41017598850562936,
+        "p25": -0.07465948500743078,
+        "p75": 0.7560502442824686
+      },
+      "spearman": {
+        "mean": 0.27997132569117006,
+        "median": 0.39999999999999997,
+        "p25": -0.07857142857142858,
+        "p75": 0.7714285714285715
+      },
+      "sign_agreement": {
+        "mean": 0.8587124459136688,
+        "median": 1.0,
+        "p25": 0.75,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.5545488234204188,
+        "median": 1.0,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 5.034463590883824,
+        "median": 5.0,
+        "p25": 4.0,
+        "p75": 6.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 412,
+      "pearson": {
+        "mean": 0.6878250454950928,
+        "median": 0.8038849978117331,
+        "p25": 0.5847770773103003,
+        "p75": 0.9409561287099313
+      },
+      "spearman": {
+        "mean": 0.6689515824857659,
+        "median": 0.779020979020979,
+        "p25": 0.5154411764705883,
+        "p75": 0.942857142857143
+      },
+      "sign_agreement": {
+        "mean": 0.9184512575200039,
+        "median": 1.0,
+        "p25": 0.842948717948718,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.6682038834951457,
+        "median": 1.0,
+        "p25": 0.3333333333333333,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 7.157766990291262,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 16285,
+      "pearson": {
+        "mean": 0.16422566660966456,
+        "median": 0.21173479041099452,
+        "p25": -0.2352273647323023,
+        "p75": 0.6029885358499655
+      },
+      "spearman": {
+        "mean": 0.1545475781205018,
+        "median": 0.19999999999999998,
+        "p25": -0.19999999999999998,
+        "p75": 0.5428571428571429
+      },
+      "sign_agreement": {
+        "mean": 0.6595909988851033,
+        "median": 0.6875,
+        "p25": 0.5,
+        "p75": 0.8571428571428571
+      },
+      "correct_jaccard": {
+        "mean": 0.27597603706873,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 0.5
+      },
+      "common_cells": {
+        "mean": 7.179121891311023,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "knock",
+      "motion_only": {
+        "samples": 2947,
+        "explained_variance": 0.2655507748342557,
+        "pearson": 0.5201371383036993,
+        "spearman": 0.4794881937029417,
+        "residual_variance_fraction": 0.7344492251657444
+      },
+      "scene_only": {
+        "samples": 2947,
+        "explained_variance": -0.29325163980388047,
+        "pearson": 0.41620081271715376,
+        "spearman": 0.4212565310528384,
+        "residual_variance_fraction": 0.830134398552697
+      },
+      "motion_scene": {
+        "samples": 2947,
+        "explained_variance": 0.40944635418451203,
+        "pearson": 0.6423324987031953,
+        "spearman": 0.6341720931540867,
+        "residual_variance_fraction": 0.5905524652161678
+      }
+    }
+  },
+  "10": {
+    "action": "punch",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 4792,
+      "pearson": {
+        "mean": 0.2928025394223861,
+        "median": 0.43200080249151057,
+        "p25": -0.11872517616142114,
+        "p75": 0.7799740182212062
+      },
+      "spearman": {
+        "mean": 0.2491713976062891,
+        "median": 0.39999999999999997,
+        "p25": -0.19999999999999998,
+        "p75": 0.7714285714285715
+      },
+      "sign_agreement": {
+        "mean": 0.8654679146905776,
+        "median": 1.0,
+        "p25": 0.75,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.6038223427935447,
+        "median": 1.0,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 4.966193656093489,
+        "median": 4.0,
+        "p25": 4.0,
+        "p75": 5.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 2227,
+      "pearson": {
+        "mean": 0.31449870169693894,
+        "median": 0.37705810689365477,
+        "p25": -0.015843667670393396,
+        "p75": 0.7084723492928903
+      },
+      "spearman": {
+        "mean": 0.3395021135212232,
+        "median": 0.39999999999999997,
+        "p25": 0.0,
+        "p75": 0.7500000000000002
+      },
+      "sign_agreement": {
+        "mean": 0.8333847352290613,
+        "median": 0.8571428571428571,
+        "p25": 0.75,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.41730083891062786,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 7.323304894476875,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 31027,
+      "pearson": {
+        "mean": 0.15301988010138948,
+        "median": 0.19493079508512481,
+        "p25": -0.2363855544294653,
+        "p75": 0.5851559442549408
+      },
+      "spearman": {
+        "mean": 0.1673237454390188,
+        "median": 0.19999999999999998,
+        "p25": -0.19999999999999998,
+        "p75": 0.6
+      },
+      "sign_agreement": {
+        "mean": 0.6412086333023902,
+        "median": 0.6666666666666666,
+        "p25": 0.4666666666666667,
+        "p75": 0.8333333333333334
+      },
+      "correct_jaccard": {
+        "mean": 0.245162845072873,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 0.3333333333333333
+      },
+      "common_cells": {
+        "mean": 7.382118799755052,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "punch",
+      "motion_only": {
+        "samples": 6533,
+        "explained_variance": 0.3453887368007177,
+        "pearson": 0.5899110395443566,
+        "spearman": 0.5097869661123307,
+        "residual_variance_fraction": 0.6546112631992823
+      },
+      "scene_only": {
+        "samples": 6533,
+        "explained_variance": -0.45806112371635366,
+        "pearson": 0.42137716996908203,
+        "spearman": 0.4565934448387051,
+        "residual_variance_fraction": 0.8251239114621828
+      },
+      "motion_scene": {
+        "samples": 6533,
+        "explained_variance": 0.454665777337391,
+        "pearson": 0.6772475652049121,
+        "spearman": 0.6613957188189113,
+        "residual_variance_fraction": 0.545332796142238
+      }
+    }
+  },
+  "11": {
+    "action": "touching face",
+    "same_motion": {
+      "attempted_pair_count": 492463,
+      "usable_pair_count": 5411,
+      "pearson": {
+        "mean": 0.32995381224876547,
+        "median": 0.4408384102702086,
+        "p25": -0.025577574995683933,
+        "p75": 0.7639424926827796
+      },
+      "spearman": {
+        "mean": 0.28957947738210166,
+        "median": 0.39999999999999997,
+        "p25": -0.03571428571428572,
+        "p75": 0.7714285714285715
+      },
+      "sign_agreement": {
+        "mean": 0.8142694089007155,
+        "median": 0.8,
+        "p25": 0.75,
+        "p75": 1.0
+      },
+      "correct_jaccard": {
+        "mean": 0.5002802198930456,
+        "median": 0.5,
+        "p25": 0.0,
+        "p75": 1.0
+      },
+      "common_cells": {
+        "mean": 5.007207540195897,
+        "median": 5.0,
+        "p25": 4.0,
+        "p75": 6.0
+      }
+    },
+    "same_scene_same_action": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 2467,
+      "pearson": {
+        "mean": 0.12955476788410408,
+        "median": 0.13865788935233314,
+        "p25": -0.2581691780548883,
+        "p75": 0.5502140430325466
+      },
+      "spearman": {
+        "mean": 0.1429866786602635,
+        "median": 0.14285714285714288,
+        "p25": -0.19999999999999998,
+        "p75": 0.49999999999999994
+      },
+      "sign_agreement": {
+        "mean": 0.7546572348420522,
+        "median": 0.8,
+        "p25": 0.6,
+        "p75": 0.9166666666666666
+      },
+      "correct_jaccard": {
+        "mean": 0.31287811240689234,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 0.5
+      },
+      "common_cells": {
+        "mean": 7.337657073368463,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "different_motion": {
+      "attempted_pair_count": 360548,
+      "usable_pair_count": 24452,
+      "pearson": {
+        "mean": 0.06849209388879403,
+        "median": 0.08193708874208513,
+        "p25": -0.3256869436980646,
+        "p75": 0.471785070491069
+      },
+      "spearman": {
+        "mean": 0.07132709631598591,
+        "median": 0.07142857142857144,
+        "p25": -0.3,
+        "p75": 0.4000000000000001
+      },
+      "sign_agreement": {
+        "mean": 0.6257578019414978,
+        "median": 0.625,
+        "p25": 0.4444444444444444,
+        "p75": 0.8
+      },
+      "correct_jaccard": {
+        "mean": 0.25472718495804353,
+        "median": 0.0,
+        "p25": 0.0,
+        "p75": 0.4
+      },
+      "common_cells": {
+        "mean": 7.328889252412891,
+        "median": 6.0,
+        "p25": 5.0,
+        "p75": 9.0
+      }
+    },
+    "additive": {
+      "action": "touching face",
+      "motion_only": {
+        "samples": 6935,
+        "explained_variance": 0.32861771020652575,
+        "pearson": 0.5755367807979477,
+        "spearman": 0.5624657819771166,
+        "residual_variance_fraction": 0.6713822897934743
+      },
+      "scene_only": {
+        "samples": 6935,
+        "explained_variance": -0.18576003216347803,
+        "pearson": 0.12031433485596685,
+        "spearman": 0.05494860243991369,
+        "residual_variance_fraction": 1.084880391591486
+      },
+      "motion_scene": {
+        "samples": 6935,
+        "explained_variance": 0.2524411173605463,
+        "pearson": 0.5351619520155326,
+        "spearman": 0.4973932827034288,
+        "residual_variance_fraction": 0.7473830470252074
+      }
+    }
+  }
+}
