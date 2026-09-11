@@ -11,7 +11,7 @@ Body-relative convention confirmed: `True`; max position/azimuth error 0.000019 
 | Comparison | Usable pairs | Spearman mean | Spearman median | Sign agreement mean | Correct-map Jaccard mean |
 |---|---:|---:|---:|---:|---:|
 | Same motion across scene/placement | 50635 | 0.268070 | 0.400000 | 0.738559 | 0.520610 |
-| Different motion matched | 264551 | 0.147943 | 0.190476 | 0.618859 | 0.304401 |
+| Different motion matched | 37188 | 0.146669 | 0.187879 | 0.619279 | 0.304816 |
 | Same scene/placement | 264551 | 0.147943 | 0.190476 | 0.618859 | 0.304401 |
 | Same scene/placement, same action | 21647 | 0.280596 | 0.356643 | 0.730829 | 0.459485 |
 

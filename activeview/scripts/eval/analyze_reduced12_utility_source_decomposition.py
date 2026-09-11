@@ -230,7 +230,7 @@ def run() -> dict[str, Any]:
     same_motion, motion_radius, motion_azimuth, motion_class = _pair_collection(samples, lambda item: item["record_id"])
     same_scene, scene_radius, scene_azimuth, scene_class = _pair_collection(samples, lambda item: (item["scene_id"], item["placement_id"]), same_label=False)
     same_scene_class, _, _, scene_class_same_label = _pair_collection(samples, lambda item: (item["scene_id"], item["placement_id"]), same_label=True)
-    different_motion, diff_radius, diff_azimuth, diff_class = _matched_different_motion(samples, same_motion["attempted_pair_count"])
+    different_motion, diff_radius, diff_azimuth, diff_class = _matched_different_motion(samples, same_motion["usable_pair_count"])
     additive, additive_rows = _additive_decomposition(samples)
 
     OUT.mkdir(parents=True, exist_ok=True)

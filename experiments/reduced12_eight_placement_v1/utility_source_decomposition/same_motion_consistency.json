@@ -34,34 +34,34 @@
     }
   },
   "different_motion_matched": {
-    "attempted_pair_count": 360548,
-    "usable_pair_count": 264551,
+    "attempted_pair_count": 50635,
+    "usable_pair_count": 37188,
     "pearson": {
-      "mean": 0.14718277991898923,
-      "median": 0.19202202919855524,
-      "p25": -0.2547647599933599,
-      "p75": 0.5869382283547845
+      "mean": 0.14627576789560703,
+      "median": 0.19270882039072856,
+      "p25": -0.25322832446505766,
+      "p75": 0.5847896151764436
     },
     "spearman": {
-      "mean": 0.14794252506340108,
-      "median": 0.19047619047619052,
+      "mean": 0.1466690419680973,
+      "median": 0.18787878787878787,
       "p25": -0.2,
-      "p75": 0.5636363636363637
+      "p75": 0.5604395604395606
     },
     "sign_agreement": {
-      "mean": 0.6188594114995202,
+      "mean": 0.6192785639175891,
       "median": 0.625,
       "p25": 0.4444444444444444,
       "p75": 0.8
     },
     "correct_jaccard": {
-      "mean": 0.3044014170620211,
+      "mean": 0.3048155633843698,
       "median": 0.2,
       "p25": 0.0,
       "p75": 0.5
     },
     "common_cells": {
-      "mean": 7.3446670018257345,
+      "mean": 7.354092718081102,
       "median": 6.0,
       "p25": 5.0,
       "p75": 9.0
@@ -99,32 +99,32 @@
   },
   "different_motion_per_radius": {
     "0": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 557645,
-      "pearson": 0.09774536641062911,
-      "spearman": 0.10730247963295877,
-      "sign_agreement": 0.5445901962718217
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 78355,
+      "pearson": 0.09908193655183097,
+      "spearman": 0.10924975751209172,
+      "sign_agreement": 0.545683108927318
     },
     "1": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 524461,
-      "pearson": 0.13490752690037572,
-      "spearman": 0.14601751468593513,
-      "sign_agreement": 0.5926732397642532
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 73855,
+      "pearson": 0.13011203694310938,
+      "spearman": 0.1418541215892353,
+      "sign_agreement": 0.5896012456841108
     },
     "2": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 449325,
-      "pearson": 0.10566898204170015,
-      "spearman": 0.10605498019362725,
-      "sign_agreement": 0.6434429421910643
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 63450,
+      "pearson": 0.11561976279875678,
+      "spearman": 0.11649768517993538,
+      "sign_agreement": 0.6492671394799054
     },
     "3": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 411608,
-      "pearson": 0.07003470654682277,
-      "spearman": 0.06257827961314498,
-      "sign_agreement": 0.7009338982721425
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 57824,
+      "pearson": 0.068176178327718,
+      "spearman": 0.059334391449605145,
+      "sign_agreement": 0.6989139457664637
     }
   },
   "per_azimuth": {
@@ -187,60 +187,60 @@
   },
   "different_motion_per_azimuth": {
     "0": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 197002,
-      "pearson": 0.20293385447872167,
-      "spearman": 0.2179979119467598,
-      "sign_agreement": 0.6392422411955209
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 27688,
+      "pearson": 0.19679901307085532,
+      "spearman": 0.21232360326440755,
+      "sign_agreement": 0.6378575556197631
     },
     "1": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 259727,
-      "pearson": 0.18225031957043242,
-      "spearman": 0.18981414803890445,
-      "sign_agreement": 0.6196467829682706
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 36715,
+      "pearson": 0.17129665743998665,
+      "spearman": 0.17997399320371582,
+      "sign_agreement": 0.6222797221843933
     },
     "2": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 294180,
-      "pearson": 0.11671544945952289,
-      "spearman": 0.11684961174247432,
-      "sign_agreement": 0.5947753076347815
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 41530,
+      "pearson": 0.12011971860693078,
+      "spearman": 0.11835124006623209,
+      "sign_agreement": 0.5947267035877679
     },
     "3": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 221727,
-      "pearson": 0.06428009250385132,
-      "spearman": 0.06650436339219125,
-      "sign_agreement": 0.5886969110663113
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 31148,
+      "pearson": 0.06546166620215424,
+      "spearman": 0.06429163794812798,
+      "sign_agreement": 0.5894118402465648
     },
     "4": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 218625,
-      "pearson": 0.11334697782069612,
-      "spearman": 0.11158507557017386,
-      "sign_agreement": 0.6182138364779874
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 30880,
+      "pearson": 0.12639047553091232,
+      "spearman": 0.12432549841094327,
+      "sign_agreement": 0.6175194300518134
     },
     "5": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 245320,
-      "pearson": 0.10448690296098198,
-      "spearman": 0.11152687431911223,
-      "sign_agreement": 0.5967756399804337
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 34322,
+      "pearson": 0.1148446046207855,
+      "spearman": 0.12417168532943931,
+      "sign_agreement": 0.6006351611211468
     },
     "6": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 244078,
-      "pearson": 0.12840389897963952,
-      "spearman": 0.1219345323077822,
-      "sign_agreement": 0.6266070682322864
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 34442,
+      "pearson": 0.11633397084746327,
+      "spearman": 0.11246365538685742,
+      "sign_agreement": 0.6210150397770164
     },
     "7": {
-      "attempted_pair_count": 360548,
-      "candidate_cell_pairs": 262380,
-      "pearson": 0.16085519040979201,
-      "spearman": 0.17423379682520207,
-      "sign_agreement": 0.6299108163731991
+      "attempted_pair_count": 50635,
+      "candidate_cell_pairs": 36759,
+      "pearson": 0.16367931479520806,
+      "spearman": 0.1786866775589574,
+      "sign_agreement": 0.6331238608231997
     }
   }
 }

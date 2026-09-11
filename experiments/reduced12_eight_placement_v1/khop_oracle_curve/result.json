@@ -2237,7 +2237,7 @@
         ]
       ],
       "move_rate": 0.3919642857142857,
-      "stay_rate": 0.0,
+      "stay_rate": 0.6080357142857142,
       "step": 1
     },
     "GreedyOracle-Step2": {
@@ -2477,7 +2477,7 @@
         ]
       ],
       "move_rate": 0.09117063492063492,
-      "stay_rate": 0.0,
+      "stay_rate": 0.9088293650793651,
       "step": 2
     },
     "GreedyOracle-Step3": {
@@ -2717,7 +2717,7 @@
         ]
       ],
       "move_rate": 0.018253968253968255,
-      "stay_rate": 0.0,
+      "stay_rate": 0.9817460317460317,
       "step": 3
     },
     "GreedyOracle-Step4": {
@@ -2957,7 +2957,7 @@
         ]
       ],
       "move_rate": 0.0025793650793650793,
-      "stay_rate": 0.0,
+      "stay_rate": 0.9974206349206349,
       "step": 4
     },
     "PathOracle-K1-to-K4-AnyCorrect": {

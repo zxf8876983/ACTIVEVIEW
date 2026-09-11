@@ -140,6 +140,7 @@ def _greedy(contexts: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     for name, actions in outputs.items():
         result[name] = _classification_for(contexts, actions)
         result[name]["move_rate"] = float(move_rates[name] / len(contexts))
+        result[name]["stay_rate"] = 1.0 - result[name]["move_rate"]
         result[name]["step"] = int(name.rsplit("Step", 1)[1])
     return result
 
