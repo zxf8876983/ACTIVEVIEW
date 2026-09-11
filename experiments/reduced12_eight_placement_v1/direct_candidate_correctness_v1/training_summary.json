@@ -1,0 +1,157 @@
+{
+  "branch": "direct_correctness",
+  "parameter_count": 73473,
+  "device": "cuda:0",
+  "seed": 42,
+  "max_epochs": 20,
+  "selected_epoch": 7,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/direct_candidate_correctness_v1/direct_correctness_best.pth",
+  "checkpoint_sha256": "1ed7ac91ef326e6f8e49d000e71f528157aa4f0d0f26ea2a6c942a9c6285c144",
+  "checkpoint_selection_metric": "Val multi-positive action-set loss",
+  "train_rows": 46324,
+  "val_rows": 15540,
+  "elapsed_seconds": 332.91348791122437,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.1773494403440874,
+      "val_loss": 1.0747585431221993,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.1460062501194712,
+      "val_loss": 1.061806324989565,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.1353240576419201,
+      "val_loss": 1.0608670634608115,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.1265605216497903,
+      "val_loss": 1.0546966791152954,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.1178957996787606,
+      "val_loss": 1.0488513458159663,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.1094320658799057,
+      "val_loss": 1.0464226968826786,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.101332106433072,
+      "val_loss": 1.0440682884185546,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.0922903064843064,
+      "val_loss": 1.046325404797831,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.0849961520551326,
+      "val_loss": 1.0502799903192828,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.0769210287502833,
+      "val_loss": 1.0553326837478145,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.068828480584281,
+      "val_loss": 1.045591010201362,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.0596740409568115,
+      "val_loss": 1.0481938142930307,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 13,
+      "train_loss": 1.0517577587903202,
+      "val_loss": 1.0507412956606956,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 14,
+      "train_loss": 1.0445429925080185,
+      "val_loss": 1.056587065419843,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 15,
+      "train_loss": 1.037177867941804,
+      "val_loss": 1.053744552596923,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 16,
+      "train_loss": 1.0286690298017565,
+      "val_loss": 1.053960427161186,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 17,
+      "train_loss": 1.0211896811212813,
+      "val_loss": 1.063898173070723,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 18,
+      "train_loss": 1.0126612926577474,
+      "val_loss": 1.06821483565915,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 19,
+      "train_loss": 1.006230318939293,
+      "val_loss": 1.0673144786588606,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.999234425497579,
+      "val_loss": 1.074943967403904,
+      "train_fallback_batches": 14669,
+      "val_fallback_batches": 4175
+    }
+  ],
+  "test_used": false
+}

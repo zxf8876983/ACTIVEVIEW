@@ -1,0 +1,7 @@
+{
+  "seed": 42,
+  "batch_size": 512,
+  "max_epochs": 20,
+  "device": "cuda:0",
+  "test_used": false
+}
