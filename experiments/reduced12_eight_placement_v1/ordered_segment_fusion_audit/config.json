@@ -1,0 +1,19 @@
+{
+  "seed": 42,
+  "epochs": 12,
+  "batch_size": 1024,
+  "input_dim": 1542,
+  "ordered_feature_dim": 1536,
+  "mask_dim": 6,
+  "num_classes": 12,
+  "prefix_frames": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30
+  ],
+  "fixed_view_policy": "Stay",
+  "policy_test_used": false
+}
