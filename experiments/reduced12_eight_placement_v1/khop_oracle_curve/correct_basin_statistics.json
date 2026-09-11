@@ -1,0 +1,11 @@
+{
+  "contexts": 10080,
+  "contexts_with_at_least_one_correct": 7153,
+  "fraction_contexts_with_correct": 0.7096230158730159,
+  "mean_components": 1.785404725290088,
+  "median_components": 2.0,
+  "mean_largest_component_size": 2.228855025863274,
+  "median_largest_component_size": 2.0,
+  "mean_isolated_correct_nodes": 1.074234586886621,
+  "fraction_correct_nodes_in_largest": 0.7632103894028137
+}
