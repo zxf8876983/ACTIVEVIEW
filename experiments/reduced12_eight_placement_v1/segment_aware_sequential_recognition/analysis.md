@@ -7,7 +7,7 @@ Every five-frame chunk is encoded independently by one shared chunk encoder. No 
 
 | Fusion | t5 | t10 | t15 | t20 | t25 | t30 |
 |---|---:|---:|---:|---:|---:|---:|
-| MeanLogP | 0.071825 | 0.076885 | 0.091964 | 0.094940 | 0.099008 | 0.092956 |
+| MeanLogP | 0.232540 | 0.262103 | 0.284722 | 0.299405 | 0.305853 | 0.304861 |
 | MeanFeature | 0.232341 | 0.263095 | 0.288591 | 0.302381 | 0.311310 | 0.311210 |
 
 The previous raw-stitch PrefixHAR reference is preserved under `raw_stitch_prefix_reference` in fixed_view_progression.json for direct comparison.

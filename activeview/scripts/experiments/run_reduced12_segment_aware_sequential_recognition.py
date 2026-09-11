@@ -144,8 +144,9 @@ def _softmax(logits: np.ndarray) -> np.ndarray:
 
 
 def _log_softmax(logits: np.ndarray) -> np.ndarray:
-    shifted = logits - np.max(logits, axis=1, keepdims=True)
-    return shifted - np.log(np.sum(np.exp(shifted), axis=1, keepdims=True))
+    """Normalize over the class dimension for both 2-D and 3-D tensors."""
+    shifted = logits - np.max(logits, axis=-1, keepdims=True)
+    return shifted - np.log(np.sum(np.exp(shifted), axis=-1, keepdims=True))
 
 
 def _entropy(probabilities: np.ndarray) -> np.ndarray:
@@ -207,13 +208,16 @@ def _encode_chunks(
     model: ChunkEncoder,
     sequences: np.ndarray,
     device: torch.device,
+    sequence_batch_size: int = INFERENCE_BATCH_SIZE,
 ) -> tuple[np.ndarray, np.ndarray]:
+    if sequence_batch_size <= 0:
+        raise ValueError("sequence_batch_size must be positive")
     model.eval()
     logits_parts: list[np.ndarray] = []
     feature_parts: list[np.ndarray] = []
     flat = sequences.reshape(-1, FRAME_COUNT, COORDINATE_DIM)
-    for start in range(0, len(flat), INFERENCE_BATCH_SIZE):
-        end = min(start + INFERENCE_BATCH_SIZE, len(flat))
+    for start in range(0, len(flat), sequence_batch_size):
+        end = min(start + sequence_batch_size, len(flat))
         chunks = _chunk_batch(flat, start, end)
         with torch.inference_mode():
             logits, features = model(torch.from_numpy(chunks).to(device))
