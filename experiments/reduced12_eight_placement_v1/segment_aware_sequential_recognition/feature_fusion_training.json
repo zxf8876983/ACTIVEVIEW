@@ -1,0 +1,52 @@
+{
+  "epochs": 8,
+  "selected_epoch": 8,
+  "best_val_full_mean_feature_macro_f1": 0.3374101006300467,
+  "train_contexts": 46324,
+  "val_contexts": 10080,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1/segment_aware_sequential_recognition/feature_fusion_head_best.pth",
+  "seed": 42,
+  "test_used": false,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.9520483457523843,
+      "val_full_mean_feature_macro_f1": 0.313168163054949
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.5396002220070881,
+      "val_full_mean_feature_macro_f1": 0.3259173475566351
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.402415350727413,
+      "val_full_mean_feature_macro_f1": 0.32518405107626275
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.3207381834154543,
+      "val_full_mean_feature_macro_f1": 0.33116411608099117
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.2710981343103491,
+      "val_full_mean_feature_macro_f1": 0.33273487193355905
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.2364091432612876,
+      "val_full_mean_feature_macro_f1": 0.3351233873126982
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.2084121133970178,
+      "val_full_mean_feature_macro_f1": 0.33523939153377014
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.191265531208204,
+      "val_full_mean_feature_macro_f1": 0.3374101006300467
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "MeanLogP/Stay": {
+    "same_view": {
+      "count": 50400,
+      "mean_feature_delta": 1.3143128177610426,
+      "median_feature_delta": 0.9315052628517151,
+      "mean_logp_delta": 1.0978501399103382,
+      "median_logp_delta": 0.6543111801147461
+    },
+    "switched_view": {
+      "count": 0,
+      "mean_feature_delta": null,
+      "median_feature_delta": null,
+      "mean_logp_delta": null,
+      "median_logp_delta": null
+    }
+  },
+  "MeanLogP/Random-1Hop": {
+    "same_view": {
+      "count": 31849,
+      "mean_feature_delta": 1.3632242933290968,
+      "median_feature_delta": 1.1190305948257446,
+      "mean_logp_delta": 1.1367811200249793,
+      "median_logp_delta": 0.7461415529251099
+    },
+    "switched_view": {
+      "count": 18551,
+      "mean_feature_delta": 3.003170653275562,
+      "median_feature_delta": 2.5108163356781006,
+      "mean_logp_delta": 2.5272969780728927,
+      "median_logp_delta": 1.8638253211975098
+    }
+  },
+  "MeanLogP/Privileged-Greedy-Oracle": {
+    "same_view": {
+      "count": 35762,
+      "mean_feature_delta": 1.2797442093735978,
+      "median_feature_delta": 0.9912992715835571,
+      "mean_logp_delta": 1.0885235748442246,
+      "median_logp_delta": 0.6887849867343903
+    },
+    "switched_view": {
+      "count": 14638,
+      "mean_feature_delta": 3.5117752402557154,
+      "median_feature_delta": 2.9266597032546997,
+      "mean_logp_delta": 3.0261654310314867,
+      "median_logp_delta": 2.2719122171401978
+    }
+  },
+  "MeanFeature/Stay": {
+    "same_view": {
+      "count": 50400,
+      "mean_feature_delta": 1.3143128177610426,
+      "median_feature_delta": 0.9315052628517151,
+      "mean_logp_delta": 1.0978501399103382,
+      "median_logp_delta": 0.6543111801147461
+    },
+    "switched_view": {
+      "count": 0,
+      "mean_feature_delta": null,
+      "median_feature_delta": null,
+      "mean_logp_delta": null,
+      "median_logp_delta": null
+    }
+  },
+  "MeanFeature/Random-1Hop": {
+    "same_view": {
+      "count": 31849,
+      "mean_feature_delta": 1.3632242933290968,
+      "median_feature_delta": 1.1190305948257446,
+      "mean_logp_delta": 1.1367811200249793,
+      "median_logp_delta": 0.7461415529251099
+    },
+    "switched_view": {
+      "count": 18551,
+      "mean_feature_delta": 3.003170653275562,
+      "median_feature_delta": 2.5108163356781006,
+      "mean_logp_delta": 2.5272969780728927,
+      "median_logp_delta": 1.8638253211975098
+    }
+  },
+  "MeanFeature/Privileged-Greedy-Oracle": {
+    "same_view": {
+      "count": 35743,
+      "mean_feature_delta": 1.280848554886771,
+      "median_feature_delta": 1.0013619661331177,
+      "mean_logp_delta": 1.0869668478748045,
+      "median_logp_delta": 0.6927891373634338
+    },
+    "switched_view": {
+      "count": 14657,
+      "mean_feature_delta": 3.4847331340811913,
+      "median_feature_delta": 2.9126172065734863,
+      "mean_logp_delta": 2.9972855640314426,
+      "median_logp_delta": 2.238295793533325
+    }
+  }
+}

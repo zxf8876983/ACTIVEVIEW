@@ -1,0 +1,75 @@
+{
+  "epochs": 12,
+  "selected_epoch": 9,
+  "best_val_mean_chunk_macro_f1": 0.2980118537372974,
+  "train_contexts": 46324,
+  "train_chunk_examples": 277944,
+  "val_contexts": 10080,
+  "batch_size": 1024,
+  "hidden_dim": 256,
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/activeview_reduced12_eight_placement_v1/segment_aware_sequential_recognition/chunk_encoder_best.pth",
+  "seed": 42,
+  "test_used": false,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.0437871537664356,
+      "val_mean_chunk_macro_f1": 0.22796544247046172
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.8578362854964592,
+      "val_mean_chunk_macro_f1": 0.24078629518106487
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.7317642608986181,
+      "val_mean_chunk_macro_f1": 0.2583709229813428
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.636251361492802,
+      "val_mean_chunk_macro_f1": 0.28074918117783665
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.565213398898349,
+      "val_mean_chunk_macro_f1": 0.2688105374932508
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.5022653858451283,
+      "val_mean_chunk_macro_f1": 0.28255299694519936
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.4481623733744902,
+      "val_mean_chunk_macro_f1": 0.27751691367912906
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.400250097408014,
+      "val_mean_chunk_macro_f1": 0.2877610087785839
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.3568523066008793,
+      "val_mean_chunk_macro_f1": 0.2980118537372974
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.315441401565776,
+      "val_mean_chunk_macro_f1": 0.2898808407468487
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.280922655673588,
+      "val_mean_chunk_macro_f1": 0.2821736707185852
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.248354033950497,
+      "val_mean_chunk_macro_f1": 0.28823906846138
+    }
+  ]
+}
