@@ -978,3 +978,30 @@ The +2pp gate for retraining the historical policy for the shared head passed,
 but no retraining was started automatically.  Test remained unread and no
 formal checkpoint or runtime artifact was changed.  Report:
 `experiments/reduced12_eight_placement_v1/historical_route1_shared_head_synergy/`.
+
+## Real candidate quality privileged audit (2026-09-12)
+
+Ran a Val-only reduced12 eight-placement audit over 10,080 Moving-Val
+contexts using `current/stay + Stage-A legal candidate_pool`, the frozen
+reduced12 ST-GCN feature cache and the frozen shared adapted head. No Policy
+Test was read and no model, perception data or runtime cache was modified.
+
+Action-agnostic real-quality selectors scored Stay 0.302579/0.292976 and
+Random legal 0.365079/0.364567 (Accuracy/Macro-F1). RealPoseConfidence scored
+0.513194/0.513235; SceneVisibility and its equivalent VisibleJointRatio were
+best at 0.521131/0.520336; TotalVisibility scored 0.504365/0.507568;
+ProjectedHumanArea 0.483929/0.479323; HumanVisibility 0.302877/0.300860;
+and existing TemporalMotionRetention 0.391071/0.378826. Historical Route-1
+with the same shared head scored 0.509524/0.509806, while the GT-TrueLogP
+reference scored 0.753175/0.755358 and legal candidate-only AnyCorrect
+coverage was 0.771726.
+
+SceneVisibility was +15.605pp above Random and +1.161pp above the historical
+Route-1 replay, but is a privileged future-quality diagnostic. Its
+candidate-level Spearman with shared GT true-logp was 0.402764; within-context
+mean/median Spearman was 0.247205/0.261905. Existing scene/human artifacts
+provided no current/stay occlusion scalar, so occlusion stratification was
+reported unavailable rather than synthetically filled. The result supports
+keeping future observability as a possible target, combined with task
+evidence, without training a predictor in this audit. Report:
+`experiments/reduced12_eight_placement_v1/real_candidate_quality_privileged_audit/`.

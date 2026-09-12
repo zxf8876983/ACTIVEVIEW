@@ -1,31 +1,40 @@
-# Current Task
+# Real Candidate Quality Privileged Audit — completed 2026-09-12
 
-# Historical Route-1 × Shared Adapted Head Synergy Audit — completed 2026-09-12
+Ran the Val-only reduced12 eight-placement Moving-Val audit on 10,080
+contexts. The matched action set is `current/stay + Stage-A legal
+candidate_pool`; all terminal predictions use the frozen reduced12 ST-GCN
+feature cache plus the frozen shared adapted head. Policy Test was not read,
+and no model, perception data or runtime cache was modified.
 
-Replayed the highest compliant reduced12 Route-1 checkpoint (Stay-aware
-GTMargin Listwise / `margin_listwise`) on the matched 10,080 Moving-Val
-contexts, then evaluated the identical selected viewpoints with the original
-frozen ST-GCN head and the frozen shared adapted head.  No Policy Test was
-read; no model, perception data or cache was modified.
+Action-agnostic privileged selector results (Accuracy / Macro-F1):
 
-The audit found no deployment-legal, matched-protocol historical Route-1
-result above 50%.  The 0.502778 RealEvidence-GTMarginListwise result was
-excluded because it consumes future candidate evidence, and old EXP036
-16-class results were protocol mismatches.  The selected closest compliant
-method's archived result is 0.458730 Accuracy / 0.446342 Macro-F1.
+- Stay + Shared: 0.302579 / 0.292976
+- Random legal + Shared: 0.365079 / 0.364567
+- RealPoseConfidence: 0.513194 / 0.513235
+- SceneVisibility: 0.521131 / 0.520336
+- VisibleJointRatio: 0.521131 / 0.520336
+- HumanVisibility: 0.302877 / 0.300860
+- TotalVisibility: 0.504365 / 0.507568
+- ProjectedHumanArea: 0.483929 / 0.479323
+- TemporalMotionRetention: 0.391071 / 0.378826
+- Historical Route-1 + Shared: 0.509524 / 0.509806
+- GT-TrueLogP Oracle + Shared: 0.753175 / 0.755358
+- Legal AnyCorrect candidate-only coverage: 0.771726
 
-On the matched replay, Stay/current was 0.254266/0.235500 with the original
-head and 0.302579/0.292976 with the shared head.  The historical policy was
-0.458730/0.446342 with the original head and 0.509524/0.509806 with the
-shared head.  Recognizer gain at Stay was +4.831pp; policy gain was +20.446pp
-under the original head and +20.694pp under the shared head.  Combined gain
-was +25.526pp and additive synergy was +0.248pp.  Shared candidate-only Legal
-AnyCorrect Coverage was 0.771726 and its GT-TrueLogP Oracle was
-0.753175/0.755358.
+SceneVisibility is the best action-agnostic selector. It is +21.855pp above
+Stay, +15.605pp above Random, and +1.161pp above the historical Route-1
+shared-head replay, while remaining a privileged future-quality diagnostic.
+Its candidate-level Spearman with shared GT true-logp is 0.402764 and its
+within-context Spearman mean/median are 0.247205 / 0.261905. Existing
+scene/human quality artifacts have no current/stay scalar, so occlusion
+stratification is explicitly unavailable rather than filled synthetically.
 
-The +2pp gate for a possible policy retraining is passed, but no second-stage
-retraining was started automatically.  Full artifacts are under
-`experiments/reduced12_eight_placement_v1/historical_route1_shared_head_synergy/`.
+Artifacts and script:
 
-Task status: **CLEAN**.  Await explicit approval before retraining the
-historical policy for the shared head.
+`activeview/scripts/eval/analyze_reduced12_real_candidate_quality_privileged.py`
+
+`experiments/reduced12_eight_placement_v1/real_candidate_quality_privileged_audit/`
+
+Task status: **CLEAN**. Future-quality prediction remains a possible target,
+but any deployable method should combine predicted observation quality with
+task evidence; no follow-up predictor was trained automatically.

@@ -1,0 +1,4 @@
+{
+  "available": false,
+  "reason": "Existing scene/human quality artifacts cover legal candidates only; no current/stay occlusion scalar is available, so no artificial stay value or quantile split was created."
+}

@@ -1,0 +1,7 @@
+{
+  "device": "cuda:0",
+  "inference_batch_size": 4096,
+  "seed": 42,
+  "test_used": false,
+  "training_used": false
+}

@@ -1,0 +1,73 @@
+{
+  "RealPoseConfidence": {
+    "archives_read": 10080,
+    "stay_coverage": 1.0,
+    "candidate_coverage": 1.0,
+    "definition": "archive confidence scalar (mean YOLO keypoint confidence over 30 frames)",
+    "source": "archived skeleton NPZ confidence",
+    "granularity": "per-view scalar",
+    "uses_gt_action": false,
+    "uses_future_candidate_observation": true,
+    "deployable": false
+  },
+  "SceneVisibility": {
+    "candidate_coverage": 1.0,
+    "stay_coverage": 0.0,
+    "source": "experiments/reduced12_eight_placement_v1/scene_joint_visibility_oracle/visibility.npz",
+    "granularity": "per-view scalar",
+    "definition": "existing Habitat environmental joint visibility score",
+    "uses_gt_action": false,
+    "uses_future_candidate_observation": true,
+    "deployable": false
+  },
+  "VisibleJointRatio": {
+    "candidate_coverage": 1.0,
+    "stay_coverage": 0.0,
+    "source": "experiments/reduced12_eight_placement_v1/scene_joint_visibility_oracle/visibility.npz",
+    "granularity": "per-view scalar",
+    "definition": "mean of existing 17-joint scene visibility vector",
+    "uses_gt_action": false,
+    "uses_future_candidate_observation": true,
+    "deployable": false
+  },
+  "HumanVisibility": {
+    "candidate_coverage": 1.0,
+    "stay_coverage": 0.0,
+    "source": "experiments/reduced12_eight_placement_v1/human_self_visibility_oracle/diagnostics.json",
+    "granularity": "per-view scalar",
+    "definition": "existing human-only body-part visibility diagnostic",
+    "uses_gt_action": false,
+    "uses_future_candidate_observation": true,
+    "deployable": false
+  },
+  "TotalVisibility": {
+    "candidate_coverage": 1.0,
+    "stay_coverage": 0.0,
+    "source": "experiments/reduced12_eight_placement_v1/human_self_visibility_oracle/diagnostics.json",
+    "granularity": "per-view scalar",
+    "definition": "existing scene+human observability score",
+    "uses_gt_action": false,
+    "uses_future_candidate_observation": true,
+    "deployable": false
+  },
+  "ProjectedHumanArea": {
+    "candidate_coverage": 1.0,
+    "stay_coverage": 0.0,
+    "source": "experiments/reduced12_eight_placement_v1/human_view_observability_oracle/candidate_metrics.npz",
+    "granularity": "per-view scalar",
+    "definition": "existing normalized projected human area",
+    "uses_gt_action": false,
+    "uses_future_candidate_observation": true,
+    "deployable": false
+  },
+  "TemporalMotionRetention": {
+    "candidate_coverage": 1.0,
+    "stay_coverage": 0.0,
+    "source": "experiments/reduced12_eight_placement_v1/skeleton_motion_recoverability_audit/candidate_metrics.npz",
+    "granularity": "per-view sequence-level scalar",
+    "definition": "existing action-agnostic estimated-skeleton motion retention proxy; not GT motion fidelity",
+    "uses_gt_action": false,
+    "uses_future_candidate_observation": true,
+    "deployable": false
+  }
+}

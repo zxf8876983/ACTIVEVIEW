@@ -1,0 +1,20 @@
+{
+  "best_vs_stay": {
+    "old_wrong_new_correct": 3099,
+    "old_correct_new_wrong": 896,
+    "both_correct": 2154,
+    "both_wrong": 3931,
+    "correction_rate": 0.4408250355618777,
+    "regression_rate": 0.2937704918032787,
+    "net_gain": 0.2185515873015873
+  },
+  "best_vs_random": {
+    "old_wrong_new_correct": 2410,
+    "old_correct_new_wrong": 837,
+    "both_correct": 2843,
+    "both_wrong": 3990,
+    "correction_rate": 0.3765625,
+    "regression_rate": 0.22744565217391305,
+    "net_gain": 0.1560515873015873
+  }
+}
