@@ -1,0 +1,15 @@
+{
+  "best_branch": "Prefix5+RGBGlobal+Geometry",
+  "best_vs_geometry": {
+    "left_correct_right_wrong": 604,
+    "left_wrong_right_correct": 414,
+    "both_correct": 3848,
+    "both_wrong": 5214,
+    "geometry_wrong_best_correct": 604,
+    "geometry_correct_best_wrong": 414
+  },
+  "old_frame0_reference": {
+    "accuracy": 0.506151,
+    "comparison": "different protocol; no action-level replay"
+  }
+}

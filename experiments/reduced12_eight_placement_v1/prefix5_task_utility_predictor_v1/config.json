@@ -1,0 +1,19 @@
+{
+  "branches": [
+    "GeometryOnly-Mixed5",
+    "Prefix5+Geometry",
+    "Prefix5+RGBGlobal+Geometry"
+  ],
+  "prefix_shape": [
+    3,
+    5,
+    17
+  ],
+  "prefix_dim": 255,
+  "dino_input": "current frame-0 16x768 mean pooled to 768",
+  "option_geometry_dim": 18,
+  "tau": 0.5,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "test_used": false
+}

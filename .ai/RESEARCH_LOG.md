@@ -1087,3 +1087,22 @@ Spearman mean 0.794074, top-1 agreement 0.678770), but mixed-view switch
 displacement was 9.396× normal same-view 4→5 displacement. Under the specified
 thresholds this is a KEEP protocol, with representation discontinuity still a
 plausible ceiling; no selector training was started.
+
+## Prefix-5 task-utility selector (2026-09-13)
+
+Trained three causal selectors on 46,324 Policy Train contexts with
+record-balanced sampling (313 records × 16 contexts per epoch) for 12 epochs.
+The strict action set was current/Stay plus Stage-A legal candidates. A
+candidate target used the mixed sequence current[0:5] + candidate[5:30], while
+Stay used current[0:30]. The frozen reduced12 ST-GCN and shared head were
+unchanged; Policy Test and new perception artifacts were not used.
+
+Moving Val Accuracy/Macro-F1: Stay 0.302579/0.292976,
+Random-ShortPrefix5 0.342262/0.329111, GeometryOnly-Mixed5
+0.422817/0.406814, Prefix5+Geometry 0.429266/0.411469, and
+Prefix5+RGBGlobal+Geometry 0.441667/0.424037. Strict Mixed5 GT-TrueLogP and
+GT-Margin/AnyCorrect oracles were 0.687599/0.671197 and 0.720040/0.709917.
+Prefix-shuffling reduced Accuracy by 0.337pp and RGB-shuffling by 2.163pp.
+The best branch is below the preregistered 0.52 kill threshold, so this simple
+deployable task-utility route is recorded as a negative result without a
+follow-up experiment.

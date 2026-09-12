@@ -1,0 +1,97 @@
+{
+  "branch": "Prefix5+Geometry",
+  "seed": 42,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "best_epoch": 12,
+  "best_val_utility_loss": 1.3469042301177978,
+  "checkpoint_selection": "minimum Moving Val Mixed5 utility loss",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.101109504699707,
+      "val_utility_loss": 1.481099545955658,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.4957078099250793,
+      "val_utility_loss": 1.39683278799057,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.3695074558258056,
+      "val_utility_loss": 1.3603635549545288,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.352366852760315,
+      "val_utility_loss": 1.3572187066078185,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.3489448189735413,
+      "val_utility_loss": 1.3556759119033814,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.3451038599014282,
+      "val_utility_loss": 1.3501951575279236,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.3300453186035157,
+      "val_utility_loss": 1.3487980484962463,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.3271881699562074,
+      "val_utility_loss": 1.3483645915985107,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.3291573524475098,
+      "val_utility_loss": 1.348463225364685,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.332448959350586,
+      "val_utility_loss": 1.349105215072632,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.335488224029541,
+      "val_utility_loss": 1.3489917159080504,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.3251830220222474,
+      "val_utility_loss": 1.3469042301177978,
+      "sampled_contexts": 5008,
+      "records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/prefix5_task_utility_selector_v1/Prefix5+Geometry.pth",
+  "test_used": false
+}

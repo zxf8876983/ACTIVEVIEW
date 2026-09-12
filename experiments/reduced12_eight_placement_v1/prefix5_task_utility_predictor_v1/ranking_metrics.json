@@ -1,0 +1,35 @@
+{
+  "GeometryOnly-Mixed5": {
+    "branch": "GeometryOnly-Mixed5",
+    "mae": 0.7951319813728333,
+    "rmse": 1.0120718479156494,
+    "candidate_level_spearman": 0.1914158360241137,
+    "within_context_spearman_mean": 0.23317261509153384,
+    "within_context_spearman_median": 0.3142857142857143,
+    "gt_utility_oracle_top1_overlap": 0.24573412698412697,
+    "gt_utility_oracle_top3_overlap": 0.606845238095238,
+    "stay_move_agreement": 0.7645833333333333
+  },
+  "Prefix5+Geometry": {
+    "branch": "Prefix5+Geometry",
+    "mae": 0.7372262477874756,
+    "rmse": 0.9806114435195923,
+    "candidate_level_spearman": 0.33201222864496577,
+    "within_context_spearman_mean": 0.24433763520848342,
+    "within_context_spearman_median": 0.3214285714285715,
+    "gt_utility_oracle_top1_overlap": 0.2532738095238095,
+    "gt_utility_oracle_top3_overlap": 0.6201388888888889,
+    "stay_move_agreement": 0.8052579365079365
+  },
+  "Prefix5+RGBGlobal+Geometry": {
+    "branch": "Prefix5+RGBGlobal+Geometry",
+    "mae": 0.7214314341545105,
+    "rmse": 0.9621609449386597,
+    "candidate_level_spearman": 0.38864446019116,
+    "within_context_spearman_mean": 0.2578240867043887,
+    "within_context_spearman_median": 0.3571428571428572,
+    "gt_utility_oracle_top1_overlap": 0.26071428571428573,
+    "gt_utility_oracle_top3_overlap": 0.6242063492063492,
+    "stay_move_agreement": 0.7839285714285714
+  }
+}
