@@ -1,0 +1,121 @@
+{
+  "branch": "RGBGlobal-TrueLogP",
+  "seed": 42,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "best_epoch": 12,
+  "best_val_total_loss": 1.3059476971626283,
+  "checkpoint_selection": "minimum Val total task loss (utility loss + fixed visibility auxiliary where applicable)",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.5412744641304017,
+      "val_total_loss": 1.387655997276306,
+      "val_utility_loss": 1.387655997276306,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.343818688392639,
+      "val_total_loss": 1.3606803655624389,
+      "val_utility_loss": 1.3606803655624389,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.325139617919922,
+      "val_total_loss": 1.328510618209839,
+      "val_utility_loss": 1.328510618209839,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.313364565372467,
+      "val_total_loss": 1.323304283618927,
+      "val_utility_loss": 1.323304283618927,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.3060068011283874,
+      "val_total_loss": 1.327441191673279,
+      "val_utility_loss": 1.327441191673279,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.3033424019813538,
+      "val_total_loss": 1.319904363155365,
+      "val_utility_loss": 1.319904363155365,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.2948663592338563,
+      "val_total_loss": 1.3175615429878236,
+      "val_utility_loss": 1.3175615429878236,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.287977385520935,
+      "val_total_loss": 1.3147095441818237,
+      "val_utility_loss": 1.3147095441818237,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.2930266499519347,
+      "val_total_loss": 1.3128459334373475,
+      "val_utility_loss": 1.3128459334373475,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.297310435771942,
+      "val_total_loss": 1.3097076177597047,
+      "val_utility_loss": 1.3097076177597047,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.2927345395088197,
+      "val_total_loss": 1.3068946480751038,
+      "val_utility_loss": 1.3068946480751038,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.2910323858261108,
+      "val_total_loss": 1.3059476971626283,
+      "val_utility_loss": 1.3059476971626283,
+      "val_visibility_loss": null,
+      "observations": 5008,
+      "records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/frame0_task_utility_predictor_v1/RGBGlobal-TrueLogP.pth",
+  "test_used": false
+}

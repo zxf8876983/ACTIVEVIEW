@@ -1,0 +1,50 @@
+{
+  "GeometryOnly-TrueLogP": {
+    "branch": "GeometryOnly-TrueLogP",
+    "mae": 0.770997166633606,
+    "rmse": 0.9826906323432922,
+    "candidate_level_spearman": 0.24339602638050944,
+    "within_context_spearman_mean": 0.26885173209417723,
+    "within_context_spearman_median": 0.3714285714285715,
+    "gt_utility_oracle_top1_overlap": 0.2655753968253968,
+    "gt_utility_oracle_top3_overlap": 0.629265873015873,
+    "stay_move_agreement": 0.7853174603174603,
+    "oracle_stay_rate": 0.11359126984126984
+  },
+  "RGBGlobal-TrueLogP": {
+    "branch": "RGBGlobal-TrueLogP",
+    "mae": 0.7108084559440613,
+    "rmse": 0.9373070597648621,
+    "candidate_level_spearman": 0.4088548655426678,
+    "within_context_spearman_mean": 0.2914509131632993,
+    "within_context_spearman_median": 0.39999999999999997,
+    "gt_utility_oracle_top1_overlap": 0.26875,
+    "gt_utility_oracle_top3_overlap": 0.6417658730158731,
+    "stay_move_agreement": 0.745734126984127,
+    "oracle_stay_rate": 0.11359126984126984
+  },
+  "RGBGlobal-Margin": {
+    "branch": "RGBGlobal-Margin",
+    "mae": 0.9555253386497498,
+    "rmse": 1.3454970121383667,
+    "candidate_level_spearman": 0.2261172032282434,
+    "within_context_spearman_mean": 0.199031180473426,
+    "within_context_spearman_median": 0.26934460074855826,
+    "gt_utility_oracle_top1_overlap": 0.2588293650793651,
+    "gt_utility_oracle_top3_overlap": 0.629265873015873,
+    "stay_move_agreement": 0.8566468253968254,
+    "oracle_stay_rate": 0.1246031746031746
+  },
+  "RGBGlobal-TrueLogP+VisibilityAux": {
+    "branch": "RGBGlobal-TrueLogP+VisibilityAux",
+    "mae": 0.704269528388977,
+    "rmse": 0.9311373233795166,
+    "candidate_level_spearman": 0.4255249191431737,
+    "within_context_spearman_mean": 0.3074143734667647,
+    "within_context_spearman_median": 0.41666666666666663,
+    "gt_utility_oracle_top1_overlap": 0.2785714285714286,
+    "gt_utility_oracle_top3_overlap": 0.6536706349206349,
+    "stay_move_agreement": 0.7987103174603175,
+    "oracle_stay_rate": 0.11359126984126984
+  }
+}

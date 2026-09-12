@@ -1,36 +1,40 @@
-# Frame-0 Alternative-View Visibility Predictor — completed 2026-09-12
+# Frame-0 Task-Utility Predictor — completed 2026-09-13
 
-Implemented and ran the first deployable, action-agnostic frame-0 visibility
-predictor using Policy Train (46,324 contexts) and Moving Val (10,080
-contexts). The predictor consumes only a strict current-view frame-0 RGB DINO
-representation and Stage-A legal candidate geometry; scene-only Habitat
-frame-0 H36M17 raycasts are supervision targets. Policy Test was not read.
+Implemented and ran the causal Frame-0 Task-Utility Predictor on Policy Train
+(46,324 contexts, 313 records) with Moving Val model selection/evaluation
+(10,080 contexts, 105 records). Policy Test was not read. Predictor inputs are
+strictly current frame-0 DINOv2 global tokens plus Stage-A legal candidate
+geometry; no future observation, skeleton, recognizer output or GT action is
+provided at inference.
 
-The isolated runtime cache contains 56,404 current-view frame-0 RGB archives
-and 16x768 DINO spatial tokens for Train/Val only. No candidate RGB/DINO,
-future skeleton, action label, or recognizer output is a predictor input.
-Target caches and checkpoints remain outside Git under the configured data
-root.
+The terminal recognizer is the frozen reduced12 ST-GCN encoder plus the frozen
+shared adapted head. Existing frame-0 RGB/DINO and recognizer option caches
+were reused; no new RGB, skeleton or DINO data was generated. Runtime
+checkpoints remain outside Git.
 
-Moving-Val results (Accuracy / Macro-F1):
+Moving-Val Accuracy/Macro-F1:
 
 - Stay: 0.302579 / 0.292976
 - Random legal: 0.365079 / 0.364567
-- GeometryOnly: 0.477579 / 0.479837
-- RGBGlobal+Geometry: 0.494841 / 0.493881
-- RGBSpatial+Geometry: 0.493849 / 0.494691
-- Frame0SceneVisibility Oracle: 0.489782 / 0.485962
+- RGBGlobal Visibility (fixed prior): 0.494841 / 0.493881
+- GeometryOnly-TrueLogP: 0.479762 / 0.479889
+- RGBGlobal-TrueLogP: 0.498214 / 0.495003
+- RGBGlobal-Margin: 0.499306 / 0.499761
+- RGBGlobal-TrueLogP + VisibilityAux: 0.506151 / 0.503722
 - Historical Route-1 + Shared: 0.509524 / 0.509806
 - GT-TrueLogP Oracle: 0.753175 / 0.755358
 
-RGBGlobal+Geometry is the best deployable branch by Accuracy and recovers
-104.1% of the Random-to-frame-0-oracle Accuracy gain; RGBSpatial has the best
-visibility MAE/ranking correlations but slightly lower downstream Accuracy.
-The pre-registered decision is **STRONG KEEP** for the visibility-prediction
-route. High-occlusion and transition details are in the experiment report.
+The best new branch is RGBGlobal-TrueLogP + VisibilityAux. Its gain over the
+fixed visibility predictor is +1.131pp Accuracy, while RGBGlobal-TrueLogP is
+only +1.845pp over GeometryOnly-TrueLogP and the auxiliary head adds +0.794pp.
+The preregistered decision is **WEAK KEEP**: retain as a baseline without
+adding complexity. The RGB-shuffle audit drops Accuracy from 0.498214 to
+0.436111, indicating real frame-0 visual contribution. High-occlusion and
+transition details are in the experiment JSON reports.
 
 Experiment report:
-`experiments/reduced12_eight_placement_v1/frame0_visibility_predictor_v1/`
+`experiments/reduced12_eight_placement_v1/frame0_task_utility_predictor_v1/`
 
-Task status: **CLEAN**. Next human decision: whether to integrate the best
-frame-0 predictor into a frozen downstream policy experiment.
+Task status: **CLEAN**. Next human decision: whether to move to the approved
+short-prefix active-recognition direction; no follow-up experiment was
+started automatically.

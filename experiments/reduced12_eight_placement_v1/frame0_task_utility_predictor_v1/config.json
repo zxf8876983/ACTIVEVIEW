@@ -1,0 +1,14 @@
+{
+  "branches": [
+    "GeometryOnly-TrueLogP",
+    "RGBGlobal-TrueLogP",
+    "RGBGlobal-Margin",
+    "RGBGlobal-TrueLogP+VisibilityAux"
+  ],
+  "option_geometry_dim": 18,
+  "task_tau": 0.5,
+  "visibility_aux_weight": 0.5,
+  "seed": 42,
+  "epochs": 12,
+  "test_used": false
+}

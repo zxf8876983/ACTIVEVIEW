@@ -1,0 +1,24 @@
+{
+  "best_task_vs_rgb_visibility": {
+    "left_correct_right_wrong": 626,
+    "left_wrong_right_correct": 740,
+    "both_correct": 4362,
+    "both_wrong": 4352
+  },
+  "best_task_vs_historical": {
+    "left_correct_right_wrong": 691,
+    "left_wrong_right_correct": 657,
+    "both_correct": 4445,
+    "both_wrong": 4287
+  },
+  "visibility_oracle_disagreement": {
+    "count": 4328,
+    "task_correct_visibility_wrong": 740,
+    "task_wrong_visibility_correct": 626,
+    "both_correct": 1423,
+    "both_wrong": 1539,
+    "mean_gt_true_logp_difference_task_minus_visibility": 0.08692844957113266,
+    "mean_gt_true_logp_task_selected": -1.543925404548645,
+    "mean_gt_true_logp_visibility_selected": -1.6308540105819702
+  }
+}

@@ -1045,3 +1045,25 @@ lowest target MAE (0.191582) and highest candidate Spearman (0.714893).
 The pre-registered decision is STRONG KEEP for the visibility-prediction
 route. Report:
 `experiments/reduced12_eight_placement_v1/frame0_visibility_predictor_v1/`.
+
+## Frame-0 task-utility predictor (2026-09-13)
+
+Trained four causal task-utility branches on 46,324 Policy Train contexts with
+record-balanced 16-observation-per-record sampling for 12 epochs. Moving Val
+(10,080 contexts) was used for checkpoint selection and final evaluation; no
+Policy Test was read. The predictor consumes only the strict current frame-0
+DINOv2 global feature and Stage-A legal candidate geometry. GT action and
+candidate frozen-recognizer outputs were used only to build Train targets and
+for terminal evaluation through the frozen ST-GCN plus frozen shared head.
+
+The fixed RGBGlobal visibility baseline reproduced 0.494841/0.493881
+Accuracy/Macro-F1. GeometryOnly-TrueLogP, RGBGlobal-TrueLogP, RGBGlobal-Margin
+and RGBGlobal-TrueLogP+VisibilityAux reached 0.479762/0.479889,
+0.498214/0.495003, 0.499306/0.499761 and 0.506151/0.503722 respectively.
+The best new branch therefore adds +1.131pp over visibility and remains below
+the historical Route-1 + Shared result 0.509524. RGBGlobal-TrueLogP exceeds
+GeometryOnly by +1.845pp; the fixed visibility auxiliary adds +0.794pp.
+RGB-shuffling current DINO while keeping geometry fixed lowers Accuracy from
+0.498214 to 0.436111, supporting genuine visual dependence. The preregistered
+decision is WEAK KEEP without architecture/loss expansion. Report:
+`experiments/reduced12_eight_placement_v1/frame0_task_utility_predictor_v1/`.
