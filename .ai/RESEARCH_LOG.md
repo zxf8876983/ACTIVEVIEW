@@ -1067,3 +1067,23 @@ RGB-shuffling current DINO while keeping geometry fixed lowers Accuracy from
 0.498214 to 0.436111, supporting genuine visual dependence. The preregistered
 decision is WEAK KEEP without architecture/loss expansion. Report:
 `experiments/reduced12_eight_placement_v1/frame0_task_utility_predictor_v1/`.
+
+## Short-prefix5 mixed-view protocol feasibility audit (2026-09-13)
+
+Ran a Val-only, no-training audit over 10,080 reduced12 Moving-Val contexts.
+The formal action set was current/Stay plus the Stage-A legal candidate pool.
+Stay uses current frames 0:30; each candidate uses current frames 0:5 and
+candidate frames 5:30, evaluated by the frozen reduced12 ST-GCN and frozen
+shared adapted head. This is a discrete-time view-switch approximation, not
+continuous navigation, and Policy Test was not read.
+
+Accuracy/Macro-F1 were Stay 0.302579/0.292976, Random-ShortPrefix5
+0.342262/0.329111, Mixed5 GT-TrueLogP 0.687599/0.671197, Mixed5 GT-Margin
+0.720040/0.709917, FullView GT-TrueLogP 0.753175/0.755358, and FullView
+GT-Margin 0.791964/0.800900. Mixed5 and FullView AnyCorrect coverage were
+0.720040 and 0.791964. Thus the GT-TrueLogP FullView→Mixed5 drop is 6.558pp
+Accuracy. Candidate ranking remained moderately stable (within-context
+Spearman mean 0.794074, top-1 agreement 0.678770), but mixed-view switch
+displacement was 9.396× normal same-view 4→5 displacement. Under the specified
+thresholds this is a KEEP protocol, with representation discontinuity still a
+plausible ceiling; no selector training was started.

@@ -1,0 +1,21 @@
+{
+  "candidate_samples": 68702,
+  "counts": {
+    "full_correct_mixed_correct": 19948,
+    "full_correct_mixed_wrong": 5844,
+    "full_wrong_mixed_correct": 3866,
+    "full_wrong_mixed_wrong": 39044
+  },
+  "ratios": {
+    "full_correct_mixed_correct": 0.2903554481674478,
+    "full_correct_mixed_wrong": 0.08506302582166458,
+    "full_wrong_mixed_correct": 0.056272015370731565,
+    "full_wrong_mixed_wrong": 0.568309510640156
+  },
+  "conditional_ratios": {
+    "mixed_wrong_given_full_correct": 0.2265818858560794,
+    "mixed_correct_given_full_wrong": 0.09009554882311815
+  },
+  "mean_true_logp_mixed_minus_full": -0.09527096090198905,
+  "mean_margin_mixed_minus_full": -0.20619984196807606
+}

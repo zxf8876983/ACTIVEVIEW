@@ -1,0 +1,22 @@
+{
+  "train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "candidate_count_min": 2,
+  "candidate_count_max": 21,
+  "candidate_count_mean": 6.815674603174603,
+  "legal_action_count_min": 3,
+  "legal_action_count_max": 22,
+  "legal_action_count_mean": 7.815674603174603,
+  "archive_shape_checked": [
+    32,
+    3,
+    30,
+    17
+  ],
+  "action_set_identity_checked": true,
+  "mixed_any_correct_count": 7258,
+  "mixed_any_correct_coverage": 0.7200396825396825,
+  "full_any_correct_count": 7983,
+  "full_any_correct_coverage": 0.7919642857142857,
+  "test_used": false
+}

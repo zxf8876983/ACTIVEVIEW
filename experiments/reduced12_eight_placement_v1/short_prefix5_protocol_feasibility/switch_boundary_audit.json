@@ -1,0 +1,106 @@
+{
+  "normal_same_view": {
+    "3_to_4": {
+      "mean_joint_displacement": 0.0505780855464547,
+      "max_joint_displacement": 0.14158894499921318,
+      "root_pelvis_displacement": 0.0,
+      "mean_bone_length_discontinuity": 0.015098432735410623,
+      "max_bone_length_discontinuity": 0.052967951585546076
+    },
+    "4_to_5": {
+      "mean_joint_displacement": 0.05213524878015758,
+      "max_joint_displacement": 0.1448958044025829,
+      "root_pelvis_displacement": 0.0,
+      "mean_bone_length_discontinuity": 0.015701499431059578,
+      "max_bone_length_discontinuity": 0.05483537648531002
+    },
+    "5_to_6": {
+      "mean_joint_displacement": 0.05146610789253019,
+      "max_joint_displacement": 0.1431316411105587,
+      "root_pelvis_displacement": 0.0,
+      "mean_bone_length_discontinuity": 0.015639802294257578,
+      "max_bone_length_discontinuity": 0.054538101199755655
+    }
+  },
+  "mixed_candidate_switch_4_to_5": {
+    "mean_joint_displacement": 0.48985886040185544,
+    "max_joint_displacement": 1.3187403800330908,
+    "root_pelvis_displacement": 0.0,
+    "mean_bone_length_discontinuity": 0.11280182493054826,
+    "max_bone_length_discontinuity": 0.34338919347065516
+  },
+  "switch_to_normal_4_to_5_amplification": 9.395924482253422,
+  "normal_transition_samples": {
+    "3_to_4": 10080,
+    "4_to_5": 10080,
+    "5_to_6": 10080
+  },
+  "mixed_switch_samples": 68702,
+  "edges": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      0,
+      4
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      0,
+      7
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      8,
+      9
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      11,
+      12
+    ],
+    [
+      12,
+      13
+    ],
+    [
+      8,
+      14
+    ],
+    [
+      14,
+      15
+    ],
+    [
+      15,
+      16
+    ]
+  ],
+  "root_joint": 0
+}

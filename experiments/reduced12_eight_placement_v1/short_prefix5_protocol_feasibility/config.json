@@ -1,0 +1,24 @@
+{
+  "split": "Moving Val only",
+  "contexts": 10080,
+  "prefix_frames": "current[0:5]+candidate[5:30]",
+  "stay_frames": "current[0:30]",
+  "formal_action_set": "Stay + Stage-A legal candidate_pool",
+  "all32_formal": false,
+  "recognizer": "frozen reduced12 ST-GCN + frozen shared adapted head",
+  "checkpoint": {
+    "stgcn": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+    "stgcn_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+    "shared_head": {
+      "path": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/view_agnostic_frozen_encoder_head/shared_head_best.pth",
+      "sha256": "12aaed93d2edd4be5f0f3e1cef068f1aa4b1627eb970d7e93b78088f9aa13747"
+    }
+  },
+  "seed": 42,
+  "test_used": false,
+  "training_used": false,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "discrete_time_view_switch_approximation": true,
+  "continuous_navigation_claimed": false
+}

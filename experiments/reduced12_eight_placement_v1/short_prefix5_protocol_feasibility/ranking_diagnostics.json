@@ -1,0 +1,9 @@
+{
+  "within_context_spearman_mean": 0.7940741522722761,
+  "within_context_spearman_median": 0.8909090909090911,
+  "top1_slot_agreement": 0.6787698412698413,
+  "top1_viewpoint_agreement": 0.6787698412698413,
+  "top3_overlap_mean": 0.8325727513227512,
+  "same_stay_move_decision": 0.9331349206349207,
+  "contexts": 10080
+}
