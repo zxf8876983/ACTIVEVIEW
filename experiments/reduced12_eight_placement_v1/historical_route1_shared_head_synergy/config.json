@@ -1,0 +1,9 @@
+{
+  "device": "cuda:0",
+  "batch_size": 256,
+  "inference_batch_size": 2048,
+  "seed": 42,
+  "test_used": false,
+  "policy_test_read": false,
+  "output": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced12_eight_placement_v1/historical_route1_shared_head_synergy"
+}

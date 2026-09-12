@@ -1,81 +1,31 @@
 # Current Task
 
-## Overnight dual-route experiment — completed 2026-09-12
+# Historical Route-1 × Shared Adapted Head Synergy Audit — completed 2026-09-12
 
-The reduced12 eight-placement dual-route Train/Val experiment is complete.
-Shared recognizer, Route-1 retrieval NBV and Route-2 observe/verify/continue
-artifacts are recorded under `experiments/reduced12_eight_placement_v1/`.
-Policy Test was not read. Runtime feature caches and checkpoints remain
-external under `ACTIVEVIEW_DATA_ROOT`.
+Replayed the highest compliant reduced12 Route-1 checkpoint (Stay-aware
+GTMargin Listwise / `margin_listwise`) on the matched 10,080 Moving-Val
+contexts, then evaluated the identical selected viewpoints with the original
+frozen ST-GCN head and the frozen shared adapted head.  No Policy Test was
+read; no model, perception data or cache was modified.
 
-## Current research question
+The audit found no deployment-legal, matched-protocol historical Route-1
+result above 50%.  The 0.502778 RealEvidence-GTMarginListwise result was
+excluded because it consumes future candidate evidence, and old EXP036
+16-class results were protocol mismatches.  The selected closest compliant
+method's archived result is 0.458730 Accuracy / 0.446342 Macro-F1.
 
-For the reduced12 + eight-placement ActiveView protocol, determine whether the
-remaining HAR utility gap is dominated by motion, scene/placement, viewpoint
-geometry, or sequential reachability.  The latest evidence should guide a
-human-approved decision between non-greedy sequential information acquisition
-and further multimodal utility modeling.  Do not start either direction
-automatically.
+On the matched replay, Stay/current was 0.254266/0.235500 with the original
+head and 0.302579/0.292976 with the shared head.  The historical policy was
+0.458730/0.446342 with the original head and 0.509524/0.509806 with the
+shared head.  Recognizer gain at Stay was +4.831pp; policy gain was +20.446pp
+under the original head and +20.694pp under the shared head.  Combined gain
+was +25.526pp and additive synergy was +0.248pp.  Shared candidate-only Legal
+AnyCorrect Coverage was 0.771726 and its GT-TrueLogP Oracle was
+0.753175/0.755358.
 
-## Frozen current protocol
+The +2pp gate for a possible policy retraining is passed, but no second-stage
+retraining was started automatically.  Full artifacts are under
+`experiments/reduced12_eight_placement_v1/historical_route1_shared_head_synergy/`.
 
-- Taxonomy (12): `walk`, `sit`, `stand up`, `bend`, `crawl`, `stumble`, `clap`,
-  `throw`, `kick`, `knock`, `punch`, `touching face`.
-- Official Train cap: 300 records/class; Official Val cap: 50 records/class;
-  seed 42.
-- ActiveView policy records-only split: 313 Train / 105 Val / 0 Test.
-- 20 HM3D-train scenes, eight furniture-anchored placements/scene, 32 legal
-  candidate viewpoints/placement.
-- Frozen reduced12 ST-GCN, Stage-B utility, Stage-C-v0 and existing
-  counterfactual/Stage-D caches are the only runtime assets used by the latest
-  audits.
-- Current diagnostics are Val-only (10,080 moving contexts); policy Test is
-  not read.  No training or perception/data regeneration was performed.
-
-## Latest completed diagnostics
-
-### Utility source decomposition
-
-On 68,702 legal candidate samples (143 scene/placement groups), body-relative
-azimuth alignment was numerically confirmed.  Same-motion utility-map
-Spearman mean/median is 0.268/0.400, versus 0.147/0.188 for matched
-different-motion maps.  Same scene/placement consistency is 0.148 across
-mixed actions and 0.281 for action-matched pairs.  Leave-one-sample-out
-explained variance is 0.479 motion-only, 0.104 scene-only and 0.559 additive
-motion+scene, leaving 0.441 interaction residual.  Motion+scene explained
-variance decreases from 0.728 at 1.5 m to 0.313 at 3.0 m.
-
-### Reachability / sequential oracle curve
-
-Candidate-only privileged Accuracy/Macro-F1 are 0.454266/0.444782 at H1,
-0.538790/0.529863 at K1, 0.597222/0.591727 at K2, 0.654762/0.650562 at K3,
-0.688393/0.683594 at K4, 0.701984/0.697100 at K5, 0.708234/0.702974 at K6,
-and 0.709623/0.704598 for the full candidate set.  Greedy privileged local
-search reaches only 0.558234 Accuracy after four steps.  Correct-view basins
-have mean largest-component size 2.23 nodes and 76.3% of correct nodes in
-that component; 29.04% of contexts have no reachable correct candidate.
-
-### Interpretation
-
-The current conclusion is **strong motion×scene×view interaction**, with
-motion as a secondary stable source.  One-shot scalar utility prediction and
-monotonic greedy refinement are insufficient to explain the full oracle
-ceiling.  A sequential information-acquisition protocol is scientifically
-motivated, but it must be non-greedy/global enough to handle fragmented
-correct basins.  This is a diagnosis, not an authorization to modify the
-frozen method.
-
-## Reproducibility boundaries
-
-- `test_used=false` for all latest diagnostics.
-- No formal WM-E/JR/ST-GCN checkpoint was modified.
-- No RGB, skeleton, DINO, Habitat or perception data was regenerated.
-- Runtime data/checkpoints remain external under `ACTIVEVIEW_DATA_ROOT`.
-
-## Report locations
-
-- `experiments/reduced12_eight_placement_v1/utility_source_decomposition/`
-- `experiments/reduced12_eight_placement_v1/khop_oracle_curve/`
-- `experiments/reduced12_eight_placement_v1/overnight_nbv_diagnosis/`
-
-Task status: **CLEAN**.  Await explicit approval before any new experiment.
+Task status: **CLEAN**.  Await explicit approval before retraining the
+historical policy for the shared head.

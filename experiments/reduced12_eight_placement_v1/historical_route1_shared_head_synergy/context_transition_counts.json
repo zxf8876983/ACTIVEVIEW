@@ -1,0 +1,20 @@
+{
+  "stay": {
+    "old_wrong_shared_correct": 1120,
+    "old_correct_shared_wrong": 633,
+    "both_correct": 1930,
+    "both_wrong": 6397,
+    "correction_rate": 0.14899560995077823,
+    "regression_rate": 0.24697619976589932,
+    "net_gain": 0.048313492063492065
+  },
+  "historical": {
+    "old_wrong_shared_correct": 1056,
+    "old_correct_shared_wrong": 544,
+    "both_correct": 4080,
+    "both_wrong": 4400,
+    "correction_rate": 0.1935483870967742,
+    "regression_rate": 0.11764705882352941,
+    "net_gain": 0.050793650793650794
+  }
+}

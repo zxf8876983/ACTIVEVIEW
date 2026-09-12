@@ -1,0 +1,230 @@
+{
+  "viewpoints": [
+    {
+      "viewpoint_id": 0,
+      "selection_frequency": 1127,
+      "original_accuracy": 0.4764862466725821,
+      "shared_accuracy": 0.5341614906832298,
+      "delta_accuracy": 0.05767524401064772
+    },
+    {
+      "viewpoint_id": 1,
+      "selection_frequency": 605,
+      "original_accuracy": 0.4909090909090909,
+      "shared_accuracy": 0.5322314049586777,
+      "delta_accuracy": 0.041322314049586806
+    },
+    {
+      "viewpoint_id": 2,
+      "selection_frequency": 1851,
+      "original_accuracy": 0.47649918962722854,
+      "shared_accuracy": 0.5289032955159373,
+      "delta_accuracy": 0.05240410588870875
+    },
+    {
+      "viewpoint_id": 3,
+      "selection_frequency": 710,
+      "original_accuracy": 0.44366197183098594,
+      "shared_accuracy": 0.5112676056338028,
+      "delta_accuracy": 0.06760563380281687
+    },
+    {
+      "viewpoint_id": 4,
+      "selection_frequency": 1417,
+      "original_accuracy": 0.46788990825688076,
+      "shared_accuracy": 0.5038814396612562,
+      "delta_accuracy": 0.03599153140437544
+    },
+    {
+      "viewpoint_id": 5,
+      "selection_frequency": 501,
+      "original_accuracy": 0.4810379241516966,
+      "shared_accuracy": 0.5249500998003992,
+      "delta_accuracy": 0.04391217564870259
+    },
+    {
+      "viewpoint_id": 6,
+      "selection_frequency": 1710,
+      "original_accuracy": 0.47953216374269003,
+      "shared_accuracy": 0.5555555555555556,
+      "delta_accuracy": 0.07602339181286555
+    },
+    {
+      "viewpoint_id": 7,
+      "selection_frequency": 628,
+      "original_accuracy": 0.43312101910828027,
+      "shared_accuracy": 0.4585987261146497,
+      "delta_accuracy": 0.02547770700636942
+    },
+    {
+      "viewpoint_id": 8,
+      "selection_frequency": 108,
+      "original_accuracy": 0.5370370370370371,
+      "shared_accuracy": 0.6296296296296297,
+      "delta_accuracy": 0.09259259259259256
+    },
+    {
+      "viewpoint_id": 9,
+      "selection_frequency": 154,
+      "original_accuracy": 0.4025974025974026,
+      "shared_accuracy": 0.44805194805194803,
+      "delta_accuracy": 0.045454545454545414
+    },
+    {
+      "viewpoint_id": 10,
+      "selection_frequency": 94,
+      "original_accuracy": 0.6276595744680851,
+      "shared_accuracy": 0.6702127659574468,
+      "delta_accuracy": 0.042553191489361764
+    },
+    {
+      "viewpoint_id": 11,
+      "selection_frequency": 64,
+      "original_accuracy": 0.421875,
+      "shared_accuracy": 0.5,
+      "delta_accuracy": 0.078125
+    },
+    {
+      "viewpoint_id": 12,
+      "selection_frequency": 252,
+      "original_accuracy": 0.3531746031746032,
+      "shared_accuracy": 0.38492063492063494,
+      "delta_accuracy": 0.031746031746031744
+    },
+    {
+      "viewpoint_id": 13,
+      "selection_frequency": 39,
+      "original_accuracy": 0.358974358974359,
+      "shared_accuracy": 0.48717948717948717,
+      "delta_accuracy": 0.1282051282051282
+    },
+    {
+      "viewpoint_id": 14,
+      "selection_frequency": 274,
+      "original_accuracy": 0.5072992700729927,
+      "shared_accuracy": 0.5547445255474452,
+      "delta_accuracy": 0.04744525547445255
+    },
+    {
+      "viewpoint_id": 15,
+      "selection_frequency": 19,
+      "original_accuracy": 0.42105263157894735,
+      "shared_accuracy": 0.631578947368421,
+      "delta_accuracy": 0.21052631578947367
+    },
+    {
+      "viewpoint_id": 16,
+      "selection_frequency": 83,
+      "original_accuracy": 0.1927710843373494,
+      "shared_accuracy": 0.20481927710843373,
+      "delta_accuracy": 0.01204819277108432
+    },
+    {
+      "viewpoint_id": 17,
+      "selection_frequency": 2,
+      "original_accuracy": 0.5,
+      "shared_accuracy": 0.5,
+      "delta_accuracy": 0.0
+    },
+    {
+      "viewpoint_id": 18,
+      "selection_frequency": 56,
+      "original_accuracy": 0.39285714285714285,
+      "shared_accuracy": 0.3392857142857143,
+      "delta_accuracy": -0.05357142857142855
+    },
+    {
+      "viewpoint_id": 19,
+      "selection_frequency": 49,
+      "original_accuracy": 0.46938775510204084,
+      "shared_accuracy": 0.4897959183673469,
+      "delta_accuracy": 0.02040816326530609
+    },
+    {
+      "viewpoint_id": 20,
+      "selection_frequency": 13,
+      "original_accuracy": 0.38461538461538464,
+      "shared_accuracy": 0.6153846153846154,
+      "delta_accuracy": 0.23076923076923078
+    },
+    {
+      "viewpoint_id": 21,
+      "selection_frequency": 119,
+      "original_accuracy": 0.1092436974789916,
+      "shared_accuracy": 0.14285714285714285,
+      "delta_accuracy": 0.03361344537815125
+    },
+    {
+      "viewpoint_id": 22,
+      "selection_frequency": 15,
+      "original_accuracy": 0.8666666666666667,
+      "shared_accuracy": 0.8,
+      "delta_accuracy": -0.06666666666666665
+    },
+    {
+      "viewpoint_id": 23,
+      "selection_frequency": 50,
+      "original_accuracy": 0.24,
+      "shared_accuracy": 0.24,
+      "delta_accuracy": 0.0
+    },
+    {
+      "viewpoint_id": 24,
+      "selection_frequency": 6,
+      "original_accuracy": 0.3333333333333333,
+      "shared_accuracy": 0.3333333333333333,
+      "delta_accuracy": 0.0
+    },
+    {
+      "viewpoint_id": 25,
+      "selection_frequency": 1,
+      "original_accuracy": 1.0,
+      "shared_accuracy": 1.0,
+      "delta_accuracy": 0.0
+    },
+    {
+      "viewpoint_id": 26,
+      "selection_frequency": 31,
+      "original_accuracy": 0.16129032258064516,
+      "shared_accuracy": 0.12903225806451613,
+      "delta_accuracy": -0.03225806451612903
+    },
+    {
+      "viewpoint_id": 27,
+      "selection_frequency": 43,
+      "original_accuracy": 0.16279069767441862,
+      "shared_accuracy": 0.11627906976744186,
+      "delta_accuracy": -0.04651162790697676
+    },
+    {
+      "viewpoint_id": 28,
+      "selection_frequency": 48,
+      "original_accuracy": 0.2916666666666667,
+      "shared_accuracy": 0.2916666666666667,
+      "delta_accuracy": 0.0
+    },
+    {
+      "viewpoint_id": 29,
+      "selection_frequency": 3,
+      "original_accuracy": 0.6666666666666666,
+      "shared_accuracy": 0.6666666666666666,
+      "delta_accuracy": 0.0
+    },
+    {
+      "viewpoint_id": 30,
+      "selection_frequency": 5,
+      "original_accuracy": 0.4,
+      "shared_accuracy": 0.4,
+      "delta_accuracy": 0.0
+    },
+    {
+      "viewpoint_id": 31,
+      "selection_frequency": 3,
+      "original_accuracy": 1.0,
+      "shared_accuracy": 1.0,
+      "delta_accuracy": 0.0
+    }
+  ],
+  "observed_viewpoints": 32,
+  "spearman_selection_frequency_vs_shared_gain": 0.47140762463343105
+}

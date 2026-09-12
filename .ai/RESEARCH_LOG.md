@@ -956,3 +956,25 @@ observed reached 0.434226/0.423232. The pre-registered rules therefore keep
 both routes for human review; no Test artifact was read and no formal frozen
 ST-GCN/WM-E/JR checkpoint or perception data was modified. Reports are under
 `experiments/reduced12_eight_placement_v1/{view_agnostic_frozen_encoder_head,route1_retrieval_nbv_v1,route2_observe_verify_continue_v1,dual_route_overnight_summary}/`.
+
+## Historical Route-1 × shared adapted head synergy audit (2026-09-12)
+
+The current matched reduced12 Moving-Val audit replayed the archived
+Stay-aware GTMargin Listwise (`margin_listwise`) Route-1 selector on 10,080
+contexts.  No deployment-legal matched-protocol historical Route-1 result
+above 50% was found: the 0.502778 RealEvidence-GTMarginListwise result uses
+future candidate evidence and old EXP036 results use a 16-class protocol, so
+both were excluded.  The closest compliant historical result is
+0.458730/0.446342 Accuracy/Macro-F1.
+
+Keeping every selected viewpoint identical, the original frozen head scored
+0.254266/0.235500 for Stay and 0.458730/0.446342 for the historical policy;
+the frozen shared adapted head scored 0.302579/0.292976 and
+0.509524/0.509806 respectively.  Recognizer gain at Stay was +4.831pp,
+policy gain under the original/shared heads was +20.446/+20.694pp, combined
+gain was +25.526pp and additive synergy was +0.248pp.  Shared candidate-only
+AnyCorrect Coverage was 0.771726 and GT-TrueLogP Oracle was 0.753175/0.755358.
+The +2pp gate for retraining the historical policy for the shared head passed,
+but no retraining was started automatically.  Test remained unread and no
+formal checkpoint or runtime artifact was changed.  Report:
+`experiments/reduced12_eight_placement_v1/historical_route1_shared_head_synergy/`.
