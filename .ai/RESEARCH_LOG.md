@@ -1026,3 +1026,22 @@ Candidate-only and Stay-plus-candidate AnyCorrect coverage were 0.771726 and
 0.791964. Per-frame pose confidence was unavailable because archives only store
 a 30-frame aggregate scalar. Report:
 `experiments/reduced12_eight_placement_v1/frame0_causal_observability_audit/`.
+
+## Frame-0 visibility predictor (2026-09-12)
+
+Trained three small action-agnostic predictors on 46,324 Policy Train
+contexts and selected checkpoints by Moving-Val visibility loss over 10,080
+contexts. Strict frame-0 current-view RGB was rendered once per Train/Val
+observation (56,404 archives, no candidate RGB), and frozen DINOv2 ViT-B/14
+4x4 tokens were extracted. Habitat frame-0 scene-only H36M17 raycasts formed
+the supervision target; no Test data or recognizer output entered predictor
+inputs.
+
+Moving-Val Accuracy/Macro-F1: GeometryOnly 0.477579/0.479837,
+RGBGlobal+Geometry 0.494841/0.493881, RGBSpatial+Geometry 0.493849/0.494691.
+RGBGlobal+Geometry was the best downstream deployable selector, recovering
+104.1% of the Random-to-frame-0-oracle Accuracy gain; RGBSpatial had the
+lowest target MAE (0.191582) and highest candidate Spearman (0.714893).
+The pre-registered decision is STRONG KEEP for the visibility-prediction
+route. Report:
+`experiments/reduced12_eight_placement_v1/frame0_visibility_predictor_v1/`.

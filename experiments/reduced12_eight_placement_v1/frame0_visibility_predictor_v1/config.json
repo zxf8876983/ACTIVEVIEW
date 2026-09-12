@@ -1,0 +1,15 @@
+{
+  "branches": [
+    "GeometryOnly",
+    "RGBGlobal+Geometry",
+    "RGBSpatial+Geometry"
+  ],
+  "option_geometry_dim": 18,
+  "dino_tokens": [
+    16,
+    768
+  ],
+  "seed": 42,
+  "epochs": 12,
+  "test_used": false
+}

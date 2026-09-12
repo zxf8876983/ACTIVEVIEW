@@ -1,39 +1,36 @@
-# Frame-0 Causal Observability Audit — completed 2026-09-12
+# Frame-0 Alternative-View Visibility Predictor — completed 2026-09-12
 
-Completed the Val-only reduced12 eight-placement Moving-Val audit over all
-10,080 contexts. The matched action set is `current/stay + Stage-A legal
-candidate_pool`; frame-0 selection uses only scene-only Habitat raycasts to
-frame-0 reconstructed world-space H36M17 joints. Terminal predictions use the
-frozen reduced12 ST-GCN feature cache plus the frozen shared adapted head.
-Policy Test was not read, and no model, perception data or runtime cache was
-modified.
+Implemented and ran the first deployable, action-agnostic frame-0 visibility
+predictor using Policy Train (46,324 contexts) and Moving Val (10,080
+contexts). The predictor consumes only a strict current-view frame-0 RGB DINO
+representation and Stage-A legal candidate geometry; scene-only Habitat
+frame-0 H36M17 raycasts are supervision targets. Policy Test was not read.
 
-Matched Accuracy/Macro-F1 results:
+The isolated runtime cache contains 56,404 current-view frame-0 RGB archives
+and 16x768 DINO spatial tokens for Train/Val only. No candidate RGB/DINO,
+future skeleton, action label, or recognizer output is a predictor input.
+Target caches and checkpoints remain outside Git under the configured data
+root.
+
+Moving-Val results (Accuracy / Macro-F1):
 
 - Stay: 0.302579 / 0.292976
 - Random legal: 0.365079 / 0.364567
-- RealPoseConfidence (non-causal reference): 0.513194 / 0.513235
-- Frame0SceneVisibility: 0.489782 / 0.485962
-- FullTemporalSceneVisibility (six-frame reference): 0.495833 / 0.492420
-- Historical Route-1 + shared head: 0.509524 / 0.509806
+- GeometryOnly: 0.477579 / 0.479837
+- RGBGlobal+Geometry: 0.494841 / 0.493881
+- RGBSpatial+Geometry: 0.493849 / 0.494691
+- Frame0SceneVisibility Oracle: 0.489782 / 0.485962
+- Historical Route-1 + Shared: 0.509524 / 0.509806
 - GT-TrueLogP Oracle: 0.753175 / 0.755358
 
-Frame0SceneVisibility is +12.470pp Accuracy over Random and reaches the
-pre-registered strong causal threshold (>=48% and >=+8pp), so the audit keeps
-a strict causal observability route. FullTemporal exceeds Frame-0 by only
-0.605pp Accuracy, while frame-0 versus shared GT true-logp has within-context
-Spearman mean/median 0.253482/0.272059. Candidate-only AnyCorrect coverage is
-0.771726 and Stay-plus-candidate coverage is 0.791964.
+RGBGlobal+Geometry is the best deployable branch by Accuracy and recovers
+104.1% of the Random-to-frame-0-oracle Accuracy gain; RGBSpatial has the best
+visibility MAE/ranking correlations but slightly lower downstream Accuracy.
+The pre-registered decision is **STRONG KEEP** for the visibility-prediction
+route. High-occlusion and transition details are in the experiment report.
 
-Frame-0 pose confidence is unavailable because archives contain only a
-30-frame aggregate viewpoint scalar; no per-frame value was fabricated.
+Experiment report:
+`experiments/reduced12_eight_placement_v1/frame0_visibility_predictor_v1/`
 
-Artifacts and script:
-
-`activeview/scripts/eval/analyze_reduced12_frame0_causal_observability.py`
-
-`experiments/reduced12_eight_placement_v1/frame0_causal_observability_audit/`
-
-Task status: **CLEAN**. No future-quality predictor was trained automatically;
-the next decision is whether to authorize training a deployable
-`(current RGB + candidate geometry) -> frame-0 visibility score` predictor.
+Task status: **CLEAN**. Next human decision: whether to integrate the best
+frame-0 predictor into a frozen downstream policy experiment.

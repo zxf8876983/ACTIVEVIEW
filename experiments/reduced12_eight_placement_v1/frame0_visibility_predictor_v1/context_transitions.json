@@ -1,0 +1,14 @@
+{
+  "best_predictor_vs_random": {
+    "left_correct_right_wrong": 963,
+    "left_wrong_right_correct": 2271,
+    "both_correct": 2717,
+    "both_wrong": 4129
+  },
+  "frame0_oracle_vs_best_predictor": {
+    "left_correct_right_wrong": 542,
+    "left_wrong_right_correct": 491,
+    "both_correct": 4446,
+    "both_wrong": 4601
+  }
+}

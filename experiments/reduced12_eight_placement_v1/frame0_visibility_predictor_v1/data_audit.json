@@ -1,0 +1,19 @@
+{
+  "policy_rows": {
+    "train": 46324,
+    "moving_val": 10080
+  },
+  "legacy_visited_rgb_frame_index": 15,
+  "strict_frame0_rgb_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/rgb_reduced12_eight_placement_v1/frame0_current",
+  "strict_frame0_dino_root": "/home/zxf/WorkSpace/code/data/ActiveView/features/dinov2_vitb14_spatial4x4_reduced12_eight_placement/frame0_current",
+  "candidate_rgb_rendered": false,
+  "forbidden_predictor_inputs": [
+    "full_sequence_stgcn",
+    "future_skeleton",
+    "candidate_rgb",
+    "candidate_dino",
+    "candidate_recognizer",
+    "gt_action"
+  ],
+  "test_used": false
+}

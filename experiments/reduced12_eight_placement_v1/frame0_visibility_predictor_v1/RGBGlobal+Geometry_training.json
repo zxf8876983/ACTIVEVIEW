@@ -1,0 +1,96 @@
+{
+  "branch": "RGBGlobal+Geometry",
+  "seed": 42,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "best_epoch": 12,
+  "best_val_total_loss": 0.8745622932910919,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.114020025730133,
+      "val_total_loss": 1.3212377786636353,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.102226686477661,
+      "val_total_loss": 1.0300206601619721,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.0082122445106507,
+      "val_total_loss": 0.9767129242420196,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.9623317062854767,
+      "val_total_loss": 0.9599200367927552,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.9451099634170532,
+      "val_total_loss": 0.9481031000614166,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.9303486466407775,
+      "val_total_loss": 0.9451379776000977,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.9091400623321533,
+      "val_total_loss": 0.9273837864398956,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.9012232542037963,
+      "val_total_loss": 0.9130879282951355,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.887968760728836,
+      "val_total_loss": 0.9006838798522949,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.8854856193065643,
+      "val_total_loss": 0.8912645936012268,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.8788389444351197,
+      "val_total_loss": 0.8818507492542267,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.8690957188606262,
+      "val_total_loss": 0.8745622932910919,
+      "observations": 5008,
+      "records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/frame0_visibility_predictor_v1/RGBGlobal+Geometry.pth",
+  "test_used": false
+}
