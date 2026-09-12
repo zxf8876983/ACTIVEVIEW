@@ -1,0 +1,20 @@
+{
+  "frame0_vs_stay": {
+    "left": "Stay",
+    "right": "Frame0SceneVisibility",
+    "left_wrong_right_correct": 2188,
+    "left_correct_right_wrong": 301,
+    "both_correct": 2749,
+    "both_wrong": 4842,
+    "right_minus_left_accuracy_pp": 18.720238095238095
+  },
+  "frame0_vs_historical": {
+    "left": "Historical Route-1",
+    "right": "Frame0SceneVisibility",
+    "left_wrong_right_correct": 965,
+    "left_correct_right_wrong": 1164,
+    "both_correct": 3972,
+    "both_wrong": 3979,
+    "right_minus_left_accuracy_pp": -1.974206349206349
+  }
+}

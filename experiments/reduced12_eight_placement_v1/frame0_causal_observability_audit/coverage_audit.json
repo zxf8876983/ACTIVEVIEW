@@ -1,0 +1,16 @@
+{
+  "moving_val_contexts": 10080,
+  "action_set": "current/stay + Stage-A legal candidate_pool",
+  "action_count_mean": 7.815674603174603,
+  "action_count_min": 3,
+  "action_count_max": 22,
+  "frame0_scene_visibility_context_coverage": 1.0,
+  "full_temporal_scene_visibility_candidate_coverage": 1.0,
+  "full_temporal_scene_visibility_stay_coverage": 1.0,
+  "real_pose_confidence_stay_coverage": 1.0,
+  "real_pose_confidence_candidate_coverage": 1.0,
+  "frame0_pose_confidence_available": false,
+  "frame0_pose_confidence_reason": "archives contain only 30-frame aggregated viewpoint confidence",
+  "candidate_only_any_correct_coverage": 0.7717261904761905,
+  "stay_plus_candidate_any_correct_coverage": 0.7919642857142857
+}

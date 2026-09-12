@@ -1,0 +1,21 @@
+{
+  "candidate_action_count": 78782,
+  "frame0_vs_full_temporal": {
+    "candidate_spearman": 0.9593205308667839,
+    "within_context_spearman_mean": 0.7485937223679698,
+    "within_context_spearman_median": 0.9835164835164836,
+    "within_context_count": 10080,
+    "selected_view_agreement": 0.8814484126984127,
+    "top3_overlap": 0.9924603174603175,
+    "frame0_rank_within_full_mean": 1.37390873015873,
+    "frame0_rank_within_full_median": 1.0
+  },
+  "frame0_vs_shared_gt_true_logp": {
+    "candidate_spearman": 0.4176003237890059,
+    "within_context_spearman_mean": 0.2534819450262009,
+    "within_context_spearman_median": 0.2720588235294118,
+    "within_context_count": 10080,
+    "gt_true_logp_top1_overlap": 0.26031746031746034,
+    "gt_true_logp_top3_overlap": 0.6593253968253968
+  }
+}

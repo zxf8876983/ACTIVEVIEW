@@ -1005,3 +1005,24 @@ reported unavailable rather than synthetically filled. The result supports
 keeping future observability as a possible target, combined with task
 evidence, without training a predictor in this audit. Report:
 `experiments/reduced12_eight_placement_v1/real_candidate_quality_privileged_audit/`.
+
+## Frame-0 causal observability audit (2026-09-12)
+
+Completed a Val-only reduced12 eight-placement audit over all 10,080 Moving-Val
+contexts. The selector action set was exactly current/Stay plus the Stage-A
+legal candidate pool. Frame0SceneVisibility used only frame-0 reconstructed
+world-space H36M17 joints and scene-only Habitat raycasts; all terminal HAR
+predictions used the frozen reduced12 ST-GCN feature cache and shared adapted
+head. Policy Test was not read, and no model or perception artifact was
+modified.
+
+Stay, Random legal, Frame0SceneVisibility and FullTemporalSceneVisibility
+scored 0.302579/0.292976, 0.365079/0.364567, 0.489782/0.485962 and
+0.495833/0.492420 Accuracy/Macro-F1. Frame-0 was +12.470pp Accuracy over
+Random and met the pre-registered >=48%/+8pp strict-causal threshold. Its
+within-context Spearman with shared GT true-logp was 0.253482, versus 0.748594
+with FullTemporal visibility; FullTemporal exceeded Frame-0 by only 0.605pp.
+Candidate-only and Stay-plus-candidate AnyCorrect coverage were 0.771726 and
+0.791964. Per-frame pose confidence was unavailable because archives only store
+a 30-frame aggregate scalar. Report:
+`experiments/reduced12_eight_placement_v1/frame0_causal_observability_audit/`.
