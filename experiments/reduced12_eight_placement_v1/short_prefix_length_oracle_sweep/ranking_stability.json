@@ -1,0 +1,81 @@
+{
+  "5": {
+    "vs_fullview": {
+      "within_context_spearman_mean": 0.7690602678318291,
+      "within_context_spearman_median": 0.8970588235294119,
+      "top1_selected_action_agreement": 0.6868055555555556,
+      "top3_overlap": 0.9407738095238095,
+      "contexts_with_two_candidates": 10080
+    },
+    "candidate_utility_spearman_vs_fullview": 0.8711072048795816
+  },
+  "8": {
+    "vs_fullview": {
+      "within_context_spearman_mean": 0.6762474362700341,
+      "within_context_spearman_median": 0.8095238095238096,
+      "top1_selected_action_agreement": 0.6106150793650794,
+      "top3_overlap": 0.8959325396825397,
+      "contexts_with_two_candidates": 10080
+    },
+    "candidate_utility_spearman_vs_fullview": 0.8016517617752397
+  },
+  "10": {
+    "vs_fullview": {
+      "within_context_spearman_mean": 0.6396447502471524,
+      "within_context_spearman_median": 0.7999999999999999,
+      "top1_selected_action_agreement": 0.5711309523809524,
+      "top3_overlap": 0.8808531746031746,
+      "contexts_with_two_candidates": 10080
+    },
+    "candidate_utility_spearman_vs_fullview": 0.7674538685183373
+  },
+  "12": {
+    "vs_fullview": {
+      "within_context_spearman_mean": 0.5980406339426131,
+      "within_context_spearman_median": 0.7626373626373627,
+      "top1_selected_action_agreement": 0.5376984126984127,
+      "top3_overlap": 0.85625,
+      "contexts_with_two_candidates": 10080
+    },
+    "candidate_utility_spearman_vs_fullview": 0.7299265906148868
+  },
+  "15": {
+    "vs_fullview": {
+      "within_context_spearman_mean": 0.5263654929240539,
+      "within_context_spearman_median": 0.682843137254902,
+      "top1_selected_action_agreement": 0.4758928571428571,
+      "top3_overlap": 0.8176587301587301,
+      "contexts_with_two_candidates": 10080
+    },
+    "candidate_utility_spearman_vs_fullview": 0.6665698684707548
+  },
+  "L5_vs_L8": {
+    "within_context_spearman_mean": 0.8566980500794357,
+    "within_context_spearman_median": 0.942857142857143,
+    "top1_selected_action_agreement": 0.7871031746031746,
+    "top3_overlap": 0.977281746031746,
+    "contexts_with_two_candidates": 10080
+  },
+  "L8_vs_L10": {
+    "within_context_spearman_mean": 0.9025430189532772,
+    "within_context_spearman_median": 0.9727272727272729,
+    "top1_selected_action_agreement": 0.8326388888888889,
+    "top3_overlap": 0.9888888888888889,
+    "contexts_with_two_candidates": 10080
+  },
+  "L10_vs_L12": {
+    "within_context_spearman_mean": 0.893559649972327,
+    "within_context_spearman_median": 0.9692307692307693,
+    "top1_selected_action_agreement": 0.8291666666666667,
+    "top3_overlap": 0.9861111111111112,
+    "contexts_with_two_candidates": 10080
+  },
+  "L12_vs_L15": {
+    "within_context_spearman_mean": 0.8257232705042717,
+    "within_context_spearman_median": 0.9333333333333332,
+    "top1_selected_action_agreement": 0.7415674603174603,
+    "top3_overlap": 0.9637896825396826,
+    "contexts_with_two_candidates": 10080
+  },
+  "definition": "legal candidate utility rankings exclude Stay slot; FullView reference uses candidate[0:30]"
+}

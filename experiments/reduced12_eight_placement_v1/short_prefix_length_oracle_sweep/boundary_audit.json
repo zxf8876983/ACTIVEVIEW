@@ -1,0 +1,52 @@
+{
+  "5": {
+    "sample_count": 68702,
+    "mean_switch_displacement": 0.48985886040185544,
+    "mean_normal_displacement": 0.05470070119842072,
+    "mean_amplification": 8.955257422111407,
+    "median_amplification": 9.917958805730997,
+    "ratio_samples_with_nontrivial_normal": 46091,
+    "normalization": "aggregate candidate mixed boundary jump / aggregate same-view current jump; median uses nontrivial denominators",
+    "prefix_boundary": "frame 4 -> 5"
+  },
+  "8": {
+    "sample_count": 68702,
+    "mean_switch_displacement": 0.49228983358878214,
+    "mean_normal_displacement": 0.05772847188872797,
+    "mean_amplification": 8.527678240603255,
+    "median_amplification": 9.433426028813093,
+    "ratio_samples_with_nontrivial_normal": 46091,
+    "normalization": "aggregate candidate mixed boundary jump / aggregate same-view current jump; median uses nontrivial denominators",
+    "prefix_boundary": "frame 7 -> 8"
+  },
+  "10": {
+    "sample_count": 68702,
+    "mean_switch_displacement": 0.4947991937537429,
+    "mean_normal_displacement": 0.06176419802529763,
+    "mean_amplification": 8.011100436390043,
+    "median_amplification": 8.745781615199851,
+    "ratio_samples_with_nontrivial_normal": 46091,
+    "normalization": "aggregate candidate mixed boundary jump / aggregate same-view current jump; median uses nontrivial denominators",
+    "prefix_boundary": "frame 9 -> 10"
+  },
+  "12": {
+    "sample_count": 68702,
+    "mean_switch_displacement": 0.4948136907340243,
+    "mean_normal_displacement": 0.062044952235670546,
+    "mean_amplification": 7.975083756282573,
+    "median_amplification": 8.589907023538856,
+    "ratio_samples_with_nontrivial_normal": 46091,
+    "normalization": "aggregate candidate mixed boundary jump / aggregate same-view current jump; median uses nontrivial denominators",
+    "prefix_boundary": "frame 11 -> 12"
+  },
+  "15": {
+    "sample_count": 68702,
+    "mean_switch_displacement": 0.4928802426688199,
+    "mean_normal_displacement": 0.059985864301885725,
+    "mean_amplification": 8.216606502297669,
+    "median_amplification": 9.055711619826509,
+    "ratio_samples_with_nontrivial_normal": 46091,
+    "normalization": "aggregate candidate mixed boundary jump / aggregate same-view current jump; median uses nontrivial denominators",
+    "prefix_boundary": "frame 14 -> 15"
+  }
+}

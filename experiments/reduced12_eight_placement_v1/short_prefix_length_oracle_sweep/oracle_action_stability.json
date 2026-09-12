@@ -1,0 +1,22 @@
+{
+  "L5_vs_10": {
+    "same_viewpoint_fraction": 0.6919642857142857,
+    "same_stay_move_fraction": 0.9288690476190476
+  },
+  "L5_vs_15": {
+    "same_viewpoint_fraction": 0.5396825396825397,
+    "same_stay_move_fraction": 0.8903769841269841
+  },
+  "L10_vs_15": {
+    "same_viewpoint_fraction": 0.6534722222222222,
+    "same_stay_move_fraction": 0.9228174603174604
+  },
+  "L10_vs_FullView": {
+    "same_viewpoint_fraction": 0.555952380952381,
+    "same_stay_move_fraction": 0.8905753968253968
+  },
+  "L15_vs_FullView": {
+    "same_viewpoint_fraction": 0.454265873015873,
+    "same_stay_move_fraction": 0.8645833333333334
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "action_set": "Stay/current + Stage-A legal candidate_pool",
+  "mean_legal_candidate_count": 6.815674603174603,
+  "min_legal_candidate_count": 2,
+  "max_legal_candidate_count": 21,
+  "margin_anycorrect_max_abs_difference": 0.0
+}

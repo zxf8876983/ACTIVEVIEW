@@ -1106,3 +1106,22 @@ Prefix-shuffling reduced Accuracy by 0.337pp and RGB-shuffling by 2.163pp.
 The best branch is below the preregistered 0.52 kill threshold, so this simple
 deployable task-utility route is recorded as a negative result without a
 follow-up experiment.
+
+## Prefix-length causal mixed-view oracle sweep (2026-09-13)
+
+Performed a Val-only, no-training causal mixed-view sweep on 10,080 Moving-Val
+contexts for L=5, 8, 10, 12 and 15. The action set stayed current/Stay plus
+the Stage-A legal candidate pool. Candidate sequences were exactly
+current[0:L] + candidate[L:30], while Stay was current[0:30]. Frozen reduced12
+ST-GCN and shared head were reused; no perception data or Policy Test was read.
+
+GT-TrueLogP oracle Accuracy/Macro-F1 were 0.687599/0.671197 (L5),
+0.653571/0.633511 (L8), 0.633234/0.608946 (L10), 0.614087/0.585399 (L12),
+and 0.585317/0.554597 (L15). GT-Margin/AnyCorrect coverage was
+0.720040/0.684325/0.664087/0.646825/0.613591. FullView reference was
+0.753175/0.755358. L8 is the longest prefix with at least 0.65 Accuracy and
+less than 0.10 FullView drop; L10 is below that threshold. High-occlusion
+oracle performance decreases from L5 (0.534087) to L15 (0.412413), while
+motion evidence increases. Boundary amplification remains approximately
+8–9×. The longer-prefix family is retained diagnostically with L8 as the next
+candidate, but no selector training was started.

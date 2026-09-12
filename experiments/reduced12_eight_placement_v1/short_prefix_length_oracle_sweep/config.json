@@ -1,0 +1,13 @@
+{
+  "prefix_lengths": [
+    5,
+    8,
+    10,
+    12,
+    15
+  ],
+  "action_set": "Stay + Stage-A legal candidate_pool",
+  "mixed_sequence": "current[0:L] + candidate[L:30]",
+  "test_used": false,
+  "training_used": false
+}
