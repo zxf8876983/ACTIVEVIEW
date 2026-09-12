@@ -1150,3 +1150,35 @@ The preregistered interpretation is conclusion D: a large residual remains
 even with action and visibility cues, so the pre-action oracle is not
 realistically predictable. No follow-up method was started automatically.
 Report: `experiments/reduced12_eight_placement_v1/privileged_information_ladder/`.
+
+## Structured observability privileged audit — 2026-09-13
+
+Ran the final Train/Val-only reduced12 frame-0 structured-observability audit.
+Policy Train contained 46,324 contexts and Moving Val 10,080 contexts; the
+action set was current/Stay plus the Stage-A legal candidate pool. Frozen
+reduced12 ST-GCN/shared head were reused without modification, and Policy Test
+was not read.
+
+Generated exact frame-0 17-joint scene-only Habitat raycast visibility caches
+for Train/Val. The per-candidate mean matched the existing scalar frame-0
+cache exactly (max absolute difference 0), confirming target consistency. Five
+utility MLP branches were trained for 12 epochs using 313 records × 16 sampled
+contexts per epoch, seed 42, AdamW, and SmoothL1 + 0.5 listwise loss.
+
+Moving-Val Accuracy/Macro-F1: Stay 0.302579/0.292976, Random 0.365079/0.364567,
+GeometryOnly Utility 0.487302/0.488664, ScalarVisibility+Geometry
+0.520139/0.520467, StructuredVisibility17+Geometry 0.512401/0.510476,
+CurrentPose+Geometry 0.500000/0.499949,
+CurrentPose+StructuredVisibility17+Geometry 0.522421/0.520503,
+GTAction+CurrentPose+StructuredVisibility17+Geometry 0.520833/0.518689,
+and GT-TrueLogP Oracle 0.753175/0.755358. Structured visibility alone is
+-0.774pp versus scalar; current pose adds +1.002pp over structured visibility;
+GT action adds no further gain. The 23.234pp Oracle residual satisfies the
+preregistered kill rule, so the pre-action structured-observability selector
+family is stopped. The next direction should be future-recognizer evidence or
+sequential information acquisition, not additional visibility predictors.
+
+Report and script:
+`experiments/reduced12_eight_placement_v1/structured_observability_final_audit/`
+and
+`activeview/scripts/experiments/run_reduced12_structured_observability_final_audit.py`.

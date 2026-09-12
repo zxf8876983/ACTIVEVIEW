@@ -1,0 +1,93 @@
+{
+  "GeometryOnly Utility": {
+    "branch": "GeometryOnly Utility",
+    "candidate_level_spearman_all_legal": 0.2811748170678832,
+    "candidate_level_spearman_candidate_only": 0.2840057059236397,
+    "within_context_spearman_mean": 0.27686064449354253,
+    "within_context_spearman_median": 0.38138528138528144,
+    "candidate_only_within_context_spearman_mean": 0.2741800961965574,
+    "candidate_only_within_context_spearman_median": 0.39999999999999997,
+    "gt_true_logp_oracle_top1_overlap": 0.2763888888888889,
+    "gt_true_logp_oracle_top3_overlap": 0.6341269841269841,
+    "stay_move_agreement": 0.8260912698412698,
+    "test_used": false
+  },
+  "ScalarVisibility+Geometry": {
+    "branch": "ScalarVisibility+Geometry",
+    "candidate_level_spearman_all_legal": 0.46201860294466685,
+    "candidate_level_spearman_candidate_only": 0.45566287864077143,
+    "within_context_spearman_mean": 0.3555995384821787,
+    "within_context_spearman_median": 0.5,
+    "candidate_only_within_context_spearman_mean": 0.3444852998784473,
+    "candidate_only_within_context_spearman_median": 0.5,
+    "gt_true_logp_oracle_top1_overlap": 0.2931547619047619,
+    "gt_true_logp_oracle_top3_overlap": 0.6720238095238096,
+    "stay_move_agreement": 0.8487103174603174,
+    "test_used": false
+  },
+  "StructuredVisibility17+Geometry": {
+    "branch": "StructuredVisibility17+Geometry",
+    "candidate_level_spearman_all_legal": 0.46668829948632207,
+    "candidate_level_spearman_candidate_only": 0.4604373210950279,
+    "within_context_spearman_mean": 0.3514205255349576,
+    "within_context_spearman_median": 0.5,
+    "candidate_only_within_context_spearman_mean": 0.3380065650278637,
+    "candidate_only_within_context_spearman_median": 0.5,
+    "gt_true_logp_oracle_top1_overlap": 0.29037698412698415,
+    "gt_true_logp_oracle_top3_overlap": 0.6679563492063492,
+    "stay_move_agreement": 0.8369047619047619,
+    "test_used": false
+  },
+  "CurrentPose+Geometry": {
+    "branch": "CurrentPose+Geometry",
+    "candidate_level_spearman_all_legal": 0.35933983700709554,
+    "candidate_level_spearman_candidate_only": 0.33987244198495375,
+    "within_context_spearman_mean": 0.2972088949249401,
+    "within_context_spearman_median": 0.39999999999999997,
+    "candidate_only_within_context_spearman_mean": 0.2928538374388524,
+    "candidate_only_within_context_spearman_median": 0.4123376623376624,
+    "gt_true_logp_oracle_top1_overlap": 0.2814484126984127,
+    "gt_true_logp_oracle_top3_overlap": 0.6438492063492064,
+    "stay_move_agreement": 0.828670634920635,
+    "test_used": false
+  },
+  "CurrentPose+StructuredVisibility17+Geometry": {
+    "branch": "CurrentPose+StructuredVisibility17+Geometry",
+    "candidate_level_spearman_all_legal": 0.5080179849122913,
+    "candidate_level_spearman_candidate_only": 0.50477054721464,
+    "within_context_spearman_mean": 0.36118014811682125,
+    "within_context_spearman_median": 0.5,
+    "candidate_only_within_context_spearman_mean": 0.3511634199492171,
+    "candidate_only_within_context_spearman_median": 0.5,
+    "gt_true_logp_oracle_top1_overlap": 0.3001984126984127,
+    "gt_true_logp_oracle_top3_overlap": 0.6759920634920635,
+    "stay_move_agreement": 0.86875,
+    "test_used": false
+  },
+  "GTAction+CurrentPose+StructuredVisibility17+Geometry": {
+    "branch": "GTAction+CurrentPose+StructuredVisibility17+Geometry",
+    "candidate_level_spearman_all_legal": 0.5753172790601867,
+    "candidate_level_spearman_candidate_only": 0.5727130426448791,
+    "within_context_spearman_mean": 0.3593927398264438,
+    "within_context_spearman_median": 0.5,
+    "candidate_only_within_context_spearman_mean": 0.35232670356460993,
+    "candidate_only_within_context_spearman_median": 0.5,
+    "gt_true_logp_oracle_top1_overlap": 0.29404761904761906,
+    "gt_true_logp_oracle_top3_overlap": 0.6743055555555556,
+    "stay_move_agreement": 0.8506944444444444,
+    "test_used": false
+  },
+  "GT-TrueLogP Oracle": {
+    "branch": "GT-TrueLogP Oracle",
+    "candidate_level_spearman_all_legal": 1.0,
+    "candidate_level_spearman_candidate_only": 1.0,
+    "within_context_spearman_mean": 1.0,
+    "within_context_spearman_median": 1.0,
+    "candidate_only_within_context_spearman_mean": 1.0,
+    "candidate_only_within_context_spearman_median": 1.0,
+    "gt_true_logp_oracle_top1_overlap": 1.0,
+    "gt_true_logp_oracle_top3_overlap": 1.0,
+    "stay_move_agreement": 1.0,
+    "test_used": false
+  }
+}

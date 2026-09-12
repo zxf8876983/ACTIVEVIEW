@@ -1,0 +1,150 @@
+{
+  "branch": "StructuredVisibility17+Geometry",
+  "seed": 42,
+  "epochs": 12,
+  "input_dim": 35,
+  "architecture": "Linear(input_dim,256)-GELU-Linear(256,256)-GELU-Linear(256,1)",
+  "optimizer": "AdamW",
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "observations_per_record": 16,
+  "checkpoint_selection": "minimum Moving-Val utility prediction loss",
+  "best_epoch": 11,
+  "best_val_total_loss": 1.25517578125,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.960535204410553,
+      "train_regression": 0.9251730442047119,
+      "train_listwise": 2.070724296569824,
+      "val_total_loss": 1.7600493550300598,
+      "val_regression": 0.6289235472679138,
+      "val_listwise": 2.262251591682434,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.5424939513206481,
+      "train_regression": 0.5323637872934341,
+      "train_listwise": 2.0202603220939634,
+      "val_total_loss": 1.4157740116119384,
+      "val_regression": 0.4360854417085648,
+      "val_listwise": 1.9593771338462829,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.335289716720581,
+      "train_regression": 0.4000484585762024,
+      "train_listwise": 1.8704825043678284,
+      "val_total_loss": 1.2965474605560303,
+      "val_regression": 0.3702975422143936,
+      "val_listwise": 1.8524998426437378,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.286385428905487,
+      "train_regression": 0.37228190898895264,
+      "train_listwise": 1.828207015991211,
+      "val_total_loss": 1.2761431694030763,
+      "val_regression": 0.34984917044639585,
+      "val_listwise": 1.8525880217552184,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.2724697470664978,
+      "train_regression": 0.3633985608816147,
+      "train_listwise": 1.8181423544883728,
+      "val_total_loss": 1.2620198845863342,
+      "val_regression": 0.34227184057235716,
+      "val_listwise": 1.8394960641860962,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.2529131174087524,
+      "train_regression": 0.3527926534414291,
+      "train_listwise": 1.8002409100532533,
+      "val_total_loss": 1.2645638227462768,
+      "val_regression": 0.3483835101127625,
+      "val_listwise": 1.8323606371879577,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.2558391332626342,
+      "train_regression": 0.3556466192007065,
+      "train_listwise": 1.8003850102424621,
+      "val_total_loss": 1.257790219783783,
+      "val_regression": 0.3416509985923767,
+      "val_listwise": 1.8322784662246705,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.2548951625823974,
+      "train_regression": 0.35254662334918974,
+      "train_listwise": 1.804697036743164,
+      "val_total_loss": 1.2582465767860413,
+      "val_regression": 0.34225782155990603,
+      "val_listwise": 1.8319775581359863,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.2593360900878907,
+      "train_regression": 0.3562534421682358,
+      "train_listwise": 1.8061652898788452,
+      "val_total_loss": 1.2552297711372375,
+      "val_regression": 0.3398428589105606,
+      "val_listwise": 1.8307738304138184,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.2611099481582642,
+      "train_regression": 0.3545933336019516,
+      "train_listwise": 1.8130331993103028,
+      "val_total_loss": 1.2566871762275695,
+      "val_regression": 0.3412180572748184,
+      "val_listwise": 1.8309382200241089,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.253148627281189,
+      "train_regression": 0.35317055583000184,
+      "train_listwise": 1.7999561786651612,
+      "val_total_loss": 1.25517578125,
+      "val_regression": 0.34032761454582217,
+      "val_listwise": 1.8296963095664978,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.2488642930984497,
+      "train_regression": 0.3507994472980499,
+      "train_listwise": 1.7961296677589416,
+      "val_total_loss": 1.2556443095207215,
+      "val_regression": 0.3404501020908356,
+      "val_listwise": 1.8303884148597718,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/structured_observability_final_audit/structuredvisibility17_geometry.pth",
+  "test_used": false
+}

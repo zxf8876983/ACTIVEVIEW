@@ -1,0 +1,52 @@
+{
+  "ScalarVisibility+Geometry": {
+    "uses_gt_action_input": false,
+    "uses_current_pose": false,
+    "uses_real_candidate_visibility": true,
+    "uses_candidate_skeleton_input": false,
+    "uses_candidate_rgb_input": false,
+    "uses_candidate_recognizer_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "StructuredVisibility17+Geometry": {
+    "uses_gt_action_input": false,
+    "uses_current_pose": false,
+    "uses_real_candidate_visibility": true,
+    "uses_candidate_skeleton_input": false,
+    "uses_candidate_rgb_input": false,
+    "uses_candidate_recognizer_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "CurrentPose+Geometry": {
+    "uses_gt_action_input": false,
+    "uses_current_pose": true,
+    "uses_real_candidate_visibility": false,
+    "uses_candidate_skeleton_input": false,
+    "uses_candidate_rgb_input": false,
+    "uses_candidate_recognizer_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "CurrentPose+StructuredVisibility17+Geometry": {
+    "uses_gt_action_input": false,
+    "uses_current_pose": true,
+    "uses_real_candidate_visibility": true,
+    "uses_candidate_skeleton_input": false,
+    "uses_candidate_rgb_input": false,
+    "uses_candidate_recognizer_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "GTAction+CurrentPose+StructuredVisibility17+Geometry": {
+    "uses_gt_action_input": true,
+    "uses_current_pose": true,
+    "uses_real_candidate_visibility": true,
+    "uses_candidate_skeleton_input": false,
+    "uses_candidate_rgb_input": false,
+    "uses_candidate_recognizer_input": false,
+    "deployable": false,
+    "test_used": false
+  }
+}

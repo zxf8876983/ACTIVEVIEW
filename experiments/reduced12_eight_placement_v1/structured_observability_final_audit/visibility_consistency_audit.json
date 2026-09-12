@@ -1,0 +1,6 @@
+{
+  "max_abs_difference": 0.0,
+  "mean_abs_difference": 0.0,
+  "tolerance": 1e-06,
+  "pass": true
+}

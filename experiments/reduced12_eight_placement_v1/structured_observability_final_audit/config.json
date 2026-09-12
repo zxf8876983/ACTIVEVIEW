@@ -1,0 +1,20 @@
+{
+  "branches": [
+    "ScalarVisibility+Geometry",
+    "StructuredVisibility17+Geometry",
+    "CurrentPose+Geometry",
+    "CurrentPose+StructuredVisibility17+Geometry",
+    "GTAction+CurrentPose+StructuredVisibility17+Geometry"
+  ],
+  "architecture": "Linear(input_dim,256)-GELU-Linear(256,256)-GELU-Linear(256,1)",
+  "epochs": 12,
+  "observations_per_record": 16,
+  "seed": 42,
+  "optimizer": "AdamW",
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "listwise_weight": 0.5,
+  "listwise_tau": 0.5,
+  "protocol": "pre-action/frame-0 full-view; Stay + Stage-A legal candidates",
+  "test_used": false
+}

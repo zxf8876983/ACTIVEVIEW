@@ -392,3 +392,31 @@ Report and implementation:
 `experiments/reduced12_eight_placement_v1/short_prefix_length_oracle_sweep/`
 and
 `activeview/scripts/eval/run_reduced12_prefix_length_causal_sweep.py`.
+
+## Structured observability privileged audit (2026-09-13)
+
+Completed the final Train/Val-only reduced12 frame-0 structured-observability
+audit over 46,324 Policy Train and 10,080 Moving-Val contexts. The exact action
+set remained current/Stay plus the Stage-A legal candidate pool. Frozen
+reduced12 ST-GCN/shared head were unchanged; Policy Test was not read and no
+new perception artifacts were generated.
+
+Exact frame-0, 17-joint, scene-only Habitat raycast caches were generated for
+Train and Val. Their per-candidate mean matches the existing scalar frame-0
+visibility cache exactly (max absolute difference 0). Five record-balanced
+utility MLP branches used 313 records × 16 contexts/epoch, seed 42, AdamW,
+and SmoothL1 + 0.5 listwise loss for 12 epochs.
+
+Moving-Val Accuracy/Macro-F1: ScalarVisibility+Geometry 0.520139/0.520467;
+StructuredVisibility17+Geometry 0.512401/0.510476; CurrentPose+Geometry
+0.500000/0.499949; CurrentPose+StructuredVisibility17+Geometry
+0.522421/0.520503; GTAction+CurrentPose+StructuredVisibility17+Geometry
+0.520833/0.518689; GT-TrueLogP Oracle 0.753175/0.755358. Structured visibility
+ geometry is -0.774pp versus scalar; adding current pose is +1.002pp; the
+GT-action branch does not improve further. The 23.234pp Oracle residual
+triggers the preregistered kill rule for pre-action structured-observability
+selectors. Do not continue per-limb visibility, RGB visibility, larger
+encoders, or task-aware visibility fusion; prioritize future-recognizer
+evidence and sequential information acquisition instead.
+
+Report: `experiments/reduced12_eight_placement_v1/structured_observability_final_audit/`.
