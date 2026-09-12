@@ -1,0 +1,66 @@
+{
+  "GeometryOnly Utility": {
+    "uses_gt_action_input": false,
+    "uses_real_candidate_visibility": false,
+    "uses_future_candidate_recognizer_target": false,
+    "future_candidate_recognizer_output_used_as_input": false,
+    "deployable": true,
+    "test_used": false
+  },
+  "RealVisibility+Geometry": {
+    "uses_gt_action_input": false,
+    "uses_real_candidate_visibility": true,
+    "uses_future_candidate_recognizer_target": false,
+    "future_candidate_recognizer_output_used_as_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "GTAction+Geometry": {
+    "uses_gt_action_input": true,
+    "uses_real_candidate_visibility": false,
+    "uses_future_candidate_recognizer_target": false,
+    "future_candidate_recognizer_output_used_as_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "GTAction+RealVisibility": {
+    "uses_gt_action_input": true,
+    "uses_real_candidate_visibility": true,
+    "uses_future_candidate_recognizer_target": false,
+    "future_candidate_recognizer_output_used_as_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "GTAction+RealVisibility+Geometry": {
+    "uses_gt_action_input": true,
+    "uses_real_candidate_visibility": true,
+    "uses_future_candidate_recognizer_target": false,
+    "future_candidate_recognizer_output_used_as_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "GT-TrueLogP Oracle": {
+    "uses_gt_action_input": true,
+    "uses_real_candidate_visibility": false,
+    "uses_future_candidate_recognizer_target": true,
+    "future_candidate_recognizer_output_used_as_input": true,
+    "deployable": false,
+    "test_used": false
+  },
+  "GTAction+ViewpointPrior": {
+    "uses_gt_action_input": true,
+    "uses_real_candidate_visibility": false,
+    "uses_future_candidate_recognizer_target": false,
+    "future_candidate_recognizer_output_used_as_input": false,
+    "deployable": false,
+    "test_used": false
+  },
+  "Global Viewpoint Prior": {
+    "uses_gt_action_input": false,
+    "uses_real_candidate_visibility": false,
+    "uses_future_candidate_recognizer_target": true,
+    "future_candidate_recognizer_output_used_as_input": false,
+    "deployable": true,
+    "test_used": false
+  }
+}

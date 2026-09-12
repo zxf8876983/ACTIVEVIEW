@@ -1,0 +1,150 @@
+{
+  "branch": "GTAction+Geometry",
+  "seed": 42,
+  "epochs": 12,
+  "input_dim": 30,
+  "architecture": "Linear(input_dim,256)-GELU-Linear(256,256)-GELU-Linear(256,1)",
+  "optimizer": "AdamW",
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "observations_per_record": 16,
+  "checkpoint_selection": "minimum Moving-Val utility prediction loss",
+  "best_epoch": 12,
+  "best_val_total_loss": 1.3046093702316284,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.070362555980682,
+      "train_regression": 1.1251558363437653,
+      "train_listwise": 1.8904134154319763,
+      "val_total_loss": 1.6686590313911438,
+      "val_regression": 0.6841291844844818,
+      "val_listwise": 1.969059658050537,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.479781687259674,
+      "train_regression": 0.5045005023479462,
+      "train_listwise": 1.9505623698234558,
+      "val_total_loss": 1.4445747137069702,
+      "val_regression": 0.4628363698720932,
+      "val_listwise": 1.9634766578674316,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.370083749294281,
+      "train_regression": 0.42433229386806487,
+      "train_listwise": 1.8915029048919678,
+      "val_total_loss": 1.3480746269226074,
+      "val_regression": 0.39331685602664945,
+      "val_listwise": 1.9095155358314515,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.331425714492798,
+      "train_regression": 0.39336955845355986,
+      "train_listwise": 1.8761122822761536,
+      "val_total_loss": 1.3315530657768249,
+      "val_regression": 0.375260004401207,
+      "val_listwise": 1.9125861644744873,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.319483208656311,
+      "train_regression": 0.3853932648897171,
+      "train_listwise": 1.8681798815727233,
+      "val_total_loss": 1.3271124482154846,
+      "val_regression": 0.3765969216823578,
+      "val_listwise": 1.9010310769081116,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.296138858795166,
+      "train_regression": 0.3728790611028671,
+      "train_listwise": 1.8465195775032044,
+      "val_total_loss": 1.3186089038848876,
+      "val_regression": 0.3681908637285233,
+      "val_listwise": 1.9008360385894776,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.2977179527282714,
+      "train_regression": 0.3718175977468491,
+      "train_listwise": 1.8518007040023803,
+      "val_total_loss": 1.3148856282234191,
+      "val_regression": 0.36456242501735686,
+      "val_listwise": 1.9006464242935182,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.2974645972251893,
+      "train_regression": 0.37007110714912417,
+      "train_listwise": 1.8547869682312013,
+      "val_total_loss": 1.3103067517280578,
+      "val_regression": 0.36149510741233826,
+      "val_listwise": 1.8976232767105103,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.2976325035095215,
+      "train_regression": 0.3705888420343399,
+      "train_listwise": 1.8540872931480408,
+      "val_total_loss": 1.3085219621658326,
+      "val_regression": 0.3609515815973282,
+      "val_listwise": 1.8951407551765442,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.2975071907043456,
+      "train_regression": 0.36787794828414916,
+      "train_listwise": 1.8592584729194641,
+      "val_total_loss": 1.309132945537567,
+      "val_regression": 0.36081590950489045,
+      "val_listwise": 1.8966340661048888,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.2907732725143433,
+      "train_regression": 0.3688970685005188,
+      "train_listwise": 1.843752419948578,
+      "val_total_loss": 1.3061557769775392,
+      "val_regression": 0.35905030071735383,
+      "val_listwise": 1.894210934638977,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.2843426823616029,
+      "train_regression": 0.36386390328407286,
+      "train_listwise": 1.8409575939178466,
+      "val_total_loss": 1.3046093702316284,
+      "val_regression": 0.35869012773036957,
+      "val_listwise": 1.8918384671211244,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/privileged_information_ladder/gtaction_geometry.pth",
+  "test_used": false
+}

@@ -1,26 +1,33 @@
-# Prefix-length causal mixed-view oracle sweep — completed 2026-09-13
+# Privileged information ladder / oracle gap decomposition — completed 2026-09-13
 
-Ran a Val-only, no-training reduced12 sweep for L=5, 8, 10, 12 and 15 using
-the exact current/Stay plus Stage-A legal candidate pool. Stay is
-current[0:30]; a candidate is current[0:L] + candidate[L:30]. The frozen
-reduced12 ST-GCN and shared head were unchanged, no perception artifacts were
-regenerated, and Policy Test was not read. This is a discrete-time view-switch
-approximation rather than continuous navigation.
+Implemented and ran a Train/Val-only reduced12 frame-0 information ladder
+over 46,324 Policy Train contexts and 10,080 Moving-Val contexts.  The action
+set is exactly current/Stay plus the Stage-A legal candidate pool.  The frozen
+reduced12 ST-GCN and shared head were reused; no Policy Test, new perception
+artifacts, or production model changes were used.
 
-Moving-Val GT-TrueLogP oracle Accuracy/Macro-F1: L5 0.687599/0.671197,
-L8 0.653571/0.633511, L10 0.633234/0.608946, L12 0.614087/0.585399,
-L15 0.585317/0.554597. GT-Margin/AnyCorrect coverage was 0.720040, 0.684325,
-0.664087, 0.646825 and 0.613591 respectively. FullView reference was
-0.753175/0.755358. L8 is the longest prefix satisfying the preregistered
-0.65 ceiling and <0.10 FullView drop; L10 is below the viability threshold.
+Moving-Val Accuracy/Macro-F1:
 
-High-occlusion (frame-0 Stay visibility bottom tertile) is best at L5
-(0.534087), and motion evidence increases monotonically with L. Boundary
-amplification remains about 8.0–9.0× across lengths. This supports retaining
-the longer-prefix family with L8 as the next candidate length, but no selector
-was trained automatically.
+| Method | Accuracy | Macro-F1 |
+|---|---:|---:|
+| Stay | 0.302579 | 0.292976 |
+| Random | 0.365079 | 0.364567 |
+| GeometryOnly Utility | 0.487302 | 0.488664 |
+| RealVisibility+Geometry | 0.520139 | 0.520467 |
+| GTAction+Geometry | 0.488889 | 0.489240 |
+| GTAction+RealVisibility+Geometry | 0.526091 | 0.522288 |
+| GT-TrueLogP Oracle | 0.753175 | 0.755358 |
 
-Report:
-`experiments/reduced12_eight_placement_v1/short_prefix_length_oracle_sweep/`
+The descriptive residual Oracle→GTAction+RealVisibility+Geometry gap is
+22.708pp Accuracy.  Geometry plus real visibility provides +3.284pp over the
+unified GeometryOnly rerun, while adding GT action to geometry alone provides
+only +0.159pp.  The preregistered interpretation is conclusion D: a large
+pre-action residual remains even with action and visibility cues, so the
+pre-action oracle is not realistically predictable.
 
-Task status: **CLEAN**.
+Report and implementation:
+`experiments/reduced12_eight_placement_v1/privileged_information_ladder/`
+and
+`activeview/scripts/experiments/run_reduced12_privileged_information_ladder.py`.
+
+Task status: **CLEAN**. No follow-up method was started automatically.

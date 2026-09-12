@@ -1,6 +1,6 @@
 # ACTIVEVIEW Scientific State
 
-Updated: 2026-09-11
+Updated: 2026-09-13
 
 ## Research goal
 
@@ -335,3 +335,60 @@ Latest reports:
 - `experiments/reduced12_eight_placement_v1/utility_source_decomposition/`
 - `experiments/reduced12_eight_placement_v1/khop_oracle_curve/`
 - `experiments/reduced12_eight_placement_v1/overnight_nbv_diagnosis/`
+
+### Privileged information ladder / oracle gap decomposition (2026-09-13)
+
+The latest Train/Val-only frame-0 audit used 46,324 Policy Train contexts and
+10,080 Moving-Val contexts with the exact current/Stay + Stage-A legal action
+set. Frozen reduced12 ST-GCN and shared head were unchanged; Policy Test and
+new perception artifacts were not read or generated. A common 3-layer utility
+MLP was trained for 12 epochs with 313 records × 16 contexts per epoch.
+
+Moving-Val Accuracy/Macro-F1: Stay 0.302579/0.292976, Random 0.365079/0.364567,
+GeometryOnly 0.487302/0.488664, RealVisibility+Geometry 0.520139/0.520467,
+GTAction+Geometry 0.488889/0.489240,
+GTAction+RealVisibility+Geometry 0.526091/0.522288, and GT-TrueLogP Oracle
+0.753175/0.755358. The residual Oracle→GTAction+RealVisibility+Geometry gap is
+22.708pp Accuracy. Geometry plus visibility contributes +3.284pp over the
+unified GeometryOnly rerun, while action plus geometry contributes only
++0.159pp. The preregistered interpretation is conclusion D: substantial
+pre-action uncertainty remains even with privileged action and visibility
+cues. No follow-up method was started automatically.
+
+Report: `experiments/reduced12_eight_placement_v1/privileged_information_ladder/`.
+
+## Latest prefix-length causal mixed-view oracle sweep (2026-09-13)
+
+The latest Val-only audit used 10,080 reduced12 Moving-Val contexts, the
+exact action set `Stay/current + Stage-A legal candidate_pool`, and the frozen
+reduced12 ST-GCN plus frozen shared head.  No model was trained, no perception
+artifact was regenerated, and Policy Test was not read.  This was explicitly a
+discrete-time view-switch approximation: for prefix length `L`, Stay is
+`current[0:30]` and a candidate is `current[0:L] + candidate[L:30]`.
+
+| Prefix | Random Acc/F1 | GT-TrueLogP Acc/F1 | AnyCorrect/Margin Acc/F1 | FullView Acc drop |
+|---:|---:|---:|---:|---:|
+| L=5 | 0.342262/0.329111 | 0.687599/0.671197 | 0.720040/0.709917 | 0.065575 |
+| L=8 | 0.329861/0.315272 | 0.653571/0.633511 | 0.684325/0.671529 | 0.099603 |
+| L=10 | 0.328770/0.308258 | 0.633234/0.608946 | 0.664087/0.645445 | 0.119940 |
+| L=12 | 0.321429/0.299336 | 0.614087/0.585399 | 0.646825/0.621947 | 0.139087 |
+| L=15 | 0.315278/0.295595 | 0.585317/0.554597 | 0.613591/0.587340 | 0.167857 |
+
+FullView GT-TrueLogP reference is 0.753175/0.755358.  L=8 is the longest
+prefix meeting the preregistered viability rule (TrueLogP Accuracy >= 0.65
+and FullView drop < 0.10); L=10 is below the threshold.  High-occlusion
+contexts also favor L=5 (0.534087), followed by L=8 (0.485478), L=10
+(0.464995), L=12 (0.444512) and L=15 (0.412412).  Per-class F1 prefers L=5
+for every class except `crawl`, which prefers L=8.
+
+Candidate ranking stability decreases as L grows (candidate-only utility
+Spearman vs FullView: 0.8711 at L=5, 0.6666 at L=15), while adjacent-prefix
+rankings remain high.  Boundary displacement amplification is approximately
+8–9x across prefixes, so results should not be interpreted as continuous
+navigation.  The longer-prefix family is retained diagnostically with L=8 as
+the next candidate; no selector training or automatic follow-up has started.
+
+Report and implementation:
+`experiments/reduced12_eight_placement_v1/short_prefix_length_oracle_sweep/`
+and
+`activeview/scripts/eval/run_reduced12_prefix_length_causal_sweep.py`.

@@ -1,0 +1,18 @@
+{
+  "branches": [
+    "GeometryOnly Utility",
+    "RealVisibility+Geometry",
+    "GTAction+Geometry",
+    "GTAction+RealVisibility",
+    "GTAction+RealVisibility+Geometry"
+  ],
+  "architecture": "Linear(input_dim,256)-GELU-Linear(256,256)-GELU-Linear(256,1)",
+  "epochs": 12,
+  "observations_per_record": 16,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "listwise_weight": 0.5,
+  "listwise_tau": 0.5,
+  "checkpoint_selection": "minimum Moving-Val utility prediction loss",
+  "test_used": false
+}

@@ -1125,3 +1125,28 @@ oracle performance decreases from L5 (0.534087) to L15 (0.412413), while
 motion evidence increases. Boundary amplification remains approximately
 8–9×. The longer-prefix family is retained diagnostically with L8 as the next
 candidate, but no selector training was started.
+
+## Privileged information ladder / oracle gap decomposition (2026-09-13)
+
+Completed a Train/Val-only reduced12 pre-action information ladder over 46,324
+Policy Train contexts and 10,080 Moving-Val contexts. The action set was
+current/Stay plus the Stage-A legal candidate pool. Frozen reduced12 ST-GCN and
+shared head were reused; no Policy Test, new RGB/DINO/skeleton artifacts, or
+production model changes were used. Learned branches used a common three-layer
+MLP (`input -> 256 -> 256 -> 1`, GELU), 12 epochs, 313 records × 16 sampled
+contexts per epoch, seed 42, AdamW, and SmoothL1 + 0.5 listwise utility loss.
+
+Moving-Val Accuracy/Macro-F1 were: Stay 0.302579/0.292976, Random
+0.365079/0.364567, GeometryOnly Utility 0.487302/0.488664,
+RealVisibility+Geometry 0.520139/0.520467, GTAction+Geometry 0.488889/0.489240,
+GTAction+RealVisibility+Geometry 0.526091/0.522288, and GT-TrueLogP Oracle
+0.753175/0.755358. The existing protocol-compatible GeometryOnly reference was
+0.479762/0.479889; the ladder explicitly re-ran GeometryOnly with the shared
+architecture. The descriptive Oracle→GTAction+RealVisibility+Geometry residual
+is 22.708pp Accuracy. Geometry plus real visibility adds 3.284pp over the
+unified GeometryOnly rerun, while GT action plus geometry adds only 0.159pp.
+
+The preregistered interpretation is conclusion D: a large residual remains
+even with action and visibility cues, so the pre-action oracle is not
+realistically predictable. No follow-up method was started automatically.
+Report: `experiments/reduced12_eight_placement_v1/privileged_information_ladder/`.

@@ -1,0 +1,176 @@
+{
+  "visibility_tertile_edges": [
+    0.7647058963775635,
+    1.0
+  ],
+  "by_action": {
+    "walk": {
+      "low": {
+        "count": 2213,
+        "mean_gt_true_logp": -2.336722984876344
+      },
+      "medium": {
+        "count": 1458,
+        "mean_gt_true_logp": -1.7597117656113679
+      },
+      "high": {
+        "count": 3707,
+        "mean_gt_true_logp": -1.4514771357423892
+      }
+    },
+    "sit": {
+      "low": {
+        "count": 1725,
+        "mean_gt_true_logp": -2.106855624050334
+      },
+      "medium": {
+        "count": 965,
+        "mean_gt_true_logp": -0.878079604299575
+      },
+      "high": {
+        "count": 2447,
+        "mean_gt_true_logp": -0.6990436142273202
+      }
+    },
+    "stand up": {
+      "low": {
+        "count": 2357,
+        "mean_gt_true_logp": -1.955528323071162
+      },
+      "medium": {
+        "count": 1489,
+        "mean_gt_true_logp": -0.9736122405647486
+      },
+      "high": {
+        "count": 2365,
+        "mean_gt_true_logp": -1.1487574593740935
+      }
+    },
+    "bend": {
+      "low": {
+        "count": 2155,
+        "mean_gt_true_logp": -2.1647239382056793
+      },
+      "medium": {
+        "count": 1501,
+        "mean_gt_true_logp": -1.82525459536507
+      },
+      "high": {
+        "count": 3217,
+        "mean_gt_true_logp": -1.8108065941474953
+      }
+    },
+    "crawl": {
+      "low": {
+        "count": 1169,
+        "mean_gt_true_logp": -2.6721172986999857
+      },
+      "medium": {
+        "count": 554,
+        "mean_gt_true_logp": -0.9008231874595696
+      },
+      "high": {
+        "count": 1306,
+        "mean_gt_true_logp": -0.5936095929358035
+      }
+    },
+    "stumble": {
+      "low": {
+        "count": 1763,
+        "mean_gt_true_logp": -2.4697301248833328
+      },
+      "medium": {
+        "count": 1211,
+        "mean_gt_true_logp": -2.0375355799443264
+      },
+      "high": {
+        "count": 2873,
+        "mean_gt_true_logp": -1.7484516399405867
+      }
+    },
+    "clap": {
+      "low": {
+        "count": 1043,
+        "mean_gt_true_logp": -3.114099903394712
+      },
+      "medium": {
+        "count": 602,
+        "mean_gt_true_logp": -1.976431558942082
+      },
+      "high": {
+        "count": 1617,
+        "mean_gt_true_logp": -1.8810614325894053
+      }
+    },
+    "throw": {
+      "low": {
+        "count": 2041,
+        "mean_gt_true_logp": -2.4514160243130854
+      },
+      "medium": {
+        "count": 1174,
+        "mean_gt_true_logp": -1.9085482810028975
+      },
+      "high": {
+        "count": 3482,
+        "mean_gt_true_logp": -1.5978603948240415
+      }
+    },
+    "kick": {
+      "low": {
+        "count": 2254,
+        "mean_gt_true_logp": -2.35396057442029
+      },
+      "medium": {
+        "count": 1620,
+        "mean_gt_true_logp": -1.6509462075009023
+      },
+      "high": {
+        "count": 3979,
+        "mean_gt_true_logp": -1.4394631102104438
+      }
+    },
+    "knock": {
+      "low": {
+        "count": 922,
+        "mean_gt_true_logp": -3.369160464490055
+      },
+      "medium": {
+        "count": 582,
+        "mean_gt_true_logp": -2.160668790494044
+      },
+      "high": {
+        "count": 1443,
+        "mean_gt_true_logp": -1.870225641001287
+      }
+    },
+    "punch": {
+      "low": {
+        "count": 2084,
+        "mean_gt_true_logp": -2.6362653063206207
+      },
+      "medium": {
+        "count": 1221,
+        "mean_gt_true_logp": -1.8101245337924832
+      },
+      "high": {
+        "count": 3228,
+        "mean_gt_true_logp": -1.720527949284813
+      }
+    },
+    "touching face": {
+      "low": {
+        "count": 2064,
+        "mean_gt_true_logp": -2.4239699711460014
+      },
+      "medium": {
+        "count": 1379,
+        "mean_gt_true_logp": -2.0097167577062334
+      },
+      "high": {
+        "count": 3492,
+        "mean_gt_true_logp": -2.0161697885356547
+      }
+    }
+  }
+}

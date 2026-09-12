@@ -1,0 +1,78 @@
+{
+  "train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "train_records": 313,
+  "moving_val_records": 105,
+  "train_utility": {
+    "mean": -1.8686907291412354,
+    "std": 0.9983469247817993,
+    "min": -9.925501823425293,
+    "max": -0.0015810062177479267,
+    "count": 351499
+  },
+  "val_utility": {
+    "mean": -1.8684399127960205,
+    "std": 1.005990743637085,
+    "min": -10.034783363342285,
+    "max": -0.0049347905442118645,
+    "count": 78782
+  },
+  "train_action_count": 351499,
+  "val_action_count": 78782,
+  "action_set": "Stay/current + Stage-A legal candidate_pool",
+  "recognizer": "frozen ST-GCN encoder + frozen shared head",
+  "shared_head_sha256": "12aaed93d2edd4be5f0f3e1cef068f1aa4b1627eb970d7e93b78088f9aa13747",
+  "visibility_train_metadata": {
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "mean_candidate_count": 6.587837837837838,
+    "stay_coverage": 1.0,
+    "candidate_coverage": 0.3137065637065637,
+    "target_min": 0.0,
+    "target_max": 1.0,
+    "target_mean": 0.7063276767730713,
+    "target_std": 0.4125647246837616,
+    "fraction_visibility_zero": 0.20773885558707136,
+    "fraction_visibility_one": 0.49499429585859417,
+    "definition": "frame-0 H36M17 world joints with scene-only Habitat raycast",
+    "frame_ids": [
+      0
+    ],
+    "future_motion_used": false,
+    "test_used": false
+  },
+  "visibility_val_metadata": {
+    "split": "val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "mean_candidate_count": 6.815674603174603,
+    "stay_coverage": 1.0,
+    "candidate_coverage": 0.3245559334845049,
+    "target_min": 0.0,
+    "target_max": 1.0,
+    "target_mean": 0.6815397143363953,
+    "target_std": 0.4230138063430786,
+    "fraction_visibility_zero": 0.2283008809118834,
+    "fraction_visibility_one": 0.4689776852580539,
+    "definition": "frame-0 H36M17 world joints with scene-only Habitat raycast",
+    "frame_ids": [
+      0
+    ],
+    "future_motion_used": false,
+    "test_used": false
+  },
+  "test_used": false,
+  "existing_geometry_only_reference": {
+    "accuracy": 0.4797619047619048,
+    "macro_f1": 0.47988852239094687,
+    "action_set": "current/Stay + Stage-A legal candidate_pool",
+    "target": "GT-TrueLogP",
+    "train_contexts": 46324,
+    "moving_val_contexts": 10080,
+    "seed": 42,
+    "observations_per_record": 16,
+    "protocol_match": true,
+    "source": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/reduced12_eight_placement_v1/frame0_task_utility_predictor_v1/result.json"
+  }
+}
