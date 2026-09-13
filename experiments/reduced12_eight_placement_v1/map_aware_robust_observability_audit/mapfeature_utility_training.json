@@ -1,0 +1,102 @@
+{
+  "branch": "MapFeature-Utility",
+  "input_dim": 114,
+  "architecture": "Linear(input_dim,256)-GELU-Linear(256,256)-GELU-Linear(256,1)",
+  "epochs": 12,
+  "seed": 42,
+  "optimizer": "AdamW",
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "observations_per_record": 16,
+  "checkpoint_selection": "minimum Val utility loss",
+  "best_epoch": 11,
+  "best_val_total_loss": 1.2187671899795531,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.775092649459839,
+      "val_total_loss": 1.4223492622375489,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.3057660341262818,
+      "val_total_loss": 1.2627737760543822,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.2505388855934143,
+      "val_total_loss": 1.2543490171432494,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.2535895705223083,
+      "val_total_loss": 1.2364834547042847,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.2445533990859985,
+      "val_total_loss": 1.2299864053726197,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.2260353922843934,
+      "val_total_loss": 1.2262460947036744,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.2320039510726928,
+      "val_total_loss": 1.2241450548171997,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.229038941860199,
+      "val_total_loss": 1.2260218143463135,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.233578133583069,
+      "val_total_loss": 1.2202698707580566,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.2342414259910583,
+      "val_total_loss": 1.2192319869995116,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.2264742493629455,
+      "val_total_loss": 1.2187671899795531,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.2225599765777588,
+      "val_total_loss": 1.2190394639968871,
+      "sampled_contexts": 5008,
+      "unique_records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/map_aware_robust_observability_audit/mapfeature_utility.pth",
+  "test_used": false
+}

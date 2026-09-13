@@ -1,0 +1,14 @@
+{
+  "policy_test_used": false,
+  "training_new_model_used": true,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "new_dino_generated": false,
+  "frozen_stgcn_modified": false,
+  "future_motion_used": false,
+  "future_candidate_rgb_used": false,
+  "future_candidate_skeleton_used_only_for_terminal_evaluation": true,
+  "gt_action_used": false,
+  "candidate_recognizer_output_used": false,
+  "deployable": false
+}

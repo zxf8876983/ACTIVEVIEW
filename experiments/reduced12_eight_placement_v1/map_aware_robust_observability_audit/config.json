@@ -1,0 +1,55 @@
+{
+  "map_feature_dim": 96,
+  "dense_bone_samples": 12,
+  "robust_epsilons_m": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "robust_directions": [
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      -1
+    ]
+  ],
+  "clearance_joints": [
+    0,
+    8,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "workers": 8,
+  "seed": 42,
+  "epochs": 12,
+  "test_used": false
+}

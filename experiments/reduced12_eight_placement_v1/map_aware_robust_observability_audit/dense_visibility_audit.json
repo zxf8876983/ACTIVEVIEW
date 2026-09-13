@@ -1,0 +1,35 @@
+{
+  "train": {
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "map_dim": 96,
+    "candidate_count": 305175,
+    "scene_count": 20,
+    "workers": 8,
+    "dense_sample_count": 311,
+    "dense_points_per_context": 311,
+    "robust_definition": "17 current H36M17 joints x +/-x,+/-y,+/-z at eps 0.05/0.10/0.20m",
+    "clearance_definition": "four endpoint cone rays around eight representative current joints",
+    "test_used": false,
+    "elapsed_seconds": 1344.7984066028148,
+    "scene_jobs_completed": 20
+  },
+  "val": {
+    "split": "val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "map_dim": 96,
+    "candidate_count": 68702,
+    "scene_count": 20,
+    "workers": 8,
+    "dense_sample_count": 311,
+    "dense_points_per_context": 311,
+    "robust_definition": "17 current H36M17 joints x +/-x,+/-y,+/-z at eps 0.05/0.10/0.20m",
+    "clearance_definition": "four endpoint cone rays around eight representative current joints",
+    "test_used": false,
+    "elapsed_seconds": 314.5764346793294,
+    "scene_jobs_completed": 20
+  },
+  "dense_points": "16 samples per H36M17 bone (including endpoints) plus center and six offsets per joint"
+}

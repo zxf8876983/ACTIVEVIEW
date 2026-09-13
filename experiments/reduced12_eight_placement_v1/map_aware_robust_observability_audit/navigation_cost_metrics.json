@@ -1,0 +1,98 @@
+{
+  "Stay": {
+    "mean_geodesic_m": 0.0,
+    "median_geodesic_m": 0.0,
+    "p90_geodesic_m": 0.0,
+    "move_rate": 0.0
+  },
+  "Random": {
+    "mean_geodesic_m": 2.6503202766302,
+    "median_geodesic_m": 2.1548545360565186,
+    "p90_geodesic_m": 5.469305133819581,
+    "move_rate": 0.8432539682539683
+  },
+  "GT-TrueLogP Oracle": {
+    "mean_geodesic_m": 2.755902651978272,
+    "median_geodesic_m": 2.214650511741638,
+    "p90_geodesic_m": 5.361162996292115,
+    "move_rate": 0.8864087301587301
+  },
+  "JointVisibility": {
+    "mean_geodesic_m": 1.6407687000752915,
+    "median_geodesic_m": 1.0,
+    "p90_geodesic_m": 4.349647521972656,
+    "move_rate": 0.5236111111111111
+  },
+  "DenseVisibility": {
+    "mean_geodesic_m": 1.7716113537254314,
+    "median_geodesic_m": 1.3037707805633545,
+    "p90_geodesic_m": 4.453542709350586,
+    "move_rate": 0.562202380952381
+  },
+  "RobustVis005": {
+    "mean_geodesic_m": 1.7436668591337308,
+    "median_geodesic_m": 1.1800721883773804,
+    "p90_geodesic_m": 4.408862590789795,
+    "move_rate": 0.5543650793650794
+  },
+  "RobustVis010": {
+    "mean_geodesic_m": 1.80622918122995,
+    "median_geodesic_m": 1.4168130159378052,
+    "p90_geodesic_m": 4.481418371200565,
+    "move_rate": 0.5782738095238096
+  },
+  "RobustVis020": {
+    "mean_geodesic_m": 1.9296715769355022,
+    "median_geodesic_m": 1.4256062507629395,
+    "p90_geodesic_m": 4.556413650512697,
+    "move_rate": 0.6208333333333333
+  },
+  "RobustVisMean": {
+    "mean_geodesic_m": 1.9710457460067812,
+    "median_geodesic_m": 1.5003734230995178,
+    "p90_geodesic_m": 4.565881729125977,
+    "move_rate": 0.6364087301587301
+  },
+  "ProjectionArea": {
+    "mean_geodesic_m": 2.6448944326608426,
+    "median_geodesic_m": 2.2104387283325195,
+    "p90_geodesic_m": 4.914696979522708,
+    "move_rate": 0.8882936507936507
+  },
+  "FOVMargin": {
+    "mean_geodesic_m": 2.7917621398935952,
+    "median_geodesic_m": 2.210444450378418,
+    "p90_geodesic_m": 6.0,
+    "move_rate": 0.7911706349206349
+  },
+  "RobustComposite": {
+    "mean_geodesic_m": 2.7310614006179903,
+    "median_geodesic_m": 2.2104387283325195,
+    "p90_geodesic_m": 5.4761152267456055,
+    "move_rate": 0.8784722222222222
+  },
+  "RobustComposite-nav \u03bb=.1": {
+    "mean_geodesic_m": 2.464369808486293,
+    "median_geodesic_m": 2.1213204860687256,
+    "p90_geodesic_m": 4.985620975494385,
+    "move_rate": 0.8367063492063492
+  },
+  "RobustComposite-nav \u03bb=.25": {
+    "mean_geodesic_m": 2.1635348615931376,
+    "median_geodesic_m": 1.7879311442375183,
+    "p90_geodesic_m": 4.670493125915527,
+    "move_rate": 0.7754960317460318
+  },
+  "RobustComposite-nav \u03bb=.5": {
+    "mean_geodesic_m": 1.8191492297583156,
+    "median_geodesic_m": 1.416812777519226,
+    "p90_geodesic_m": 4.3750128746032715,
+    "move_rate": 0.6775793650793651
+  },
+  "MapFeature-Utility": {
+    "mean_geodesic_m": 3.0342108354859407,
+    "median_geodesic_m": 2.9088937044143677,
+    "p90_geodesic_m": 5.049081802368164,
+    "move_rate": 0.893154761904762
+  }
+}

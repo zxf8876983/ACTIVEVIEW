@@ -1,0 +1,114 @@
+{
+  "JointVisibility": {
+    "method": "JointVisibility",
+    "candidate_level_spearman": 0.41760114572252904,
+    "candidate_only_spearman": 0.40992164289074956,
+    "within_context_spearman_mean": 0.25347981917586077,
+    "within_context_spearman_median": 0.2720588235294118,
+    "gt_true_logp_top1_overlap": 0.26011904761904764
+  },
+  "DenseVisibility": {
+    "method": "DenseVisibility",
+    "candidate_level_spearman": 0.4180621320864086,
+    "candidate_only_spearman": 0.4097439295017482,
+    "within_context_spearman_mean": 0.2644386304446301,
+    "within_context_spearman_median": 0.3,
+    "gt_true_logp_top1_overlap": 0.2652777777777778
+  },
+  "RobustVis005": {
+    "method": "RobustVis005",
+    "candidate_level_spearman": 0.4171487965279921,
+    "candidate_only_spearman": 0.40870939381252497,
+    "within_context_spearman_mean": 0.261393456696402,
+    "within_context_spearman_median": 0.3,
+    "gt_true_logp_top1_overlap": 0.26517857142857143
+  },
+  "RobustVis010": {
+    "method": "RobustVis010",
+    "candidate_level_spearman": 0.41815418749566174,
+    "candidate_only_spearman": 0.40946158191503895,
+    "within_context_spearman_mean": 0.26454280688683635,
+    "within_context_spearman_median": 0.3,
+    "gt_true_logp_top1_overlap": 0.26626984126984127
+  },
+  "RobustVis020": {
+    "method": "RobustVis020",
+    "candidate_level_spearman": 0.42743791950710136,
+    "candidate_only_spearman": 0.4193568468965643,
+    "within_context_spearman_mean": 0.27496793340250686,
+    "within_context_spearman_median": 0.3508241758241758,
+    "gt_true_logp_top1_overlap": 0.2702380952380952
+  },
+  "RobustVisMean": {
+    "method": "RobustVisMean",
+    "candidate_level_spearman": 0.42601969766007614,
+    "candidate_only_spearman": 0.4177648267198676,
+    "within_context_spearman_mean": 0.27809769558975134,
+    "within_context_spearman_median": 0.3571428571428572,
+    "gt_true_logp_top1_overlap": 0.2718253968253968
+  },
+  "ProjectionArea": {
+    "method": "ProjectionArea",
+    "candidate_level_spearman": 0.14528393921547655,
+    "candidate_only_spearman": 0.14331124493710853,
+    "within_context_spearman_mean": 0.2163581364989156,
+    "within_context_spearman_median": 0.3,
+    "gt_true_logp_top1_overlap": 0.24761904761904763
+  },
+  "FOVMargin": {
+    "method": "FOVMargin",
+    "candidate_level_spearman": -0.23838867974635256,
+    "candidate_only_spearman": -0.2401398933188768,
+    "within_context_spearman_mean": -0.2674154647336844,
+    "within_context_spearman_median": -0.3571428571428572,
+    "gt_true_logp_top1_overlap": 0.09831349206349206
+  },
+  "RobustComposite": {
+    "method": "RobustComposite",
+    "candidate_level_spearman": 0.36173631816596497,
+    "candidate_only_spearman": 0.34920135521077056,
+    "within_context_spearman_mean": 0.23152452198981666,
+    "within_context_spearman_median": 0.35496880570409983,
+    "gt_true_logp_top1_overlap": 0.24722222222222223
+  },
+  "RobustComposite-nav \u03bb=.1": {
+    "method": "RobustComposite-nav \u03bb=.1",
+    "candidate_level_spearman": 0.36248024712527555,
+    "candidate_only_spearman": 0.3514824418971348,
+    "within_context_spearman_mean": 0.23113350097824248,
+    "within_context_spearman_median": 0.35,
+    "gt_true_logp_top1_overlap": 0.24583333333333332
+  },
+  "RobustComposite-nav \u03bb=.25": {
+    "method": "RobustComposite-nav \u03bb=.25",
+    "candidate_level_spearman": 0.36463103841820305,
+    "candidate_only_spearman": 0.355703212844038,
+    "within_context_spearman_mean": 0.2319393487474566,
+    "within_context_spearman_median": 0.3571428571428572,
+    "gt_true_logp_top1_overlap": 0.2392857142857143
+  },
+  "RobustComposite-nav \u03bb=.5": {
+    "method": "RobustComposite-nav \u03bb=.5",
+    "candidate_level_spearman": 0.3665721918786304,
+    "candidate_only_spearman": 0.36062799160077075,
+    "within_context_spearman_mean": 0.2358259083077693,
+    "within_context_spearman_median": 0.3696969696969697,
+    "gt_true_logp_top1_overlap": 0.23412698412698413
+  },
+  "MapFeature-Utility": {
+    "method": "MapFeature-Utility",
+    "candidate_level_spearman": 0.5532046599239181,
+    "candidate_only_spearman": 0.552577629256593,
+    "within_context_spearman_mean": 0.36285152974215384,
+    "within_context_spearman_median": 0.5,
+    "gt_true_logp_top1_overlap": 0.3066468253968254
+  },
+  "GT-TrueLogP Oracle": {
+    "method": "GT-TrueLogP Oracle",
+    "candidate_level_spearman": 1.0,
+    "candidate_only_spearman": 1.0,
+    "within_context_spearman_mean": 1.0,
+    "within_context_spearman_median": 1.0,
+    "gt_true_logp_top1_overlap": 0.9989087301587302
+  }
+}

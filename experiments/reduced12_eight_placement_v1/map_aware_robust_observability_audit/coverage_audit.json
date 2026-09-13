@@ -1,0 +1,25 @@
+{
+  "train_candidate_count": 305175,
+  "val_candidate_count": 68702,
+  "all_legal_finite": true,
+  "joint_visibility_consistency": {
+    "train": {
+      "available": true,
+      "valid_slots": 351499,
+      "max_abs_difference": 0.0,
+      "mean_abs_difference": 0.0,
+      "tolerance": 1e-06,
+      "pass": true
+    },
+    "val": {
+      "available": true,
+      "valid_slots": 78782,
+      "max_abs_difference": 0.0,
+      "mean_abs_difference": 0.0,
+      "tolerance": 1e-06,
+      "pass": true,
+      "scalar_mean_max_abs_difference": 0.0,
+      "scalar_mean_pass": true
+    }
+  }
+}
