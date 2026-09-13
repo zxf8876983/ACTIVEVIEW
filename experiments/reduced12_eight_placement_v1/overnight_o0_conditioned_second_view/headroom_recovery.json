@@ -1,0 +1,55 @@
+{
+  "random_accuracy": 0.4297619047619048,
+  "pair_margin_oracle_accuracy": 0.7066468253968254,
+  "methods": {
+    "SoftBelief-ViewPrior": {
+      "accuracy": 0.510515873015873,
+      "selection_gain_recovery": 0.2916517377284125
+    },
+    "SoftBelief-LogPViewPrior": {
+      "accuracy": 0.5103174603174603,
+      "selection_gain_recovery": 0.29093514869222475
+    },
+    "HardClass-ViewPrior": {
+      "accuracy": 0.4748015873015873,
+      "selection_gain_recovery": 0.16266571121461823
+    },
+    "GeometryOnly-PairLogP": {
+      "accuracy": 0.5027777777777778,
+      "selection_gain_recovery": 0.2637047653170905
+    },
+    "Posterior+Geometry-PairLogP": {
+      "accuracy": 0.4992063492063492,
+      "selection_gain_recovery": 0.2508061626657111
+    },
+    "Feature+Geometry-PairLogP": {
+      "accuracy": 0.5154761904761904,
+      "selection_gain_recovery": 0.3095664636331061
+    },
+    "Feature+Posterior+Geometry-PairLogP": {
+      "accuracy": 0.5173611111111112,
+      "selection_gain_recovery": 0.31637405947689007
+    },
+    "GeometryOnly-PairMargin": {
+      "accuracy": 0.5066468253968254,
+      "selection_gain_recovery": 0.2776782515227515
+    },
+    "Posterior+Geometry-PairMargin": {
+      "accuracy": 0.5015873015873016,
+      "selection_gain_recovery": 0.25940523109996405
+    },
+    "Feature+Geometry-PairMargin": {
+      "accuracy": 0.5129960317460317,
+      "selection_gain_recovery": 0.3006091006807593
+    },
+    "Feature+Posterior+Geometry-PairMargin": {
+      "accuracy": 0.5134920634920634,
+      "selection_gain_recovery": 0.30240057327122866
+    },
+    "PairCorrectness-Direct": {
+      "accuracy": 0.5122023809523809,
+      "selection_gain_recovery": 0.29774274453600835
+    }
+  },
+  "test_used": false
+}

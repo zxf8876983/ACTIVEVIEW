@@ -1,0 +1,22 @@
+{
+  "best_branch": "Feature+Posterior+Geometry-PairLogP",
+  "metrics": {
+    "normal": {
+      "accuracy": 0.5173611111111112,
+      "macro_f1": 0.5046164574284971
+    },
+    "feature_shuffled": {
+      "accuracy": 0.4998015873015873,
+      "macro_f1": 0.4886434251285818
+    },
+    "posterior_shuffled": {
+      "accuracy": 0.5175595238095239,
+      "macro_f1": 0.504839608361504
+    },
+    "both_shuffled": {
+      "accuracy": 0.49930555555555556,
+      "macro_f1": 0.48823288524197594
+    }
+  },
+  "test_used": false
+}

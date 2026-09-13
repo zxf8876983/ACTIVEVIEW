@@ -1,0 +1,14 @@
+{
+  "test_used": false,
+  "future_candidate_feature_read_before_selection": 0,
+  "future_candidate_logit_read_before_selection": 0,
+  "future_candidate_skeleton_read_before_selection": 0,
+  "candidate_correctness_read_before_selection": 0,
+  "gt_label_read_by_selector": 0,
+  "train_future_evidence_used_for_targets_only": true,
+  "selector_inputs": [
+    "current frozen feature",
+    "current soft posterior",
+    "candidate geometry"
+  ]
+}

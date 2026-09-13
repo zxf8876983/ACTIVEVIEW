@@ -1,0 +1,8 @@
+{
+  "historical_raw_definition": "argmax_c 0.5*(logp0[y]+logpc[y]); current term cancels",
+  "historical_raw_vs_single_candidate_true_logp_top1_agreement": 1.0,
+  "historical_raw_vs_normalized_pair_selection_agreement": 0.9143849206349206,
+  "pair_margin_vs_single_candidate_true_logp_agreement": 0.7192460317460317,
+  "pair_margin_vs_normalized_pair_agreement": 0.7247023809523809,
+  "test_used": false
+}

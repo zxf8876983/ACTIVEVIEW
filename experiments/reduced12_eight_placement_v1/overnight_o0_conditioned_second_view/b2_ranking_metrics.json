@@ -1,0 +1,92 @@
+{
+  "GeometryOnly-PairLogP": {
+    "name": "GeometryOnly-PairLogP",
+    "candidate_spearman_pair_margin": 0.13044666041036135,
+    "candidate_spearman_pair_logp": 0.1985271832151169,
+    "within_context_spearman_mean": 0.18733029504639134,
+    "within_context_spearman_median": 0.2845811051693405,
+    "oracle_top1_overlap": 0.28700396825396823,
+    "oracle_top3_overlap": 0.9133928571428571,
+    "test_used": false
+  },
+  "Posterior+Geometry-PairLogP": {
+    "name": "Posterior+Geometry-PairLogP",
+    "candidate_spearman_pair_margin": 0.22856421875127617,
+    "candidate_spearman_pair_logp": 0.2767039108178238,
+    "within_context_spearman_mean": 0.1862748150112701,
+    "within_context_spearman_median": 0.2833333333333333,
+    "oracle_top1_overlap": 0.28581349206349205,
+    "oracle_top3_overlap": 0.9149801587301587,
+    "test_used": false
+  },
+  "Feature+Geometry-PairLogP": {
+    "name": "Feature+Geometry-PairLogP",
+    "candidate_spearman_pair_margin": 0.2644675011668615,
+    "candidate_spearman_pair_logp": 0.46356030388655745,
+    "within_context_spearman_mean": 0.19249383699723704,
+    "within_context_spearman_median": 0.3,
+    "oracle_top1_overlap": 0.29990079365079364,
+    "oracle_top3_overlap": 0.9214285714285714,
+    "test_used": false
+  },
+  "Feature+Posterior+Geometry-PairLogP": {
+    "name": "Feature+Posterior+Geometry-PairLogP",
+    "candidate_spearman_pair_margin": 0.26291009502707263,
+    "candidate_spearman_pair_logp": 0.45911643515697526,
+    "within_context_spearman_mean": 0.19394075177764641,
+    "within_context_spearman_median": 0.3,
+    "oracle_top1_overlap": 0.29990079365079364,
+    "oracle_top3_overlap": 0.9202380952380952,
+    "test_used": false
+  },
+  "GeometryOnly-PairMargin": {
+    "name": "GeometryOnly-PairMargin",
+    "candidate_spearman_pair_margin": 0.1535804912386637,
+    "candidate_spearman_pair_logp": 0.23370401300508417,
+    "within_context_spearman_mean": 0.19480405231041015,
+    "within_context_spearman_median": 0.2928571428571428,
+    "oracle_top1_overlap": 0.2961309523809524,
+    "oracle_top3_overlap": 0.9196428571428571,
+    "test_used": false
+  },
+  "Posterior+Geometry-PairMargin": {
+    "name": "Posterior+Geometry-PairMargin",
+    "candidate_spearman_pair_margin": 0.23391558450942312,
+    "candidate_spearman_pair_logp": 0.23455558534431345,
+    "within_context_spearman_mean": 0.17838655440553108,
+    "within_context_spearman_median": 0.2571428571428572,
+    "oracle_top1_overlap": 0.29563492063492064,
+    "oracle_top3_overlap": 0.9129960317460317,
+    "test_used": false
+  },
+  "Feature+Geometry-PairMargin": {
+    "name": "Feature+Geometry-PairMargin",
+    "candidate_spearman_pair_margin": 0.28658886310908016,
+    "candidate_spearman_pair_logp": 0.39735060122741184,
+    "within_context_spearman_mean": 0.19784402067987872,
+    "within_context_spearman_median": 0.2967032967032967,
+    "oracle_top1_overlap": 0.3011904761904762,
+    "oracle_top3_overlap": 0.9205357142857142,
+    "test_used": false
+  },
+  "Feature+Posterior+Geometry-PairMargin": {
+    "name": "Feature+Posterior+Geometry-PairMargin",
+    "candidate_spearman_pair_margin": 0.2880120847644904,
+    "candidate_spearman_pair_logp": 0.3932177432865409,
+    "within_context_spearman_mean": 0.19723901312661815,
+    "within_context_spearman_median": 0.2919871794871795,
+    "oracle_top1_overlap": 0.29990079365079364,
+    "oracle_top3_overlap": 0.9184523809523809,
+    "test_used": false
+  },
+  "PairCorrectness-Direct": {
+    "name": "PairCorrectness-Direct",
+    "candidate_spearman_pair_margin": 0.28057343499927084,
+    "candidate_spearman_pair_logp": 0.46583213126421613,
+    "within_context_spearman_mean": 0.19025317260231292,
+    "within_context_spearman_median": 0.2857142857142857,
+    "oracle_top1_overlap": 0.2996031746031746,
+    "oracle_top3_overlap": 0.9156746031746031,
+    "test_used": false
+  }
+}

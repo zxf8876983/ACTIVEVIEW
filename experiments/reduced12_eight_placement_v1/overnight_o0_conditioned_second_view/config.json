@@ -1,0 +1,16 @@
+{
+  "seed": 42,
+  "device": "cuda:0",
+  "train_epochs": 12,
+  "record_balanced_contexts_per_record": 16,
+  "train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "action_set": "current/Stay + Stage-A legal candidate_pool; B2 selects exactly one non-stay candidate",
+  "fusion": "normalized MeanLogP",
+  "listwise_tau": 0.5,
+  "view_prior_smoothing_alpha": 10.0,
+  "stgcn_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+  "stgcn_checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+  "shared_head_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/view_agnostic_frozen_encoder_head/shared_head_best.pth",
+  "test_used": false
+}

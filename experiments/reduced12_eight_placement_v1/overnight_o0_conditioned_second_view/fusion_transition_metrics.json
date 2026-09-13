@@ -1,0 +1,13 @@
+{
+  "selector": "Feature+Posterior+Geometry-PairLogP",
+  "fusion_rule": "MeanPosterior",
+  "metrics": {
+    "o0_wrong_to_final_correct": 2582,
+    "o0_correct_to_final_wrong": 410,
+    "o1_wrong_but_fusion_correct": 640,
+    "both_wrong_fusion_correct": 103,
+    "both_correct_fusion_wrong": 0,
+    "contexts": 10080
+  },
+  "test_used": false
+}

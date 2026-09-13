@@ -1,0 +1,112 @@
+{
+  "branch": "Feature+Geometry",
+  "target": "pair_true_logp",
+  "binary": false,
+  "input_dim": 274,
+  "hidden_dim": 256,
+  "epochs": 12,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "best_epoch": 12,
+  "best_val_utility_loss": 0.32188453823328017,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5573618829250335,
+      "val_utility_loss": 0.39444306790828704,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.3993599027395248,
+      "val_utility_loss": 0.4039180278778076,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.38466904759407045,
+      "val_utility_loss": 0.3632538691163063,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.35518749356269835,
+      "val_utility_loss": 0.35611043572425843,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.34578431248664854,
+      "val_utility_loss": 0.3446111470460892,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.3337438225746155,
+      "val_utility_loss": 0.3389232575893402,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.31986609399318694,
+      "val_utility_loss": 0.332786899805069,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.3231560856103897,
+      "val_utility_loss": 0.3292565941810608,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.3164383053779602,
+      "val_utility_loss": 0.32848871648311617,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.3069876849651337,
+      "val_utility_loss": 0.32561846524477006,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.3136857122182846,
+      "val_utility_loss": 0.32568923830986024,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.31077989339828493,
+      "val_utility_loss": 0.32188453823328017,
+      "optimizer_steps": 10,
+      "sampled_contexts": 5008,
+      "records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_o0_conditioned_second_view/Feature+Geometry-PairLogP.pth",
+  "test_used": false
+}
