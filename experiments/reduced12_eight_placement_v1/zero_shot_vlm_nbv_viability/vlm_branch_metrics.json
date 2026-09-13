@@ -1,0 +1,38 @@
+{
+  "VLM-RGB": {
+    "method": "VLM-RGB",
+    "n": 1000,
+    "accuracy": 0.472,
+    "macro_f1": 0.47314182899561996,
+    "move_rate": 0.954,
+    "stay_rate": 0.04600000000000004,
+    "mean_nav_distance_m": 2.794421932756901
+  },
+  "VLM-Map": {
+    "method": "VLM-Map",
+    "n": 1000,
+    "accuracy": 0.485,
+    "macro_f1": 0.48761859701299465,
+    "move_rate": 0.991,
+    "stay_rate": 0.009000000000000008,
+    "mean_nav_distance_m": 2.9607322919368744
+  },
+  "VLM-RGB+Map": {
+    "method": "VLM-RGB+Map",
+    "n": 1000,
+    "accuracy": 0.485,
+    "macro_f1": 0.48801626001693316,
+    "move_rate": 0.991,
+    "stay_rate": 0.009000000000000008,
+    "mean_nav_distance_m": 2.9423643509149553
+  },
+  "VLM-RGB+Map+NavCost": {
+    "method": "VLM-RGB+Map+NavCost",
+    "n": 1000,
+    "accuracy": 0.485,
+    "macro_f1": 0.48801626001693316,
+    "move_rate": 0.991,
+    "stay_rate": 0.009000000000000008,
+    "mean_nav_distance_m": 2.9423643509149553
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "VLM-RGB": {
+    "branch": "VLM-RGB",
+    "within_context_spearman_mean": 0.1803114145355699,
+    "within_context_spearman_median": 0.2571428571428572,
+    "gt_true_logp_top1_overlap": 0.271,
+    "gt_true_logp_top3_overlap": 0.562,
+    "stay_agreement": 0.862,
+    "move_agreement": 0.862,
+    "test_used": false
+  },
+  "VLM-Map": {
+    "branch": "VLM-Map",
+    "within_context_spearman_mean": 0.2032450101935127,
+    "within_context_spearman_median": 0.3,
+    "gt_true_logp_top1_overlap": 0.28,
+    "gt_true_logp_top3_overlap": 0.568,
+    "stay_agreement": 0.891,
+    "move_agreement": 0.891,
+    "test_used": false
+  },
+  "VLM-RGB+Map": {
+    "branch": "VLM-RGB+Map",
+    "within_context_spearman_mean": 0.20713747624587914,
+    "within_context_spearman_median": 0.3,
+    "gt_true_logp_top1_overlap": 0.279,
+    "gt_true_logp_top3_overlap": 0.568,
+    "stay_agreement": 0.891,
+    "move_agreement": 0.891,
+    "test_used": false
+  }
+}

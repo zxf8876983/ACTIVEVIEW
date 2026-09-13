@@ -1,0 +1,182 @@
+[
+  {
+    "category": "both_correct",
+    "episode_id": "reduced12kc_official_val_05443_001_fc8bd8c5b1__00057-1UnKg1rAb8A__p00__v27",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_05443_001_fc8bd8c5b1__00057-1UnKg1rAb8A__p00__v27",
+    "vlm_selected": 4,
+    "scalar_selected": 4,
+    "vlm_correct": true,
+    "scalar_correct": true
+  },
+  {
+    "category": "vlm_wrong_scalar_correct",
+    "episode_id": "reduced12kc_official_val_02589_002_cb3f3d4795__00016-qk9eeNeR4vw__p02__v10",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_02589_002_cb3f3d4795__00016-qk9eeNeR4vw__p02__v10",
+    "vlm_selected": 0,
+    "scalar_selected": 7,
+    "vlm_correct": false,
+    "scalar_correct": true
+  },
+  {
+    "category": "both_correct",
+    "episode_id": "reduced12kc_official_val_04799_010_d1dcecb41f__00031-Wo6kuutE9i7__p06__v19",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_04799_010_d1dcecb41f__00031-Wo6kuutE9i7__p06__v19",
+    "vlm_selected": 2,
+    "scalar_selected": 6,
+    "vlm_correct": true,
+    "scalar_correct": true
+  },
+  {
+    "category": "both_correct",
+    "episode_id": "reduced12kc_official_val_09879_000_bef2c4f500__00017-oEPjPNSPmzL__p03__v12",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_09879_000_bef2c4f500__00017-oEPjPNSPmzL__p03__v12",
+    "vlm_selected": 2,
+    "scalar_selected": 6,
+    "vlm_correct": true,
+    "scalar_correct": true
+  },
+  {
+    "category": "both_correct",
+    "episode_id": "reduced12kc_official_val_00456_004_77d12f4429__00031-Wo6kuutE9i7__p06__v19",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_00456_004_77d12f4429__00031-Wo6kuutE9i7__p06__v19",
+    "vlm_selected": 2,
+    "scalar_selected": 6,
+    "vlm_correct": true,
+    "scalar_correct": true
+  },
+  {
+    "category": "vlm_wrong_scalar_correct",
+    "episode_id": "reduced12kc_official_val_12737_001_a47046a66f__00023-zepmXAdrpjR__p03__v30",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_12737_001_a47046a66f__00023-zepmXAdrpjR__p03__v30",
+    "vlm_selected": 12,
+    "scalar_selected": 14,
+    "vlm_correct": false,
+    "scalar_correct": true
+  },
+  {
+    "category": "both_wrong",
+    "episode_id": "reduced12kc_official_val_05393_009_20672db509__00034-6imZUJGRUq4__p01__v21",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_05393_009_20672db509__00034-6imZUJGRUq4__p01__v21",
+    "vlm_selected": 3,
+    "scalar_selected": 3,
+    "vlm_correct": false,
+    "scalar_correct": false
+  },
+  {
+    "category": "both_correct",
+    "episode_id": "reduced12kc_official_val_12688_002_5c6eef5e0e__00031-Wo6kuutE9i7__p06__v06",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_12688_002_5c6eef5e0e__00031-Wo6kuutE9i7__p06__v06",
+    "vlm_selected": 2,
+    "scalar_selected": 6,
+    "vlm_correct": true,
+    "scalar_correct": true
+  },
+  {
+    "category": "both_wrong",
+    "episode_id": "reduced12kc_official_val_09049_009_84433e6cb1__00033-oPj9qMxrDEa__p00__v27",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_09049_009_84433e6cb1__00033-oPj9qMxrDEa__p00__v27",
+    "vlm_selected": 5,
+    "scalar_selected": 6,
+    "vlm_correct": false,
+    "scalar_correct": false
+  },
+  {
+    "category": "both_wrong",
+    "episode_id": "reduced12kc_official_val_08988_036_726ce71f96__00006-HkseAnWCgqk__p05__v26",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_08988_036_726ce71f96__00006-HkseAnWCgqk__p05__v26",
+    "vlm_selected": 2,
+    "scalar_selected": 2,
+    "vlm_correct": false,
+    "scalar_correct": false
+  },
+  {
+    "category": "both_wrong",
+    "episode_id": "reduced12kc_official_val_01478_000_de4ddd022d__00031-Wo6kuutE9i7__p07__v24",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_01478_000_de4ddd022d__00031-Wo6kuutE9i7__p07__v24",
+    "vlm_selected": 5,
+    "scalar_selected": 5,
+    "vlm_correct": false,
+    "scalar_correct": false
+  },
+  {
+    "category": "both_wrong",
+    "episode_id": "reduced12kc_official_val_05825_007_c5bff58b92__00062-ACZZiU6BXLz__p07__v14",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_05825_007_c5bff58b92__00062-ACZZiU6BXLz__p07__v14",
+    "vlm_selected": 0,
+    "scalar_selected": 0,
+    "vlm_correct": false,
+    "scalar_correct": false
+  },
+  {
+    "category": "vlm_correct_scalar_wrong",
+    "episode_id": "reduced12kc_official_val_09860_002_4dd112baee__00057-1UnKg1rAb8A__p06__v14",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_09860_002_4dd112baee__00057-1UnKg1rAb8A__p06__v14",
+    "vlm_selected": 2,
+    "scalar_selected": 7,
+    "vlm_correct": true,
+    "scalar_correct": false
+  },
+  {
+    "category": "vlm_wrong_scalar_correct",
+    "episode_id": "reduced12kc_official_val_02596_000_996dfed77b__00017-oEPjPNSPmzL__p03__v12",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_02596_000_996dfed77b__00017-oEPjPNSPmzL__p03__v12",
+    "vlm_selected": 2,
+    "scalar_selected": 6,
+    "vlm_correct": false,
+    "scalar_correct": true
+  },
+  {
+    "category": "vlm_wrong_scalar_correct",
+    "episode_id": "reduced12kc_official_val_06771_000_0948e7105f__00009-vLpv2VX547B__p02__v27",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_06771_000_0948e7105f__00009-vLpv2VX547B__p02__v27",
+    "vlm_selected": 2,
+    "scalar_selected": 3,
+    "vlm_correct": false,
+    "scalar_correct": true
+  },
+  {
+    "category": "vlm_wrong_scalar_correct",
+    "episode_id": "reduced12kc_official_val_06214_001_d3063f9135__00059-kJxT5qssH4H__p00__v01",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_06214_001_d3063f9135__00059-kJxT5qssH4H__p00__v01",
+    "vlm_selected": 0,
+    "scalar_selected": 4,
+    "vlm_correct": false,
+    "scalar_correct": true
+  },
+  {
+    "category": "vlm_correct_scalar_wrong",
+    "episode_id": "reduced12kc_official_val_02179_015_42d7aed562__00055-HxmXPBbFCkH__p07__v05",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_02179_015_42d7aed562__00055-HxmXPBbFCkH__p07__v05",
+    "vlm_selected": 3,
+    "scalar_selected": 5,
+    "vlm_correct": true,
+    "scalar_correct": false
+  },
+  {
+    "category": "vlm_correct_scalar_wrong",
+    "episode_id": "reduced12kc_official_val_12719_018_c907ff540f__00033-oPj9qMxrDEa__p04__v15",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_12719_018_c907ff540f__00033-oPj9qMxrDEa__p04__v15",
+    "vlm_selected": 0,
+    "scalar_selected": 3,
+    "vlm_correct": true,
+    "scalar_correct": false
+  },
+  {
+    "category": "vlm_correct_scalar_wrong",
+    "episode_id": "reduced12kc_official_val_13218_000_d63de633a6__00057-1UnKg1rAb8A__p02__v04",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_13218_000_d63de633a6__00057-1UnKg1rAb8A__p02__v04",
+    "vlm_selected": 3,
+    "scalar_selected": 7,
+    "vlm_correct": true,
+    "scalar_correct": false
+  },
+  {
+    "category": "vlm_correct_scalar_wrong",
+    "episode_id": "reduced12kc_official_val_11628_000_557f296fcb__00023-zepmXAdrpjR__p03__v24",
+    "package_dir": "/home/zxf/WorkSpace/code/data/ActiveView/experiments/reduced12_eight_placement_v1/zero_shot_vlm_nbv_viability_runtime/observation_packages/reduced12kc_official_val_11628_000_557f296fcb__00023-zepmXAdrpjR__p03__v24",
+    "vlm_selected": 12,
+    "scalar_selected": 14,
+    "vlm_correct": true,
+    "scalar_correct": false
+  }
+]

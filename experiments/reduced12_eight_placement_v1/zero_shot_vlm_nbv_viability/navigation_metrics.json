@@ -1,0 +1,42 @@
+{
+  "Stay": {
+    "move_rate": 0.0,
+    "mean_nav_distance_m": 0.0
+  },
+  "Random": {
+    "move_rate": 0.837,
+    "mean_nav_distance_m": 2.752095004349947
+  },
+  "GeometryOnly Utility": {
+    "move_rate": 0.893,
+    "mean_nav_distance_m": 3.0258823352232573
+  },
+  "ScalarVisibility+Geometry": {
+    "move_rate": 0.931,
+    "mean_nav_distance_m": 3.0103689659535884
+  },
+  "MapFeature-Utility": {
+    "move_rate": 0.912,
+    "mean_nav_distance_m": 3.267834295272827
+  },
+  "GT-TrueLogP Oracle": {
+    "move_rate": 0.898,
+    "mean_nav_distance_m": 2.892447702854872
+  },
+  "VLM-RGB": {
+    "move_rate": 0.954,
+    "mean_nav_distance_m": 2.794421932756901
+  },
+  "VLM-Map": {
+    "move_rate": 0.991,
+    "mean_nav_distance_m": 2.9607322919368744
+  },
+  "VLM-RGB+Map": {
+    "move_rate": 0.991,
+    "mean_nav_distance_m": 2.9423643509149553
+  },
+  "VLM-RGB+Map+NavCost": {
+    "move_rate": 0.991,
+    "mean_nav_distance_m": 2.9423643509149553
+  }
+}

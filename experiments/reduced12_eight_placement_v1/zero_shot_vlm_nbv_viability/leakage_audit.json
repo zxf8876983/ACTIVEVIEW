@@ -1,0 +1,24 @@
+{
+  "uses_current_rgb": {
+    "VLM-RGB": true,
+    "VLM-Map": false,
+    "VLM-RGB+Map": true
+  },
+  "uses_topdown_map": {
+    "VLM-RGB": false,
+    "VLM-Map": true,
+    "VLM-RGB+Map": true
+  },
+  "uses_candidate_static_render": {
+    "VLM-RGB": false,
+    "VLM-Map": true,
+    "VLM-RGB+Map": true
+  },
+  "uses_current_pose": true,
+  "uses_gt_action": false,
+  "uses_future_human_motion": false,
+  "uses_candidate_real_rgb": false,
+  "uses_candidate_real_skeleton": false,
+  "uses_candidate_recognizer_output": false,
+  "test_used": false
+}

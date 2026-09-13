@@ -1,0 +1,17 @@
+{
+  "VLM-RGB": {
+    "parse_failure": 0.002,
+    "repair": 0.002,
+    "fallback": 0.0
+  },
+  "VLM-Map": {
+    "parse_failure": 0.006,
+    "repair": 0.006,
+    "fallback": 0.003
+  },
+  "VLM-RGB+Map": {
+    "parse_failure": 0.0,
+    "repair": 0.0,
+    "fallback": 0.0
+  }
+}
