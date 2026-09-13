@@ -1,0 +1,27 @@
+{
+  "candidate_samples": 68702,
+  "test_used": false,
+  "max_confidence": {
+    "auroc": 0.7887403568580553,
+    "mean_correct": 0.4786399891767558,
+    "mean_wrong": 0.261741563627087,
+    "gt_true_logp_spearman": 0.5700226602212514
+  },
+  "negative_entropy": {
+    "auroc": 0.783299260729798,
+    "mean_correct": -1.5990678654217938,
+    "mean_wrong": -2.0883263822187668,
+    "gt_true_logp_spearman": 0.5886202229997214
+  },
+  "margin": {
+    "auroc": 0.7675586828973794,
+    "mean_correct": 1.1469095332431427,
+    "mean_wrong": 0.3938494054820676,
+    "gt_true_logp_spearman": 0.49489461230023984
+  },
+  "historical_unseen_predictor_spearman_reference": 0.5526,
+  "pose_confidence": {
+    "status": "NOT_AVAILABLE",
+    "reason": "current archive cache has no candidate-level viewpoint confidence field; no proxy was invented"
+  }
+}

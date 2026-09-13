@@ -1,0 +1,13 @@
+{
+  "seed": 42,
+  "device": "cuda:0",
+  "budgets": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "verifier_epochs": 12,
+  "action_set": "Stay/current + Stage-A legal candidate_pool",
+  "test_used": false
+}

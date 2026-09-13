@@ -1,0 +1,26 @@
+{
+  "B1": {
+    "mean_observations": 1.0,
+    "mean_path_length_proxy": 0.0,
+    "p90_path_length_proxy": 0.0,
+    "test_used": false
+  },
+  "B2": {
+    "mean_observations": 2.0,
+    "mean_path_length_proxy": 3.095027244881919,
+    "p90_path_length_proxy": 5.741979122161865,
+    "test_used": false
+  },
+  "B3": {
+    "mean_observations": 3.0,
+    "mean_path_length_proxy": 6.14113241002991,
+    "p90_path_length_proxy": 10.297809004783637,
+    "test_used": false
+  },
+  "B4": {
+    "mean_observations": 3.9198412698412697,
+    "mean_path_length_proxy": 9.122793046303745,
+    "p90_path_length_proxy": 15.13769421577454,
+    "test_used": false
+  }
+}

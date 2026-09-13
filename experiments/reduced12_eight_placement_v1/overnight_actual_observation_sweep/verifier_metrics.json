@@ -1,0 +1,95 @@
+{
+  "training": {
+    "architecture": "Linear(272,256)-GELU-Linear(256,1)",
+    "input": "current frozen feature + current logp + entropy/maxprob/margin/norm",
+    "epochs": 12,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "history": [
+      {
+        "epoch": 1.0,
+        "train_loss": 1.2516440826913584,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 2.0,
+        "train_loss": 1.167130830495254,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 3.0,
+        "train_loss": 1.1443716339443042,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 4.0,
+        "train_loss": 1.1352296419765637,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 5.0,
+        "train_loss": 1.1270885519359424,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 6.0,
+        "train_loss": 1.1214717082355334,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 7.0,
+        "train_loss": 1.120105020377947,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 8.0,
+        "train_loss": 1.119138777256012,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 9.0,
+        "train_loss": 1.1123402040937673,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 10.0,
+        "train_loss": 1.1120354766431062,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 11.0,
+        "train_loss": 1.1049543282260066,
+        "optimizer_steps": 46.0
+      },
+      {
+        "epoch": 12.0,
+        "train_loss": 1.1013258514196977,
+        "optimizer_steps": 46.0
+      }
+    ],
+    "train_contexts": 46324,
+    "positive_current_correct": 16060,
+    "positive_need_move": 18759,
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_actual_observation_sweep/current_evidence_verifier.pth",
+    "test_used": false
+  },
+  "quality": {
+    "current_correct_verifier": {
+      "auroc": 0.7751193713126414,
+      "auprc": 0.634340044394708,
+      "ece": 0.07955806374564647,
+      "accuracy_at_0.5": 0.751984126984127
+    },
+    "need_move_verifier": {
+      "auroc": 0.6570805348892963,
+      "auprc": 0.5983452647686578,
+      "ece": 0.01809297328267897,
+      "positive_rate": 0.4893849194049835
+    },
+    "test_used": false
+  },
+  "threshold_policy": {
+    "status": "SKIPPED_AUROC_BELOW_0.75",
+    "test_used": false
+  }
+}

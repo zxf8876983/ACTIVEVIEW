@@ -1,0 +1,38 @@
+{
+  "train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "train_records": 313,
+  "moving_val_records": 105,
+  "train_signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+  "val_signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+  "candidate_samples": 68702,
+  "action_set": "Stay/current + Stage-A legal candidate_pool",
+  "stgcn_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+  "stgcn_checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+  "shared_head_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/view_agnostic_frozen_encoder_head/shared_head_best.pth",
+  "shared_head_checkpoint_sha256": "12aaed93d2edd4be5f0f3e1cef068f1aa4b1627eb970d7e93b78088f9aa13747",
+  "cache_provenance": {
+    "train_options": {
+      "rows": 46324,
+      "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+      "all32": false,
+      "checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+      "test_used": false
+    },
+    "val_options": {
+      "rows": 10080,
+      "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+      "all32": false,
+      "checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+      "test_used": false
+    },
+    "val_all32": {
+      "rows": 10080,
+      "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+      "all32": true,
+      "checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+      "test_used": false
+    }
+  },
+  "test_used": false
+}

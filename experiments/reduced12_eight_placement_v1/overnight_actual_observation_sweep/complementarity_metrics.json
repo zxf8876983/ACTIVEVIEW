@@ -1,0 +1,13 @@
+{
+  "pair_count": 68702,
+  "patterns": {
+    "current_0_candidate_0": 33365,
+    "current_0_candidate_1": 14524,
+    "current_1_candidate_0": 9545,
+    "current_1_candidate_1": 11268
+  },
+  "current_wrong_candidate_correct": 14524,
+  "current_correct_fusion_wrong": 3228,
+  "both_single_wrong_fusion_correct": 1546,
+  "test_used": false
+}

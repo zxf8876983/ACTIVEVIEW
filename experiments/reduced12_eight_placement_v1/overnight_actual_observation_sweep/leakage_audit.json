@@ -1,0 +1,12 @@
+{
+  "policy_test_used": false,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "new_dino_generated": false,
+  "frozen_stgcn_modified": false,
+  "future_candidate_observation_read_before_selection": 0,
+  "future_candidate_evidence_used_as_deployable_input": false,
+  "gt_label_used_for_privileged_oracle_only": true,
+  "verifier_train_split_only": true,
+  "observation_budget_is_discrete_full_view_abstraction": true
+}
