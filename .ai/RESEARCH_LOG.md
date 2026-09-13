@@ -1182,3 +1182,23 @@ Report and script:
 `experiments/reduced12_eight_placement_v1/structured_observability_final_audit/`
 and
 `activeview/scripts/experiments/run_reduced12_structured_observability_final_audit.py`.
+
+## Overnight actual-observation value sweep — 2026-09-14
+
+Completed a CUDA Train/Moving-Val audit over 46,324 Train contexts and 10,080
+Moving-Val contexts using the frozen reduced12 ST-GCN/shared head and the exact
+`Stay/current + Stage-A legal candidate_pool` action set. The protocol gate
+reproduced Stay 0.302579/0.292976, legal GT-TrueLogP Oracle
+0.753175/0.755358, and Stay+candidate AnyCorrect 0.791964 (Accuracy/Macro-F1
+where applicable). No Policy Test, new perception artifact, or recognizer
+fine-tuning was used; only a small Train-only evidence verifier was trained.
+
+Actually acquiring one random second observation raised MeanLogP to
+0.429762 Accuracy / 0.424594 Macro-F1. Random fusion reached 0.487401/0.477211
+at B3 and 0.521230/0.505236 at B4, while privileged MeanLogP fusion reached
+0.681647/0.675099 (B2), 0.700000/0.698603 (B3), and 0.680060/0.676637 (B4).
+Observed candidate max-confidence/negative-entropy/margin AUROCs were
+0.788740/0.783299/0.767559; NeedMove AUROC was only 0.657081, so no
+stop/acquire policy was promoted. The preregistered decision is **STRONG KEEP
+finite-observation active perception**; next work should focus on acquisition
+or sequential policy design rather than unseen-candidate utility prediction.
