@@ -1,40 +1,38 @@
-# Structured observability privileged audit — completed 2026-09-13
+# O0-conditioned complementary second-view sweep — completed 2026-09-14
 
-Implemented and ran the final Train/Val-only reduced12 frame-0 structured
-observability audit. The exact action set was current/Stay plus the Stage-A
-legal candidate pool over 46,324 Policy Train contexts and 10,080 Moving-Val
-contexts. Frozen reduced12 ST-GCN/shared head were unchanged; Policy Test and
-new perception artifacts were not read or generated.
+Completed the Train/Val-only overnight reduced12 audit for selecting exactly
+one additional legal second viewpoint after a complete current-view (O0)
+observation. Policy Test was not read; no RGB, skeleton, DINO, recognizer, or
+formal checkpoint was changed.
 
-The audit regenerated exact frame-0, 17-joint, scene-only Habitat raycast
-visibility caches (Train/Val) and verified that their per-candidate mean is
-bit-identical to the existing scalar frame-0 cache (max absolute difference
-0). Five 12-epoch record-balanced MLP branches were trained with 313 records
-× 16 contexts/epoch, seed 42, AdamW, and SmoothL1 + 0.5 listwise utility
-loss.
+The formal action set was current/Stay plus the Stage-A legal candidate pool,
+with 46,324 Train contexts, 10,080 Moving-Val contexts, and 68,702 legal
+candidate samples. Frozen reduced12 ST-GCN features and the frozen shared head
+were reused. Train branches used record-balanced sampling (313 records × 16
+contexts per epoch), seed 42, CUDA, and 12 epochs; checkpoints are external.
 
-Moving-Val Accuracy/Macro-F1:
+The historical raw pair oracle was verified to be candidate-only in its
+ranking (agreement 1.0 with candidate GT-TrueLogP selection). The corrected
+normalized pair TrueLogP and pair-margin ceilings were 0.681052/0.674501 and
+0.706647/0.701819 Accuracy/Macro-F1, respectively; Pair AnyCorrect coverage
+was 7,123/10,080 (0.706647).
 
-| Method | Accuracy | Macro-F1 |
-|---|---:|---:|
-| ScalarVisibility+Geometry | 0.520139 | 0.520467 |
-| StructuredVisibility17+Geometry | 0.512401 | 0.510476 |
-| CurrentPose+Geometry | 0.500000 | 0.499949 |
-| CurrentPose+StructuredVisibility17+Geometry | 0.522421 | 0.520503 |
-| GTAction+CurrentPose+StructuredVisibility17+Geometry | 0.520833 | 0.518689 |
-| GT-TrueLogP Oracle | 0.753175 | 0.755358 |
+Random B2 MeanLogP was 0.429762/0.424594. The best deployable Train-only
+branch, Feature + Posterior + Geometry trained on normalized pair TrueLogP,
+was 0.517361/0.504616; its best fixed fusion was ConfidenceWeighted at
+0.518056/0.510230. Conditional B3 completed: learned B2 + learned B3 was
+0.558036/0.548492 versus B2 + random third view 0.533730/0.521124 and the
+privileged B3 margin oracle 0.669544/0.665012.
 
-Structured visibility alone is -0.774pp versus the scalar baseline; adding
-current frame-0 pose recovers only +1.002pp, and the GT-action branch adds no
-further gain. The residual Oracle→GT-action branch gap is 23.234pp Accuracy,
-which triggers the preregistered kill rule. The conclusion is to stop the
-pre-action structured observability selector family and redirect effort to
-future-recognizer evidence / sequential information acquisition rather than
-more visibility predictors.
+The preregistered result is **KEEP O0-conditioned second-view selection**:
+O0 features contribute information (normal versus both-state shuffle differs
+by 1.806pp), but complementary candidate utility remains difficult to rank.
+The next research decision is whether to improve complementarity
+representation before expanding beyond the conditional B3 diagnostic.
 
 Report and implementation:
-`experiments/reduced12_eight_placement_v1/structured_observability_final_audit/`
+`experiments/reduced12_eight_placement_v1/overnight_o0_conditioned_second_view/`
 and
-`activeview/scripts/experiments/run_reduced12_structured_observability_final_audit.py`.
+`activeview/scripts/experiments/run_reduced12_o0_conditioned_second_view.py`.
 
-Task status: **CLEAN**. No follow-up method was started automatically.
+Task status: **CLEAN**.

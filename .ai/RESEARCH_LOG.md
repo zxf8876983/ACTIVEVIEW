@@ -1202,3 +1202,28 @@ Observed candidate max-confidence/negative-entropy/margin AUROCs were
 stop/acquire policy was promoted. The preregistered decision is **STRONG KEEP
 finite-observation active perception**; next work should focus on acquisition
 or sequential policy design rather than unseen-candidate utility prediction.
+
+## O0-conditioned complementary second-view sweep — 2026-09-14
+
+Completed the Train/Val-only O0-conditioned B2 selector sweep over 46,324
+Train contexts and 10,080 Moving-Val contexts. The action set was exactly
+current/Stay plus the Stage-A legal candidate pool; B2 selected one additional
+non-stay legal candidate. Frozen reduced12 ST-GCN/shared-head features were
+reused and Policy Test/new perception artifacts were not read or generated.
+
+Historical raw MeanLogP ranking was confirmed to cancel the current-view term
+(top-1 agreement 1.0 with candidate-only GT-TrueLogP ranking). Corrected
+normalized pair TrueLogP and pair-margin oracles were 0.681052/0.674501 and
+0.706647/0.701819 Accuracy/Macro-F1; Pair AnyCorrect coverage was 7,123/10,080.
+Random B2 was 0.429762/0.424594. The best deployable branch was
+Feature+Posterior+Geometry trained on normalized pair TrueLogP, reaching
+0.517361/0.504616; its best fixed fusion was ConfidenceWeighted at
+0.518056/0.510230. The conditional B3 diagnostic completed at
+0.558036/0.548492 for learned B2+B3, versus 0.533730/0.521124 for a random
+third view and 0.669544/0.665012 for the privileged B3 margin oracle.
+
+The preregistered decision is **KEEP O0-conditioned second-view selection**.
+The O0 shuffle diagnostic shows 1.806pp normal-over-both-state dependence, but
+the remaining oracle gap indicates complementary utility is still hard to
+predict from O0 plus geometry. Report:
+`experiments/reduced12_eight_placement_v1/overnight_o0_conditioned_second_view/`.
