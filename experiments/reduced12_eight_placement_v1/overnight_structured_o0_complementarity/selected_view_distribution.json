@@ -1,0 +1,74 @@
+{
+  "Random B2": {
+    "selected_viewpoint_entropy": 3.4142219941382477,
+    "relative_azimuth_steps": {
+      "0": 2329,
+      "1": 3248,
+      "2": 2197,
+      "3": 1538,
+      "4": 768
+    },
+    "radius": {
+      "0": 3097,
+      "1": 2629,
+      "2": 2296,
+      "3": 2058
+    },
+    "mean_angular_change_deg": 68.42857142857143,
+    "mean_geodesic_distance_m": 3.095027208328247
+  },
+  "CurrentBaseline": {
+    "selected_viewpoint_entropy": 2.428011381418897,
+    "relative_azimuth_steps": {
+      "0": 1874,
+      "1": 2180,
+      "2": 2004,
+      "3": 2470,
+      "4": 1552
+    },
+    "radius": {
+      "0": 8843,
+      "1": 966,
+      "2": 224,
+      "3": 47
+    },
+    "mean_angular_change_deg": 88.41964285714285,
+    "mean_geodesic_distance_m": 3.209235429763794
+  },
+  "RawO0-SmallEncoder": {
+    "selected_viewpoint_entropy": 2.413276478690122,
+    "relative_azimuth_steps": {
+      "0": 1508,
+      "1": 2376,
+      "2": 2169,
+      "3": 2631,
+      "4": 1396
+    },
+    "radius": {
+      "0": 8927,
+      "1": 813,
+      "2": 297,
+      "3": 43
+    },
+    "mean_angular_change_deg": 90.13839285714286,
+    "mean_geodesic_distance_m": 3.2830326557159424
+  },
+  "PairMargin Oracle": {
+    "selected_viewpoint_entropy": 3.285362920563108,
+    "relative_azimuth_steps": {
+      "0": 2174,
+      "1": 3130,
+      "2": 2247,
+      "3": 1654,
+      "4": 875
+    },
+    "radius": {
+      "0": 4433,
+      "1": 2676,
+      "2": 1688,
+      "3": 1283
+    },
+    "mean_angular_change_deg": 71.8125,
+    "mean_geodesic_distance_m": 3.0661978721618652
+  }
+}

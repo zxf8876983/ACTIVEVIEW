@@ -1,0 +1,22 @@
+{
+  "source_branch": "PartTime-Bilinear",
+  "metrics": {
+    "Early": {
+      "accuracy": 0.5097222222222222,
+      "accuracy_drop": 0.005456349206349187,
+      "candidate_spearman": 0.26443844356395607
+    },
+    "Middle": {
+      "accuracy": 0.508531746031746,
+      "accuracy_drop": 0.006646825396825373,
+      "candidate_spearman": 0.22704569480365566
+    },
+    "Late": {
+      "accuracy": 0.5115079365079365,
+      "accuracy_drop": 0.0036706349206349076,
+      "candidate_spearman": 0.281591923516861
+    }
+  },
+  "note": "Permutation computed from frozen-input representation; no retraining.",
+  "test_used": false
+}

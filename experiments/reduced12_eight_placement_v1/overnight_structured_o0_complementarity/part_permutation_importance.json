@@ -1,0 +1,32 @@
+{
+  "source_branch": "PartTime-Bilinear",
+  "metrics": {
+    "Torso": {
+      "accuracy": 0.5101190476190476,
+      "accuracy_drop": 0.0050595238095237915,
+      "candidate_spearman": 0.2702506968264328
+    },
+    "LeftArm": {
+      "accuracy": 0.5139880952380952,
+      "accuracy_drop": 0.0011904761904761862,
+      "candidate_spearman": 0.29607052883777074
+    },
+    "RightArm": {
+      "accuracy": 0.5106150793650793,
+      "accuracy_drop": 0.004563492063492047,
+      "candidate_spearman": 0.28342148349389407
+    },
+    "LeftLeg": {
+      "accuracy": 0.5076388888888889,
+      "accuracy_drop": 0.007539682539682513,
+      "candidate_spearman": 0.26032174318981854
+    },
+    "RightLeg": {
+      "accuracy": 0.5107142857142857,
+      "accuracy_drop": 0.004464285714285698,
+      "candidate_spearman": 0.27430206597760703
+    }
+  },
+  "note": "Permutation computed from frozen-input representation; no retraining.",
+  "test_used": false
+}

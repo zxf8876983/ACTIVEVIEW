@@ -1,0 +1,119 @@
+{
+  "name": "PartTime15+Geometry",
+  "kind": "PartTime15",
+  "epochs": 12,
+  "best_epoch": 10,
+  "best_val_utility_loss": 0.5096851512789726,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6578820586204529,
+      "val_utility_loss": 0.5784083664417267,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.5908277630805969,
+      "val_utility_loss": 0.547318996489048,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.5796380877494812,
+      "val_utility_loss": 0.5243619933724404,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5516271471977234,
+      "val_utility_loss": 0.5245954424142838,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.530145451426506,
+      "val_utility_loss": 0.5196204945445061,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5316128879785538,
+      "val_utility_loss": 0.521182757616043,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5183659553527832,
+      "val_utility_loss": 0.5226686492562294,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5272622227668762,
+      "val_utility_loss": 0.5176946014165879,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5151393711566925,
+      "val_utility_loss": 0.5123302012681961,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5020283252000809,
+      "val_utility_loss": 0.5096851512789726,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5104877322912216,
+      "val_utility_loss": 0.5147953525185585,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5035833299160004,
+      "val_utility_loss": 0.5109947025775909,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartTime15+Geometry.pth",
+  "test_used": false
+}

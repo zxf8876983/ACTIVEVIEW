@@ -1,0 +1,119 @@
+{
+  "name": "Temporal3+Geometry",
+  "kind": "Temporal3",
+  "epochs": 12,
+  "best_epoch": 10,
+  "best_val_utility_loss": 0.5198974296450615,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.0338709771633148,
+      "val_utility_loss": 0.5890236333012581,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6579362392425537,
+      "val_utility_loss": 0.5638613298535347,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6371028959751129,
+      "val_utility_loss": 0.5520565807819366,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6032084167003632,
+      "val_utility_loss": 0.5458757564425468,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.5902367770671845,
+      "val_utility_loss": 0.5396135076880455,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5854412198066712,
+      "val_utility_loss": 0.5347861930727958,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5726217210292817,
+      "val_utility_loss": 0.5274372324347496,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5741456747055054,
+      "val_utility_loss": 0.5241685688495636,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5680046617984772,
+      "val_utility_loss": 0.5231295123696327,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5537241578102112,
+      "val_utility_loss": 0.5198974296450615,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5661865890026092,
+      "val_utility_loss": 0.5257073104381561,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5634532272815704,
+      "val_utility_loss": 0.5203000038862229,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/Temporal3+Geometry.pth",
+  "test_used": false
+}

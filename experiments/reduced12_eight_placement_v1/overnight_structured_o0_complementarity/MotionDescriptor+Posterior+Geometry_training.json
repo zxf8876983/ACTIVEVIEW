@@ -1,0 +1,119 @@
+{
+  "name": "MotionDescriptor+Posterior+Geometry",
+  "kind": "MotionDescriptorPosterior",
+  "epochs": 12,
+  "best_epoch": 12,
+  "best_val_utility_loss": 0.5242823705077171,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6761528730392456,
+      "val_utility_loss": 0.5728651478886604,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.639096474647522,
+      "val_utility_loss": 0.5580591604113578,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6490396738052369,
+      "val_utility_loss": 0.5511670961976052,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.623689591884613,
+      "val_utility_loss": 0.5463499650359154,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6128525137901306,
+      "val_utility_loss": 0.5411107748746872,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6126654207706451,
+      "val_utility_loss": 0.538603687286377,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.6028249382972717,
+      "val_utility_loss": 0.533778865635395,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.6040292322635651,
+      "val_utility_loss": 0.5312349766492843,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.6067853808403015,
+      "val_utility_loss": 0.5304195657372475,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5915436923503876,
+      "val_utility_loss": 0.5279172614216805,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.6000228941440582,
+      "val_utility_loss": 0.5264824137091637,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5962966859340668,
+      "val_utility_loss": 0.5242823705077171,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/MotionDescriptor+Posterior+Geometry.pth",
+  "test_used": false
+}

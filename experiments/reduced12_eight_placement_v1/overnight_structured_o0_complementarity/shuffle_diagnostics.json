@@ -1,0 +1,19 @@
+{
+  "normal": {
+    "accuracy": 0.5174603174603175,
+    "macro_f1": 0.5031928497100474
+  },
+  "o0_shuffled": {
+    "accuracy": 0.5069444444444444,
+    "macro_f1": 0.49494026120795875
+  },
+  "geometry_shuffled": {
+    "accuracy": 0.4242063492063492,
+    "macro_f1": 0.41538784538981327
+  },
+  "both_shuffled": {
+    "accuracy": 0.4234126984126984,
+    "macro_f1": 0.41581744444074126
+  },
+  "test_used": false
+}

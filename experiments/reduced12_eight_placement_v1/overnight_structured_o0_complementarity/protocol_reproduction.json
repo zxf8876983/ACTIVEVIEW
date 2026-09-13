@@ -1,0 +1,33 @@
+{
+  "expected": {
+    "Random B2": {
+      "accuracy": 0.429762,
+      "macro_f1": 0.424594
+    },
+    "CurrentBaseline": {
+      "accuracy": 0.517361,
+      "macro_f1": 0.504616
+    },
+    "PairMargin Oracle": {
+      "accuracy": 0.706647,
+      "macro_f1": 0.701819
+    }
+  },
+  "observed": {
+    "Random B2": {
+      "accuracy": 0.4297619047619048,
+      "macro_f1": 0.4245940629388021
+    },
+    "CurrentBaseline": {
+      "accuracy": 0.5173611111111112,
+      "macro_f1": 0.5046164574284971
+    },
+    "PairMargin Oracle": {
+      "accuracy": 0.7066468253968254,
+      "macro_f1": 0.7018190247023651
+    }
+  },
+  "tolerance_pp": 1.0,
+  "gate_pass": true,
+  "test_used": false
+}

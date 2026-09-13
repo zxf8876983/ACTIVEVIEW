@@ -1,0 +1,118 @@
+{
+  "PosteriorOnly+Geometry": {
+    "candidate_spearman": 0.2427067018948701,
+    "within_context_spearman_mean": 0.191693392430276,
+    "within_context_spearman_median": 0.28571428571428575,
+    "oracle_top1_overlap": 0.2998015873015873,
+    "oracle_top3_overlap": 0.916765873015873,
+    "test_used": false
+  },
+  "IntermediateGlobal+Geometry": {
+    "candidate_spearman": 0.2809541454585721,
+    "within_context_spearman_mean": 0.1867101303700845,
+    "within_context_spearman_median": 0.261904761904762,
+    "oracle_top1_overlap": 0.2959325396825397,
+    "oracle_top3_overlap": 0.9142857142857143,
+    "test_used": false
+  },
+  "PartPool+Geometry": {
+    "candidate_spearman": 0.24023237817176524,
+    "within_context_spearman_mean": 0.18551058229491443,
+    "within_context_spearman_median": 0.2627705627705628,
+    "oracle_top1_overlap": 0.29484126984126985,
+    "oracle_top3_overlap": 0.9173611111111111,
+    "test_used": false
+  },
+  "PartPool+Posterior+Geometry": {
+    "candidate_spearman": 0.2755099664615238,
+    "within_context_spearman_mean": 0.18748541212225697,
+    "within_context_spearman_median": 0.2833333333333333,
+    "oracle_top1_overlap": 0.2953373015873016,
+    "oracle_top3_overlap": 0.9198412698412698,
+    "test_used": false
+  },
+  "Temporal3+Geometry": {
+    "candidate_spearman": 0.2689649317608819,
+    "within_context_spearman_mean": 0.187747215725226,
+    "within_context_spearman_median": 0.2797202797202798,
+    "oracle_top1_overlap": 0.2988095238095238,
+    "oracle_top3_overlap": 0.9194444444444444,
+    "test_used": false
+  },
+  "Temporal3+Posterior+Geometry": {
+    "candidate_spearman": 0.28660359389174483,
+    "within_context_spearman_mean": 0.1950113371550927,
+    "within_context_spearman_median": 0.28921568627450983,
+    "oracle_top1_overlap": 0.30218253968253966,
+    "oracle_top3_overlap": 0.9195436507936507,
+    "test_used": false
+  },
+  "PartTime15+Geometry": {
+    "candidate_spearman": 0.30895900139289223,
+    "within_context_spearman_mean": 0.1945950531661362,
+    "within_context_spearman_median": 0.28571428571428575,
+    "oracle_top1_overlap": 0.2967261904761905,
+    "oracle_top3_overlap": 0.9171626984126984,
+    "test_used": false
+  },
+  "PartTime15+Posterior+Geometry": {
+    "candidate_spearman": 0.3140875624947192,
+    "within_context_spearman_mean": 0.1964694724401436,
+    "within_context_spearman_median": 0.29490509490509487,
+    "oracle_top1_overlap": 0.29890873015873015,
+    "oracle_top3_overlap": 0.9175595238095238,
+    "test_used": false
+  },
+  "MotionDescriptor+Posterior+Geometry": {
+    "candidate_spearman": 0.26438194328509396,
+    "within_context_spearman_mean": 0.195003510280835,
+    "within_context_spearman_median": 0.2968364968364968,
+    "oracle_top1_overlap": 0.2984126984126984,
+    "oracle_top3_overlap": 0.9164682539682539,
+    "test_used": false
+  },
+  "RawO0-SmallEncoder": {
+    "candidate_spearman": 0.28291122318728795,
+    "within_context_spearman_mean": 0.1975601196496265,
+    "within_context_spearman_median": 0.3,
+    "oracle_top1_overlap": 0.3016865079365079,
+    "oracle_top3_overlap": 0.9201388888888888,
+    "test_used": false
+  },
+  "PartTime-FiLM": {
+    "candidate_spearman": 0.3137098779789212,
+    "within_context_spearman_mean": 0.20006928395770446,
+    "within_context_spearman_median": 0.3,
+    "oracle_top1_overlap": 0.3009920634920635,
+    "oracle_top3_overlap": 0.9159722222222222,
+    "test_used": false
+  },
+  "PartTime-Bilinear": {
+    "candidate_spearman": 0.3048957326035035,
+    "within_context_spearman_mean": 0.18153293523324762,
+    "within_context_spearman_median": 0.2825757575757576,
+    "oracle_top1_overlap": 0.29523809523809524,
+    "oracle_top3_overlap": 0.9076388888888889,
+    "test_used": false
+  },
+  "CandidatePartAttention": {
+    "candidate_spearman": 0.2743268733146209,
+    "within_context_spearman_mean": 0.1957958960968553,
+    "within_context_spearman_median": 0.3,
+    "oracle_top1_overlap": 0.29623015873015873,
+    "oracle_top3_overlap": 0.9125,
+    "test_used": false
+  },
+  "CandidateTemporalAttention": {
+    "candidate_spearman": 0.27882822637517735,
+    "within_context_spearman_mean": 0.19511704475527178,
+    "within_context_spearman_median": 0.28571428571428575,
+    "oracle_top1_overlap": 0.29642857142857143,
+    "oracle_top3_overlap": 0.9192460317460317,
+    "test_used": false
+  },
+  "CurrentBaseline": {
+    "source": "previous O0 sweep",
+    "test_used": false
+  }
+}

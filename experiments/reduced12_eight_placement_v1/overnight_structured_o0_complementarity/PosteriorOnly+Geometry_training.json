@@ -1,0 +1,107 @@
+{
+  "name": "PosteriorOnly+Geometry",
+  "kind": "Posterior",
+  "epochs": 12,
+  "best_epoch": 12,
+  "best_val_utility_loss": 0.542722524702549,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6683826804161072,
+      "val_utility_loss": 0.5736503094434738,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6488785147666931,
+      "val_utility_loss": 0.5648601770401,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6589974403381348,
+      "val_utility_loss": 0.5630890876054764,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6369000971317291,
+      "val_utility_loss": 0.5591395631432533,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6247657477855683,
+      "val_utility_loss": 0.5564889430999755,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6292159676551818,
+      "val_utility_loss": 0.5556314125657081,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.6243865489959717,
+      "val_utility_loss": 0.5525090783834458,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.623915946483612,
+      "val_utility_loss": 0.5504428789019584,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.6251156330108643,
+      "val_utility_loss": 0.5484401226043701,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.6120148718357086,
+      "val_utility_loss": 0.5471060052514076,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.6157829403877259,
+      "val_utility_loss": 0.5470285952091217,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.6172130703926086,
+      "val_utility_loss": 0.542722524702549,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PosteriorOnly+Geometry.pth",
+  "test_used": false
+}

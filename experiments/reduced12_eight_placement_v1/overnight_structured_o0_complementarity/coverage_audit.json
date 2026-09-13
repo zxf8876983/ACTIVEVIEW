@@ -1,0 +1,10 @@
+{
+  "train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "train_records": 313,
+  "moving_val_records": 105,
+  "train_candidate_samples": 305175,
+  "val_candidate_samples": 68702,
+  "action_set": "current/Stay + Stage-A legal candidate_pool; B2 selects one non-stay candidate",
+  "test_used": false
+}

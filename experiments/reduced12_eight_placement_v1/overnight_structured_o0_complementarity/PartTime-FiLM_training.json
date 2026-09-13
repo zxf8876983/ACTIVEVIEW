@@ -1,0 +1,119 @@
+{
+  "name": "PartTime-FiLM",
+  "kind": "PartTime-FiLM",
+  "epochs": 12,
+  "best_epoch": 10,
+  "best_val_utility_loss": 0.5077308103442192,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6806473910808564,
+      "val_utility_loss": 0.5613714694976807,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6260469436645508,
+      "val_utility_loss": 0.5476408019661904,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6183728039264679,
+      "val_utility_loss": 0.5409354507923126,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5812436521053315,
+      "val_utility_loss": 0.5288427889347076,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.5592010259628296,
+      "val_utility_loss": 0.5244990944862366,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5590721309185028,
+      "val_utility_loss": 0.5190696969628334,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5405691027641296,
+      "val_utility_loss": 0.5186259552836419,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5422290682792663,
+      "val_utility_loss": 0.5121667459607124,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5254393458366394,
+      "val_utility_loss": 0.5104124635457993,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5133364468812942,
+      "val_utility_loss": 0.5077308103442192,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5203855931758881,
+      "val_utility_loss": 0.5154068484902382,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5152650445699691,
+      "val_utility_loss": 0.5078517064452172,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartTime-FiLM.pth",
+  "test_used": false
+}

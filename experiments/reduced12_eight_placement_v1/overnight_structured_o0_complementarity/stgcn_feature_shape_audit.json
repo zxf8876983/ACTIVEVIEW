@@ -1,0 +1,111 @@
+{
+  "input": [
+    3,
+    30,
+    17,
+    1
+  ],
+  "layers": [
+    {
+      "layer": "st_gcn_networks.0",
+      "channels": 64,
+      "temporal": 30,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.1",
+      "channels": 64,
+      "temporal": 30,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.2",
+      "channels": 64,
+      "temporal": 30,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.3",
+      "channels": 128,
+      "temporal": 15,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.4",
+      "channels": 128,
+      "temporal": 15,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.5",
+      "channels": 128,
+      "temporal": 15,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.6",
+      "channels": 256,
+      "temporal": 8,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.7",
+      "channels": 256,
+      "temporal": 8,
+      "joints": 17
+    },
+    {
+      "layer": "st_gcn_networks.8",
+      "channels": 256,
+      "temporal": 8,
+      "joints": 17
+    }
+  ],
+  "selected_intermediate": "st_gcn_networks.8 pre-global-pooling",
+  "test_used": false,
+  "body_parts": {
+    "Torso": [
+      0,
+      7,
+      8,
+      9,
+      10
+    ],
+    "LeftArm": [
+      11,
+      12,
+      13
+    ],
+    "RightArm": [
+      14,
+      15,
+      16
+    ],
+    "LeftLeg": [
+      4,
+      5,
+      6
+    ],
+    "RightLeg": [
+      1,
+      2,
+      3
+    ]
+  },
+  "temporal_segments": {
+    "Early": [
+      0,
+      1,
+      2
+    ],
+    "Middle": [
+      3,
+      4,
+      5
+    ],
+    "Late": [
+      6,
+      7
+    ]
+  }
+}

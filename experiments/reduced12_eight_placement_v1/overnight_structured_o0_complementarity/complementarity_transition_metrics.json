@@ -1,0 +1,24 @@
+{
+  "Random B2": {
+    "o0_wrong_to_final_correct": 1744,
+    "o1_wrong_but_fusion_correct": 1079,
+    "both_wrong_fusion_correct": 208,
+    "o0_correct_to_final_wrong": 462,
+    "contexts": 10080
+  },
+  "RawO0-SmallEncoder": {
+    "o0_wrong_to_final_correct": 2590,
+    "o1_wrong_but_fusion_correct": 818,
+    "both_wrong_fusion_correct": 241,
+    "o0_correct_to_final_wrong": 424,
+    "contexts": 10080
+  },
+  "PairMarginOracle": {
+    "o0_wrong_to_final_correct": 4109,
+    "o1_wrong_but_fusion_correct": 549,
+    "both_wrong_fusion_correct": 308,
+    "o0_correct_to_final_wrong": 36,
+    "contexts": 10080
+  },
+  "test_used": false
+}

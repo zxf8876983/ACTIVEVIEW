@@ -1,0 +1,119 @@
+{
+  "name": "CandidateTemporalAttention",
+  "kind": "CandidateTemporalAttention",
+  "epochs": 12,
+  "best_epoch": 12,
+  "best_val_utility_loss": 0.5147316515445709,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6386335611343383,
+      "val_utility_loss": 0.5526200473308563,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6179594039916992,
+      "val_utility_loss": 0.5463730007410049,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6190545678138732,
+      "val_utility_loss": 0.5480650216341019,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5923377990722656,
+      "val_utility_loss": 0.5335832551121712,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.5782175660133362,
+      "val_utility_loss": 0.5277277499437332,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5741505742073059,
+      "val_utility_loss": 0.5202566877007484,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5627416849136353,
+      "val_utility_loss": 0.5214705765247345,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5685168623924255,
+      "val_utility_loss": 0.5178979560732841,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5623644053936004,
+      "val_utility_loss": 0.5199565976858139,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5476834177970886,
+      "val_utility_loss": 0.5157940834760666,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5550122916698456,
+      "val_utility_loss": 0.5238159492611885,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5622223794460297,
+      "val_utility_loss": 0.5147316515445709,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/CandidateTemporalAttention.pth",
+  "test_used": false
+}

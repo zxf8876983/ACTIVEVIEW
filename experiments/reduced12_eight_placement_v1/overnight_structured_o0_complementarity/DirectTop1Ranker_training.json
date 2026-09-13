@@ -1,0 +1,119 @@
+{
+  "name": "DirectTop1Ranker",
+  "kind": "RawO0",
+  "epochs": 12,
+  "best_epoch": 12,
+  "best_val_utility_loss": 1.7068650007247925,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.660008931159973,
+      "val_utility_loss": 2.2290187537670136,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.1376742839813234,
+      "val_utility_loss": 1.9502672731876374,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.8763635993003844,
+      "val_utility_loss": 1.8181925475597382,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.7447024703025817,
+      "val_utility_loss": 1.7612089216709137,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.707877266407013,
+      "val_utility_loss": 1.7372086703777314,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.6941941857337952,
+      "val_utility_loss": 1.729513454437256,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.692497444152832,
+      "val_utility_loss": 1.7239510536193847,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.655149793624878,
+      "val_utility_loss": 1.7203329443931579,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.676695966720581,
+      "val_utility_loss": 1.715338146686554,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.6874502778053284,
+      "val_utility_loss": 1.7177602529525757,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.670766580104828,
+      "val_utility_loss": 1.7098625779151917,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.6647862195968628,
+      "val_utility_loss": 1.7068650007247925,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "direct_top1"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/DirectTop1Ranker.pth",
+  "test_used": false
+}

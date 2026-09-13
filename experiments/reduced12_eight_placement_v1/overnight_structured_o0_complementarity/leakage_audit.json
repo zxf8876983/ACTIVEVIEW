@@ -1,0 +1,14 @@
+{
+  "uses_O0_real_observation": true,
+  "uses_O0_feature": true,
+  "uses_O0_posterior": true,
+  "uses_candidate_geometry": true,
+  "uses_candidate_real_RGB": false,
+  "uses_candidate_real_skeleton": false,
+  "uses_candidate_feature": false,
+  "uses_candidate_logits": false,
+  "uses_GT_action": false,
+  "uses_future_candidate_observation": false,
+  "policy_test": false,
+  "test_used": false
+}

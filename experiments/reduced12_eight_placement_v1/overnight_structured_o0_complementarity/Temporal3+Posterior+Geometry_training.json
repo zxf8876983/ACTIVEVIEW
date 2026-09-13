@@ -1,0 +1,119 @@
+{
+  "name": "Temporal3+Posterior+Geometry",
+  "kind": "Temporal3Posterior",
+  "epochs": 12,
+  "best_epoch": 12,
+  "best_val_utility_loss": 0.515773655474186,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.1816783368587493,
+      "val_utility_loss": 0.6060861021280288,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6675382316112518,
+      "val_utility_loss": 0.5757571160793304,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6414689540863037,
+      "val_utility_loss": 0.5561792612075805,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6086614668369293,
+      "val_utility_loss": 0.5510829403996468,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.5952227234840393,
+      "val_utility_loss": 0.5439192786812782,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5894194960594177,
+      "val_utility_loss": 0.5358592391014099,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5737871408462525,
+      "val_utility_loss": 0.5271977603435516,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5742402076721191,
+      "val_utility_loss": 0.5228417754173279,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5682307958602906,
+      "val_utility_loss": 0.5221827402710915,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5533602595329284,
+      "val_utility_loss": 0.5176500305533409,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5633894026279449,
+      "val_utility_loss": 0.5260108783841133,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5613084673881531,
+      "val_utility_loss": 0.515773655474186,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/Temporal3+Posterior+Geometry.pth",
+  "test_used": false
+}

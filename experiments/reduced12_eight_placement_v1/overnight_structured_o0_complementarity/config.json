@@ -1,0 +1,16 @@
+{
+  "experiment": "overnight_structured_o0_complementarity",
+  "seed": 42,
+  "num_classes": 12,
+  "train_epochs": 12,
+  "batch_size": 512,
+  "optimizer": "AdamW",
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "target": "normalized MeanLogP pair margin",
+  "action_set": "Stage-A legal candidate_pool; exactly one non-stay B2 candidate",
+  "stgcn_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+  "shared_head_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/view_agnostic_frozen_encoder_head/shared_head_best.pth",
+  "policy_test_used": false,
+  "new_perception_generated": false
+}

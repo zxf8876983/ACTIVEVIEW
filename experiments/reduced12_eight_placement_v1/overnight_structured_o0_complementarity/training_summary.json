@@ -1,0 +1,1989 @@
+{
+  "PosteriorOnly+Geometry": {
+    "name": "PosteriorOnly+Geometry",
+    "kind": "Posterior",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 0.542722524702549,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6683826804161072,
+        "val_utility_loss": 0.5736503094434738,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6488785147666931,
+        "val_utility_loss": 0.5648601770401,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6589974403381348,
+        "val_utility_loss": 0.5630890876054764,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.6369000971317291,
+        "val_utility_loss": 0.5591395631432533,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.6247657477855683,
+        "val_utility_loss": 0.5564889430999755,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.6292159676551818,
+        "val_utility_loss": 0.5556314125657081,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.6243865489959717,
+        "val_utility_loss": 0.5525090783834458,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.623915946483612,
+        "val_utility_loss": 0.5504428789019584,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.6251156330108643,
+        "val_utility_loss": 0.5484401226043701,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.6120148718357086,
+        "val_utility_loss": 0.5471060052514076,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.6157829403877259,
+        "val_utility_loss": 0.5470285952091217,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.6172130703926086,
+        "val_utility_loss": 0.542722524702549,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PosteriorOnly+Geometry.pth",
+    "test_used": false
+  },
+  "IntermediateGlobal+Geometry": {
+    "name": "IntermediateGlobal+Geometry",
+    "kind": "IntermediateGlobal",
+    "epochs": 12,
+    "best_epoch": 8,
+    "best_val_utility_loss": 0.5162273347377777,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.7376082360744476,
+        "val_utility_loss": 0.6274629533290863,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6422682225704193,
+        "val_utility_loss": 0.5553034752607345,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6341720998287201,
+        "val_utility_loss": 0.5509197622537613,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.5988661766052246,
+        "val_utility_loss": 0.5372776702046395,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5818399608135223,
+        "val_utility_loss": 0.5284458011388778,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5779113411903382,
+        "val_utility_loss": 0.5224320352077484,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5601818144321442,
+        "val_utility_loss": 0.5171648234128952,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5627610146999359,
+        "val_utility_loss": 0.5162273347377777,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5563496828079224,
+        "val_utility_loss": 0.5177339687943459,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5425914078950882,
+        "val_utility_loss": 0.5169967472553253,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5488542139530181,
+        "val_utility_loss": 0.5251579821109772,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5561737835407257,
+        "val_utility_loss": 0.5170162305235863,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/IntermediateGlobal+Geometry.pth",
+    "test_used": false
+  },
+  "PartPool+Geometry": {
+    "name": "PartPool+Geometry",
+    "kind": "PartPool",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 0.5368578836321831,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.326752370595932,
+        "val_utility_loss": 0.5936324045062065,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6530480444431305,
+        "val_utility_loss": 0.5696658477187156,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.650370329618454,
+        "val_utility_loss": 0.5603943198919297,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.6191435873508453,
+        "val_utility_loss": 0.5582342430949211,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.6031147718429566,
+        "val_utility_loss": 0.5536600187420845,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.6056044340133667,
+        "val_utility_loss": 0.5510507985949517,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5898826241493225,
+        "val_utility_loss": 0.5452732294797897,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5944007277488709,
+        "val_utility_loss": 0.5419263079762459,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5894665420055389,
+        "val_utility_loss": 0.5406891137361527,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5681951105594635,
+        "val_utility_loss": 0.539989560842514,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.581736296415329,
+        "val_utility_loss": 0.5386275380849839,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5773657619953155,
+        "val_utility_loss": 0.5368578836321831,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartPool+Geometry.pth",
+    "test_used": false
+  },
+  "PartPool+Posterior+Geometry": {
+    "name": "PartPool+Posterior+Geometry",
+    "kind": "PartPoolPosterior",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 0.5270095780491829,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.0444585144519807,
+        "val_utility_loss": 0.7001507699489593,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6625269830226899,
+        "val_utility_loss": 0.5778877720236778,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6471094191074371,
+        "val_utility_loss": 0.5611130073666573,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.610645306110382,
+        "val_utility_loss": 0.5565186753869057,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5939160585403442,
+        "val_utility_loss": 0.5499795347452163,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5931973159313202,
+        "val_utility_loss": 0.5467376857995987,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.575551563501358,
+        "val_utility_loss": 0.5421095281839371,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5842501163482666,
+        "val_utility_loss": 0.5384651869535446,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.575919222831726,
+        "val_utility_loss": 0.5398790240287781,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5547329545021057,
+        "val_utility_loss": 0.5352993845939636,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5647871673107148,
+        "val_utility_loss": 0.5318651601672173,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5633230030536651,
+        "val_utility_loss": 0.5270095780491829,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartPool+Posterior+Geometry.pth",
+    "test_used": false
+  },
+  "Temporal3+Geometry": {
+    "name": "Temporal3+Geometry",
+    "kind": "Temporal3",
+    "epochs": 12,
+    "best_epoch": 10,
+    "best_val_utility_loss": 0.5198974296450615,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.0338709771633148,
+        "val_utility_loss": 0.5890236333012581,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6579362392425537,
+        "val_utility_loss": 0.5638613298535347,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6371028959751129,
+        "val_utility_loss": 0.5520565807819366,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.6032084167003632,
+        "val_utility_loss": 0.5458757564425468,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5902367770671845,
+        "val_utility_loss": 0.5396135076880455,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5854412198066712,
+        "val_utility_loss": 0.5347861930727958,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5726217210292817,
+        "val_utility_loss": 0.5274372324347496,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5741456747055054,
+        "val_utility_loss": 0.5241685688495636,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5680046617984772,
+        "val_utility_loss": 0.5231295123696327,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5537241578102112,
+        "val_utility_loss": 0.5198974296450615,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5661865890026092,
+        "val_utility_loss": 0.5257073104381561,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5634532272815704,
+        "val_utility_loss": 0.5203000038862229,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/Temporal3+Geometry.pth",
+    "test_used": false
+  },
+  "Temporal3+Posterior+Geometry": {
+    "name": "Temporal3+Posterior+Geometry",
+    "kind": "Temporal3Posterior",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 0.515773655474186,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.1816783368587493,
+        "val_utility_loss": 0.6060861021280288,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6675382316112518,
+        "val_utility_loss": 0.5757571160793304,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6414689540863037,
+        "val_utility_loss": 0.5561792612075805,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.6086614668369293,
+        "val_utility_loss": 0.5510829403996468,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5952227234840393,
+        "val_utility_loss": 0.5439192786812782,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5894194960594177,
+        "val_utility_loss": 0.5358592391014099,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5737871408462525,
+        "val_utility_loss": 0.5271977603435516,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5742402076721191,
+        "val_utility_loss": 0.5228417754173279,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5682307958602906,
+        "val_utility_loss": 0.5221827402710915,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5533602595329284,
+        "val_utility_loss": 0.5176500305533409,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5633894026279449,
+        "val_utility_loss": 0.5260108783841133,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5613084673881531,
+        "val_utility_loss": 0.515773655474186,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/Temporal3+Posterior+Geometry.pth",
+    "test_used": false
+  },
+  "PartTime15+Geometry": {
+    "name": "PartTime15+Geometry",
+    "kind": "PartTime15",
+    "epochs": 12,
+    "best_epoch": 10,
+    "best_val_utility_loss": 0.5096851512789726,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6578820586204529,
+        "val_utility_loss": 0.5784083664417267,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.5908277630805969,
+        "val_utility_loss": 0.547318996489048,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.5796380877494812,
+        "val_utility_loss": 0.5243619933724404,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.5516271471977234,
+        "val_utility_loss": 0.5245954424142838,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.530145451426506,
+        "val_utility_loss": 0.5196204945445061,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5316128879785538,
+        "val_utility_loss": 0.521182757616043,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5183659553527832,
+        "val_utility_loss": 0.5226686492562294,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5272622227668762,
+        "val_utility_loss": 0.5176946014165879,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5151393711566925,
+        "val_utility_loss": 0.5123302012681961,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5020283252000809,
+        "val_utility_loss": 0.5096851512789726,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5104877322912216,
+        "val_utility_loss": 0.5147953525185585,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5035833299160004,
+        "val_utility_loss": 0.5109947025775909,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartTime15+Geometry.pth",
+    "test_used": false
+  },
+  "PartTime15+Posterior+Geometry": {
+    "name": "PartTime15+Posterior+Geometry",
+    "kind": "PartTime15",
+    "epochs": 12,
+    "best_epoch": 10,
+    "best_val_utility_loss": 0.5075927168130875,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6677649259567261,
+        "val_utility_loss": 0.5582916349172592,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.5921261727809906,
+        "val_utility_loss": 0.5355851873755455,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.5784532010555268,
+        "val_utility_loss": 0.5288234293460846,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.5537643432617188,
+        "val_utility_loss": 0.5231045171618461,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5297298014163971,
+        "val_utility_loss": 0.5217609718441963,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5304239869117737,
+        "val_utility_loss": 0.5218237832188606,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5167361527681351,
+        "val_utility_loss": 0.5183389842510223,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5227247774600983,
+        "val_utility_loss": 0.5151917174458504,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5138126134872436,
+        "val_utility_loss": 0.5100784868001937,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5037181407213212,
+        "val_utility_loss": 0.5075927168130875,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.512218376994133,
+        "val_utility_loss": 0.510475079715252,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5014124393463135,
+        "val_utility_loss": 0.5113138973712921,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartTime15+Posterior+Geometry.pth",
+    "test_used": false
+  },
+  "MotionDescriptor+Posterior+Geometry": {
+    "name": "MotionDescriptor+Posterior+Geometry",
+    "kind": "MotionDescriptorPosterior",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 0.5242823705077171,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6761528730392456,
+        "val_utility_loss": 0.5728651478886604,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.639096474647522,
+        "val_utility_loss": 0.5580591604113578,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6490396738052369,
+        "val_utility_loss": 0.5511670961976052,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.623689591884613,
+        "val_utility_loss": 0.5463499650359154,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.6128525137901306,
+        "val_utility_loss": 0.5411107748746872,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.6126654207706451,
+        "val_utility_loss": 0.538603687286377,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.6028249382972717,
+        "val_utility_loss": 0.533778865635395,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.6040292322635651,
+        "val_utility_loss": 0.5312349766492843,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.6067853808403015,
+        "val_utility_loss": 0.5304195657372475,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5915436923503876,
+        "val_utility_loss": 0.5279172614216805,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.6000228941440582,
+        "val_utility_loss": 0.5264824137091637,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5962966859340668,
+        "val_utility_loss": 0.5242823705077171,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/MotionDescriptor+Posterior+Geometry.pth",
+    "test_used": false
+  },
+  "RawO0-SmallEncoder": {
+    "name": "RawO0-SmallEncoder",
+    "kind": "RawO0",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 0.529095770418644,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6370566666126252,
+        "val_utility_loss": 0.5520340904593468,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6054113268852234,
+        "val_utility_loss": 0.5478919088840485,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6138280093669891,
+        "val_utility_loss": 0.5429113745689392,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.5893545627593995,
+        "val_utility_loss": 0.5432223796844482,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5797450184822083,
+        "val_utility_loss": 0.5404850214719772,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5814484715461731,
+        "val_utility_loss": 0.5374281734228135,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5663717806339263,
+        "val_utility_loss": 0.5327674254775048,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5780010461807251,
+        "val_utility_loss": 0.5341540694236755,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5671429514884949,
+        "val_utility_loss": 0.5335538953542709,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5581435263156891,
+        "val_utility_loss": 0.5296183943748474,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5633280575275421,
+        "val_utility_loss": 0.540212370455265,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5638242572546005,
+        "val_utility_loss": 0.529095770418644,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/RawO0-SmallEncoder.pth",
+    "test_used": false
+  },
+  "PartTime-FiLM": {
+    "name": "PartTime-FiLM",
+    "kind": "PartTime-FiLM",
+    "epochs": 12,
+    "best_epoch": 10,
+    "best_val_utility_loss": 0.5077308103442192,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6806473910808564,
+        "val_utility_loss": 0.5613714694976807,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6260469436645508,
+        "val_utility_loss": 0.5476408019661904,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6183728039264679,
+        "val_utility_loss": 0.5409354507923126,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.5812436521053315,
+        "val_utility_loss": 0.5288427889347076,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5592010259628296,
+        "val_utility_loss": 0.5244990944862366,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5590721309185028,
+        "val_utility_loss": 0.5190696969628334,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5405691027641296,
+        "val_utility_loss": 0.5186259552836419,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5422290682792663,
+        "val_utility_loss": 0.5121667459607124,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5254393458366394,
+        "val_utility_loss": 0.5104124635457993,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5133364468812942,
+        "val_utility_loss": 0.5077308103442192,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5203855931758881,
+        "val_utility_loss": 0.5154068484902382,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5152650445699691,
+        "val_utility_loss": 0.5078517064452172,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartTime-FiLM.pth",
+    "test_used": false
+  },
+  "PartTime-Bilinear": {
+    "name": "PartTime-Bilinear",
+    "kind": "PartTime-Bilinear",
+    "epochs": 12,
+    "best_epoch": 9,
+    "best_val_utility_loss": 0.5112232312560081,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6370474338531494,
+        "val_utility_loss": 0.556703545153141,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6105465888977051,
+        "val_utility_loss": 0.5408963590860367,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6015574216842652,
+        "val_utility_loss": 0.5314458414912224,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.5748741745948791,
+        "val_utility_loss": 0.5242715030908585,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5590039968490601,
+        "val_utility_loss": 0.5198415145277977,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5568907797336579,
+        "val_utility_loss": 0.5167669981718064,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5487982869148255,
+        "val_utility_loss": 0.5202739998698235,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5563252568244934,
+        "val_utility_loss": 0.5137223958969116,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.542834484577179,
+        "val_utility_loss": 0.5112232312560081,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5318150699138642,
+        "val_utility_loss": 0.5150771737098694,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5395528554916382,
+        "val_utility_loss": 0.5141479924321175,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5341401547193527,
+        "val_utility_loss": 0.5116582795977592,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartTime-Bilinear.pth",
+    "test_used": false
+  },
+  "CandidatePartAttention": {
+    "name": "CandidatePartAttention",
+    "kind": "CandidatePartAttention",
+    "epochs": 12,
+    "best_epoch": 10,
+    "best_val_utility_loss": 0.5161817088723183,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6531980752944946,
+        "val_utility_loss": 0.56728325933218,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6267127633094788,
+        "val_utility_loss": 0.5493100121617317,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6318587779998779,
+        "val_utility_loss": 0.5472668841481209,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.6022046267986297,
+        "val_utility_loss": 0.5465792551636696,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5915538609027863,
+        "val_utility_loss": 0.5346538051962852,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5879143893718719,
+        "val_utility_loss": 0.528296235203743,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5723891019821167,
+        "val_utility_loss": 0.527097924053669,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5755751967430115,
+        "val_utility_loss": 0.5189116254448891,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5688946366310119,
+        "val_utility_loss": 0.519530113041401,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5564222693443298,
+        "val_utility_loss": 0.5161817088723183,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5619638383388519,
+        "val_utility_loss": 0.5228257909417152,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5663321256637573,
+        "val_utility_loss": 0.5187225297093392,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/CandidatePartAttention.pth",
+    "test_used": false
+  },
+  "CandidateTemporalAttention": {
+    "name": "CandidateTemporalAttention",
+    "kind": "CandidateTemporalAttention",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 0.5147316515445709,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6386335611343383,
+        "val_utility_loss": 0.5526200473308563,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.6179594039916992,
+        "val_utility_loss": 0.5463730007410049,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.6190545678138732,
+        "val_utility_loss": 0.5480650216341019,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.5923377990722656,
+        "val_utility_loss": 0.5335832551121712,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.5782175660133362,
+        "val_utility_loss": 0.5277277499437332,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.5741505742073059,
+        "val_utility_loss": 0.5202566877007484,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.5627416849136353,
+        "val_utility_loss": 0.5214705765247345,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.5685168623924255,
+        "val_utility_loss": 0.5178979560732841,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.5623644053936004,
+        "val_utility_loss": 0.5199565976858139,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.5476834177970886,
+        "val_utility_loss": 0.5157940834760666,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.5550122916698456,
+        "val_utility_loss": 0.5238159492611885,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.5622223794460297,
+        "val_utility_loss": 0.5147316515445709,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/CandidateTemporalAttention.pth",
+    "test_used": false
+  },
+  "CurrentBaseline-PairLogP": {
+    "name": "CurrentBaseline-PairLogP",
+    "kind": "PartTime15",
+    "epochs": 12,
+    "best_epoch": 10,
+    "best_val_utility_loss": 0.3210230007767677,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.6424465000629425,
+        "val_utility_loss": 0.4478406772017479,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.39206052422523496,
+        "val_utility_loss": 0.37621092349290847,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.36124947667121887,
+        "val_utility_loss": 0.3636219069361687,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.3377449452877045,
+        "val_utility_loss": 0.3417728111147881,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.31769114136695864,
+        "val_utility_loss": 0.33905690014362333,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.313994774222374,
+        "val_utility_loss": 0.333631132543087,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.3025242120027542,
+        "val_utility_loss": 0.32938857823610307,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.3077052652835846,
+        "val_utility_loss": 0.32443860173225403,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.3017011135816574,
+        "val_utility_loss": 0.3231028363108635,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.29109050929546354,
+        "val_utility_loss": 0.3210230007767677,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.29698768854141233,
+        "val_utility_loss": 0.3228171542286873,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.292350697517395,
+        "val_utility_loss": 0.32132652401924133,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/CurrentBaseline-PairLogP.pth",
+    "test_used": false
+  },
+  "PartTime15+Posterior+Geometry-PairLogP": {
+    "name": "PartTime15+Posterior+Geometry-PairLogP",
+    "kind": "PartTime15",
+    "epochs": 12,
+    "best_epoch": 11,
+    "best_val_utility_loss": 0.3218854501843452,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.5949889689683914,
+        "val_utility_loss": 0.46365220099687576,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.37902052998542785,
+        "val_utility_loss": 0.3693087711930275,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.3498970717191696,
+        "val_utility_loss": 0.35063299983739854,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.3289142280817032,
+        "val_utility_loss": 0.3428291633725166,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.315963077545166,
+        "val_utility_loss": 0.33528694212436677,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.30975485146045684,
+        "val_utility_loss": 0.331721194088459,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.3006364405155182,
+        "val_utility_loss": 0.32991456538438796,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.30435322523117064,
+        "val_utility_loss": 0.3260050147771835,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.3004034787416458,
+        "val_utility_loss": 0.32428604513406756,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.2904835373163223,
+        "val_utility_loss": 0.3221516013145447,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.2954579293727875,
+        "val_utility_loss": 0.3218854501843452,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.29245286285877226,
+        "val_utility_loss": 0.3223992183804512,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "pair_margin"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/PartTime15+Posterior+Geometry-PairLogP.pth",
+    "test_used": false
+  },
+  "DirectTop1Ranker": {
+    "name": "DirectTop1Ranker",
+    "kind": "RawO0",
+    "epochs": 12,
+    "best_epoch": 12,
+    "best_val_utility_loss": 1.7068650007247925,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 2.660008931159973,
+        "val_utility_loss": 2.2290187537670136,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 2,
+        "train_loss": 2.1376742839813234,
+        "val_utility_loss": 1.9502672731876374,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.8763635993003844,
+        "val_utility_loss": 1.8181925475597382,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.7447024703025817,
+        "val_utility_loss": 1.7612089216709137,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.707877266407013,
+        "val_utility_loss": 1.7372086703777314,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.6941941857337952,
+        "val_utility_loss": 1.729513454437256,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.692497444152832,
+        "val_utility_loss": 1.7239510536193847,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.655149793624878,
+        "val_utility_loss": 1.7203329443931579,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.676695966720581,
+        "val_utility_loss": 1.715338146686554,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.6874502778053284,
+        "val_utility_loss": 1.7177602529525757,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.670766580104828,
+        "val_utility_loss": 1.7098625779151917,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.6647862195968628,
+        "val_utility_loss": 1.7068650007247925,
+        "sampled_contexts": 5008,
+        "optimizer_steps": 10,
+        "records": 313,
+        "objective": "direct_top1"
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/DirectTop1Ranker.pth",
+    "test_used": false
+  }
+}

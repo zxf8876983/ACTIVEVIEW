@@ -1,0 +1,119 @@
+{
+  "name": "RawO0-SmallEncoder",
+  "kind": "RawO0",
+  "epochs": 12,
+  "best_epoch": 12,
+  "best_val_utility_loss": 0.529095770418644,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6370566666126252,
+      "val_utility_loss": 0.5520340904593468,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6054113268852234,
+      "val_utility_loss": 0.5478919088840485,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6138280093669891,
+      "val_utility_loss": 0.5429113745689392,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5893545627593995,
+      "val_utility_loss": 0.5432223796844482,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.5797450184822083,
+      "val_utility_loss": 0.5404850214719772,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5814484715461731,
+      "val_utility_loss": 0.5374281734228135,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5663717806339263,
+      "val_utility_loss": 0.5327674254775048,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5780010461807251,
+      "val_utility_loss": 0.5341540694236755,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5671429514884949,
+      "val_utility_loss": 0.5335538953542709,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5581435263156891,
+      "val_utility_loss": 0.5296183943748474,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5633280575275421,
+      "val_utility_loss": 0.540212370455265,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5638242572546005,
+      "val_utility_loss": 0.529095770418644,
+      "sampled_contexts": 5008,
+      "optimizer_steps": 10,
+      "records": 313,
+      "objective": "pair_margin"
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/overnight_structured_o0_complementarity/RawO0-SmallEncoder.pth",
+  "test_used": false
+}

@@ -1,0 +1,95 @@
+{
+  "random_accuracy": 0.4297619047619048,
+  "oracle_accuracy": 0.7066468253968254,
+  "methods": {
+    "Random B2": {
+      "accuracy": 0.4297619047619048,
+      "recovery": 0.0
+    },
+    "StaticViewPairPrior": {
+      "accuracy": 0.508234126984127,
+      "recovery": 0.28341096381225345
+    },
+    "SoftBelief-ViewPairPrior": {
+      "accuracy": 0.5059523809523809,
+      "recovery": 0.2751701898960944
+    },
+    "CurrentBaseline": {
+      "accuracy": 0.5173611111111112,
+      "recovery": 0.31637405947689007
+    },
+    "PairMargin Oracle": {
+      "accuracy": 0.7066468253968254,
+      "recovery": 1.0
+    },
+    "PosteriorOnly+Geometry": {
+      "accuracy": 0.5100198412698412,
+      "recovery": 0.28986026513794316
+    },
+    "IntermediateGlobal+Geometry": {
+      "accuracy": 0.5119047619047619,
+      "recovery": 0.2966678609817267
+    },
+    "PartPool+Geometry": {
+      "accuracy": 0.5118055555555555,
+      "recovery": 0.2963095664636328
+    },
+    "PartPool+Posterior+Geometry": {
+      "accuracy": 0.5129960317460317,
+      "recovery": 0.3006091006807593
+    },
+    "Temporal3+Geometry": {
+      "accuracy": 0.5086309523809524,
+      "recovery": 0.2848441418846289
+    },
+    "Temporal3+Posterior+Geometry": {
+      "accuracy": 0.5132936507936507,
+      "recovery": 0.3016839842350409
+    },
+    "PartTime15+Geometry": {
+      "accuracy": 0.5143849206349206,
+      "recovery": 0.3056252239340735
+    },
+    "PartTime15+Posterior+Geometry": {
+      "accuracy": 0.5123015873015873,
+      "recovery": 0.2981010390541022
+    },
+    "MotionDescriptor+Posterior+Geometry": {
+      "accuracy": 0.5156746031746032,
+      "recovery": 0.31028305266929423
+    },
+    "RawO0-SmallEncoder": {
+      "accuracy": 0.5174603174603175,
+      "recovery": 0.31673235399498395
+    },
+    "PartTime-FiLM": {
+      "accuracy": 0.5119047619047619,
+      "recovery": 0.2966678609817267
+    },
+    "PartTime-Bilinear": {
+      "accuracy": 0.5151785714285714,
+      "recovery": 0.3084915800788245
+    },
+    "CandidatePartAttention": {
+      "accuracy": 0.5092261904761904,
+      "recovery": 0.28699390899319216
+    },
+    "CandidateTemporalAttention": {
+      "accuracy": 0.5122023809523809,
+      "recovery": 0.29774274453600835
+    },
+    "CurrentBaseline-PairLogP": {
+      "accuracy": 0.5132936507936507,
+      "recovery": 0.3016839842350409
+    },
+    "PartTime15+Posterior+Geometry-PairLogP": {
+      "accuracy": 0.5141865079365079,
+      "recovery": 0.3049086348978858
+    },
+    "DirectTop1Ranker": {
+      "accuracy": 0.5180555555555556,
+      "recovery": 0.3188821211035472
+    }
+  },
+  "test_used": false
+}

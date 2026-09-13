@@ -1227,3 +1227,25 @@ The O0 shuffle diagnostic shows 1.806pp normal-over-both-state dependence, but
 the remaining oracle gap indicates complementary utility is still hard to
 predict from O0 plus geometry. Report:
 `experiments/reduced12_eight_placement_v1/overnight_o0_conditioned_second_view/`.
+
+## Overnight structured O0 complementarity sweep — 2026-09-14
+
+Completed a CUDA Train/Moving-Val sweep over 46,324 Train and 10,080 Moving-Val
+contexts. The exact current/Stay + Stage-A legal candidate pool protocol gate
+reproduced Random B2 0.429762/0.424594, current baseline 0.517361/0.504616,
+and PairMargin Oracle 0.706647/0.701819 Accuracy/Macro-F1. Frozen ST-GCN
+intermediate activations were cached outside Git; no Policy Test or new
+perception artifact was used.
+
+The best structured branch, RawO0-SmallEncoder, reached 0.517460/0.503193,
+only +0.010pp Accuracy over the current branch. DirectTop1Ranker reached
+0.518056/0.508831 as a formulation diagnostic. Static and soft pair priors
+were 0.508234 and 0.505952. O0 shuffle dropped 1.052pp while geometry shuffle
+dropped 9.325pp, so candidate geometry remains the dominant signal. The
+conditional B3 gate was not met and B3 was skipped. The preregistered decision
+is **KILL STRUCTURED O0 REPRESENTATION** for this sweep.
+
+Report and script:
+`experiments/reduced12_eight_placement_v1/overnight_structured_o0_complementarity/`
+and
+`activeview/scripts/experiments/run_reduced12_structured_o0_complementarity.py`.
