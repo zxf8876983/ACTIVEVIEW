@@ -21,6 +21,10 @@ Stay=0.302579, legal micro=0.375418, Random=0.365079; the historical reproductio
 
 Candidate-only oracle (primary legal action scope): OldFair GT-TrueLogP=0.717659, GT-Margin=0.740476, AnyCorrect=0.740476; Yaw8Fair GT-TrueLogP=0.760714, GT-Margin=0.776190, AnyCorrect=0.776190.
 
+## Matched-old-head sanity check
+
+Compared with the historical Old shared head, the newly retrained OldFair head changes Stay accuracy by -1.200pp, legal-micro accuracy by -1.358pp, and Random accuracy by -1.131pp. The >1pp shift indicates head-retraining sensitivity; OldFair↔Yaw8Fair remains a controlled paired comparison, but promotion should be interpreted as a matched-protocol signal rather than an unconditional historical replication.
+
 ## Fair encoder and policy-head gains
 
 Yaw8Fair − OldFair: Stay +5.992pp, legal micro +6.741pp, Random +6.052pp, StaticPrior +7.589pp.
@@ -40,7 +44,7 @@ Old Yaw8 Val = 58.3163/54.5710; Yaw8 model = 72.5510/72.7956; MeanYawGain = +14.
 
 ## Decisions
 
-**Promotion: STRONG PROMOTE YAW8 ENCODER.** This decision uses only matched-head legal/Random gains, Macro-F1 behavior, and the largest key-class Random decline (7.506pp).
+**Promotion: STRONG PROMOTE YAW8 ENCODER.** This decision uses only matched-head legal/Random gains, Macro-F1 behavior, and the largest key-class Random decline (7.506pp). Because the matched Old head differs from the historical head by more than 1pp, this promotion is a controlled paired-encoder result and should not be read as an unconditional absolute claim.
 **NBV viability: SUBSTANTIAL NBV HEADROOM REMAINS.** Yaw8Fair StaticPrior to GT-TrueLogP gap=22.599pp; AnyCorrect to StaticPrior gap=24.276pp.
 
 A. Under fair Policy-balanced head adaptation, Yaw8 is compared to Old only through the frozen encoder representation; the head architecture, sampler, optimizer, seed and evaluation action set are identical.
