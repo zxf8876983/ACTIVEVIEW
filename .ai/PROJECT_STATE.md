@@ -1,6 +1,6 @@
 # ACTIVEVIEW Scientific State
 
-Updated: 2026-09-14
+Updated: 2026-09-15
 
 ## Research goal
 
@@ -531,3 +531,54 @@ measurable residual signal, but the best residual branch gains only +0.258pp
 Accuracy over the fixed prior and remains -0.149pp below the instance-only
 selector; this is insufficient evidence for a standalone prior+residual NBV
 route. Preserve the diagnostic and return focus to the established NBV route.
+
+## Yaw8Fair strict Frame0 NBV full re-baseline (2026-09-15)
+
+The Yaw8Fair recognizer is now the frozen Yaw8 ST-GCN encoder plus the matched
+Policy-balanced shared head. The strict Frame0 protocol was re-baselined on
+the identical candidate-only Stage-A legal action set: 46,324 Policy-Train
+contexts (313 records) for selector fitting and 10,080 Moving-Val contexts
+(105 records) for evaluation; mean/min/max legal candidate counts were
+6.8157/2/21. Current/Stay is reported only as a separate diagnostic and is
+not mixed into the main next-view action results. No Policy Test, new RGB,
+skeleton, DINO or recognizer modification was used.
+
+Moving-Val candidate-only results (Accuracy/Macro-F1): Random legal
+0.426786/0.450423; StaticViewPrior 0.549901/0.571990;
+Frame0SceneVisibility 0.583929/0.598955; GeometryOnly-Visibility
+0.540377/0.561212; RGBGlobal-Visibility 0.567361/0.582567;
+RGBSpatial-Visibility 0.555456/0.571285; GeometryOnly-TrueLogP
+0.531448/0.555499; RGBGlobal-TrueLogP 0.545933/0.565164;
+RGBGlobal-Margin 0.549504/0.568928; RGBGlobal-TrueLogP+VisibilityAux
+0.548512/0.566333; Prior+GeometryResidual 0.541270/0.564201;
+Prior+RGBResidual λ=.5 0.550794/0.573851; Prior+RGBResidual λ=1
+0.547520/0.569810; GT-TrueLogP Oracle 0.760714/0.775961; GT-Margin Oracle
+0.776190/0.796334. Stay is 0.350496/0.364253. Candidate-only AnyCorrect
+Coverage is 0.776190 and passes the registered oracle gate.
+
+The best strict Frame0 method is Frame0SceneVisibility (+3.403pp Accuracy
+over StaticViewPrior and +15.714pp over Random). The best learned
+utility/residual branch is Prior+RGBResidual λ=.5, only +0.089pp over
+StaticViewPrior. Thus the current evidence supports keeping an
+instance-conditioned Frame0 NBV baseline, but the measurable gain is mainly
+from the scene-visibility rule rather than learned utility ranking. For the
+best learned branch, candidate-level/within-context utility Spearman was
+0.137724/0.083313 (median 0.100000), oracle top-1 agreement 0.246627 and
+top-3 hit 0.573710.
+
+The learned branch matched StaticViewPrior on 89.514% of contexts; the
+remaining 1,057 switches (10.486%) improved switch-subset Accuracy from
+0.572375 to 0.580889 (+0.851pp), with 184 rescue and 175 harm cases. On the
+fixed bottom-tertile high-occlusion subset (3,271 contexts),
+Frame0SceneVisibility reached 0.520024/0.539481 versus StaticViewPrior
+0.481810/0.512912; the best learned branch reached 0.485173/0.516800.
+The historical U4 result (0.506151/0.503722 under the old recognizer) became
+0.548512/0.566333 after Yaw8Fair retraining. Direct transfer of old
+selectors scored 0.572222/0.587019 and 0.555060/0.576933, retained only as
+diagnostics.
+
+Decision: **KEEP INSTANCE-CONDITIONED FRAME0 NBV**; do not automatically
+start another method family. Complete artifacts are under
+`experiments/reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/`
+with runner
+`activeview/scripts/experiments/run_reduced12_yaw8_strict_frame0_rebaseline.py`.

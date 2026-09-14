@@ -1423,3 +1423,58 @@ GT-TrueLogP Oracle accuracy was 0.671354. Relative-body-yaw best–worst gap
 increased from 0.062544 to 0.099997, with large random-candidate drops for sit
 and bend, so the strict promotion gate was not met. Policy Test, new
 perception generation, and selector training were not used.
+
+## Yaw8Fair strict Frame0 NBV full re-baseline (2026-09-15)
+
+Completed the registered historical strict Frame0 suite with the frozen
+Yaw8 ST-GCN encoder and matched Policy-balanced shared head. The formal task
+was `Frame0 -> exactly one Stage-A legal candidate -> selected real O1 alone`
+with candidate-only actions; current/Stay was retained only as a diagnostic.
+Policy Train contained 46,324 contexts/313 records and Moving Val contained
+10,080 contexts/105 records. Mean/min/max legal candidate counts were
+6.8157/2/21. All selector branches used a deterministic 10% Policy-Train
+record holdout for checkpoint selection. Policy Test was locked and no new
+RGB, skeleton, DINO or recognizer artifact was generated.
+
+Yaw8Fair Moving-Val candidate-only results (Accuracy/Macro-F1) were: Stay
+0.350496/0.364253; Random legal 0.426786/0.450423; StaticViewPrior
+0.549901/0.571990; Frame0SceneVisibility 0.583929/0.598955;
+GeometryOnly-Visibility 0.540377/0.561212; RGBGlobal-Visibility
+0.567361/0.582567; RGBSpatial-Visibility 0.555456/0.571285;
+GeometryOnly-TrueLogP 0.531448/0.555499; RGBGlobal-TrueLogP
+0.545933/0.565164; RGBGlobal-Margin 0.549504/0.568928;
+RGBGlobal-TrueLogP+VisibilityAux 0.548512/0.566333;
+Prior+GeometryResidual 0.541270/0.564201; Prior+RGBResidual λ=.5
+0.550794/0.573851; Prior+RGBResidual λ=1 0.547520/0.569810;
+GT-TrueLogP Oracle 0.760714/0.775961; GT-Margin Oracle
+0.776190/0.796334. AnyCorrect Coverage was 0.776190, passing the expected
+candidate-only oracle gate. The historical stay-inclusive Random number is
+not mixed into this candidate-only table.
+
+Frame0SceneVisibility was the best strict method, gaining +3.403pp Accuracy
+over StaticViewPrior and +15.714pp over Random. The best learned branch,
+Prior+RGBResidual λ=.5, gained only +0.089pp over StaticViewPrior. Its
+candidate-level/within-context utility Spearman was 0.137724/0.083313
+(median 0.100000), oracle top-1 agreement 0.246627 and top-3 hit 0.573710.
+It matched StaticViewPrior on 89.514% of contexts; 1,057 switches (10.486%)
+improved switch-subset Accuracy 0.572375→0.580889 (+0.851pp), with 184
+static-wrong/learned-correct and 175 static-correct/learned-wrong cases.
+
+On the fixed bottom-tertile high-occlusion subset (3,271 contexts),
+Frame0SceneVisibility scored 0.520024/0.539481 versus StaticViewPrior
+0.481810/0.512912; the best learned branch on this subset scored
+0.485173/0.516800. RGB shuffle Accuracy drops were U2 1.548pp, U3 1.438pp,
+U4 1.667pp and best residual λ=.5 0.694pp; best residual geometry shuffle
+drop was 0.724pp. The historical U4 old-recognizer reference
+0.506151/0.503722 became 0.548512/0.566333 after Yaw8Fair retraining.
+Old-selector transfer diagnostics were 0.572222/0.587019 and
+0.555060/0.576933.
+
+Decision: **KEEP INSTANCE-CONDITIONED FRAME0 NBV** because the strict
+Frame0SceneVisibility gain exceeds the registered +1.5pp threshold and does
+not reduce Macro-F1. This is not a STRONG KEEP: high-occlusion gain of the
+best learned branch was only +0.336pp. Learned utility ranking remains weak,
+so no follow-up method was started automatically. Source/report:
+`activeview/scripts/experiments/run_reduced12_yaw8_strict_frame0_rebaseline.py`,
+`activeview/scripts/experiments/yaw8_strict_frame0_rebaseline_report.py` and
+`experiments/reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/`.
