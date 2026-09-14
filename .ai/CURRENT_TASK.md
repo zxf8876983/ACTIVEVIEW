@@ -28,4 +28,4 @@ Report and implementation:
 and
 `activeview/scripts/experiments/run_reduced12_budgeted_complementary_viewset_sweep.py`.
 
-Task status: **CLEAN pending commit/push**.
+Task status: **CLEAN**.
