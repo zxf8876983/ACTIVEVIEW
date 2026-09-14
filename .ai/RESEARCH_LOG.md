@@ -1409,3 +1409,17 @@ reduced12 Yaw8 baseline; do not rebuild Policy automatically. Report/script:
 `experiments/reduced12_eight_placement_v1/yaw8_stgcn_rebuild/` and
 `activeview/scripts/data/generate_reduced12_yaw8_stgcn_dataset.py`,
 `activeview/scripts/experiments/run_reduced12_yaw8_stgcn_rebuild.py`.
+
+## Yaw8 recognizer × policy-landscape audit (2026-09-15)
+
+The audit used the frozen old policy shared-head cache and frozen native Yaw8
+checkpoint on identical current/Stay + Stage-A legal candidate sets (46,324
+Train and 10,080 Moving Val contexts). Old reproduction passed (Stay 0.302579,
+GT-TrueLogP Oracle 0.753175, AnyCorrect 0.791964). Yaw8 changed Moving-Val
+Stay to 0.316865, legal-candidate micro accuracy to 0.399042, and own
+StaticPrior to 0.530556; GT-TrueLogP Oracle was 0.773611 and AnyCorrect was
+0.777976. Random→Oracle headroom remained 0.390179 and high-occlusion
+GT-TrueLogP Oracle accuracy was 0.671354. Relative-body-yaw best–worst gap
+increased from 0.062544 to 0.099997, with large random-candidate drops for sit
+and bend, so the strict promotion gate was not met. Policy Test, new
+perception generation, and selector training were not used.
