@@ -344,7 +344,9 @@ def _high_occlusion(
 ) -> dict[str, Any]:
     stay_visibility = visibility[:, 0]
     threshold = float(np.quantile(stay_visibility, 1.0 / 3.0))
-    selected = stay_visibility <= threshold
+    # Match the accepted high-occlusion protocol exactly: strict lower
+    # tertile, not ``<=`` (the visibility cache has ties at the quantile).
+    selected = stay_visibility < threshold
     output: dict[str, Any] = {
         "definition": "bottom tertile of frame-0 current-slot 17-joint scene visibility",
         "count": int(selected.sum()),
