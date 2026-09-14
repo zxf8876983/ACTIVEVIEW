@@ -1,0 +1,13 @@
+{
+  "status": "PASS_DEPTH_SENSOR_RESOLUTION_ONLY",
+  "train_samples_requested": 50,
+  "val_samples_requested": 50,
+  "train_samples_rendered": 50,
+  "val_samples_rendered": 50,
+  "rgb_depth_resolution_match": true,
+  "torso_depth_finite": true,
+  "yolo_joints_inside_body_depth_region": null,
+  "reason": "50+50 matched Habitat depth probes succeeded; keypoint alignment remains unverified because raw YOLO cache is absent.",
+  "depth_sensor_audit_status": "NOT_RUN; current depth/YOLO generation is a separate authorized data-generation step",
+  "test_used": false
+}

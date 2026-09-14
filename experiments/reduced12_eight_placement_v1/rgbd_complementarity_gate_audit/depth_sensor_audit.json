@@ -1,0 +1,70 @@
+{
+  "current_frame0_depth_present": false,
+  "depth_files_found": [],
+  "depth_file_count": 0,
+  "raw_frame0_yolo_present": false,
+  "yolo_or_keypoint_files_found": [],
+  "yolo_file_count": 0,
+  "current_rgb_rows_expected": 56404,
+  "current_rgb_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/rgb_reduced12_eight_placement_v1/frame0_current",
+  "current_rgb_sample_schema": {
+    "rgb_observation_version": [],
+    "rgb": [
+      32,
+      256,
+      256,
+      3
+    ],
+    "available_view_mask": [
+      32
+    ],
+    "viewpoint_ids": [
+      32
+    ],
+    "scene_id": [],
+    "region": [],
+    "record_id": [],
+    "frame_index": [],
+    "image_size": [],
+    "current_viewpoint_id": [],
+    "viewpoint_agent_positions": [
+      32,
+      3
+    ],
+    "viewpoint_rotations_wxyz": [
+      32,
+      4
+    ],
+    "yaw_deg": []
+  },
+  "intrinsics_or_extrinsics_metadata_present": true,
+  "intrinsics_definition": "HFOV=75deg, 256x256; K can be derived, but no explicit depth calibration archive exists",
+  "sensor_rendering_capability": "Habitat SensorType.DEPTH import probe is available in the habitat environment; no current-depth cache is present",
+  "acquisition_status": "NOT_RUN; current depth/YOLO generation is a separate authorized data-generation step",
+  "test_used": false,
+  "probe": {
+    "status": "PASS",
+    "splits": {
+      "train": {
+        "requested": 50,
+        "rgb_resolution_ok": 50,
+        "depth_resolution_and_valid_ok": 50,
+        "center_depth_finite": 50,
+        "median_valid_depth_m": 1.879037857055664,
+        "depth_units": "meters (Habitat metric depth)"
+      },
+      "val": {
+        "requested": 50,
+        "rgb_resolution_ok": 50,
+        "depth_resolution_and_valid_ok": 50,
+        "center_depth_finite": 50,
+        "median_valid_depth_m": 1.4176615476608276,
+        "depth_units": "meters (Habitat metric depth)"
+      }
+    },
+    "raw_depth_written": false,
+    "debug_overlays_written": false,
+    "note": "Probe confirms Habitat depth sensor and RGB/depth resolution; no YOLO keypoints were available for torso alignment.",
+    "test_used": false
+  }
+}

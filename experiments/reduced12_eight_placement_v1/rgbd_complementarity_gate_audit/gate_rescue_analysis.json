@@ -1,0 +1,5 @@
+{
+  "status": "SKIPPED",
+  "reason": "Current-frame depth cache and raw frame-0 YOLO cache are absent; deployable RGB-D gate cannot be trained or evaluated.",
+  "pair_gate_status": "GATING AUDIT ALLOWED"
+}

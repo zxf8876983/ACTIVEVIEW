@@ -1499,3 +1499,26 @@ confidence scalar and no metric global estimated human state. Decision:
 STOP GEOMETRIC SCORE EXPANSION; investigate current human-state estimation or
 future recognizer-evidence prediction instead. Policy Test, new RGB/skeleton/
 DINO, and recognizer modification were not used.
+
+## Selector complementarity + RGB-D deployable NBV audit (2026-09-15)
+
+Completed the strict Frame-0 candidate-only selector complementarity audit on
+10,080 Moving-Val contexts using frozen Yaw8 ST-GCN plus the matched
+Policy-balanced shared head. The policy actions were A=Frame0SceneVisibility,
+B=OldTargetSelector→Yaw8Fair, C=RGBGlobal-Visibility, D=StaticViewPrior and
+E=G_full λ=.5. Pair AnyCorrect rates for A+B/A+C/A+D/A+E were
+0.620933/0.633631/0.640377/0.662004; the A+E policy-pair GT-TrueLogP oracle
+was 0.657639 Accuracy / 0.674987 Macro-F1. Triple A+C+D reached 0.668452
+AnyCorrect. The preregistered pair gate therefore cleared 0.61, and a
+Policy-Train record holdout selected E as the alternative, but no gate was
+trained because the required current RGB-D state was absent.
+
+A matched Habitat SensorType.DEPTH capability probe rendered transient
+current-frame RGB/depth pairs for 50 Train and 50 Moving-Val contexts each;
+all requested views had 256×256 RGB/depth resolution and finite metric depth.
+No raw depth cache or frame-0 YOLO/keypoint cache exists, so root localization,
+estimated-pose visibility, uncertainty weighting and deployable gates are
+honestly marked N/A. No candidate/future observations or Policy Test were
+read. Report/script:
+`experiments/reduced12_eight_placement_v1/rgbd_complementarity_gate_audit/`
+and `activeview/scripts/experiments/run_reduced12_rgbd_complementarity_gate_audit.py`.

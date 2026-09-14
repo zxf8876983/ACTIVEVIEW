@@ -1,0 +1,44 @@
+{
+  "A+B": {
+    "contexts": 3390,
+    "top1_agreement": 0.8634920634920635,
+    "both_correct": 5395,
+    "both_wrong": 3821
+  },
+  "A+C": {
+    "contexts": 4384,
+    "top1_agreement": 0.8202380952380952,
+    "both_correct": 5218,
+    "both_wrong": 3693
+  },
+  "A+D": {
+    "contexts": 5157,
+    "top1_agreement": 0.7788690476190476,
+    "both_correct": 4974,
+    "both_wrong": 3625
+  },
+  "A+E": {
+    "contexts": 6465,
+    "top1_agreement": 0.7587301587301587,
+    "both_correct": 5095,
+    "both_wrong": 3407
+  },
+  "B+C": {
+    "contexts": 3535,
+    "top1_agreement": 0.8456349206349206,
+    "both_correct": 5265,
+    "both_wrong": 3858
+  },
+  "B+D": {
+    "contexts": 4778,
+    "top1_agreement": 0.7966269841269841,
+    "both_correct": 4959,
+    "both_wrong": 3728
+  },
+  "C+D": {
+    "contexts": 5758,
+    "top1_agreement": 0.7455357142857143,
+    "both_correct": 4778,
+    "both_wrong": 3596
+  }
+}

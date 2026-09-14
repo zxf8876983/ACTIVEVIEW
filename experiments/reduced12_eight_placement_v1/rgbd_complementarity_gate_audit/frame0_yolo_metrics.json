@@ -1,0 +1,7 @@
+{
+  "status": "NOT_AVAILABLE",
+  "raw_outputs_found": false,
+  "success_rate": null,
+  "reason": "No serialized current-frame YOLO outputs were present; exact raw-pose acquisition was not run in this audit.",
+  "test_used": false
+}

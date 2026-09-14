@@ -1,0 +1,18 @@
+{
+  "status": "SKIPPED",
+  "reason": "Current-frame depth cache and raw frame-0 YOLO cache are absent; deployable RGB-D gate cannot be trained or evaluated.",
+  "pair_gate_status": "GATING AUDIT ALLOWED",
+  "train_internal_holdout": {
+    "selection_source": "Policy Train record holdout only",
+    "holdout_records": 31,
+    "holdout_contexts": 4588,
+    "pair_any_correct_rates": {
+      "B": 0.5224498692240628,
+      "C": 0.5368352223190933,
+      "D": 0.5361813426329556,
+      "E": 0.5520924149956408
+    },
+    "selected_alternative": "E",
+    "test_used": false
+  }
+}

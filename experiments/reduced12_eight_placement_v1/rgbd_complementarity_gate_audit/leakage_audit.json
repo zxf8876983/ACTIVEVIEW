@@ -1,0 +1,20 @@
+{
+  "policy_test_read": false,
+  "candidate_rgb_read_before_selection": false,
+  "candidate_depth_read_before_selection": false,
+  "candidate_yolo_read_before_selection": false,
+  "candidate_skeleton_read_before_selection": false,
+  "candidate_logits_used_before_selection": false,
+  "candidate_logits_loaded_for_terminal_evaluation": true,
+  "future_current_frames_used": false,
+  "gt_action_used_at_inference": false,
+  "moving_val_used_for_training": false,
+  "moving_val_used_for_threshold_selection": false,
+  "current_depth_used": false,
+  "current_map_used": true,
+  "gt_frame0_human_state_used_for_A": true,
+  "estimated_root_used_for_D2": false,
+  "future_candidate_skeleton_used_for_terminal_evaluation_only": true,
+  "future_candidate_rgb_or_depth_used": false,
+  "deployable_D2_available": false
+}

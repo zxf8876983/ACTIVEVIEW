@@ -1,0 +1,5 @@
+{
+  "status": "N/A",
+  "reason": "No current depth and no raw frame0 YOLO keypoints; no estimated metric root fabricated.",
+  "test_used": false
+}

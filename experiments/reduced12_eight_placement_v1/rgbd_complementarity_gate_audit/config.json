@@ -1,0 +1,7 @@
+{
+  "seed": 42,
+  "recognizer": "frozen Yaw8 ST-GCN + matched Policy-balanced shared head",
+  "formal_action_set": "Stage-A candidate-only",
+  "test_used": false,
+  "depth_generation": "not run; no current depth cache"
+}
