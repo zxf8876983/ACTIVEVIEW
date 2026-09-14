@@ -1,0 +1,142 @@
+{
+  "branch": "H_old_shared_new",
+  "seed": 42,
+  "head": "Linear(256,256)->GELU->Linear(256,12)",
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "max_epochs": 15,
+  "best_epoch": 6,
+  "best_internal_policy_train_legal_ce": 2.07682728767395,
+  "train_records": 282,
+  "internal_val_records": 31,
+  "observations_per_record": 16,
+  "observations_per_epoch": 4512,
+  "sample_index_list_shared_with_other_head": true,
+  "checkpoint_selection": "minimum legal-candidate CE on deterministic 10% Policy-Train record holdout",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.3043855667114257,
+      "internal_policy_train_legal_ce": 2.396249532699585,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.0709132671356203,
+      "internal_policy_train_legal_ce": 2.2105109691619873,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.9618562936782837,
+      "internal_policy_train_legal_ce": 2.30354905128479,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.9372073411941528,
+      "internal_policy_train_legal_ce": 2.1238162517547607,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.9540813207626342,
+      "internal_policy_train_legal_ce": 2.3111932277679443,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.9225380897521973,
+      "internal_policy_train_legal_ce": 2.07682728767395,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.9102573156356812,
+      "internal_policy_train_legal_ce": 2.230229377746582,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.8874391078948975,
+      "internal_policy_train_legal_ce": 2.1443967819213867,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.8815844774246215,
+      "internal_policy_train_legal_ce": 2.1699793338775635,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.8989029407501221,
+      "internal_policy_train_legal_ce": 2.170489549636841,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.8898706674575805,
+      "internal_policy_train_legal_ce": 2.1152901649475098,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.8760242700576781,
+      "internal_policy_train_legal_ce": 2.1867516040802,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 13,
+      "train_loss": 1.8888182163238525,
+      "internal_policy_train_legal_ce": 2.0891659259796143,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 14,
+      "train_loss": 1.8734596729278565,
+      "internal_policy_train_legal_ce": 2.2045161724090576,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    },
+    {
+      "epoch": 15,
+      "train_loss": 1.859651517868042,
+      "internal_policy_train_legal_ce": 2.1283457279205322,
+      "train_records": 282,
+      "internal_val_records": 31,
+      "observations": 4512
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_shared_head_fairness_audit/old_shared_head_best.pth",
+  "test_used": false,
+  "moving_val_used_for_training_or_selection": false,
+  "sample_index_digest": "8bbf0b2652d70c5af8ae118a5338630c8e580a0520a98e10c82eff83cbefcaef"
+}

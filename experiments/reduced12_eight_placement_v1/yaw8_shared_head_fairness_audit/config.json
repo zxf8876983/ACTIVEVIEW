@@ -1,0 +1,10 @@
+{
+  "seed": 42,
+  "head": "Linear(256,256)->GELU->Linear(256,12)",
+  "head_epochs": 15,
+  "head_lr": 0.001,
+  "weight_decay": 0.0001,
+  "observations_per_record": 16,
+  "train_internal_holdout_fraction": 0.1,
+  "policy_test_used": false
+}

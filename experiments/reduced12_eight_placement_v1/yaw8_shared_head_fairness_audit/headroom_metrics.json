@@ -1,0 +1,18 @@
+{
+  "oldfair": {
+    "random_to_gt_true_logp": 0.3828373015873016,
+    "static_to_gt_true_logp": 0.26388888888888895,
+    "random_to_gt_margin": 0.40763888888888883,
+    "static_to_gt_margin": 0.28869047619047616,
+    "anycorrect_minus_random": 0.40763888888888883,
+    "anycorrect_minus_static": 0.28869047619047616
+  },
+  "yaw8fair": {
+    "random_to_gt_true_logp": 0.3603174603174603,
+    "static_to_gt_true_logp": 0.22599206349206347,
+    "random_to_gt_margin": 0.37708333333333327,
+    "static_to_gt_margin": 0.24275793650793642,
+    "anycorrect_minus_random": 0.37708333333333327,
+    "anycorrect_minus_static": 0.24275793650793642
+  }
+}

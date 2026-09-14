@@ -1,0 +1,424 @@
+{
+  "policy_action_set": "current/Stay + Stage-A legal candidate_pool",
+  "train_sampler": "313 records, 16 observations per record, same sampled (row,slot) list for both heads",
+  "sample_index_digest": "8bbf0b2652d70c5af8ae118a5338630c8e580a0520a98e10c82eff83cbefcaef",
+  "train_internal_holdout": "deterministic 10% of Policy-Train records",
+  "old_source_cache": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_dual_route_overnight/train_options.npz",
+  "yaw8_source_cache": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_yaw8_policy_landscape/train.npz",
+  "cache_metadata": {
+    "old_train": {
+      "encoder": "old",
+      "split": "train",
+      "rows": 46324,
+      "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+      "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_dual_route_overnight/train_options.npz",
+      "source_sha256": "0d5116835fe91ecfc7462b3f25988ec1e9f968740cbf3f9847a057a0b8721439",
+      "feature_dim": 256,
+      "fields": [
+        "record_id",
+        "context_id",
+        "viewpoint_id",
+        "label",
+        "split",
+        "feature"
+      ],
+      "test_used": false
+    },
+    "old_moving_val": {
+      "encoder": "old",
+      "split": "moving_val",
+      "rows": 10080,
+      "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+      "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_dual_route_overnight/val_options.npz",
+      "source_sha256": "a967830010a43e9536ebc099df87e3869e2784514cc388a2bc3fa2a566892cc5",
+      "feature_dim": 256,
+      "fields": [
+        "record_id",
+        "context_id",
+        "viewpoint_id",
+        "label",
+        "split",
+        "feature"
+      ],
+      "test_used": false
+    },
+    "yaw8_train": {
+      "encoder": "yaw8",
+      "split": "train",
+      "rows": 46324,
+      "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+      "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_yaw8_policy_landscape/train.npz",
+      "source_sha256": "de62a5695dd0ba87e566209e82e7c7327d3352254ba0dbdfeb54eb7bffcf6802",
+      "feature_dim": 256,
+      "fields": [
+        "record_id",
+        "context_id",
+        "viewpoint_id",
+        "label",
+        "split",
+        "feature"
+      ],
+      "test_used": false
+    },
+    "yaw8_moving_val": {
+      "encoder": "yaw8",
+      "split": "moving_val",
+      "rows": 10080,
+      "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+      "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_yaw8_policy_landscape/moving_val.npz",
+      "source_sha256": "10bed5ca36bd0fa1ec1be9811d2f5de5c355f8d2a9cadd7b3248e89670f32b1b",
+      "feature_dim": 256,
+      "fields": [
+        "record_id",
+        "context_id",
+        "viewpoint_id",
+        "label",
+        "split",
+        "feature"
+      ],
+      "test_used": false
+    }
+  },
+  "scene_metadata_audit": {
+    "convention_confirmed": true,
+    "world_azimuth_reference": "+Z is 0 degrees; atan2(+X,+Z), increasing toward +X",
+    "body_yaw_application": "compose_root_rotation prepends positive Y yaw; local +Z maps to world azimuth +yaw",
+    "body_relative_formula": "wrap(world_candidate_azimuth_deg - placement_yaw_deg) in [-180,180)",
+    "viewpoint_id_formula": "radius_index=viewpoint_id//8, azimuth_index=viewpoint_id%8",
+    "max_position_azimuth_error_deg": 1.9318688401881445e-05,
+    "max_forward_sign_error_deg": 0.0,
+    "sample_count": 30,
+    "samples": [
+      {
+        "episode_id": "reduced12kc_official_val_07214_030_44f051a59b__00016-qk9eeNeR4vw__p01__v10",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p01",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 0.0,
+        "body_relative_azimuth_deg": 0.0,
+        "body_relative_bin": 0,
+        "generator_forward_azimuth_deg": 0.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_07214_030_44f051a59b__00016-qk9eeNeR4vw__p01__v10",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p01",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 0.0,
+        "body_relative_azimuth_deg": 45.0,
+        "body_relative_bin": 1,
+        "generator_forward_azimuth_deg": 0.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_07214_030_44f051a59b__00016-qk9eeNeR4vw__p01__v10",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p01",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 0.0,
+        "body_relative_azimuth_deg": 90.0,
+        "body_relative_bin": 2,
+        "generator_forward_azimuth_deg": 0.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_06592_000_9b9c7ed07d__00081-5biL7VEkByM__p07__v30",
+        "scene_id": "00081-5biL7VEkByM",
+        "placement_id": "p07",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_06592_000_9b9c7ed07d__00081-5biL7VEkByM__p07__v30",
+        "scene_id": "00081-5biL7VEkByM",
+        "placement_id": "p07",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_06592_000_9b9c7ed07d__00081-5biL7VEkByM__p07__v30",
+        "scene_id": "00081-5biL7VEkByM",
+        "placement_id": "p07",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": 0.0,
+        "body_relative_bin": 0,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01928_013_9c2aafd5a8__00016-qk9eeNeR4vw__p02__v10",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p02",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01928_013_9c2aafd5a8__00016-qk9eeNeR4vw__p02__v10",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p02",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01928_013_9c2aafd5a8__00016-qk9eeNeR4vw__p02__v10",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p02",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12710_004_22269132d2__00059-kJxT5qssH4H__p06__v13",
+        "scene_id": "00059-kJxT5qssH4H",
+        "placement_id": "p06",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 45.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 45.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12710_004_22269132d2__00059-kJxT5qssH4H__p06__v13",
+        "scene_id": "00059-kJxT5qssH4H",
+        "placement_id": "p06",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 45.0,
+        "body_relative_azimuth_deg": 0.0,
+        "body_relative_bin": 0,
+        "generator_forward_azimuth_deg": 45.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_12710_004_22269132d2__00059-kJxT5qssH4H__p06__v13",
+        "scene_id": "00059-kJxT5qssH4H",
+        "placement_id": "p06",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 45.0,
+        "body_relative_azimuth_deg": 45.0,
+        "body_relative_bin": 1,
+        "generator_forward_azimuth_deg": 45.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01883_000_380d8145c1__00034-6imZUJGRUq4__p05__v06",
+        "scene_id": "00034-6imZUJGRUq4",
+        "placement_id": "p05",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": 135.0,
+        "body_relative_bin": 3,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01883_000_380d8145c1__00034-6imZUJGRUq4__p05__v06",
+        "scene_id": "00034-6imZUJGRUq4",
+        "placement_id": "p05",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_01883_000_380d8145c1__00034-6imZUJGRUq4__p05__v06",
+        "scene_id": "00034-6imZUJGRUq4",
+        "placement_id": "p05",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_00735_000_1dbeed8b28__00034-6imZUJGRUq4__p04__v11",
+        "scene_id": "00034-6imZUJGRUq4",
+        "placement_id": "p04",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": 135.0,
+        "body_relative_bin": 3,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_00735_000_1dbeed8b28__00034-6imZUJGRUq4__p04__v11",
+        "scene_id": "00034-6imZUJGRUq4",
+        "placement_id": "p04",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_00735_000_1dbeed8b28__00034-6imZUJGRUq4__p04__v11",
+        "scene_id": "00034-6imZUJGRUq4",
+        "placement_id": "p04",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_09486_002_6ba5ba692d__00062-ACZZiU6BXLz__p06__v18",
+        "scene_id": "00062-ACZZiU6BXLz",
+        "placement_id": "p06",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_09486_002_6ba5ba692d__00062-ACZZiU6BXLz__p06__v18",
+        "scene_id": "00062-ACZZiU6BXLz",
+        "placement_id": "p06",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_09486_002_6ba5ba692d__00062-ACZZiU6BXLz__p06__v18",
+        "scene_id": "00062-ACZZiU6BXLz",
+        "placement_id": "p06",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 135.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 135.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_13053_000_c0cd7e562e__00016-qk9eeNeR4vw__p02__v01",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p02",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_13053_000_c0cd7e562e__00016-qk9eeNeR4vw__p02__v01",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p02",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_13053_000_c0cd7e562e__00016-qk9eeNeR4vw__p02__v01",
+        "scene_id": "00016-qk9eeNeR4vw",
+        "placement_id": "p02",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 180.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 180.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_05480_007_a39876c51d__00022-gmuS7Wgsbrx__p00__v22",
+        "scene_id": "00022-gmuS7Wgsbrx",
+        "placement_id": "p00",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": -90.0,
+        "body_relative_bin": 6,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_05480_007_a39876c51d__00022-gmuS7Wgsbrx__p00__v22",
+        "scene_id": "00022-gmuS7Wgsbrx",
+        "placement_id": "p00",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": -45.0,
+        "body_relative_bin": 7,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_05480_007_a39876c51d__00022-gmuS7Wgsbrx__p00__v22",
+        "scene_id": "00022-gmuS7Wgsbrx",
+        "placement_id": "p00",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 90.0,
+        "body_relative_azimuth_deg": 0.0,
+        "body_relative_bin": 0,
+        "generator_forward_azimuth_deg": 90.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_08982_000_b36fd70a37__00020-XYyR54sxe6b__p03__v01",
+        "scene_id": "00020-XYyR54sxe6b",
+        "placement_id": "p03",
+        "viewpoint_id": 0,
+        "world_azimuth_deg": 0.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": 135.0,
+        "body_relative_bin": 3,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_08982_000_b36fd70a37__00020-XYyR54sxe6b__p03__v01",
+        "scene_id": "00020-XYyR54sxe6b",
+        "placement_id": "p03",
+        "viewpoint_id": 1,
+        "world_azimuth_deg": 45.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -180.0,
+        "body_relative_bin": 4,
+        "generator_forward_azimuth_deg": 225.0
+      },
+      {
+        "episode_id": "reduced12kc_official_val_08982_000_b36fd70a37__00020-XYyR54sxe6b__p03__v01",
+        "scene_id": "00020-XYyR54sxe6b",
+        "placement_id": "p03",
+        "viewpoint_id": 2,
+        "world_azimuth_deg": 90.0,
+        "human_yaw_deg": 225.0,
+        "body_relative_azimuth_deg": -135.0,
+        "body_relative_bin": 5,
+        "generator_forward_azimuth_deg": 225.0
+      }
+    ]
+  }
+}

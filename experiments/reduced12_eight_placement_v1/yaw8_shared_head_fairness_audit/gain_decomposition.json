@@ -1,0 +1,24 @@
+{
+  "stay_accuracy_pp": 5.992063492063488,
+  "legal_accuracy_pp": 6.740706238537452,
+  "random_accuracy_pp": 6.051587301587302,
+  "static_accuracy_pp": 7.589285714285721,
+  "yaw8_policy_head_gain_legal_pp": 3.020290530115571,
+  "yaw8_policy_head_gain_random_pp": 3.0853174603174605,
+  "high_occlusion_random_gain_pp": 4.035463161112807,
+  "max_key_class_random_decline_pp": 7.50636132315522,
+  "class_random_changes_pp": {
+    "walk": 5.3221288515406195,
+    "sit": -7.50636132315522,
+    "stand up": 0.3307607497243681,
+    "bend": 8.399209486166004,
+    "crawl": 1.5695067264574036,
+    "stumble": 5.064782096584216,
+    "clap": 7.407407407407404,
+    "throw": 2.8895768833849313,
+    "kick": 16.753472222222225,
+    "knock": 18.961625282167045,
+    "punch": 6.701570680628271,
+    "touching face": 6.8725099601593636
+  }
+}

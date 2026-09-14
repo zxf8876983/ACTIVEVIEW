@@ -1,0 +1,12 @@
+{
+  "policy_test_read": false,
+  "moving_val_used_for_head_training": false,
+  "moving_val_used_for_checkpoint_selection": false,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "yolo_rerun": false,
+  "videopose3d_rerun": false,
+  "old_encoder_modified": false,
+  "yaw8_encoder_modified": false,
+  "nbv_selector_trained": false
+}
