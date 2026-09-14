@@ -1269,3 +1269,34 @@ only 1.190 pp over B3, so B=3 is the practical stopping budget. Pair-margin
 correlations with angular/radius distance are near zero, while matrix
 symmetry is moderate (Spearman 0.816), so complementarity is not merely a
 distance heuristic.
+
+## Pair complementarity generalization audit — 2026-09-14
+
+Completed a CUDA Train/Moving-Val-only audit to separate PairMeanGreedy's
+single-view quality contribution from pair interaction and absolute viewpoint
+ID effects. The action set stayed exactly `current/Stay + Stage-A legal
+candidate_pool` over 46,324 Train and 10,080 Moving-Val contexts; Policy Test,
+new perception artifacts, and recognizer training were not used.
+
+The reproduction gate passed exactly: Random B2/B3 = 0.429762/0.424594 and
+0.487401/0.477211; PairMeanGreedy B2/B3 = 0.508234/0.497486 and
+0.557639/0.546970 (Accuracy/Macro-F1). AdditiveQuality was
+0.511310/0.500984 (B2) and 0.555456/0.545044 (B3), making PairMean minus
+AdditiveQuality -0.308/+0.218 pp. ResidualPairGreedy scored
+0.373413/0.363775 and 0.418452/0.403702, with B3 6.895 pp below Random;
+therefore no useful residual pair interaction was demonstrated.
+
+Pair matrix vs Q(i)+Q(j) Spearman/Pearson = 0.773338/0.771953 and residual
+mean/std = 0.394839/0.200308. Cyclic +45/+90/+135/+180 degree prior shifts
+gave B2 0.487599/0.485119/0.485714/0.480754 and B3
+0.541270/0.544643/0.544841/0.544742; maximum drops were 2.748 pp (B2) and
+1.637 pp (B3), below the strong absolute-ID dependence criterion.
+
+Original vs Shared Train pair matrices correlate at Spearman/Pearson
+0.935007/0.928057 (top-10 overlap 0.40). Cross-recognizer evaluation was
+Original prior → Shared = 0.509921/0.498460 (B2), 0.556845/0.549621 (B3),
+and Shared prior → Original = 0.425000/0.402581 (B2), 0.461310/0.438192
+(B3). Decision: PairMean B=3 remains a useful empirical baseline (+7.024 pp
+over Random B3), but the gain is mostly single-view quality/dataset prior;
+stable residual complementarity is not established and no strong absolute-ID
+shortcut is detected.

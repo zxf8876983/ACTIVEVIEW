@@ -1,0 +1,41 @@
+{
+  "expected": {
+    "Random B2": [
+      0.429762,
+      0.424594
+    ],
+    "Random B3": [
+      0.487401,
+      0.477211
+    ],
+    "PairMeanGreedy B2": [
+      0.508234,
+      0.497486
+    ],
+    "PairMeanGreedy B3": [
+      0.557639,
+      0.54697
+    ]
+  },
+  "observed": {
+    "Random B2": {
+      "accuracy": 0.4297619047619048,
+      "macro_f1": 0.4245940629388021
+    },
+    "Random B3": {
+      "accuracy": 0.48740079365079364,
+      "macro_f1": 0.4772105876028357
+    },
+    "PairMeanGreedy B2": {
+      "accuracy": 0.508234126984127,
+      "macro_f1": 0.4974860356444666
+    },
+    "PairMeanGreedy B3": {
+      "accuracy": 0.5576388888888889,
+      "macro_f1": 0.5469702173257046
+    }
+  },
+  "tolerance_pp": 1.0,
+  "gate_pass": true,
+  "test_used": false
+}

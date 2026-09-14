@@ -1,0 +1,25 @@
+{
+  "valid_pairs": 992,
+  "pair_vs_additive_spearman": 0.773338297282501,
+  "pair_vs_additive_pearson": 0.7719527160446563,
+  "residual_mean": 0.3948386793103524,
+  "residual_std": 0.20030795532737555,
+  "residual_min": -0.20313787087798119,
+  "residual_max": 0.964076317846775,
+  "pair_matrix_spearman_original_vs_shared": 0.9350066075627929,
+  "pair_matrix_pearson_original_vs_shared": 0.9280574191139508,
+  "valid_common_pairs": 992,
+  "top_pair_overlap": {
+    "10": {
+      "k": 10,
+      "overlap_count": 4,
+      "overlap_fraction": 0.4
+    },
+    "50": {
+      "k": 50,
+      "overlap_count": 34,
+      "overlap_fraction": 0.68
+    }
+  },
+  "test_used": false
+}

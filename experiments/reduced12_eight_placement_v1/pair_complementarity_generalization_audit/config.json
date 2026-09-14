@@ -1,0 +1,33 @@
+{
+  "experiment": "Pair Complementarity Generalization Audit",
+  "train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "num_classes": 12,
+  "num_viewpoints": 32,
+  "fusion": "normalized MeanLogP",
+  "single_view_quality": "Train mean single-view GT margin over current and legal candidate observations",
+  "pair_prior": "Train mean pair GT margin with alpha=10 smoothing",
+  "residual": "M_pair - Q(i) - Q(j)",
+  "rotation_shifts_deg": [
+    45,
+    90,
+    135,
+    180
+  ],
+  "cross_recognizers": [
+    "original",
+    "shared"
+  ],
+  "candidate_action_set": "current/Stay + Stage-A legal candidate_pool",
+  "policy_test_used": false,
+  "training_used": false,
+  "train_priors_used": true,
+  "train_prior_smoothing_alpha": 10.0,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "frozen_stgcn_modified": false,
+  "gt_label_used_for_oracle_only": true,
+  "deployable": false,
+  "seed": 42,
+  "device": "cuda:0"
+}
