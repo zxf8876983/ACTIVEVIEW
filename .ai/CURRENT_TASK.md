@@ -1,28 +1,28 @@
-# Policy–Recognizer Coupling Audit — completed 2026-09-14
+# Static View Prior + Frame0 Residual NBV Audit — completed 2026-09-14
 
-Completed a strict Frame0 single-step Train/Moving-Val-only audit on the
+Completed the strict Train/Moving-Val-only Frame0 single-step audit on the
 reduced12 eight-placement protocol. The action set was exactly current/Stay
-plus the Stage-A legal candidate pool; each selected action was evaluated using
-the selected real O1 skeleton only. Existing historical and retrained
-old-adaptive-aware selectors, shared and old-adaptive heads, option caches and
-frame-0 DINO/geometry caches were reused. No model was trained and Policy Test
-was not read.
+plus the Stage-A legal candidate pool; each selected action was evaluated from
+the selected real O1 alone with the frozen ST-GCN and old adaptive head. Policy
+Test was not read and no perception artifact was regenerated.
 
-Moving Val contained 10,080 contexts (46,324 Train contexts were used only to
-form old-adaptive static viewpoint and current/view-pair margin priors). The
-adaptive-aware selector with the old adaptive head reached Accuracy/F1
-0.526984/0.547002; the static prior reached 0.522917/0.546040 and the pair
-prior 0.519940/0.543270. RGB shuffling lowered Accuracy by 4.256 pp and
-geometry shuffling by 15.159 pp. The adaptive-aware gain over the best fixed
-prior was only 0.407 pp, while old-adaptive versus shared on identical selected
-views gained 1.865 pp (below the preregistered 2 pp threshold).
+The Train-derived static viewpoint prior reproduced 0.522917 Accuracy /
+0.546040 Macro-F1 on 10,080 Moving-Val contexts. A residual selector using
+Frame0 RGB DINO + geometry + the existing VisibilityAux architecture reached
+0.525496/0.548474 at lambda=1.0; lambda=0.5 reached 0.524008/0.547073 and
+geometry-only residual reached 0.518948/0.543900. The existing instance-only
+adaptive-aware selector was 0.526984/0.547002.
 
-Decision: **MOSTLY FIXED VIEWPOINT PRIOR** with measurable but insufficient
-instance-conditioned RGB signal. Preserve the 52.6984% result as a strict
-Frame0 diagnostic, not as evidence for a standalone instance-conditioned NBV
-main line. No follow-up experiment was started automatically.
+The best residual branch improved over StaticViewPrior by only +0.258pp
+Accuracy and +0.243pp Macro-F1, and was -0.149pp Accuracy below the
+instance-only selector. RGB shuffling reduced the residual branch by 1.111pp;
+residual-zero exactly reproduced prior actions and metrics. The strict decision
+is **KILL PRIOR+RESIDUAL FRAME0 NBV**: Frame0 RGB has measurable residual
+signal, but not enough incremental NBV value to justify this route.
 
 Artifacts:
-`experiments/reduced12_eight_placement_v1/policy_recognizer_coupling_audit/`
+`experiments/reduced12_eight_placement_v1/prior_residual_frame0_nbv/`
+and
+`activeview/scripts/experiments/run_reduced12_prior_residual_frame0_nbv.py`.
 
 Task status: **CLEAN**; task-owned commit and push completed.

@@ -505,3 +505,29 @@ aligned with historical s1 (JSD 0.014136, top-5 overlap 0.8).
 Decision: **MOSTLY FIXED VIEWPOINT PRIOR**, with measurable but insufficient
 instance-conditioned RGB signal. Preserve 52.6984% as a strict Frame0
 diagnostic and do not automatically promote this as a standalone NBV line.
+
+## Static prior + Frame0 residual NBV audit (2026-09-14)
+
+The Train/Moving-Val-only strict Frame0 audit used the same current/Stay plus
+Stage-A legal candidate pool, frozen ST-GCN and old adaptive head. Train-only
+old-adaptive GT-Margin means formed `Q(v)`; residual supervision was
+`U(x,v)-Q(v)`. The RGB residual branch reused the historical Frame0 DINO
+global + geometry + VisibilityAux scorer, while a geometry-only residual was a
+small control. Policy Test and future candidate observations were not used as
+selector inputs.
+
+On 10,080 Moving-Val contexts, StaticViewPrior scored 0.522917/0.546040
+Accuracy/Macro-F1. Prior+RGBResidual scored 0.524008/0.547073 at λ=0.5 and
+0.525496/0.548474 at λ=1.0; Prior+GeometryResidual scored
+0.518948/0.543900. Instance-only Adaptive-aware remained stronger at
+0.526984/0.547002. RGB residual candidate Spearman was 0.161243 (within
+context mean/median 0.121620/0.142857), and RGB shuffling reduced λ=1
+Accuracy by 1.111pp. Residual-zero reproduced prior actions and metrics
+exactly. High-occlusion λ=1 Accuracy was 0.470498 versus StaticPrior 0.459798
+and GT-Margin Oracle 0.710486.
+
+Scientific decision: **KILL PRIOR+RESIDUAL FRAME0 NBV**. Frame0 RGB contains a
+measurable residual signal, but the best residual branch gains only +0.258pp
+Accuracy over the fixed prior and remains -0.149pp below the instance-only
+selector; this is insufficient evidence for a standalone prior+residual NBV
+route. Preserve the diagnostic and return focus to the established NBV route.

@@ -1,0 +1,97 @@
+{
+  "branch": "RGBResidual",
+  "seed": 42,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "best_epoch": 12,
+  "best_val_total_loss": 2.306353497505188,
+  "checkpoint_selection": "minimum Moving Val residual objective with fixed visibility auxiliary when enabled",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.8240252494812013,
+      "val_total_loss": 2.5624645709991456,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.459885263442993,
+      "val_total_loss": 2.418191146850586,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.3881489276885985,
+      "val_total_loss": 2.3744661808013916,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 4,
+      "train_loss": 2.3718311309814455,
+      "val_total_loss": 2.367583656311035,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 5,
+      "train_loss": 2.356025743484497,
+      "val_total_loss": 2.352625036239624,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 6,
+      "train_loss": 2.3479385375976562,
+      "val_total_loss": 2.3421332597732545,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 7,
+      "train_loss": 2.3303245544433593,
+      "val_total_loss": 2.3467742443084716,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.3151636600494383,
+      "val_total_loss": 2.333601140975952,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.3023916244506837,
+      "val_total_loss": 2.320780539512634,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.3054059982299804,
+      "val_total_loss": 2.3175947666168213,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 11,
+      "train_loss": 2.301710033416748,
+      "val_total_loss": 2.31004421710968,
+      "observations": 5008,
+      "records": 313
+    },
+    {
+      "epoch": 12,
+      "train_loss": 2.295350360870361,
+      "val_total_loss": 2.306353497505188,
+      "observations": 5008,
+      "records": 313
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/prior_residual_frame0_nbv/rgb_residual.pth",
+  "test_used": false
+}

@@ -1357,3 +1357,29 @@ Implementation/report:
 `activeview/scripts/experiments/run_reduced12_policy_recognizer_coupling_audit.py`
 and
 `experiments/reduced12_eight_placement_v1/policy_recognizer_coupling_audit/`.
+
+## Static view prior + Frame0 residual NBV audit — 2026-09-14
+
+Completed the strict one-step Train/Moving-Val audit over 46,324 Train and
+10,080 Moving-Val contexts. The legal set was current/Stay plus the Stage-A
+candidate pool; terminal evaluation used selected real O1 through frozen
+ST-GCN + old adaptive head. Train-only viewpoint means defined `Q(v)` from
+old-adaptive GT-Margin, and residual branches predicted `U(x,v)-Q(v)` from
+current Frame0 DINO/geometry inputs. Policy Test and future candidate
+observations were excluded from selector inputs.
+
+StaticViewPrior reproduced 0.522917/0.546040 Accuracy/F1. Prior+GeometryResidual
+was 0.518948/0.543900; Prior+RGBResidual λ=.5 was 0.524008/0.547073; and
+λ=1.0 was 0.525496/0.548474. Instance-only Adaptive-aware was
+0.526984/0.547002. The RGB residual candidate Spearman was 0.161243, with
+within-context mean/median 0.121620/0.142857; RGB shuffle dropped λ=1.0 by
+1.111pp. Residual-zero actions and metrics matched StaticPrior exactly. The
+best residual gained only +0.258pp Accuracy over StaticPrior and -0.149pp
+versus InstanceOnly; high-occlusion λ=1.0 was 0.470498 versus StaticPrior
+0.459798 and GT-Margin Oracle 0.710486.
+
+Decision: **KILL PRIOR+RESIDUAL FRAME0 NBV**. Frame0 RGB has measurable but
+insufficient instance-specific residual value beyond the strong viewpoint
+prior; no follow-up branch was started automatically. Report/script:
+`experiments/reduced12_eight_placement_v1/prior_residual_frame0_nbv/` and
+`activeview/scripts/experiments/run_reduced12_prior_residual_frame0_nbv.py`.

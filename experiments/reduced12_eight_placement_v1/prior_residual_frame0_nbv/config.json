@@ -1,0 +1,10 @@
+{
+  "seed": 42,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "fixed_lambdas": [
+    0.5,
+    1.0
+  ],
+  "test_used": false
+}
