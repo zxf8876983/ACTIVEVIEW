@@ -1,0 +1,19 @@
+{
+  "unary_viewpoint_count": 32,
+  "pair_prior_count": 992,
+  "unary_margin_summary": {
+    "count": 32.0,
+    "mean": -0.29898723525693083,
+    "std": 0.4284183692301664,
+    "min": -0.9401352315093763,
+    "max": 0.42952240245246515
+  },
+  "pair_margin_summary": {
+    "count": 992.0,
+    "mean": -0.3018113395584623,
+    "std": 0.48202673225595044,
+    "min": -2.4814111572139117,
+    "max": 0.7780910165452245
+  },
+  "selection_note": "full action selections are summarized in selected_view_distribution.json"
+}

@@ -1,0 +1,14 @@
+{
+  "adaptive_vs_static": {
+    "count": 10080,
+    "top1_agreement": 0.5958333333333333
+  },
+  "adaptive_vs_pair": {
+    "count": 10080,
+    "top1_agreement": 0.5942460317460317
+  },
+  "adaptive_vs_historical": {
+    "count": 10080,
+    "top1_agreement": 0.835515873015873
+  }
+}

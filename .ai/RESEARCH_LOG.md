@@ -1330,3 +1330,30 @@ as a matched s1 diagnostic and do not automatically start another experiment.
 
 Artifacts: `experiments/reduced12_eight_placement_v1/adaptive_head_frame0_nbv_audit/`;
 implementation: `activeview/scripts/experiments/run_reduced12_adaptive_head_frame0_nbv_audit.py`.
+
+## Policy–recognizer coupling audit — 2026-09-14
+
+Completed a strict Frame0 single-step coupling audit using only the reduced12
+Train/Moving-Val protocol (46,324 Train contexts for old-adaptive priors and
+10,080 Moving-Val contexts). The action set was exactly current/Stay plus the
+Stage-A legal candidate pool, and terminal recognition used the selected real
+O1 alone. Existing historical/retrained selectors, recognizer heads, DINO and
+geometry caches were reused; no model or perception artifact was generated and
+Policy Test was not read.
+
+Historical selector + shared/old-adaptive scored 0.506151/0.503722 and
+0.523115/0.542017. Adaptive-aware selector + shared/old-adaptive scored
+0.508333/0.507541 and 0.526984/0.547002. Static and view-pair priors scored
+0.522917/0.546040 and 0.519940/0.543270. RGB shuffling caused a 4.256pp
+Accuracy drop; geometry shuffling caused a 15.159pp drop. The adaptive-aware
+minus best-prior gap was only 0.407pp, while old-adaptive versus shared on the
+same selected views gained 1.865pp. The selected-view distribution was close
+to historical s1 (JSD 0.014136; top-5 overlap 0.8).
+
+Decision: **MOSTLY FIXED VIEWPOINT PRIOR**, with measurable RGB instance signal
+but insufficient gain over priors to meet the 1.5pp criterion. The 52.6984%
+result remains a strict Frame0 diagnostic; no follow-up experiment was started.
+Implementation/report:
+`activeview/scripts/experiments/run_reduced12_policy_recognizer_coupling_audit.py`
+and
+`experiments/reduced12_eight_placement_v1/policy_recognizer_coupling_audit/`.

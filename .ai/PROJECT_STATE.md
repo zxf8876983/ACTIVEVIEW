@@ -484,3 +484,24 @@ experiment. Report and script:
 `experiments/reduced12_eight_placement_v1/pair_complementarity_generalization_audit/`
 and
 `activeview/scripts/experiments/run_reduced12_pair_complementarity_generalization_audit.py`.
+
+## Policy–recognizer coupling audit (2026-09-14)
+
+Completed a strict Frame0 single-step Train/Moving-Val-only audit on 10,080
+Moving contexts. The action set was current/Stay plus the Stage-A legal
+candidate pool; terminal HAR used the selected real O1 alone. Existing
+historical/retrained selectors, shared/old-adaptive heads, option caches and
+frame-0 DINO/geometry were reused. No model or perception artifact was
+created, and Policy Test was not read.
+
+Adaptive-aware selector + old adaptive reached 0.526984/0.547002
+(Accuracy/Macro-F1); static and view-pair priors reached 0.522917/0.546040 and
+0.519940/0.543270. RGB shuffling reduced Accuracy by 4.256pp and geometry
+shuffling by 15.159pp, but adaptive-aware minus the best fixed prior was only
+0.407pp. On identical adaptive-selected views, old adaptive versus shared
+gained 1.865pp, below the 2pp criterion. Selector distributions were closely
+aligned with historical s1 (JSD 0.014136, top-5 overlap 0.8).
+
+Decision: **MOSTLY FIXED VIEWPOINT PRIOR**, with measurable but insufficient
+instance-conditioned RGB signal. Preserve 52.6984% as a strict Frame0
+diagnostic and do not automatically promote this as a standalone NBV line.

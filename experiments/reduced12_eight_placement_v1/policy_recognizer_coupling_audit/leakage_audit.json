@@ -1,0 +1,9 @@
+{
+  "policy_test_used": false,
+  "training_used": false,
+  "new_rgb_generated": false,
+  "future_candidate_observation_used_for_selector": false,
+  "future_candidate_recognizer_output_used_for_selector": false,
+  "gt_action_used_for_selector": false,
+  "terminal_selected_real_o1_alone": true
+}
