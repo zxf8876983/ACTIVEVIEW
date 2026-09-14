@@ -1,0 +1,4 @@
+{
+  "status": "skipped",
+  "reason": "Optional GT control not run; main estimated-skeleton experiment completed without GT skeleton input."
+}

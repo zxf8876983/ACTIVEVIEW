@@ -1,0 +1,57 @@
+{
+  "before_generation": {
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train.json": {
+      "sha256": "7ac02a4612be4ce20b5fd0063b794919fa07819a9dea3f9f19284fa2a5e0e12a",
+      "size": 2083253,
+      "mtime_ns": 1788808261815203191
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val.json": {
+      "sha256": "a1d741280f64197ddf7094c29b288c4b8451e6acde97d40e0c820b278de6c42b",
+      "size": 230989,
+      "mtime_ns": 1788808261819208897
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train_data.npy": {
+      "sha256": "7d9aa61e129ef75095b026357ce88953fd36d4a0fcd771aa4d31f8ba608272f8",
+      "size": 13537568,
+      "mtime_ns": 1788808342584713772
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val_data.npy": {
+      "sha256": "2a85b041a10d37aacc3dea16fb46d27880a96eaec5ac8a5503e2a52962c76229",
+      "size": 1499528,
+      "mtime_ns": 1788808411064788803
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth": {
+      "sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+      "size": 12186196,
+      "mtime_ns": 1788808586622667988
+    }
+  },
+  "after_generation": {
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train.json": {
+      "sha256": "7ac02a4612be4ce20b5fd0063b794919fa07819a9dea3f9f19284fa2a5e0e12a",
+      "size": 2083253,
+      "mtime_ns": 1788808261815203191
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val.json": {
+      "sha256": "a1d741280f64197ddf7094c29b288c4b8451e6acde97d40e0c820b278de6c42b",
+      "size": 230989,
+      "mtime_ns": 1788808261819208897
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train_data.npy": {
+      "sha256": "7d9aa61e129ef75095b026357ce88953fd36d4a0fcd771aa4d31f8ba608272f8",
+      "size": 13537568,
+      "mtime_ns": 1788808342584713772
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val_data.npy": {
+      "sha256": "2a85b041a10d37aacc3dea16fb46d27880a96eaec5ac8a5503e2a52962c76229",
+      "size": 1499528,
+      "mtime_ns": 1788808411064788803
+    },
+    "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth": {
+      "sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+      "size": 12186196,
+      "mtime_ns": 1788808586622667988
+    }
+  },
+  "unchanged": true
+}

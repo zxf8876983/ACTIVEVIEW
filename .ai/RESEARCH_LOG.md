@@ -1383,3 +1383,29 @@ insufficient instance-specific residual value beyond the strong viewpoint
 prior; no follow-up branch was started automatically. Report/script:
 `experiments/reduced12_eight_placement_v1/prior_residual_frame0_nbv/` and
 `activeview/scripts/experiments/run_reduced12_prior_residual_frame0_nbv.py`.
+
+## Yaw8 ST-GCN recognizer rebuild (2026-09-14)
+
+Completed a separate reduced12 clean recognizer rebuild to test scene-yaw
+domain mismatch. The frozen clean Train/Val record split (2,212/245 source
+records) was expanded to eight fixed humanoid scene yaws
+{0,45,90,135,180,225,270,315} before Habitat RGB rendering. Generation used
+eight independent CUDA workers on an RTX 4090, with 17,696 Train and 1,960 Val
+records generated successfully (0 failures) and source-record leakage 0.
+The RGB -> YOLO26n-Pose -> VideoPose3D -> gravity/canonical normalization
+pipeline and ST-GCN architecture were unchanged; Policy artifacts/Test were
+not read.
+
+The new Yaw8 ST-GCN (best checkpoint selected by Yaw8 Val cross-entropy,
+33 epochs, seed 42) scored 0.725510/0.727956 Accuracy/Macro-F1 on Yaw8 Val,
+versus 0.583163/0.545710 for the old clean checkpoint. Mean yaw Accuracy gain
+was +14.235pp, worst-yaw gain +20.408pp, and the best-worst yaw gap narrowed
+from 25.714pp to 2.041pp. On the original clean Val, new versus old changed
+from 0.767347/0.781069 to 0.734694/0.740031 (-3.265pp Accuracy).
+
+Decision: **CONFIRMED** that clean-recognizer yaw mismatch is a major cause of
+Yaw8 perception degradation. Freeze the new recognizer as a candidate
+reduced12 Yaw8 baseline; do not rebuild Policy automatically. Report/script:
+`experiments/reduced12_eight_placement_v1/yaw8_stgcn_rebuild/` and
+`activeview/scripts/data/generate_reduced12_yaw8_stgcn_dataset.py`,
+`activeview/scripts/experiments/run_reduced12_yaw8_stgcn_rebuild.py`.

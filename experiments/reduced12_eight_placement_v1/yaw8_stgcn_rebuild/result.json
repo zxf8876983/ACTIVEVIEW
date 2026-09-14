@@ -1,0 +1,5493 @@
+{
+  "experiment": "yaw8_stgcn_rebuild",
+  "status": "completed",
+  "source_protocol": {
+    "old_dataset_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train",
+    "old_train_manifest": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train.json",
+    "old_val_manifest": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val.json",
+    "old_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+    "old_train_records": 2212,
+    "old_val_records": 245,
+    "classes": {
+      "walk": 0,
+      "sit": 1,
+      "stand up": 2,
+      "bend": 3,
+      "crawl": 4,
+      "stumble": 5,
+      "clap": 6,
+      "throw": 7,
+      "kick": 8,
+      "knock": 9,
+      "punch": 10,
+      "touching face": 11
+    },
+    "target_frames": 30,
+    "skeleton_shape": [
+      3,
+      30,
+      17,
+      1
+    ],
+    "image_size": 256,
+    "camera_hfov_deg": 50.0,
+    "camera_height_m": 1.2,
+    "camera_distance_range_m": [
+      2.4,
+      2.8
+    ],
+    "camera_angle_jitter_deg": [
+      -25.0,
+      25.0
+    ],
+    "pose_backend": "Ultralytics YOLO26n-Pose + VideoPose3D",
+    "videopose3d_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/videopose3d/pretrained_h36m_detectron_coco.bin",
+    "videopose3d_checkpoint_sha256": "d3219e005b50591f694da5cbaf6849f060d6b2cf895864a779f8a992ac63a232",
+    "videopose3d_config": "UltralyticsPose3DEstimator project defaults",
+    "normalization": "camera_to_gravity + root_center + torso_scale + yaw_only; align_canonical=True",
+    "stgcn": {
+      "architecture": "spatial ST-GCN, 3 channels, 9 blocks, 256-D feature",
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "epochs_max": 200,
+      "patience": 20,
+      "seed": 42
+    },
+    "old_checkpoint_sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+    "old_source_files": {
+      "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train.json": {
+        "sha256": "7ac02a4612be4ce20b5fd0063b794919fa07819a9dea3f9f19284fa2a5e0e12a",
+        "size": 2083253,
+        "mtime_ns": 1788808261815203191
+      },
+      "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val.json": {
+        "sha256": "a1d741280f64197ddf7094c29b288c4b8451e6acde97d40e0c820b278de6c42b",
+        "size": 230989,
+        "mtime_ns": 1788808261819208897
+      },
+      "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/train_data.npy": {
+        "sha256": "7d9aa61e129ef75095b026357ce88953fd36d4a0fcd771aa4d31f8ba608272f8",
+        "size": 13537568,
+        "mtime_ns": 1788808342584713772
+      },
+      "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train/val_data.npy": {
+        "sha256": "2a85b041a10d37aacc3dea16fb46d27880a96eaec5ac8a5503e2a52962c76229",
+        "size": 1499528,
+        "mtime_ns": 1788808411064788803
+      },
+      "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth": {
+        "sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+        "size": 12186196,
+        "mtime_ns": 1788808586622667988
+      }
+    },
+    "policy_train_val_used_for_recognizer": false,
+    "policy_test_read": false
+  },
+  "generation": {
+    "source_counts": {
+      "train": {
+        "source_records": 2212,
+        "expanded_records": 17696
+      },
+      "val": {
+        "source_records": 245,
+        "expanded_records": 1960
+      }
+    },
+    "generated": {
+      "train": {
+        "split": "train",
+        "samples": 17696,
+        "data_shape": [
+          17696,
+          3,
+          30,
+          17,
+          1
+        ],
+        "skeleton_preprocessing": "camera_to_gravity+root_center+torso_scale+yaw_only_y_up_v5",
+        "rendering_protocol": "amass_root_rotation+scene_yaw+per_frame_grounding+diagnostic_floor_mesh_v3",
+        "coordinate_transform": "VideoPose3D_H36M_Ydown_Zdepth_to_Habitat_gravity; Habitat_-Z_to_ActiveView_+Z",
+        "perception_chain": "RGB -> Ultralytics YOLO26n-Pose -> VideoPose3D",
+        "parallel_workers": 8,
+        "per_yaw_counts": {
+          "0": 2212,
+          "45": 2212,
+          "90": 2212,
+          "135": 2212,
+          "180": 2212,
+          "225": 2212,
+          "270": 2212,
+          "315": 2212
+        }
+      },
+      "val": {
+        "split": "val",
+        "samples": 1960,
+        "data_shape": [
+          1960,
+          3,
+          30,
+          17,
+          1
+        ],
+        "skeleton_preprocessing": "camera_to_gravity+root_center+torso_scale+yaw_only_y_up_v5",
+        "rendering_protocol": "amass_root_rotation+scene_yaw+per_frame_grounding+diagnostic_floor_mesh_v3",
+        "coordinate_transform": "VideoPose3D_H36M_Ydown_Zdepth_to_Habitat_gravity; Habitat_-Z_to_ActiveView_+Z",
+        "perception_chain": "RGB -> Ultralytics YOLO26n-Pose -> VideoPose3D",
+        "parallel_workers": 8,
+        "per_yaw_counts": {
+          "0": 245,
+          "45": 245,
+          "90": 245,
+          "135": 245,
+          "180": 245,
+          "225": 245,
+          "270": 245,
+          "315": 245
+        }
+      }
+    },
+    "expected_records": {
+      "train": 17696,
+      "val": 1960
+    },
+    "successful_records": {
+      "train": 17696,
+      "val": 1960
+    },
+    "success_rate": {
+      "train": 1.0,
+      "val": 1.0
+    },
+    "per_yaw_failures": {
+      "0": 0,
+      "45": 0,
+      "90": 0,
+      "135": 0,
+      "180": 0,
+      "225": 0,
+      "270": 0,
+      "315": 0
+    },
+    "workers": 8,
+    "test_used": false
+  },
+  "yaw_distribution": {
+    "0": {
+      "train": 2212,
+      "val": 245
+    },
+    "45": {
+      "train": 2212,
+      "val": 245
+    },
+    "90": {
+      "train": 2212,
+      "val": 245
+    },
+    "135": {
+      "train": 2212,
+      "val": 245
+    },
+    "180": {
+      "train": 2212,
+      "val": 245
+    },
+    "225": {
+      "train": 2212,
+      "val": 245
+    },
+    "270": {
+      "train": 2212,
+      "val": 245
+    },
+    "315": {
+      "train": 2212,
+      "val": 245
+    }
+  },
+  "training": {
+    "seed": 42,
+    "train_records": 17696,
+    "val_records": 1960,
+    "max_epochs": 200,
+    "completed_epochs": 33,
+    "best_epoch": 13,
+    "best_val_loss": 1.0161511070874272,
+    "batch_size": 64,
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "oversample_power": 0.5,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.5881521020616804,
+        "val_loss": 1.458090184659374,
+        "learning_rate": 0.001,
+        "optimizer_steps": 277
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.1920981154950574,
+        "val_loss": 1.342197204122738,
+        "learning_rate": 0.001,
+        "optimizer_steps": 554
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.0510622334092263,
+        "val_loss": 1.2172688454997782,
+        "learning_rate": 0.001,
+        "optimizer_steps": 831
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.9601014072166429,
+        "val_loss": 1.1080697984111552,
+        "learning_rate": 0.001,
+        "optimizer_steps": 1108
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.8738853735259816,
+        "val_loss": 1.0936982096457968,
+        "learning_rate": 0.001,
+        "optimizer_steps": 1385
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.8241871364724571,
+        "val_loss": 1.0869531485499169,
+        "learning_rate": 0.001,
+        "optimizer_steps": 1662
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.7941657312308685,
+        "val_loss": 1.0330233953437027,
+        "learning_rate": 0.001,
+        "optimizer_steps": 1939
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.7537897075063281,
+        "val_loss": 1.0902240393113116,
+        "learning_rate": 0.001,
+        "optimizer_steps": 2216
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.7239131073839625,
+        "val_loss": 1.1215917577548904,
+        "learning_rate": 0.001,
+        "optimizer_steps": 2493
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.689287482290975,
+        "val_loss": 1.029194943758906,
+        "learning_rate": 0.001,
+        "optimizer_steps": 2770
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.6665340827990182,
+        "val_loss": 1.039596717211665,
+        "learning_rate": 0.001,
+        "optimizer_steps": 3047
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.6324533980750693,
+        "val_loss": 1.0798858467413455,
+        "learning_rate": 0.001,
+        "optimizer_steps": 3324
+      },
+      {
+        "epoch": 13,
+        "train_loss": 0.620529374313182,
+        "val_loss": 1.0161511070874272,
+        "learning_rate": 0.001,
+        "optimizer_steps": 3601
+      },
+      {
+        "epoch": 14,
+        "train_loss": 0.5998074066358707,
+        "val_loss": 1.1216901273143536,
+        "learning_rate": 0.001,
+        "optimizer_steps": 3878
+      },
+      {
+        "epoch": 15,
+        "train_loss": 0.5785258888767166,
+        "val_loss": 1.0603190100922877,
+        "learning_rate": 0.001,
+        "optimizer_steps": 4155
+      },
+      {
+        "epoch": 16,
+        "train_loss": 0.5574667788974631,
+        "val_loss": 1.0742100759428375,
+        "learning_rate": 0.001,
+        "optimizer_steps": 4432
+      },
+      {
+        "epoch": 17,
+        "train_loss": 0.5440845290101243,
+        "val_loss": 1.0926658163265306,
+        "learning_rate": 0.001,
+        "optimizer_steps": 4709
+      },
+      {
+        "epoch": 18,
+        "train_loss": 0.5075849436398656,
+        "val_loss": 1.0989217714387542,
+        "learning_rate": 0.001,
+        "optimizer_steps": 4986
+      },
+      {
+        "epoch": 19,
+        "train_loss": 0.49321614160028976,
+        "val_loss": 1.1391884273412276,
+        "learning_rate": 0.0005,
+        "optimizer_steps": 5263
+      },
+      {
+        "epoch": 20,
+        "train_loss": 0.41139223675831316,
+        "val_loss": 1.0511533464704241,
+        "learning_rate": 0.0005,
+        "optimizer_steps": 5540
+      },
+      {
+        "epoch": 21,
+        "train_loss": 0.37709626145862973,
+        "val_loss": 1.0708973144998355,
+        "learning_rate": 0.0005,
+        "optimizer_steps": 5817
+      },
+      {
+        "epoch": 22,
+        "train_loss": 0.3632620376876638,
+        "val_loss": 1.0837654493292983,
+        "learning_rate": 0.0005,
+        "optimizer_steps": 6094
+      },
+      {
+        "epoch": 23,
+        "train_loss": 0.35726229272526816,
+        "val_loss": 1.2078898794797002,
+        "learning_rate": 0.0005,
+        "optimizer_steps": 6371
+      },
+      {
+        "epoch": 24,
+        "train_loss": 0.33342498699859946,
+        "val_loss": 1.1366461014261051,
+        "learning_rate": 0.0005,
+        "optimizer_steps": 6648
+      },
+      {
+        "epoch": 25,
+        "train_loss": 0.3212227870930815,
+        "val_loss": 1.1277950262536809,
+        "learning_rate": 0.00025,
+        "optimizer_steps": 6925
+      },
+      {
+        "epoch": 26,
+        "train_loss": 0.26024692051557263,
+        "val_loss": 1.1153347244068068,
+        "learning_rate": 0.00025,
+        "optimizer_steps": 7202
+      },
+      {
+        "epoch": 27,
+        "train_loss": 0.24335713407014636,
+        "val_loss": 1.147294213820477,
+        "learning_rate": 0.00025,
+        "optimizer_steps": 7479
+      },
+      {
+        "epoch": 28,
+        "train_loss": 0.2357575269735959,
+        "val_loss": 1.1738664690329104,
+        "learning_rate": 0.00025,
+        "optimizer_steps": 7756
+      },
+      {
+        "epoch": 29,
+        "train_loss": 0.23379292378158292,
+        "val_loss": 1.1499775156682852,
+        "learning_rate": 0.00025,
+        "optimizer_steps": 8033
+      },
+      {
+        "epoch": 30,
+        "train_loss": 0.21791630541437573,
+        "val_loss": 1.2128757953643798,
+        "learning_rate": 0.00025,
+        "optimizer_steps": 8310
+      },
+      {
+        "epoch": 31,
+        "train_loss": 0.20881976335432387,
+        "val_loss": 1.2112190869389747,
+        "learning_rate": 0.000125,
+        "optimizer_steps": 8587
+      },
+      {
+        "epoch": 32,
+        "train_loss": 0.18793147681095718,
+        "val_loss": 1.2141638527111132,
+        "learning_rate": 0.000125,
+        "optimizer_steps": 8864
+      },
+      {
+        "epoch": 33,
+        "train_loss": 0.17824662902525493,
+        "val_loss": 1.258346932761523,
+        "learning_rate": 0.000125,
+        "optimizer_steps": 9141
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_yaw8_v1/best.pt"
+  },
+  "evaluations": {
+    "old_on_original_val": {
+      "overall": {
+        "count": 245,
+        "accuracy": 0.7673469387755102,
+        "macro_f1": 0.7810686897207318,
+        "confusion_matrix": [
+          [
+            20,
+            0,
+            0,
+            2,
+            0,
+            2,
+            0,
+            4,
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            24,
+            0,
+            3,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            23,
+            2,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            0,
+            1,
+            19,
+            0,
+            1,
+            0,
+            2,
+            1,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            6,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            1,
+            0,
+            8,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            8,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            27,
+            1,
+            1,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            26,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            7,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            3,
+            0,
+            0,
+            9,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            11
+          ]
+        ],
+        "per_class": [
+          {
+            "class_id": 0,
+            "support": 30,
+            "recall": 0.6666666666666666,
+            "f1": 0.6779661016949153
+          },
+          {
+            "class_id": 1,
+            "support": 30,
+            "recall": 0.8,
+            "f1": 0.8421052631578948
+          },
+          {
+            "class_id": 2,
+            "support": 30,
+            "recall": 0.7666666666666667,
+            "f1": 0.793103448275862
+          },
+          {
+            "class_id": 3,
+            "support": 30,
+            "recall": 0.6333333333333333,
+            "f1": 0.6440677966101694
+          },
+          {
+            "class_id": 4,
+            "support": 7,
+            "recall": 0.8571428571428571,
+            "f1": 0.923076923076923
+          },
+          {
+            "class_id": 5,
+            "support": 12,
+            "recall": 0.6666666666666666,
+            "f1": 0.6666666666666666
+          },
+          {
+            "class_id": 6,
+            "support": 10,
+            "recall": 0.8,
+            "f1": 0.8000000000000002
+          },
+          {
+            "class_id": 7,
+            "support": 30,
+            "recall": 0.9,
+            "f1": 0.7941176470588235
+          },
+          {
+            "class_id": 8,
+            "support": 30,
+            "recall": 0.8666666666666667,
+            "f1": 0.8387096774193549
+          },
+          {
+            "class_id": 9,
+            "support": 7,
+            "recall": 1.0,
+            "f1": 0.9333333333333333
+          },
+          {
+            "class_id": 10,
+            "support": 14,
+            "recall": 0.6428571428571429,
+            "f1": 0.75
+          },
+          {
+            "class_id": 11,
+            "support": 15,
+            "recall": 0.7333333333333333,
+            "f1": 0.7096774193548386
+          }
+        ]
+      },
+      "per_yaw": {
+        "0": {},
+        "45": {},
+        "90": {},
+        "135": {},
+        "180": {},
+        "225": {},
+        "270": {},
+        "315": {}
+      }
+    },
+    "new_on_original_val": {
+      "overall": {
+        "count": 245,
+        "accuracy": 0.7346938775510204,
+        "macro_f1": 0.7400314455599264,
+        "confusion_matrix": [
+          [
+            18,
+            0,
+            1,
+            2,
+            0,
+            4,
+            0,
+            1,
+            4,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            23,
+            0,
+            3,
+            0,
+            0,
+            1,
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            25,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            0,
+            3,
+            18,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0,
+            10,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            5,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            2,
+            25,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            11,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            2,
+            3,
+            0,
+            2,
+            0,
+            7
+          ]
+        ],
+        "per_class": [
+          {
+            "class_id": 0,
+            "support": 30,
+            "recall": 0.6,
+            "f1": 0.6545454545454547
+          },
+          {
+            "class_id": 1,
+            "support": 30,
+            "recall": 0.7666666666666667,
+            "f1": 0.793103448275862
+          },
+          {
+            "class_id": 2,
+            "support": 30,
+            "recall": 0.8333333333333334,
+            "f1": 0.8333333333333334
+          },
+          {
+            "class_id": 3,
+            "support": 30,
+            "recall": 0.6,
+            "f1": 0.6545454545454547
+          },
+          {
+            "class_id": 4,
+            "support": 7,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          {
+            "class_id": 5,
+            "support": 12,
+            "recall": 0.8333333333333334,
+            "f1": 0.7142857142857143
+          },
+          {
+            "class_id": 6,
+            "support": 10,
+            "recall": 1.0,
+            "f1": 0.7407407407407407
+          },
+          {
+            "class_id": 7,
+            "support": 30,
+            "recall": 0.7,
+            "f1": 0.6774193548387096
+          },
+          {
+            "class_id": 8,
+            "support": 30,
+            "recall": 0.8333333333333334,
+            "f1": 0.78125
+          },
+          {
+            "class_id": 9,
+            "support": 7,
+            "recall": 0.7142857142857143,
+            "f1": 0.6250000000000001
+          },
+          {
+            "class_id": 10,
+            "support": 14,
+            "recall": 0.7857142857142857,
+            "f1": 0.8461538461538461
+          },
+          {
+            "class_id": 11,
+            "support": 15,
+            "recall": 0.4666666666666667,
+            "f1": 0.56
+          }
+        ]
+      },
+      "per_yaw": {
+        "0": {},
+        "45": {},
+        "90": {},
+        "135": {},
+        "180": {},
+        "225": {},
+        "270": {},
+        "315": {}
+      }
+    },
+    "old_on_yaw8_val": {
+      "overall": {
+        "count": 1960,
+        "accuracy": 0.5831632653061225,
+        "macro_f1": 0.545710125055152,
+        "confusion_matrix": [
+          [
+            154,
+            0,
+            5,
+            15,
+            5,
+            12,
+            0,
+            12,
+            21,
+            1,
+            8,
+            7
+          ],
+          [
+            7,
+            180,
+            4,
+            26,
+            0,
+            2,
+            3,
+            7,
+            4,
+            0,
+            5,
+            2
+          ],
+          [
+            6,
+            23,
+            173,
+            9,
+            1,
+            5,
+            1,
+            8,
+            7,
+            0,
+            0,
+            7
+          ],
+          [
+            26,
+            12,
+            22,
+            116,
+            1,
+            13,
+            7,
+            10,
+            7,
+            0,
+            6,
+            20
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            54,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            30,
+            1,
+            12,
+            10,
+            0,
+            26,
+            0,
+            4,
+            8,
+            1,
+            0,
+            4
+          ],
+          [
+            0,
+            13,
+            2,
+            2,
+            0,
+            0,
+            34,
+            6,
+            1,
+            6,
+            0,
+            16
+          ],
+          [
+            12,
+            9,
+            17,
+            13,
+            0,
+            0,
+            2,
+            143,
+            8,
+            7,
+            7,
+            22
+          ],
+          [
+            36,
+            5,
+            1,
+            7,
+            0,
+            6,
+            0,
+            14,
+            162,
+            0,
+            6,
+            3
+          ],
+          [
+            1,
+            0,
+            3,
+            1,
+            0,
+            1,
+            8,
+            8,
+            2,
+            14,
+            4,
+            14
+          ],
+          [
+            7,
+            3,
+            7,
+            11,
+            0,
+            2,
+            3,
+            30,
+            7,
+            2,
+            37,
+            3
+          ],
+          [
+            7,
+            1,
+            9,
+            12,
+            0,
+            0,
+            12,
+            17,
+            2,
+            6,
+            4,
+            50
+          ]
+        ],
+        "per_class": [
+          {
+            "class_id": 0,
+            "support": 240,
+            "recall": 0.6416666666666667,
+            "f1": 0.5855513307984791
+          },
+          {
+            "class_id": 1,
+            "support": 240,
+            "recall": 0.75,
+            "f1": 0.7392197125256673
+          },
+          {
+            "class_id": 2,
+            "support": 240,
+            "recall": 0.7208333333333333,
+            "f1": 0.6989898989898989
+          },
+          {
+            "class_id": 3,
+            "support": 240,
+            "recall": 0.48333333333333334,
+            "f1": 0.5010799136069114
+          },
+          {
+            "class_id": 4,
+            "support": 56,
+            "recall": 0.9642857142857143,
+            "f1": 0.923076923076923
+          },
+          {
+            "class_id": 5,
+            "support": 96,
+            "recall": 0.2708333333333333,
+            "f1": 0.31901840490797545
+          },
+          {
+            "class_id": 6,
+            "support": 80,
+            "recall": 0.425,
+            "f1": 0.45333333333333337
+          },
+          {
+            "class_id": 7,
+            "support": 240,
+            "recall": 0.5958333333333333,
+            "f1": 0.5731462925851704
+          },
+          {
+            "class_id": 8,
+            "support": 240,
+            "recall": 0.675,
+            "f1": 0.6893617021276596
+          },
+          {
+            "class_id": 9,
+            "support": 56,
+            "recall": 0.25,
+            "f1": 0.3010752688172043
+          },
+          {
+            "class_id": 10,
+            "support": 112,
+            "recall": 0.33035714285714285,
+            "f1": 0.3915343915343915
+          },
+          {
+            "class_id": 11,
+            "support": 120,
+            "recall": 0.4166666666666667,
+            "f1": 0.373134328358209
+          }
+        ]
+      },
+      "per_yaw": {
+        "0": {
+          "count": 245,
+          "accuracy": 0.7673469387755102,
+          "macro_f1": 0.7810686897207318,
+          "confusion_matrix": [
+            [
+              20,
+              0,
+              0,
+              2,
+              0,
+              2,
+              0,
+              4,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              24,
+              0,
+              3,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              1,
+              1,
+              23,
+              2,
+              0,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              1,
+              19,
+              0,
+              1,
+              0,
+              2,
+              1,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              2,
+              1,
+              0,
+              8,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              8,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              27,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              26,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              9,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              11
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.6779661016949153
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.8421052631578948
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.793103448275862
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.6333333333333333,
+              "f1": 0.6440677966101694
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 0.8571428571428571,
+              "f1": 0.923076923076923
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.6666666666666666,
+              "f1": 0.6666666666666666
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.8,
+              "f1": 0.8000000000000002
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.9,
+              "f1": 0.7941176470588235
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8666666666666667,
+              "f1": 0.8387096774193549
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.6428571428571429,
+              "f1": 0.75
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.7333333333333333,
+              "f1": 0.7096774193548386
+            }
+          ]
+        },
+        "45": {
+          "count": 245,
+          "accuracy": 0.5959183673469388,
+          "macro_f1": 0.5700402783204891,
+          "confusion_matrix": [
+            [
+              20,
+              0,
+              1,
+              3,
+              1,
+              0,
+              0,
+              1,
+              3,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              23,
+              0,
+              3,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              3,
+              21,
+              2,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1
+            ],
+            [
+              4,
+              1,
+              4,
+              15,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              7,
+              0,
+              2,
+              1,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              5,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            [
+              2,
+              1,
+              2,
+              1,
+              0,
+              0,
+              0,
+              21,
+              1,
+              0,
+              2,
+              0
+            ],
+            [
+              5,
+              1,
+              0,
+              1,
+              0,
+              0,
+              0,
+              2,
+              19,
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              1,
+              4,
+              2,
+              0,
+              3,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              6,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.5714285714285715
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.7540983606557377
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.6774193548387096
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.5,
+              "f1": 0.5084745762711865
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.08333333333333333,
+              "f1": 0.14285714285714285
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.5,
+              "f1": 0.5263157894736842
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.626865671641791
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.6333333333333333,
+              "f1": 0.6666666666666667
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.7142857142857143,
+              "f1": 0.7692307692307692
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.21428571428571427,
+              "f1": 0.25
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.4,
+              "f1": 0.4137931034482759
+            }
+          ]
+        },
+        "90": {
+          "count": 245,
+          "accuracy": 0.5510204081632653,
+          "macro_f1": 0.4884156191434182,
+          "confusion_matrix": [
+            [
+              20,
+              0,
+              0,
+              2,
+              1,
+              1,
+              0,
+              1,
+              2,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              22,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              3,
+              24,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              3,
+              4,
+              13,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              5,
+              0,
+              1,
+              2,
+              0,
+              2,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              4,
+              1,
+              0,
+              1,
+              0,
+              2
+            ],
+            [
+              1,
+              2,
+              4,
+              2,
+              0,
+              0,
+              1,
+              16,
+              1,
+              0,
+              1,
+              2
+            ],
+            [
+              6,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              1,
+              18,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              4
+            ],
+            [
+              2,
+              0,
+              1,
+              0,
+              0,
+              1,
+              1,
+              3,
+              1,
+              0,
+              3,
+              2
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              2,
+              2,
+              6
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.5633802816901409
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.6984126984126984
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.7384615384615385
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.43333333333333335,
+              "f1": 0.44067796610169496
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.16666666666666666,
+              "f1": 0.2222222222222222
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.4,
+              "f1": 0.4444444444444445
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.5333333333333333,
+              "f1": 0.5714285714285715
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.6,
+              "f1": 0.6428571428571429
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.21428571428571427,
+              "f1": 0.23076923076923075
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.4,
+              "f1": 0.37500000000000006
+            }
+          ]
+        },
+        "135": {
+          "count": 245,
+          "accuracy": 0.5591836734693878,
+          "macro_f1": 0.48437816572171527,
+          "confusion_matrix": [
+            [
+              19,
+              0,
+              1,
+              2,
+              1,
+              1,
+              0,
+              1,
+              3,
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              23,
+              0,
+              3,
+              0,
+              1,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              4,
+              19,
+              3,
+              0,
+              2,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              3,
+              2,
+              11,
+              1,
+              4,
+              1,
+              0,
+              2,
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              5,
+              0,
+              1,
+              2,
+              0,
+              2,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              3,
+              1,
+              0,
+              3,
+              0,
+              2
+            ],
+            [
+              2,
+              1,
+              3,
+              1,
+              0,
+              0,
+              0,
+              18,
+              1,
+              0,
+              0,
+              4
+            ],
+            [
+              2,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              2,
+              25,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              2,
+              1,
+              0,
+              0,
+              3
+            ],
+            [
+              2,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              5,
+              2,
+              1,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              1,
+              2,
+              0,
+              1,
+              1,
+              8
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6333333333333333,
+              "f1": 0.6031746031746033
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.7540983606557377
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.6333333333333333,
+              "f1": 0.6666666666666667
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.36666666666666664,
+              "f1": 0.3928571428571428
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.8750000000000001
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.16666666666666666,
+              "f1": 0.17391304347826086
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.3,
+              "f1": 0.37499999999999994
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.6,
+              "f1": 0.5454545454545454
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8333333333333334,
+              "f1": 0.7692307692307692
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.14285714285714285,
+              "f1": 0.2
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.5333333333333333,
+              "f1": 0.4571428571428572
+            }
+          ]
+        },
+        "180": {
+          "count": 245,
+          "accuracy": 0.5551020408163265,
+          "macro_f1": 0.4840764037228715,
+          "confusion_matrix": [
+            [
+              22,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              3,
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              19,
+              1,
+              3,
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              2,
+              1
+            ],
+            [
+              0,
+              3,
+              23,
+              0,
+              0,
+              1,
+              0,
+              1,
+              2,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              3,
+              2,
+              14,
+              0,
+              2,
+              1,
+              4,
+              0,
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              5,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              2,
+              1,
+              0,
+              1
+            ],
+            [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              1,
+              0,
+              0,
+              3
+            ],
+            [
+              2,
+              2,
+              2,
+              2,
+              0,
+              0,
+              1,
+              16,
+              0,
+              2,
+              0,
+              3
+            ],
+            [
+              4,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              22,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              3
+            ],
+            [
+              0,
+              2,
+              1,
+              3,
+              0,
+              0,
+              0,
+              3,
+              0,
+              1,
+              4,
+              0
+            ],
+            [
+              1,
+              0,
+              2,
+              1,
+              0,
+              0,
+              4,
+              2,
+              0,
+              0,
+              0,
+              5
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.6470588235294117
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.6333333333333333,
+              "f1": 0.6129032258064516
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.7301587301587302
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.4666666666666667,
+              "f1": 0.5
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 0.8571428571428571,
+              "f1": 0.923076923076923
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.08333333333333333,
+              "f1": 0.1111111111111111
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.4,
+              "f1": 0.3636363636363636
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.5333333333333333,
+              "f1": 0.5245901639344263
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7213114754098361
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.2857142857142857,
+              "f1": 0.38095238095238093
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.3333333333333333,
+              "f1": 0.29411764705882354
+            }
+          ]
+        },
+        "225": {
+          "count": 245,
+          "accuracy": 0.5102040816326531,
+          "macro_f1": 0.4434290330523385,
+          "confusion_matrix": [
+            [
+              24,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              0,
+              2,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              21,
+              2,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              3,
+              22,
+              0,
+              0,
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              1,
+              2,
+              17,
+              0,
+              2,
+              1,
+              1,
+              0,
+              0,
+              0,
+              5
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              5,
+              0,
+              2,
+              0,
+              0,
+              3,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              2,
+              1,
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              5,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              11,
+              2,
+              4,
+              1,
+              5
+            ],
+            [
+              8,
+              2,
+              0,
+              1,
+              0,
+              2,
+              0,
+              3,
+              11,
+              0,
+              2,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              2,
+              3,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              2,
+              1,
+              1,
+              2,
+              0,
+              0,
+              0,
+              3,
+              1,
+              0,
+              4,
+              0
+            ],
+            [
+              0,
+              0,
+              2,
+              1,
+              0,
+              0,
+              1,
+              4,
+              2,
+              0,
+              1,
+              4
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.6315789473684211
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.6885245901639343
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.6666666666666666
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.5666666666666667,
+              "f1": 0.6181818181818183
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.25,
+              "f1": 0.3
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.1,
+              "f1": 0.125
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.36666666666666664,
+              "f1": 0.3728813559322034
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.36666666666666664,
+              "f1": 0.423076923076923
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.2857142857142857,
+              "f1": 0.3333333333333333
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.26666666666666666,
+              "f1": 0.2285714285714286
+            }
+          ]
+        },
+        "270": {
+          "count": 245,
+          "accuracy": 0.5142857142857142,
+          "macro_f1": 0.47839422572241874,
+          "confusion_matrix": [
+            [
+              15,
+              0,
+              1,
+              4,
+              1,
+              3,
+              0,
+              2,
+              2,
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              24,
+              1,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              3,
+              19,
+              1,
+              0,
+              1,
+              0,
+              2,
+              1,
+              0,
+              0,
+              2
+            ],
+            [
+              5,
+              0,
+              3,
+              14,
+              0,
+              1,
+              1,
+              2,
+              1,
+              0,
+              0,
+              3
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              3,
+              2,
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3
+            ],
+            [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              1,
+              0,
+              2
+            ],
+            [
+              0,
+              1,
+              3,
+              4,
+              0,
+              0,
+              0,
+              13,
+              1,
+              0,
+              2,
+              6
+            ],
+            [
+              6,
+              1,
+              0,
+              0,
+              0,
+              3,
+              0,
+              3,
+              15,
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              1,
+              0,
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              0,
+              1,
+              0,
+              2,
+              1,
+              0,
+              8,
+              0
+            ],
+            [
+              3,
+              0,
+              2,
+              2,
+              0,
+              0,
+              2,
+              0,
+              0,
+              2,
+              0,
+              4
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.5,
+              "f1": 0.4838709677419355
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.7741935483870969
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.6333333333333333,
+              "f1": 0.6031746031746033
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.4666666666666667,
+              "f1": 0.45901639344262296
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.16666666666666666,
+              "f1": 0.17391304347826086
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.5,
+              "f1": 0.45454545454545453
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.43333333333333335,
+              "f1": 0.4727272727272728
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.5,
+              "f1": 0.588235294117647
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.5714285714285714,
+              "f1": 0.5925925925925927
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.26666666666666666,
+              "f1": 0.2051282051282051
+            }
+          ]
+        },
+        "315": {
+          "count": 245,
+          "accuracy": 0.6122448979591837,
+          "macro_f1": 0.5833032948807557,
+          "confusion_matrix": [
+            [
+              14,
+              0,
+              1,
+              1,
+              0,
+              3,
+              0,
+              2,
+              5,
+              0,
+              2,
+              2
+            ],
+            [
+              1,
+              24,
+              0,
+              4,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              3,
+              22,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              4,
+              1,
+              4,
+              13,
+              0,
+              1,
+              1,
+              0,
+              3,
+              0,
+              0,
+              3
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              0,
+              2,
+              0,
+              7,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              4,
+              1,
+              0,
+              0,
+              0,
+              3
+            ],
+            [
+              0,
+              0,
+              2,
+              3,
+              0,
+              0,
+              0,
+              21,
+              1,
+              0,
+              1,
+              2
+            ],
+            [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              26,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              2,
+              2,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              4,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              3,
+              0,
+              0,
+              2,
+              2,
+              0,
+              1,
+              0,
+              6
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.4666666666666667,
+              "f1": 0.4912280701754386
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.8000000000000002
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7213114754098361
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.43333333333333335,
+              "f1": 0.4482758620689655
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.5833333333333334,
+              "f1": 0.6086956521739131
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.4,
+              "f1": 0.47058823529411764
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.626865671641791
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8666666666666667,
+              "f1": 0.7878787878787877
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.2857142857142857,
+              "f1": 0.4
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.2857142857142857,
+              "f1": 0.34782608695652173
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.4,
+              "f1": 0.3636363636363636
+            }
+          ]
+        }
+      }
+    },
+    "new_on_yaw8_val": {
+      "overall": {
+        "count": 1960,
+        "accuracy": 0.7255102040816327,
+        "macro_f1": 0.7279557833356088,
+        "confusion_matrix": [
+          [
+            154,
+            0,
+            5,
+            18,
+            2,
+            19,
+            1,
+            11,
+            20,
+            3,
+            4,
+            3
+          ],
+          [
+            8,
+            173,
+            2,
+            15,
+            3,
+            0,
+            23,
+            13,
+            2,
+            0,
+            0,
+            1
+          ],
+          [
+            2,
+            24,
+            186,
+            11,
+            0,
+            1,
+            3,
+            9,
+            3,
+            0,
+            0,
+            1
+          ],
+          [
+            22,
+            2,
+            23,
+            148,
+            0,
+            7,
+            11,
+            3,
+            5,
+            0,
+            2,
+            17
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            56,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            0,
+            12,
+            4,
+            0,
+            69,
+            0,
+            2,
+            4,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            77,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            4,
+            4,
+            13,
+            0,
+            0,
+            0,
+            11,
+            178,
+            12,
+            11,
+            3,
+            4
+          ],
+          [
+            17,
+            0,
+            3,
+            0,
+            0,
+            5,
+            1,
+            11,
+            199,
+            1,
+            1,
+            2
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            8,
+            0,
+            0,
+            46,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            2,
+            0,
+            4,
+            2,
+            14,
+            2,
+            1,
+            78,
+            5
+          ],
+          [
+            0,
+            0,
+            4,
+            5,
+            0,
+            2,
+            29,
+            14,
+            0,
+            6,
+            2,
+            58
+          ]
+        ],
+        "per_class": [
+          {
+            "class_id": 0,
+            "support": 240,
+            "recall": 0.6416666666666667,
+            "f1": 0.6799116997792494
+          },
+          {
+            "class_id": 1,
+            "support": 240,
+            "recall": 0.7208333333333333,
+            "f1": 0.7775280898876404
+          },
+          {
+            "class_id": 2,
+            "support": 240,
+            "recall": 0.775,
+            "f1": 0.7560975609756099
+          },
+          {
+            "class_id": 3,
+            "support": 240,
+            "recall": 0.6166666666666667,
+            "f1": 0.6681715575620768
+          },
+          {
+            "class_id": 4,
+            "support": 56,
+            "recall": 1.0,
+            "f1": 0.9572649572649572
+          },
+          {
+            "class_id": 5,
+            "support": 96,
+            "recall": 0.71875,
+            "f1": 0.6798029556650246
+          },
+          {
+            "class_id": 6,
+            "support": 80,
+            "recall": 0.9625,
+            "f1": 0.6260162601626016
+          },
+          {
+            "class_id": 7,
+            "support": 240,
+            "recall": 0.7416666666666667,
+            "f1": 0.7191919191919193
+          },
+          {
+            "class_id": 8,
+            "support": 240,
+            "recall": 0.8291666666666667,
+            "f1": 0.8172484599589322
+          },
+          {
+            "class_id": 9,
+            "support": 56,
+            "recall": 0.8214285714285714,
+            "f1": 0.7359999999999999
+          },
+          {
+            "class_id": 10,
+            "support": 112,
+            "recall": 0.6964285714285714,
+            "f1": 0.768472906403941
+          },
+          {
+            "class_id": 11,
+            "support": 120,
+            "recall": 0.48333333333333334,
+            "f1": 0.5497630331753554
+          }
+        ]
+      },
+      "per_yaw": {
+        "0": {
+          "count": 245,
+          "accuracy": 0.7346938775510204,
+          "macro_f1": 0.7400314455599264,
+          "confusion_matrix": [
+            [
+              18,
+              0,
+              1,
+              2,
+              0,
+              4,
+              0,
+              1,
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              23,
+              0,
+              3,
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              25,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              3,
+              18,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              0,
+              10,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              10,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              21,
+              5,
+              2,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              2,
+              25,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              11,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              2,
+              3,
+              0,
+              2,
+              0,
+              7
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6,
+              "f1": 0.6545454545454547
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.793103448275862
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.8333333333333334,
+              "f1": 0.8333333333333334
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.6,
+              "f1": 0.6545454545454547
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.8333333333333334,
+              "f1": 0.7142857142857143
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 1.0,
+              "f1": 0.7407407407407407
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.6774193548387096
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8333333333333334,
+              "f1": 0.78125
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.7142857142857143,
+              "f1": 0.6250000000000001
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.7857142857142857,
+              "f1": 0.8461538461538461
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.4666666666666667,
+              "f1": 0.56
+            }
+          ]
+        },
+        "45": {
+          "count": 245,
+          "accuracy": 0.7346938775510204,
+          "macro_f1": 0.7317997393219707,
+          "confusion_matrix": [
+            [
+              20,
+              0,
+              1,
+              3,
+              0,
+              2,
+              0,
+              2,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              23,
+              1,
+              0,
+              0,
+              0,
+              4,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              2,
+              24,
+              1,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3,
+              1,
+              3,
+              20,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              0,
+              9,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              10,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              4,
+              0,
+              0,
+              0,
+              0,
+              22,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              27,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              8,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              5,
+              2,
+              0,
+              0,
+              0,
+              5
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.6779661016949153
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.8070175438596491
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.7384615384615385
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.689655172413793
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.75,
+              "f1": 0.7826086956521738
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 1.0,
+              "f1": 0.5882352941176471
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7213114754098361
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.9,
+              "f1": 0.9
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.7142857142857143,
+              "f1": 0.7142857142857143
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.5714285714285714,
+              "f1": 0.7272727272727273
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.3333333333333333,
+              "f1": 0.43478260869565216
+            }
+          ]
+        },
+        "90": {
+          "count": 245,
+          "accuracy": 0.7224489795918367,
+          "macro_f1": 0.7255410068959692,
+          "confusion_matrix": [
+            [
+              19,
+              0,
+              1,
+              2,
+              1,
+              2,
+              0,
+              1,
+              2,
+              0,
+              2,
+              0
+            ],
+            [
+              1,
+              21,
+              0,
+              2,
+              0,
+              0,
+              3,
+              2,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              23,
+              2,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              3,
+              20,
+              0,
+              2,
+              2,
+              1,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              4,
+              0,
+              0,
+              7,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              9,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              2,
+              21,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              2,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              26,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              10,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              4,
+              1,
+              0,
+              1,
+              1,
+              7
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6333333333333333,
+              "f1": 0.7037037037037038
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.7777777777777777
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.676470588235294
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.7142857142857142
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.5833333333333334,
+              "f1": 0.5833333333333334
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.9,
+              "f1": 0.5806451612903225
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.711864406779661
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8666666666666667,
+              "f1": 0.8524590163934426
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.8750000000000001
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.7142857142857143,
+              "f1": 0.7142857142857143
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.4666666666666667,
+              "f1": 0.5833333333333334
+            }
+          ]
+        },
+        "135": {
+          "count": 245,
+          "accuracy": 0.7306122448979592,
+          "macro_f1": 0.7428200217769403,
+          "confusion_matrix": [
+            [
+              18,
+              0,
+              0,
+              2,
+              0,
+              2,
+              0,
+              2,
+              4,
+              1,
+              0,
+              1
+            ],
+            [
+              1,
+              22,
+              0,
+              1,
+              1,
+              0,
+              3,
+              1,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              3,
+              24,
+              1,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              4,
+              18,
+              0,
+              1,
+              2,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              0,
+              0,
+              9,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              9,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              2,
+              0,
+              0,
+              0,
+              3,
+              22,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              2,
+              24,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              11,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              4,
+              1,
+              0,
+              0,
+              0,
+              9
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6,
+              "f1": 0.631578947368421
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7857142857142856
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.761904761904762
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.6,
+              "f1": 0.6923076923076923
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.75,
+              "f1": 0.6923076923076924
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.9,
+              "f1": 0.5625000000000001
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7333333333333333
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.7741935483870969
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.8571428571428571,
+              "f1": 0.7999999999999999
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.7857142857142857,
+              "f1": 0.88
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.6,
+              "f1": 0.6666666666666665
+            }
+          ]
+        },
+        "180": {
+          "count": 245,
+          "accuracy": 0.7183673469387755,
+          "macro_f1": 0.7115238292919569,
+          "confusion_matrix": [
+            [
+              21,
+              0,
+              0,
+              2,
+              0,
+              2,
+              1,
+              1,
+              2,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              22,
+              1,
+              2,
+              0,
+              0,
+              2,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              23,
+              3,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3,
+              1,
+              0,
+              18,
+              0,
+              1,
+              1,
+              1,
+              3,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              1,
+              0,
+              9,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              9,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              23,
+              1,
+              2,
+              0,
+              2
+            ],
+            [
+              2,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              2,
+              24,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              4,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              9,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              2,
+              2,
+              0,
+              2,
+              0,
+              7
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.7241379310344827
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7719298245614035
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.7796610169491527
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.6,
+              "f1": 0.631578947368421
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.75,
+              "f1": 0.6923076923076924
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 0.9,
+              "f1": 0.6206896551724138
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.7419354838709677
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.7741935483870969
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.5714285714285714,
+              "f1": 0.5333333333333333
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.6428571428571429,
+              "f1": 0.75
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.4666666666666667,
+              "f1": 0.5185185185185186
+            }
+          ]
+        },
+        "225": {
+          "count": 245,
+          "accuracy": 0.7142857142857143,
+          "macro_f1": 0.7165407045448425,
+          "confusion_matrix": [
+            [
+              21,
+              0,
+              0,
+              2,
+              0,
+              3,
+              0,
+              1,
+              2,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              20,
+              0,
+              3,
+              0,
+              0,
+              4,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              4,
+              21,
+              1,
+              0,
+              1,
+              0,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              3,
+              21,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              1,
+              0,
+              8,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              10,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              2,
+              20,
+              1,
+              3,
+              0,
+              2
+            ],
+            [
+              3,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              25,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              3,
+              0,
+              0,
+              9,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              3,
+              1,
+              0,
+              0,
+              1,
+              8
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.7
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.7272727272727272
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.7368421052631577
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.7,
+              "f1": 0.7
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.6666666666666666,
+              "f1": 0.64
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 1.0,
+              "f1": 0.625
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.6557377049180327
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8333333333333334,
+              "f1": 0.8620689655172413
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 0.7142857142857143,
+              "f1": 0.6666666666666666
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.6428571428571429,
+              "f1": 0.6923076923076924
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.5333333333333333,
+              "f1": 0.5925925925925926
+            }
+          ]
+        },
+        "270": {
+          "count": 245,
+          "accuracy": 0.7183673469387755,
+          "macro_f1": 0.721635717020939,
+          "confusion_matrix": [
+            [
+              20,
+              0,
+              0,
+              2,
+              1,
+              1,
+              0,
+              2,
+              2,
+              1,
+              0,
+              1
+            ],
+            [
+              1,
+              20,
+              0,
+              2,
+              1,
+              0,
+              4,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              24,
+              1,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              3,
+              0,
+              4,
+              16,
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              3
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              2,
+              0,
+              0,
+              8,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              10,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              23,
+              1,
+              2,
+              1,
+              0
+            ],
+            [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              22,
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              11,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              4,
+              1,
+              0,
+              1,
+              0,
+              8
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.689655172413793
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.6666666666666666,
+              "f1": 0.7547169811320754
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.8,
+              "f1": 0.7868852459016393
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.5333333333333333,
+              "f1": 0.6274509803921569
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.8750000000000001
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.6666666666666666,
+              "f1": 0.6666666666666666
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 1.0,
+              "f1": 0.6666666666666666
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.7666666666666667,
+              "f1": 0.71875
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7586206896551724
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.7777777777777778
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.7857142857142857,
+              "f1": 0.7857142857142857
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.5333333333333333,
+              "f1": 0.5517241379310344
+            }
+          ]
+        },
+        "315": {
+          "count": 245,
+          "accuracy": 0.7306122448979592,
+          "macro_f1": 0.7340622393042141,
+          "confusion_matrix": [
+            [
+              17,
+              0,
+              2,
+              3,
+              0,
+              3,
+              0,
+              1,
+              3,
+              0,
+              0,
+              1
+            ],
+            [
+              1,
+              22,
+              0,
+              2,
+              1,
+              0,
+              2,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              22,
+              2,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              2,
+              0,
+              3,
+              17,
+              0,
+              1,
+              2,
+              0,
+              1,
+              0,
+              0,
+              4
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              0,
+              0,
+              9,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              10,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              26,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              26,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              2,
+              0,
+              1,
+              9,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              3,
+              0,
+              0,
+              0,
+              7
+            ]
+          ],
+          "per_class": [
+            {
+              "class_id": 0,
+              "support": 30,
+              "recall": 0.5666666666666667,
+              "f1": 0.6538461538461539
+            },
+            {
+              "class_id": 1,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.8
+            },
+            {
+              "class_id": 2,
+              "support": 30,
+              "recall": 0.7333333333333333,
+              "f1": 0.7457627118644068
+            },
+            {
+              "class_id": 3,
+              "support": 30,
+              "recall": 0.5666666666666667,
+              "f1": 0.6296296296296297
+            },
+            {
+              "class_id": 4,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.9333333333333333
+            },
+            {
+              "class_id": 5,
+              "support": 12,
+              "recall": 0.75,
+              "f1": 0.6666666666666665
+            },
+            {
+              "class_id": 6,
+              "support": 10,
+              "recall": 1.0,
+              "f1": 0.6451612903225806
+            },
+            {
+              "class_id": 7,
+              "support": 30,
+              "recall": 0.8666666666666667,
+              "f1": 0.7878787878787877
+            },
+            {
+              "class_id": 8,
+              "support": 30,
+              "recall": 0.8666666666666667,
+              "f1": 0.8387096774193549
+            },
+            {
+              "class_id": 9,
+              "support": 7,
+              "recall": 1.0,
+              "f1": 0.8750000000000001
+            },
+            {
+              "class_id": 10,
+              "support": 14,
+              "recall": 0.6428571428571429,
+              "f1": 0.75
+            },
+            {
+              "class_id": 11,
+              "support": 15,
+              "recall": 0.4666666666666667,
+              "f1": 0.4827586206896552
+            }
+          ]
+        }
+      }
+    }
+  },
+  "robustness": {
+    "old_mean_yaw_accuracy": 0.5831632653061225,
+    "new_mean_yaw_accuracy": 0.7255102040816327,
+    "old_worst_yaw_accuracy": 0.5102040816326531,
+    "new_worst_yaw_accuracy": 0.7142857142857143,
+    "MeanYawGain": 0.1423469387755102,
+    "WorstYawGain": 0.20408163265306123,
+    "old_yaw_robustness_gap": 0.2571428571428571,
+    "new_yaw_robustness_gap": 0.020408163265306145,
+    "original_clean_accuracy_change": -0.03265306122448974
+  },
+  "flags": {
+    "policy_test_read": false,
+    "policy_train_val_used_for_recognizer": false,
+    "old_assets_modified": false,
+    "yaw_applied_at_habitat_render": true,
+    "perception_unchanged": true,
+    "test_used": false
+  }
+}

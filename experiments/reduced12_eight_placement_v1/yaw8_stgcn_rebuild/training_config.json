@@ -1,0 +1,11 @@
+{
+  "seed": 42,
+  "device": "cuda:0",
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "batch_size": 64,
+  "max_epochs": 200,
+  "selection_metric": "Yaw8 Val cross-entropy",
+  "policy_test_read": false
+}

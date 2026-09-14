@@ -1,0 +1,29 @@
+{
+  "source_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/reduced12_no_kneel_clean_babel_diversity_v1/raw-train",
+  "output_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/stgcn_babel_reduced12_habitat_yolo26n_yaw8_v1",
+  "yaw_degrees": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+  ],
+  "records_per_source": 8,
+  "record_split_leakage": 0,
+  "overlap_source_record_ids": [],
+  "policy_train_val_used": false,
+  "policy_test_read": false,
+  "counts": {
+    "train": {
+      "source_records": 2212,
+      "expanded_records": 17696
+    },
+    "val": {
+      "source_records": 245,
+      "expanded_records": 1960
+    }
+  }
+}

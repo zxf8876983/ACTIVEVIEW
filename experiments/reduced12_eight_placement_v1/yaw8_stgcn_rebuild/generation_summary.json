@@ -1,0 +1,90 @@
+{
+  "source_counts": {
+    "train": {
+      "source_records": 2212,
+      "expanded_records": 17696
+    },
+    "val": {
+      "source_records": 245,
+      "expanded_records": 1960
+    }
+  },
+  "generated": {
+    "train": {
+      "split": "train",
+      "samples": 17696,
+      "data_shape": [
+        17696,
+        3,
+        30,
+        17,
+        1
+      ],
+      "skeleton_preprocessing": "camera_to_gravity+root_center+torso_scale+yaw_only_y_up_v5",
+      "rendering_protocol": "amass_root_rotation+scene_yaw+per_frame_grounding+diagnostic_floor_mesh_v3",
+      "coordinate_transform": "VideoPose3D_H36M_Ydown_Zdepth_to_Habitat_gravity; Habitat_-Z_to_ActiveView_+Z",
+      "perception_chain": "RGB -> Ultralytics YOLO26n-Pose -> VideoPose3D",
+      "parallel_workers": 8,
+      "per_yaw_counts": {
+        "0": 2212,
+        "45": 2212,
+        "90": 2212,
+        "135": 2212,
+        "180": 2212,
+        "225": 2212,
+        "270": 2212,
+        "315": 2212
+      }
+    },
+    "val": {
+      "split": "val",
+      "samples": 1960,
+      "data_shape": [
+        1960,
+        3,
+        30,
+        17,
+        1
+      ],
+      "skeleton_preprocessing": "camera_to_gravity+root_center+torso_scale+yaw_only_y_up_v5",
+      "rendering_protocol": "amass_root_rotation+scene_yaw+per_frame_grounding+diagnostic_floor_mesh_v3",
+      "coordinate_transform": "VideoPose3D_H36M_Ydown_Zdepth_to_Habitat_gravity; Habitat_-Z_to_ActiveView_+Z",
+      "perception_chain": "RGB -> Ultralytics YOLO26n-Pose -> VideoPose3D",
+      "parallel_workers": 8,
+      "per_yaw_counts": {
+        "0": 245,
+        "45": 245,
+        "90": 245,
+        "135": 245,
+        "180": 245,
+        "225": 245,
+        "270": 245,
+        "315": 245
+      }
+    }
+  },
+  "expected_records": {
+    "train": 17696,
+    "val": 1960
+  },
+  "successful_records": {
+    "train": 17696,
+    "val": 1960
+  },
+  "success_rate": {
+    "train": 1.0,
+    "val": 1.0
+  },
+  "per_yaw_failures": {
+    "0": 0,
+    "45": 0,
+    "90": 0,
+    "135": 0,
+    "180": 0,
+    "225": 0,
+    "270": 0,
+    "315": 0
+  },
+  "workers": 8,
+  "test_used": false
+}

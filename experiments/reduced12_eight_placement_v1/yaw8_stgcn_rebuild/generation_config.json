@@ -1,0 +1,26 @@
+{
+  "yaw_degrees": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+  ],
+  "target_frames": 30,
+  "image_size": 256,
+  "camera_distance_range_m": [2.4, 2.8],
+  "camera_angle_jitter_deg": [-25.0, 25.0],
+  "camera_height_m": 1.2,
+  "camera_hfov_deg": 50.0,
+  "seed": 42,
+  "workers": 8,
+  "pose_backend": "ultralytics_yolo26n",
+  "augmentation_location": "Habitat humanoid rendering before RGB perception",
+  "perception_chain": "RGB -> Ultralytics YOLO26n-Pose -> VideoPose3D",
+  "normalization": "camera_to_gravity + root_center + torso_scale + yaw_only; align_canonical=True",
+  "source_record_split": "reduced12_no_kneel_clean_babel_diversity_v1/raw-train train/val",
+  "policy_test_used": false
+}

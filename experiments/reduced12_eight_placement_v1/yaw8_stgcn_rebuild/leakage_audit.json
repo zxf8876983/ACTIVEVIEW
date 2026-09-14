@@ -1,0 +1,8 @@
+{
+  "source_record_overlap_train_val": 0,
+  "source_record_overlap_ids": [],
+  "same_source_record_different_yaw_across_split": 0,
+  "same_source_record_different_yaw_across_split_ids": [],
+  "policy_train_val_used_for_recognizer": false,
+  "policy_test_read": false
+}
