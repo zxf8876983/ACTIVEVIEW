@@ -1249,3 +1249,23 @@ Report and script:
 `experiments/reduced12_eight_placement_v1/overnight_structured_o0_complementarity/`
 and
 `activeview/scripts/experiments/run_reduced12_structured_o0_complementarity.py`.
+
+## Budgeted complementary multi-view sweep — 2026-09-14
+
+Completed the reduced12 Train/Moving-Val-only finite-budget sweep with the
+exact `current/Stay + Stage-A legal candidate_pool` action set, frozen
+ST-GCN/shared head, and normalized MeanLogP fusion. Policy Test was not read;
+no model or perception artifact was created. The gate exactly reproduced
+Random B2/B3/B4 at 0.429762/0.424594, 0.487401/0.477211, and
+0.521230/0.505236, plus StaticViewPairPrior B2 at 0.508234/0.497486.
+
+Recursive Train-derived PairMeanGreedy achieved 0.508234/0.497486,
+0.557639/0.546970, and 0.569544/0.556675 for B2/B3/B4. SmoothedSet3Prior
+B3 was 0.550298/0.540837. Exact privileged GT-Margin set scores were
+0.706647/0.701819 (B2), 0.738591/0.737738 (B3), and fixed beam-32
+0.721032/0.719061 (B4), showing fixed-fusion dilution at B4. PairMeanGreedy
+passes the registered KEEP gate but not STRONG KEEP (B2 < .51); B4 adds
+only 1.190 pp over B3, so B=3 is the practical stopping budget. Pair-margin
+correlations with angular/radius distance are near zero, while matrix
+symmetry is moderate (Spearman 0.816), so complementarity is not merely a
+distance heuristic.

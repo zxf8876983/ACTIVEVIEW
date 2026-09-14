@@ -1,0 +1,74 @@
+{
+  "Random B2": {
+    "all_single_wrong_to_fusion_correct": 208,
+    "some_single_correct_to_fusion_correct": 4124,
+    "single_correct_to_fusion_wrong": 1032,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Random B3": {
+    "all_single_wrong_to_fusion_correct": 179,
+    "some_single_correct_to_fusion_correct": 4734,
+    "single_correct_to_fusion_wrong": 1529,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Random B4": {
+    "all_single_wrong_to_fusion_correct": 161,
+    "some_single_correct_to_fusion_correct": 5093,
+    "single_correct_to_fusion_wrong": 1810,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "PairMeanGreedy B2": {
+    "all_single_wrong_to_fusion_correct": 221,
+    "some_single_correct_to_fusion_correct": 4902,
+    "single_correct_to_fusion_wrong": 1035,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Pair+Angular beta=0.5 B2": {
+    "all_single_wrong_to_fusion_correct": 226,
+    "some_single_correct_to_fusion_correct": 4670,
+    "single_correct_to_fusion_wrong": 1073,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "PairMeanGreedy B3": {
+    "all_single_wrong_to_fusion_correct": 147,
+    "some_single_correct_to_fusion_correct": 5474,
+    "single_correct_to_fusion_wrong": 1468,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Pair+Angular beta=0.5 B3": {
+    "all_single_wrong_to_fusion_correct": 158,
+    "some_single_correct_to_fusion_correct": 5213,
+    "single_correct_to_fusion_wrong": 1479,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "PairMeanGreedy B4": {
+    "all_single_wrong_to_fusion_correct": 136,
+    "some_single_correct_to_fusion_correct": 5605,
+    "single_correct_to_fusion_wrong": 1747,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Pair+Angular beta=0.5 B4": {
+    "all_single_wrong_to_fusion_correct": 137,
+    "some_single_correct_to_fusion_correct": 5422,
+    "single_correct_to_fusion_wrong": 1782,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Exact GT-Margin Oracle B2": {
+    "all_single_wrong_to_fusion_correct": 308,
+    "some_single_correct_to_fusion_correct": 6815,
+    "single_correct_to_fusion_wrong": 845,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Exact GT-Margin Oracle B3": {
+    "all_single_wrong_to_fusion_correct": 295,
+    "some_single_correct_to_fusion_correct": 7150,
+    "single_correct_to_fusion_wrong": 744,
+    "all_single_correct_to_fusion_wrong": 0
+  },
+  "Exact GT-Margin Oracle B4": {
+    "all_single_wrong_to_fusion_correct": 271,
+    "some_single_correct_to_fusion_correct": 6997,
+    "single_correct_to_fusion_wrong": 942,
+    "all_single_correct_to_fusion_wrong": 0
+  }
+}

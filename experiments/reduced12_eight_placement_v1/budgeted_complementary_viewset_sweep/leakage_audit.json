@@ -1,0 +1,10 @@
+{
+  "policy_test_used": false,
+  "training_used": false,
+  "candidate_observation_used_before_selection": false,
+  "candidate_features_used_before_selection": false,
+  "candidate_logits_used_before_selection": false,
+  "candidate_skeleton_used_for_terminal_oracle_only": true,
+  "gt_action_used_for_oracle_only": true,
+  "continuous_time_modeled": false
+}

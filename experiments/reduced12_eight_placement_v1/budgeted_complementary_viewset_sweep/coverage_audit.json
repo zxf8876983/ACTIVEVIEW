@@ -1,0 +1,8 @@
+{
+  "train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "train_records": 313,
+  "moving_val_records": 105,
+  "val_legal_candidates": 68702,
+  "test_used": false
+}

@@ -1,0 +1,286 @@
+{
+  "policies": {
+    "Stay": {
+      "accuracy": 0.30257936507936506,
+      "macro_f1": 0.2929764191434212,
+      "mean_path_length_m": 0.0
+    },
+    "Random B2": {
+      "accuracy": 0.4297619047619048,
+      "macro_f1": 0.4245940629388021,
+      "mean_path_length_m": 3.095027244881919
+    },
+    "Random B3": {
+      "accuracy": 0.48740079365079364,
+      "macro_f1": 0.4772105876028357,
+      "mean_path_length_m": 6.14113241002991
+    },
+    "Random B4": {
+      "accuracy": 0.5212301587301588,
+      "macro_f1": 0.5052361086619261,
+      "mean_path_length_m": 9.122793046303745
+    },
+    "MaxMinAngular B2": {
+      "accuracy": 0.46170634920634923,
+      "macro_f1": 0.4470819261283525,
+      "mean_path_length_m": 4.3848847169547325
+    },
+    "OppositeAzimuth B2": {
+      "accuracy": 0.46170634920634923,
+      "macro_f1": 0.4470819261283525,
+      "mean_path_length_m": 4.3848847169547325
+    },
+    "MaxMinRadius B2": {
+      "accuracy": 0.4677579365079365,
+      "macro_f1": 0.4606531414429554,
+      "mean_path_length_m": 3.236404199581889
+    },
+    "GeometricCoverage B2": {
+      "accuracy": 0.46001984126984125,
+      "macro_f1": 0.44739001874799667,
+      "mean_path_length_m": 4.451878474327543
+    },
+    "PairMeanGreedy B2": {
+      "accuracy": 0.508234126984127,
+      "macro_f1": 0.4974860356444666,
+      "mean_path_length_m": 2.9845479794230965
+    },
+    "PairMinGreedy B2": {
+      "accuracy": 0.508234126984127,
+      "macro_f1": 0.4974860356444666,
+      "mean_path_length_m": 2.9845479794230965
+    },
+    "PairMaxGreedy B2": {
+      "accuracy": 0.508234126984127,
+      "macro_f1": 0.4974860356444666,
+      "mean_path_length_m": 2.9845479794230965
+    },
+    "Pair+Angular beta=0.25 B2": {
+      "accuracy": 0.5,
+      "macro_f1": 0.48699627838457,
+      "mean_path_length_m": 3.704923340021854
+    },
+    "Pair+Angular beta=0.5 B2": {
+      "accuracy": 0.4857142857142857,
+      "macro_f1": 0.4722656515957035,
+      "mean_path_length_m": 4.016878328738468
+    },
+    "Pair+Angular beta=1.0 B2": {
+      "accuracy": 0.4681547619047619,
+      "macro_f1": 0.4547057165241997,
+      "mean_path_length_m": 4.26849624900709
+    },
+    "Pair+GeoCoverage B2": {
+      "accuracy": 0.4681547619047619,
+      "macro_f1": 0.4547057165241997,
+      "mean_path_length_m": 4.26849624900709
+    },
+    "PairNav lambda=0.1 B2": {
+      "accuracy": 0.4601190476190476,
+      "macro_f1": 0.4570578964484819,
+      "mean_path_length_m": 1.633504284508822
+    },
+    "PairNav lambda=0.25 B2": {
+      "accuracy": 0.4174603174603175,
+      "macro_f1": 0.4136446900909321,
+      "mean_path_length_m": 1.1871580336908145
+    },
+    "PairNav lambda=0.5 B2": {
+      "accuracy": 0.3964285714285714,
+      "macro_f1": 0.39140837227594577,
+      "mean_path_length_m": 1.0652645350315624
+    },
+    "PairDiversityNav B2": {
+      "accuracy": 0.4640873015873016,
+      "macro_f1": 0.45646977587887044,
+      "mean_path_length_m": 2.2912656840735246
+    },
+    "MaxMinAngular B3": {
+      "accuracy": 0.5264880952380953,
+      "macro_f1": 0.5105735276651903,
+      "mean_path_length_m": 7.505978118817485
+    },
+    "OppositeAzimuth B3": {
+      "accuracy": 0.5264880952380953,
+      "macro_f1": 0.5105735276651903,
+      "mean_path_length_m": 7.505978118817485
+    },
+    "MaxMinRadius B3": {
+      "accuracy": 0.5134920634920634,
+      "macro_f1": 0.507445252014155,
+      "mean_path_length_m": 6.00179007016418
+    },
+    "GeometricCoverage B3": {
+      "accuracy": 0.510813492063492,
+      "macro_f1": 0.49666248894474835,
+      "mean_path_length_m": 7.7339388137062395
+    },
+    "PairMeanGreedy B3": {
+      "accuracy": 0.5576388888888889,
+      "macro_f1": 0.5469702173257046,
+      "mean_path_length_m": 5.843063356730318
+    },
+    "PairMinGreedy B3": {
+      "accuracy": 0.5518849206349207,
+      "macro_f1": 0.5418384416328826,
+      "mean_path_length_m": 5.834118959192364
+    },
+    "PairMaxGreedy B3": {
+      "accuracy": 0.5530753968253969,
+      "macro_f1": 0.5425199758375363,
+      "mean_path_length_m": 5.845670506089098
+    },
+    "Pair+Angular beta=0.25 B3": {
+      "accuracy": 0.544047619047619,
+      "macro_f1": 0.5330625857687026,
+      "mean_path_length_m": 7.074742304613547
+    },
+    "Pair+Angular beta=0.5 B3": {
+      "accuracy": 0.5328373015873016,
+      "macro_f1": 0.5204271902487367,
+      "mean_path_length_m": 7.69943343138411
+    },
+    "Pair+Angular beta=1.0 B3": {
+      "accuracy": 0.520734126984127,
+      "macro_f1": 0.5081069806094616,
+      "mean_path_length_m": 8.140853230270839
+    },
+    "Pair+GeoCoverage B3": {
+      "accuracy": 0.5364087301587301,
+      "macro_f1": 0.5230361220454449,
+      "mean_path_length_m": 6.901878581462162
+    },
+    "PairNav lambda=0.1 B3": {
+      "accuracy": 0.5046626984126984,
+      "macro_f1": 0.49650159613991707,
+      "mean_path_length_m": 3.5469589958130014
+    },
+    "PairNav lambda=0.25 B3": {
+      "accuracy": 0.47232142857142856,
+      "macro_f1": 0.46391708423065486,
+      "mean_path_length_m": 3.0538558775130364
+    },
+    "PairNav lambda=0.5 B3": {
+      "accuracy": 0.46111111111111114,
+      "macro_f1": 0.45189358006064245,
+      "mean_path_length_m": 2.9719381863739165
+    },
+    "PairDiversityNav B3": {
+      "accuracy": 0.5106150793650793,
+      "macro_f1": 0.5003022097933575,
+      "mean_path_length_m": 4.057725900868397
+    },
+    "MaxMinAngular B4": {
+      "accuracy": 0.5537698412698413,
+      "macro_f1": 0.5367111605740206,
+      "mean_path_length_m": 10.103748117801215
+    },
+    "OppositeAzimuth B4": {
+      "accuracy": 0.5537698412698413,
+      "macro_f1": 0.5367111605740206,
+      "mean_path_length_m": 10.103748117801215
+    },
+    "MaxMinRadius B4": {
+      "accuracy": 0.516468253968254,
+      "macro_f1": 0.5070072179557504,
+      "mean_path_length_m": 8.730506130061038
+    },
+    "GeometricCoverage B4": {
+      "accuracy": 0.535813492063492,
+      "macro_f1": 0.5189079145823566,
+      "mean_path_length_m": 10.42679435085387
+    },
+    "PairMeanGreedy B4": {
+      "accuracy": 0.5695436507936508,
+      "macro_f1": 0.5566749346238699,
+      "mean_path_length_m": 8.58739920837716
+    },
+    "PairMinGreedy B4": {
+      "accuracy": 0.5645833333333333,
+      "macro_f1": 0.5525435777998293,
+      "mean_path_length_m": 8.667964405180621
+    },
+    "PairMaxGreedy B4": {
+      "accuracy": 0.5640873015873016,
+      "macro_f1": 0.5524076181648855,
+      "mean_path_length_m": 8.490226894445598
+    },
+    "Pair+Angular beta=0.25 B4": {
+      "accuracy": 0.5608134920634921,
+      "macro_f1": 0.5486410024399774,
+      "mean_path_length_m": 10.198179381580225
+    },
+    "Pair+Angular beta=0.5 B4": {
+      "accuracy": 0.5514880952380953,
+      "macro_f1": 0.5380832834143693,
+      "mean_path_length_m": 10.952021163855754
+    },
+    "Pair+Angular beta=1.0 B4": {
+      "accuracy": 0.5383928571428571,
+      "macro_f1": 0.5242491758677594,
+      "mean_path_length_m": 11.40359779474222
+    },
+    "Pair+GeoCoverage B4": {
+      "accuracy": 0.5593253968253968,
+      "macro_f1": 0.543756901202721,
+      "mean_path_length_m": 10.071003117684334
+    },
+    "PairNav lambda=0.1 B4": {
+      "accuracy": 0.5297619047619048,
+      "macro_f1": 0.5189866857592133,
+      "mean_path_length_m": 5.813672959510355
+    },
+    "PairNav lambda=0.25 B4": {
+      "accuracy": 0.5067460317460317,
+      "macro_f1": 0.4956186344543247,
+      "mean_path_length_m": 5.411217452696569
+    },
+    "PairNav lambda=0.5 B4": {
+      "accuracy": 0.49930555555555556,
+      "macro_f1": 0.48914012939748047,
+      "mean_path_length_m": 5.3489466298888955
+    },
+    "PairDiversityNav B4": {
+      "accuracy": 0.5395833333333333,
+      "macro_f1": 0.5264242628158057,
+      "mean_path_length_m": 6.338917514961213
+    },
+    "StaticViewPairPrior B2": {
+      "accuracy": 0.508234126984127,
+      "macro_f1": 0.4974860356444666,
+      "mean_path_length_m": 2.9845479794230965
+    },
+    "RelativeGeometryPrior B2": {
+      "accuracy": 0.4342261904761905,
+      "macro_f1": 0.42351301255958673,
+      "mean_path_length_m": 3.8240199545014
+    },
+    "RelativeGeometryPrior B3": {
+      "accuracy": 0.4939484126984127,
+      "macro_f1": 0.4825679808764503,
+      "mean_path_length_m": 7.066560003155518
+    },
+    "SmoothedSet3Prior B3": {
+      "accuracy": 0.5502976190476191,
+      "macro_f1": 0.5408368445788416,
+      "mean_path_length_m": 5.8562239284021045
+    },
+    "Exact GT-Margin Oracle B2": {
+      "accuracy": 0.7066468253968254,
+      "macro_f1": 0.7018190247023651,
+      "mean_path_length_m": 3.0661978502595235
+    },
+    "Exact GT-Margin Oracle B3": {
+      "accuracy": 0.7385912698412699,
+      "macro_f1": 0.7377384396303448,
+      "mean_path_length_m": 6.077592522706762
+    },
+    "Exact GT-Margin Oracle B4": {
+      "accuracy": 0.721031746031746,
+      "macro_f1": 0.7190614972380206,
+      "mean_path_length_m": 8.985863835337971
+    }
+  },
+  "dominated": [],
+  "test_used": false
+}
