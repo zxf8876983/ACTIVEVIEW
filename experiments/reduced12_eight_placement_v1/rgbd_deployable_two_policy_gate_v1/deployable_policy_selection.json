@@ -1,0 +1,5 @@
+{
+  "selected": "A_dep+C",
+  "reason": "highest Train internal record-holdout pair AnyCorrect among deployable alternatives",
+  "test_used": false
+}

@@ -1,0 +1,8 @@
+{
+  "A_priv+E_priv": {
+    "pair_any_correct_count": 25997,
+    "pair_any_correct_rate": 0.56119937829203,
+    "first_correct_second_wrong": 2087,
+    "first_wrong_second_correct": 1970
+  }
+}

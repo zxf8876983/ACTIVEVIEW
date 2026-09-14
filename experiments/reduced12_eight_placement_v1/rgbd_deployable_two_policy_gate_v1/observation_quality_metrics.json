@@ -1,0 +1,22 @@
+{
+  "depth_root_finite_rate": 1.0,
+  "yolo_person_detect_rate": 0.6396825396825396,
+  "mean_reliable_joints": 10.012996031746031,
+  "reliable_joint_count": 10.012996031746031,
+  "template_completed_joint_count": 6.987003968253968,
+  "joint_depth_valid_ratio": 0.9962068160597572,
+  "mean_depth_valid_ratio": 0.9962068160597572,
+  "joint_depth_mad_mean": 0.006722892168909311,
+  "torso_depth_mad_mean": 0.011089157313108444,
+  "bbox_area_ratio_mean": 0.1154257133603096,
+  "bbox_truncation_rate": 0.0,
+  "min_joint_confidence_mean": 0.20639479160308838,
+  "q25_joint_confidence_mean": 0.5451175737475592,
+  "std_joint_confidence_mean": 0.12469639629125595,
+  "num_conf_lt_025_mean": 6.984523809523809,
+  "num_conf_lt_050_mean": 7.471031746031746,
+  "estimated_root_depth_mean_m": 1.5839461088180542,
+  "person_confidence_mean": 0.5181707739830017,
+  "mean_joint_confidence": 0.5473034977912903,
+  "test_used": false
+}

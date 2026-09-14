@@ -1,46 +1,29 @@
-# Selector complementarity + RGB-D deployable NBV audit — completed (Phase A / capability probe)
+# RGB-D Human-State Recovery + Deployable Two-Policy Gate — completed
 
-The strict Frame-0 selector complementarity audit and a matched Habitat depth
-capability probe are complete. The deployable RGB-D path remains blocked until
-current-frame depth and raw YOLO keypoint artifacts are separately acquired;
-the results below preserve the completed known-map audit for traceability.
+The reduced12 Train/Moving-Val audit is complete. Existing VideoPose3D was
+confirmed non-causal for frame 0 (filter widths `[3,3,3,3,3]`, padding 121,
+receptive field 243), so deployable D2 uses only current-frame RGB-D
+backprojection, current-frame YOLO26n-Pose, and a Train-derived H36M17
+template. No Policy Test data, candidate RGB/depth/YOLO, or future frames
+entered deployable selection.
 
-Moving-Val (10,080 contexts) pair AnyCorrect rates were A+B 0.620933,
-A+C 0.633631, A+D 0.640377 and A+E 0.662004, where A is privileged
-Frame0SceneVisibility and E is G_full (lambda=.5). The best pair-containing-A
-gate therefore clears the preregistered 0.61 diagnostic threshold, while the
-Train record holdout selected E as the alternative. The corresponding
-GT-TrueLogP policy-pair oracle for A+E is 0.657639 Accuracy / 0.674987
-Macro-F1; no gate was trained because the required current RGB-D state was
-not available.
+Moving Val (10,080 contexts; 68,702 legal candidates) with frozen Yaw8 ST-GCN
+plus Policy-balanced shared head:
 
-Habitat SensorType.DEPTH was successfully probed on 50 Train and 50
-Moving-Val current-frame views (256x256, finite metric depth), but no depth
-cache or raw frame-0 YOLO cache exists. Consequently root localization,
-estimated-pose visibility, uncertainty features and deployable gates are
-marked N/A rather than fabricated. Policy Test was not read.
+- D0 privileged Frame0SceneVisibility: 0.583929 Accuracy / 0.598955 Macro-F1
+- D1 RGB-D root + GT relative pose: 0.499802 / 0.524925
+- D2 strict current RGB-D state: 0.500496 / 0.521328
+- D3 uncertainty-weighted visibility (alpha .25/.50): 0.500595 / 0.521707 and
+  0.500496 / 0.521462
+- Random legal: 0.426786 / 0.450423
+- Static prior: 0.523413 / 0.544567
 
-Artifacts: `experiments/reduced12_eight_placement_v1/rgbd_complementarity_gate_audit/`.
-
----
-
-# Known-map geometric NBV upgrade — completed
-
-The Val-only known-map geometric suite used the frozen Yaw8 ST-GCN plus the
-matched Policy-balanced head on 10,080 Moving Val contexts. The exact
-candidate-only Stage-A action set and Yaw8Fair cache signatures were checked;
-Policy Test and new perception generation were not used. Existing deterministic
-map/raycast features were reused (311 dense proxy points per context).
-
-Moving-Val Accuracy/Macro-F1: StaticViewPrior 0.549901/0.571990,
-Frame0SceneVisibility 0.583929/0.598955, DenseVisibility
-0.583631/0.598359, DOQ-Equal 0.557341/0.577746, G_full λ=.5
-0.583532/0.602979, GT-TrueLogP Oracle 0.760714/0.775961 and GT-Margin
-0.776190/0.796334. The baseline reproduction gate passed within 0.2pp.
-No geometric score exceeded Frame0SceneVisibility or the 60% milestone;
-decision: STOP GEOMETRIC SCORE EXPANSION. Current archives expose only a
-30-frame viewpoint confidence scalar, so uncertainty-weighted visibility and
-estimated-world-state E1/E2 were correctly marked N/A rather than fabricated.
-
-Artifacts: `experiments/reduced12_eight_placement_v1/known_map_geometric_nbv_upgrade/`.
-Runtime map/raycast caches remain external under `ACTIVEVIEW_DATA_ROOT`.
+RGB-D depth caches were generated with eight spawned Habitat workers for
+current frame only; raw depth was not persisted. Root localization was
+numerically exact in the synthetic render (median 0 m); reconstructed
+world-joint MPJPE was 0.4098 m (0.2556 m observed and 0.6308 m template
+completed). D2 is 8.343 pp below D0, so the preregistered viability gate fails
+and human-state recovery is the current bottleneck. Train record-holdout
+complementarity selected `A_dep+C` (0.570978 pair AnyCorrect), below the 0.61
+gate threshold; no complex learned gate was trained. Results are in
+`experiments/reduced12_eight_placement_v1/rgbd_deployable_two_policy_gate_v1/`.

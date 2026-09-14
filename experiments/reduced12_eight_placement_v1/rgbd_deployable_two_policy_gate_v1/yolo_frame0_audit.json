@@ -1,0 +1,30 @@
+{
+  "train": {
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "weights": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/ultralytics/yolo26n-pose.pt",
+    "weights_sha256": "eb3bb8268828aeaf515cec23a4bfafd793944a86fe9af94ba7823609c14522a9",
+    "conf": 0.15,
+    "max_det": 10,
+    "current_rgb_only": true,
+    "candidate_rgb_used": false,
+    "test_used": false,
+    "success_rate": 0.743847681547362
+  },
+  "moving_val": {
+    "split": "moving_val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "weights": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/ultralytics/yolo26n-pose.pt",
+    "weights_sha256": "eb3bb8268828aeaf515cec23a4bfafd793944a86fe9af94ba7823609c14522a9",
+    "conf": 0.15,
+    "max_det": 10,
+    "current_rgb_only": true,
+    "candidate_rgb_used": false,
+    "test_used": false,
+    "success_rate": 0.6396825396825396
+  },
+  "candidate_rgb_used": false,
+  "test_used": false
+}

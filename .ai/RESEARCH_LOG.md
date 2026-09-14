@@ -1522,3 +1522,19 @@ honestly marked N/A. No candidate/future observations or Policy Test were
 read. Report/script:
 `experiments/reduced12_eight_placement_v1/rgbd_complementarity_gate_audit/`
 and `activeview/scripts/experiments/run_reduced12_rgbd_complementarity_gate_audit.py`.
+
+## RGB-D human-state recovery + deployable two-policy gate (2026-09-15)
+
+Completed the reduced12 Train/Moving-Val RGB-D audit with eight spawned
+Habitat workers for current-frame depth rendering. Existing VideoPose3D was
+confirmed non-causal at frame 0 (243-frame receptive field), so D2 uses direct
+current RGB-D/YOLO backprojection plus a Train-derived template. On 10,080
+Moving-Val contexts and 68,702 legal candidates, D0 Frame0SceneVisibility was
+0.583929/0.598955 Accuracy/Macro-F1, D1 estimated-root + GT-relative pose was
+0.499802/0.524925, D2 strict deployable state was 0.500496/0.521328, and D3
+alpha .25/.50 was 0.500595/0.521707 and 0.500496/0.521462. Random legal was
+0.426786/0.450423. D2 misses D0 by 8.343 pp, failing the preregistered
+viability gate; human-state recovery is the current bottleneck. Train
+record-holdout complementarity selected A_dep+C at 0.570978 pair AnyCorrect,
+below the 0.61 gate threshold, so no complex gate was trained. Policy Test and
+future candidate observations were not used.

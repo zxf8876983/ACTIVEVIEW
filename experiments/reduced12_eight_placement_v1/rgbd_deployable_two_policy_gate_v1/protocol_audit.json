@@ -1,0 +1,79 @@
+{
+  "train_rows": 46324,
+  "moving_val_rows": 10080,
+  "moving_val_candidate_samples": 68702,
+  "action_set": "Stage-A legal candidate-only",
+  "yaw8_train": {
+    "encoder": "yaw8",
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_yaw8_policy_landscape/train.npz",
+    "source_sha256": "de62a5695dd0ba87e566209e82e7c7327d3352254ba0dbdfeb54eb7bffcf6802",
+    "feature_dim": 256,
+    "fields": [
+      "record_id",
+      "context_id",
+      "viewpoint_id",
+      "label",
+      "split",
+      "feature"
+    ],
+    "test_used": false
+  },
+  "yaw8_moving_val": {
+    "encoder": "yaw8",
+    "split": "moving_val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_yaw8_policy_landscape/moving_val.npz",
+    "source_sha256": "10bed5ca36bd0fa1ec1be9811d2f5de5c355f8d2a9cadd7b3248e89670f32b1b",
+    "feature_dim": 256,
+    "fields": [
+      "record_id",
+      "context_id",
+      "viewpoint_id",
+      "label",
+      "split",
+      "feature"
+    ],
+    "test_used": false
+  },
+  "map_train": {
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "map_dim": 96,
+    "candidate_count": 305175,
+    "scene_count": 20,
+    "workers": 8,
+    "dense_sample_count": 311,
+    "dense_points_per_context": 311,
+    "robust_definition": "17 current H36M17 joints x +/-x,+/-y,+/-z at eps 0.05/0.10/0.20m",
+    "clearance_definition": "four endpoint cone rays around eight representative current joints",
+    "test_used": false,
+    "elapsed_seconds": 1344.7984066028148,
+    "scene_jobs_completed": 20
+  },
+  "map_val": {
+    "split": "val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "map_dim": 96,
+    "candidate_count": 68702,
+    "scene_count": 20,
+    "workers": 8,
+    "dense_sample_count": 311,
+    "dense_points_per_context": 311,
+    "robust_definition": "17 current H36M17 joints x +/-x,+/-y,+/-z at eps 0.05/0.10/0.20m",
+    "clearance_definition": "four endpoint cone rays around eight representative current joints",
+    "test_used": false,
+    "elapsed_seconds": 314.5764346793294,
+    "scene_jobs_completed": 20
+  },
+  "template": {
+    "source": "Policy Train archived current skeletons",
+    "pelvis_bbox_ratio": 0.55
+  },
+  "test_used": false
+}

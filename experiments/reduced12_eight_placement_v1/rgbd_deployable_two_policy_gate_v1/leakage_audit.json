@@ -1,0 +1,13 @@
+{
+  "policy_test_used": false,
+  "candidate_rgb_used_before_selection": false,
+  "candidate_depth_used_before_selection": false,
+  "candidate_yolo_used_before_selection": false,
+  "future_frames_used_for_d2": false,
+  "future_candidate_skeleton_used_for_terminal_evaluation_only": true,
+  "gt_action_used_at_inference": false,
+  "gt_human_state_used_for_d2": false,
+  "deployable_d2": true,
+  "d2_pose_method": "current-frame RGB-D keypoint backprojection + Train-derived template",
+  "video_pose3d_frame0_strict_causal": false
+}

@@ -1,0 +1,57 @@
+{
+  "train": {
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "resolution": [
+      256,
+      256
+    ],
+    "hfov_deg": 75.0,
+    "sensor_height_m": 1.1,
+    "frame_index": 0,
+    "raw_depth_written": false,
+    "current_view_only": true,
+    "candidate_depth_used": false,
+    "test_used": false,
+    "root_finite_rate": 1.0
+  },
+  "moving_val": {
+    "split": "moving_val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "resolution": [
+      256,
+      256
+    ],
+    "hfov_deg": 75.0,
+    "sensor_height_m": 1.1,
+    "frame_index": 0,
+    "raw_depth_written": false,
+    "current_view_only": true,
+    "candidate_depth_used": false,
+    "test_used": false,
+    "root_finite_rate": 1.0
+  },
+  "fields": [
+    "episode_id",
+    "camera_K (fixed 256px/75deg)",
+    "T_world_camera (from archived camera pose)",
+    "root_world",
+    "root_camera",
+    "observed_joints_world",
+    "reliable",
+    "joint_depth",
+    "joint_depth_valid",
+    "joint_depth_mad",
+    "root_pixel",
+    "bbox_xyxy",
+    "person_conf",
+    "torso_depth",
+    "torso_depth_mad",
+    "fallback_type (template completion when unreliable)"
+  ],
+  "raw_depth_persisted": false,
+  "candidate_view_data": false,
+  "test_used": false
+}

@@ -1,0 +1,26 @@
+{
+  "A_dep+B": {
+    "pair_any_correct_count": 25806,
+    "pair_any_correct_rate": 0.5570762455746481,
+    "first_correct_second_wrong": 2025,
+    "first_wrong_second_correct": 3958
+  },
+  "A_dep+C": {
+    "pair_any_correct_count": 26450,
+    "pair_any_correct_rate": 0.5709783265693809,
+    "first_correct_second_wrong": 2721,
+    "first_wrong_second_correct": 4602
+  },
+  "A_dep+D": {
+    "pair_any_correct_count": 25949,
+    "pair_any_correct_rate": 0.560163198342112,
+    "first_correct_second_wrong": 4265,
+    "first_wrong_second_correct": 4101
+  },
+  "A_dep+E_dep": {
+    "pair_any_correct_count": 23714,
+    "pair_any_correct_rate": 0.5119160694240567,
+    "first_correct_second_wrong": 2061,
+    "first_wrong_second_correct": 1866
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "available": false,
+  "reason": "compact D2 root errors are summarized globally; no Val threshold was tuned",
+  "test_used": false
+}

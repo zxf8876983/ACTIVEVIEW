@@ -1,0 +1,15 @@
+{
+  "video_pose3d_filter_widths": [
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "padding": 121,
+  "temporal_receptive_field": 243,
+  "reads_frames_gt0": true,
+  "strict_frame0_causal": false,
+  "d2_method": "direct RGB-D backprojection + Train-derived template",
+  "test_used": false
+}

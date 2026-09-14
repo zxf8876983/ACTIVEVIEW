@@ -1,0 +1,7 @@
+{
+  "estimated_yaw_source": "RGB-D reliable shoulder/hip alignment to Train template",
+  "gt_yaw_source": "Habitat GT joints (diagnostic only)",
+  "mean_abs_error_deg": 92.58062744140625,
+  "median_abs_error_deg": 92.30201721191406,
+  "test_used": false
+}

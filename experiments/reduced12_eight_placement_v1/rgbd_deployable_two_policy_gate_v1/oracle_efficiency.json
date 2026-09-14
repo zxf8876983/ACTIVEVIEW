@@ -1,0 +1,5 @@
+{
+  "status": "NOT_COMPUTED",
+  "reason": "pair oracle headroom requires a selected deployable gate; see gates and train holdout files",
+  "test_used": false
+}

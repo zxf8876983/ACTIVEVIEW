@@ -1,0 +1,7 @@
+{
+  "world_joint_mpjpe_m": 0.40981391072273254,
+  "direct_observed_mpjpe_m": 0.2556091547012329,
+  "template_completed_mpjpe_m": 0.630803108215332,
+  "body_yaw_error_mean_deg": 92.58062744140625,
+  "body_yaw_error_median_deg": 92.30201721191406
+}
