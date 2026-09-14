@@ -1,0 +1,22 @@
+{
+  "best_geometric_vs_frame0_visibility": {
+    "switch_count": 437,
+    "switch_rate": 0.0433531746031746,
+    "old_accuracy_on_switch": 0.5652173913043478,
+    "new_accuracy_on_switch": 0.5583524027459954,
+    "old_wrong_new_correct": 52,
+    "old_correct_new_wrong": 55,
+    "both_correct": 5831,
+    "both_wrong": 4142
+  },
+  "best_geometric_vs_static_prior": {
+    "switch_count": 5192,
+    "switch_rate": 0.515079365079365,
+    "old_accuracy_on_switch": 0.5244607087827426,
+    "new_accuracy_on_switch": 0.5899460708782742,
+    "old_wrong_new_correct": 909,
+    "old_correct_new_wrong": 569,
+    "both_correct": 4974,
+    "both_wrong": 3628
+  }
+}

@@ -1478,3 +1478,24 @@ so no follow-up method was started automatically. Source/report:
 `activeview/scripts/experiments/run_reduced12_yaw8_strict_frame0_rebaseline.py`,
 `activeview/scripts/experiments/yaw8_strict_frame0_rebaseline_report.py` and
 `experiments/reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/`.
+
+## Known-map geometric NBV upgrade suite (2026-09-15)
+
+Completed a Train/Val-only geometric NBV audit using the frozen Yaw8 ST-GCN
+and matched Policy-balanced head. The exact candidate-only Stage-A pool was
+reused (Moving Val 10,080; mean/min/max legal candidates 6.8157/2/21), and
+the existing 311-point dense Habitat map cache was validated against Yaw8Fair
+IDs/masks. Baseline reproduction passed: StaticViewPrior
+0.549901/0.571990, Frame0SceneVisibility 0.583929/0.598955,
+GT-TrueLogP Oracle 0.760714/0.775961, GT-Margin Oracle 0.776190/0.796334.
+
+DenseVisibility scored 0.583631/0.598359 and G_full λ=.5 scored
+0.583532/0.602979; neither improved Accuracy over Frame0SceneVisibility and
+no fixed geometric method crossed 60%. DOQ-Equal was 0.557341/0.577746.
+Completeness was an H36M17 in-FOV proxy because dense projected-point counts
+were not persisted. Uncertainty weighting and E1/E2 estimated-world-state
+tracks were marked N/A because archives expose only a 30-frame viewpoint
+confidence scalar and no metric global estimated human state. Decision:
+STOP GEOMETRIC SCORE EXPANSION; investigate current human-state estimation or
+future recognizer-evidence prediction instead. Policy Test, new RGB/skeleton/
+DINO, and recognizer modification were not used.

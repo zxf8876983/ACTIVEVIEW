@@ -1,0 +1,7 @@
+{
+  "seed": 42,
+  "recognizer": "frozen Yaw8 ST-GCN + frozen matched Policy-balanced head",
+  "candidate_action_set": "Stage-A candidate-only",
+  "test_used": false,
+  "map_cache": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/map_aware_robust_observability_audit"
+}

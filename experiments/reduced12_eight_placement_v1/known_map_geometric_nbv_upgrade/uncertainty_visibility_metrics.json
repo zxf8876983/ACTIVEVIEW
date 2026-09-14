@@ -1,0 +1,10 @@
+{
+  "status": "SKIPPED",
+  "reason": "archives expose confidence shape (32,), a 30-frame viewpoint scalar; current frame-0 per-joint c_j is unavailable",
+  "methods": {
+    "Uncertainty25": null,
+    "Uncertainty50": null,
+    "Dense uncertainty": null
+  },
+  "per_joint_confidence_fabricated": false
+}

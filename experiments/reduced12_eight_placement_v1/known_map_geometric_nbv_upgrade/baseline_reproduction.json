@@ -1,0 +1,57 @@
+{
+  "expected": {
+    "StaticViewPrior": [
+      0.549901,
+      0.57199
+    ],
+    "Frame0SceneVisibility": [
+      0.583929,
+      0.598955
+    ],
+    "GT-TrueLogP Oracle": [
+      0.760714,
+      0.775961
+    ],
+    "GT-Margin Oracle": [
+      0.77619,
+      0.796334
+    ]
+  },
+  "observed": {
+    "StaticViewPrior": [
+      0.5499007936507937,
+      0.5719896953326985
+    ],
+    "Frame0SceneVisibility": [
+      0.5839285714285715,
+      0.5989551240458443
+    ],
+    "GT-TrueLogP Oracle": [
+      0.7607142857142857,
+      0.7759606754980862
+    ],
+    "GT-Margin Oracle": [
+      0.7761904761904762,
+      0.7963340627889405
+    ]
+  },
+  "deltas": {
+    "StaticViewPrior": {
+      "accuracy_pp": -2.0634920627760067e-05,
+      "macro_f1_pp": -3.0466730149836252e-05
+    },
+    "Frame0SceneVisibility": {
+      "accuracy_pp": -4.285714285678921e-05,
+      "macro_f1_pp": 1.2404584426306542e-05
+    },
+    "GT-TrueLogP Oracle": {
+      "accuracy_pp": 2.8571428567492063e-05,
+      "macro_f1_pp": -3.2450191378430304e-05
+    },
+    "GT-Margin Oracle": {
+      "accuracy_pp": 4.7619047616187515e-05,
+      "macro_f1_pp": 6.278894049138728e-06
+    }
+  },
+  "status": "PASS"
+}

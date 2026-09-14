@@ -1,20 +1,20 @@
-# Yaw8Fair Strict-Frame0 NBV Full Re-baseline — completed
+# Known-map geometric NBV upgrade — completed
 
-The strict candidate-only Frame0 protocol was re-evaluated with the frozen
-Yaw8 ST-GCN encoder and matched Policy-balanced shared head. Policy Train used
-46,324 contexts across 313 records for selector fitting; Moving Val used
-10,080 contexts across 105 records for evaluation. No Policy Test, new
-perception data or recognizer changes were used. The Stage-A legal candidate
-pool had mean/min/max size 6.8157/2/21.
+The Val-only known-map geometric suite used the frozen Yaw8 ST-GCN plus the
+matched Policy-balanced head on 10,080 Moving Val contexts. The exact
+candidate-only Stage-A action set and Yaw8Fair cache signatures were checked;
+Policy Test and new perception generation were not used. Existing deterministic
+map/raycast features were reused (311 dense proxy points per context).
 
-Moving-Val Accuracy/Macro-F1: Random legal 0.426786/0.450423,
-StaticViewPrior 0.549901/0.571990, Frame0SceneVisibility
-0.583929/0.598955, best learned Prior+RGBResidual λ=0.5
-0.550794/0.573851, GT-TrueLogP Oracle 0.760714/0.775961 and GT-Margin /
-AnyCorrect 0.776190/0.796334 and 0.776190 coverage. Frame0SceneVisibility is
-the best strict method (+3.403pp over StaticViewPrior); learned utility
-residual gain is only +0.089pp. Decision: keep the instance-conditioned
-Frame0 NBV baseline, but do not automatically start another method family.
+Moving-Val Accuracy/Macro-F1: StaticViewPrior 0.549901/0.571990,
+Frame0SceneVisibility 0.583929/0.598955, DenseVisibility
+0.583631/0.598359, DOQ-Equal 0.557341/0.577746, G_full λ=.5
+0.583532/0.602979, GT-TrueLogP Oracle 0.760714/0.775961 and GT-Margin
+0.776190/0.796334. The baseline reproduction gate passed within 0.2pp.
+No geometric score exceeded Frame0SceneVisibility or the 60% milestone;
+decision: STOP GEOMETRIC SCORE EXPANSION. Current archives expose only a
+30-frame viewpoint confidence scalar, so uncertainty-weighted visibility and
+estimated-world-state E1/E2 were correctly marked N/A rather than fabricated.
 
-Artifacts: `experiments/reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/`.
-Runtime checkpoints remain external under `ACTIVEVIEW_DATA_ROOT`.
+Artifacts: `experiments/reduced12_eight_placement_v1/known_map_geometric_nbv_upgrade/`.
+Runtime map/raycast caches remain external under `ACTIVEVIEW_DATA_ROOT`.

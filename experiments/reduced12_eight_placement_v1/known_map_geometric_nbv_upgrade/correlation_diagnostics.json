@@ -1,0 +1,58 @@
+{
+  "V17": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": 0.432950971588279,
+    "within_context_spearman_mean": 0.2558348974967037,
+    "within_context_spearman_median": 0.22727272727272727,
+    "within_context_count": 10080
+  },
+  "V_dense": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": 0.43292410336613246,
+    "within_context_spearman_mean": 0.2709244412912591,
+    "within_context_spearman_median": 0.3,
+    "within_context_count": 10080
+  },
+  "Completeness": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": -0.014645167092597635,
+    "within_context_spearman_mean": -0.006024520661227317,
+    "within_context_spearman_median": 0.0,
+    "within_context_count": 10080
+  },
+  "Scale": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": 0.03180845472365222,
+    "within_context_spearman_mean": 0.05260651174959003,
+    "within_context_spearman_median": 0.07142857142857144,
+    "within_context_count": 10080
+  },
+  "Prior": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": 0.2942867779791386,
+    "within_context_spearman_mean": 0.2653259655291389,
+    "within_context_spearman_median": 0.39999999999999997,
+    "within_context_count": 10080
+  },
+  "G_geo": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": 0.3209837691751151,
+    "within_context_spearman_mean": 0.2664067669122816,
+    "within_context_spearman_median": 0.39999999999999997,
+    "within_context_count": 10080
+  },
+  "G_full_0.25": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": 0.33575960176158975,
+    "within_context_spearman_mean": 0.3017449589638334,
+    "within_context_spearman_median": 0.46363636363636374,
+    "within_context_count": 10080
+  },
+  "G_full_0.5": {
+    "candidate_count": 68702,
+    "candidate_level_spearman": 0.35375743530689213,
+    "within_context_spearman_mean": 0.31373755674569753,
+    "within_context_spearman_median": 0.48461538461538467,
+    "within_context_count": 10080
+  }
+}

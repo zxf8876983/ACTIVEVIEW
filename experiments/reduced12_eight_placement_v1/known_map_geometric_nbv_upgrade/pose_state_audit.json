@@ -1,0 +1,7 @@
+{
+  "E0": "available via existing map cache GT frame-0 state",
+  "E1": "N/A",
+  "E2": "N/A",
+  "reason": "current production pipeline stores root-relative normalized skeleton and viewpoint scalar confidence, not metric world-space estimated human state",
+  "pose_noise_sensitivity": "not fabricated without an estimated-state artifact"
+}

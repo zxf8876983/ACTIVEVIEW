@@ -1,0 +1,6 @@
+{
+  "source": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/map_aware_robust_observability_audit",
+  "dense_points_per_context": 311,
+  "definition": "existing deterministic dense body proxy from map cache; no new raycast generated",
+  "test_used": false
+}
