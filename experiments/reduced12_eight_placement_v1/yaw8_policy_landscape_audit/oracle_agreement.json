@@ -1,0 +1,5 @@
+{
+  "gt_margin_top1_agreement": 0.38055555555555554,
+  "gt_margin_top3_overlap": 0.6652116402116401,
+  "top3_overlap_definition": "intersection size divided by 3 over candidate-only top-three GT-margin viewpoints"
+}

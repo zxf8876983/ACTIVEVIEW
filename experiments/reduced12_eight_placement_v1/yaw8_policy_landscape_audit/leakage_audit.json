@@ -1,0 +1,13 @@
+{
+  "policy_test_used": false,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "yolo_rerun": false,
+  "videopose3d_rerun": false,
+  "yaw8_stgcn_modified": false,
+  "policy_candidate_set_modified": false,
+  "moving_val_used_for_training": false,
+  "selector_trained": false,
+  "train_used_for_static_prior_only": true,
+  "future_candidate_skeleton_used_for_terminal_oracle_evidence": true
+}

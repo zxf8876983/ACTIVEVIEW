@@ -1,0 +1,21 @@
+{
+  "expected_history": {
+    "stay_accuracy": 0.302579,
+    "oracle_accuracy": 0.753175,
+    "anycorrect": 0.791964
+  },
+  "observed": {
+    "stay_accuracy": 0.30257936507936506,
+    "oracle_accuracy": 0.7531746031746032,
+    "anycorrect": 0.7919642857142857
+  },
+  "delta": {
+    "stay_accuracy": 3.650793650722406e-07,
+    "oracle_accuracy": -3.968253968755775e-07,
+    "anycorrect": 2.8571428567492063e-07
+  },
+  "max_abs_delta": 3.968253968755775e-07,
+  "direct_cache_max_logp_abs_error": 0.0011823177337646484,
+  "direct_cache_check_count": 8,
+  "status": "PASS"
+}

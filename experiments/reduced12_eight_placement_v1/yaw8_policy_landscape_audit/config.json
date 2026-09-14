@@ -1,0 +1,9 @@
+{
+  "seed": 42,
+  "device": "cuda:0",
+  "action_set": "current/Stay + Stage-A legal candidate_pool",
+  "policy_train_contexts": 46324,
+  "moving_val_contexts": 10080,
+  "test_used": false,
+  "training_used": false
+}

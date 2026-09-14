@@ -1,0 +1,14 @@
+{
+  "true_logp": {
+    "global_spearman": 0.6468583527382273,
+    "global_pearson": 0.5679335479213701,
+    "within_context_mean": 0.45831797619315595,
+    "within_context_median": 0.6
+  },
+  "margins": {
+    "global_spearman": 0.5577897417796774,
+    "global_pearson": 0.5922840117669093,
+    "within_context_mean": 0.38018247013257517,
+    "within_context_median": 0.5
+  }
+}

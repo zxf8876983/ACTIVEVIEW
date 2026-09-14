@@ -1,0 +1,706 @@
+{
+  "old": {
+    "Stay/current": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.3753501400560224
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.5750636132315522
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.40683572216097025
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.42292490118577075
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.3654708520179372
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.0636042402826855
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.10905349794238683
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.27038183694530443
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.390625
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.12641083521444696
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.20523560209424083
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.1643426294820717
+      }
+    },
+    "Random legal": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.38095238095238093
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.6743002544529262
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.5093715545755237
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.4189723320158103
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.5
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.18138987043580684
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.18106995884773663
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.3457172342621259
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.4548611111111111
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.18284424379232506
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.3057591623036649
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.15836653386454183
+      }
+    },
+    "StaticPrior": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.6050420168067226
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.7315521628498728
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.6703417861080485
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.40810276679841895
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.7825112107623319
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.2508833922261484
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.2962962962962963
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.5572755417956656
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.6484375
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.2144469525959368
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.4418848167539267
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.20019920318725098
+      }
+    },
+    "GT-TrueLogP Oracle": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.8580765639589168
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.960559796437659
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.8169790518191842
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.6511857707509882
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.9035874439461884
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.6018845700824499
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.6255144032921811
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.7481940144478845
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.8645833333333334
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.6275395033860045
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.7759162303664922
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.5577689243027888
+      }
+    },
+    "GT-Margin Oracle": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.8954248366013072
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.9809160305343512
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.8180815876515987
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.8527667984189723
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.9080717488789237
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.6372202591283863
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.6460905349794238
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.7492260061919505
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.8671875
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.654627539503386
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.7905759162303665
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.6155378486055777
+      }
+    },
+    "Legal candidate micro": {
+      "walk": {
+        "support": 7378,
+        "accuracy": 0.3854703171591217
+      },
+      "sit": {
+        "support": 5137,
+        "accuracy": 0.6809421841541756
+      },
+      "stand up": {
+        "support": 6211,
+        "accuracy": 0.5491869264208662
+      },
+      "bend": {
+        "support": 6873,
+        "accuracy": 0.4124836316019206
+      },
+      "crawl": {
+        "support": 3029,
+        "accuracy": 0.5506767910201387
+      },
+      "stumble": {
+        "support": 5847,
+        "accuracy": 0.19599794766546946
+      },
+      "clap": {
+        "support": 3262,
+        "accuracy": 0.22194972409564684
+      },
+      "throw": {
+        "support": 6697,
+        "accuracy": 0.34164551291623113
+      },
+      "kick": {
+        "support": 7853,
+        "accuracy": 0.445052846046097
+      },
+      "knock": {
+        "support": 2947,
+        "accuracy": 0.1974889718357652
+      },
+      "punch": {
+        "support": 6533,
+        "accuracy": 0.3248124904331854
+      },
+      "touching face": {
+        "support": 6935,
+        "accuracy": 0.17000720980533526
+      }
+    },
+    "AnyCorrect Coverage": {
+      "walk": {
+        "support": 1071,
+        "coverage": 0.8954248366013072
+      },
+      "sit": {
+        "support": 786,
+        "coverage": 0.9809160305343512
+      },
+      "stand up": {
+        "support": 907,
+        "coverage": 0.8180815876515987
+      },
+      "bend": {
+        "support": 1012,
+        "coverage": 0.8527667984189723
+      },
+      "crawl": {
+        "support": 446,
+        "coverage": 0.9080717488789237
+      },
+      "stumble": {
+        "support": 849,
+        "coverage": 0.6372202591283863
+      },
+      "clap": {
+        "support": 486,
+        "coverage": 0.6460905349794238
+      },
+      "throw": {
+        "support": 969,
+        "coverage": 0.7492260061919505
+      },
+      "kick": {
+        "support": 1152,
+        "coverage": 0.8671875
+      },
+      "knock": {
+        "support": 443,
+        "coverage": 0.654627539503386
+      },
+      "punch": {
+        "support": 955,
+        "coverage": 0.7905759162303665
+      },
+      "touching face": {
+        "support": 1004,
+        "coverage": 0.6155378486055777
+      }
+    }
+  },
+  "yaw8": {
+    "Stay/current": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.3165266106442577
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.40458015267175573
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.3241455347298787
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.2183794466403162
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.24439461883408073
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.11189634864546526
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.22839506172839505
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.24561403508771928
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.4947916666666667
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.23476297968397292
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.23141361256544501
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.5717131474103586
+      }
+    },
+    "Random legal": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.3520074696545285
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.5521628498727735
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.4531422271223815
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.24703557312252963
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.42376681614349776
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.17314487632508835
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.3168724279835391
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.33539731682146545
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.5694444444444444
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.35214446952595935
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.2753926701570681
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.500996015936255
+      }
+    },
+    "StaticPrior": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.5723622782446312
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.7519083969465649
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.6504961411245865
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.308300395256917
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.7331838565022422
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.1872791519434629
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.49382716049382713
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.5314757481940144
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.8159722222222222
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.5146726862302483
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.44712041884816756
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.4043824701195219
+      }
+    },
+    "GT-TrueLogP Oracle": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.8487394957983193
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.8994910941475827
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.8103638368246968
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.5780632411067194
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.8542600896860987
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.5288574793875147
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.7674897119341564
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.7316821465428277
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.9418402777777778
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.8419864559819413
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.6272251308900524
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.8894422310756972
+      }
+    },
+    "GT-Margin Oracle": {
+      "walk": {
+        "support": 1071,
+        "accuracy": 0.8552754435107376
+      },
+      "sit": {
+        "support": 786,
+        "accuracy": 0.8994910941475827
+      },
+      "stand up": {
+        "support": 907,
+        "accuracy": 0.8103638368246968
+      },
+      "bend": {
+        "support": 1012,
+        "accuracy": 0.58399209486166
+      },
+      "crawl": {
+        "support": 446,
+        "accuracy": 0.8542600896860987
+      },
+      "stumble": {
+        "support": 849,
+        "accuracy": 0.5335689045936396
+      },
+      "clap": {
+        "support": 486,
+        "accuracy": 0.7695473251028807
+      },
+      "throw": {
+        "support": 969,
+        "accuracy": 0.7337461300309598
+      },
+      "kick": {
+        "support": 1152,
+        "accuracy": 0.9418402777777778
+      },
+      "knock": {
+        "support": 443,
+        "accuracy": 0.8442437923250564
+      },
+      "punch": {
+        "support": 955,
+        "accuracy": 0.6293193717277487
+      },
+      "touching face": {
+        "support": 1004,
+        "accuracy": 0.9103585657370518
+      }
+    },
+    "Legal candidate micro": {
+      "walk": {
+        "support": 7378,
+        "accuracy": 0.3664949850908105
+      },
+      "sit": {
+        "support": 5137,
+        "accuracy": 0.6069690480825385
+      },
+      "stand up": {
+        "support": 6211,
+        "accuracy": 0.4876831428111415
+      },
+      "bend": {
+        "support": 6873,
+        "accuracy": 0.2618943692710607
+      },
+      "crawl": {
+        "support": 3029,
+        "accuracy": 0.4585671838890723
+      },
+      "stumble": {
+        "support": 5847,
+        "accuracy": 0.17205404480930392
+      },
+      "clap": {
+        "support": 3262,
+        "accuracy": 0.3789086450030656
+      },
+      "throw": {
+        "support": 6697,
+        "accuracy": 0.35075406898611317
+      },
+      "kick": {
+        "support": 7853,
+        "accuracy": 0.5553291735642429
+      },
+      "knock": {
+        "support": 2947,
+        "accuracy": 0.3763148965049203
+      },
+      "punch": {
+        "support": 6533,
+        "accuracy": 0.2856268176947803
+      },
+      "touching face": {
+        "support": 6935,
+        "accuracy": 0.4971881759192502
+      }
+    },
+    "AnyCorrect Coverage": {
+      "walk": {
+        "support": 1071,
+        "coverage": 0.8552754435107376
+      },
+      "sit": {
+        "support": 786,
+        "coverage": 0.8994910941475827
+      },
+      "stand up": {
+        "support": 907,
+        "coverage": 0.8103638368246968
+      },
+      "bend": {
+        "support": 1012,
+        "coverage": 0.58399209486166
+      },
+      "crawl": {
+        "support": 446,
+        "coverage": 0.8542600896860987
+      },
+      "stumble": {
+        "support": 849,
+        "coverage": 0.5335689045936396
+      },
+      "clap": {
+        "support": 486,
+        "coverage": 0.7695473251028807
+      },
+      "throw": {
+        "support": 969,
+        "coverage": 0.7337461300309598
+      },
+      "kick": {
+        "support": 1152,
+        "coverage": 0.9418402777777778
+      },
+      "knock": {
+        "support": 443,
+        "coverage": 0.8442437923250564
+      },
+      "punch": {
+        "support": 955,
+        "coverage": 0.6293193717277487
+      },
+      "touching face": {
+        "support": 1004,
+        "coverage": 0.9103585657370518
+      }
+    }
+  }
+}

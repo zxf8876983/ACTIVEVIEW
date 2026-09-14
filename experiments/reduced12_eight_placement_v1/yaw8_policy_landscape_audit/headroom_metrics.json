@@ -1,0 +1,10 @@
+{
+  "old": {
+    "random_to_oracle": 0.3880952380952381,
+    "static_to_oracle": 0.26160714285714287
+  },
+  "yaw8": {
+    "random_to_oracle": 0.39017857142857143,
+    "static_to_oracle": 0.24305555555555558
+  }
+}

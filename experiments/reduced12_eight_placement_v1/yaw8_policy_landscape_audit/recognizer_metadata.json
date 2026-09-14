@@ -1,0 +1,16 @@
+{
+  "old": {
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+    "sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+    "architecture": "STGCN h36m_17 spatial, 256-D penultimate + frozen policy shared head Linear(256,256)->GELU->Linear(256,12)",
+    "normalization": "camera_to_gravity + root_center + torso_scale + yaw_only",
+    "policy_head_checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/view_agnostic_frozen_encoder_head/shared_head_best.pth",
+    "policy_head_sha256": "12aaed93d2edd4be5f0f3e1cef068f1aa4b1627eb970d7e93b78088f9aa13747"
+  },
+  "yaw8": {
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_yaw8_v1/best.pt",
+    "sha256": "102d60416c7ed26265719a23f72f30a391fa0e5f49458ad05ad5d0a33ec1c761",
+    "architecture": "STGCN h36m_17 spatial, 256-D penultimate, native 12-way fc",
+    "normalization": "camera_to_gravity + root_center + torso_scale + yaw_only"
+  }
+}

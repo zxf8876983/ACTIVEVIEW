@@ -1,0 +1,20 @@
+{
+  "spearman": 0.974706744868035,
+  "pearson": 0.9768601490030343,
+  "top5_overlap": 1.0,
+  "jsd_positive_normalized": 0.0034069032415709145,
+  "old_best_viewpoints": [
+    6,
+    0,
+    2,
+    10,
+    3
+  ],
+  "yaw8_best_viewpoints": [
+    6,
+    0,
+    3,
+    10,
+    2
+  ]
+}
