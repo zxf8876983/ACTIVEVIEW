@@ -6,8 +6,8 @@ Evaluate whether a Train-derived viewpoint prior plus a Frame0 RGB residual sele
 ## Phases
 - [x] Phase 1: Inspect protocol, artifacts, selector architecture and CUDA runtime
 - [x] Phase 2: Implement Train/Moving-Val audit and artifact writers
-- [ ] Phase 3: Run audit on CUDA with Test locked
-- [ ] Phase 4: Review metrics, update project context, commit and push
+- [x] Phase 3: Run audit on CUDA with Test locked
+- [x] Phase 4: Review metrics, update project context, commit and push
 
 ## Key Questions
 1. Does Frame0 RGB predict residual utility beyond the static viewpoint prior?
@@ -22,4 +22,4 @@ Evaluate whether a Train-derived viewpoint prior plus a Frame0 RGB residual sele
 - None yet.
 
 ## Status
-**Currently in Phase 3** - running the minimal residual selector audit on CUDA.
+**Completed** - results reviewed, context updated, and commit pushed.
