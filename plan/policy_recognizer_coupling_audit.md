@@ -22,5 +22,5 @@ instance-conditioned Frame0 information.
 
 ## Status
 
-**Completed** — implementation, CUDA Val run, context updates and task-owned
-commit are complete; the commit is ready to push.
+**Completed** — implementation, CUDA Val run, context updates, task-owned
+commit and remote push are complete.
