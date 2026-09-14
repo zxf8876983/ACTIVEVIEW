@@ -764,7 +764,17 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     _write_json(output_root / "dense_proxy_metadata.json", {"source": str((data_root / MAP_REL).resolve()), "dense_points_per_context": train_map_meta.get("dense_points_per_context"), "definition": "existing deterministic dense body proxy from map cache; no new raycast generated", "test_used": False})
     _write_json(output_root / "dense_visibility_metrics.json", {name: methods[name] for name in ("DenseVisibility",)})
     _write_json(output_root / "completeness_metrics.json", {"Completeness": methods["Completeness"], "definition": "available H36M17 in-FOV fraction proxy; dense in-frame point count was not persisted in existing cache"})
-    _write_json(output_root / "projected_scale_metrics.json", {"ScaleOnly": methods["ScaleOnly"], "ProjectedArea": values_val["ProjectedArea"].shape, "median_correct_scale_train": median_scale})
+    candidate_area = values_val["ProjectedArea"][candidate_val]
+    candidate_height = val_map["features"][:, :, PROJ_HEIGHT][candidate_val]
+    _write_json(output_root / "projected_scale_metrics.json", {
+        "ScaleOnly": methods["ScaleOnly"],
+        "median_correct_scale_train": median_scale,
+        "candidate_projected_area_mean": float(np.nanmean(candidate_area)),
+        "candidate_projected_area_median": float(np.nanmedian(candidate_area)),
+        "candidate_projected_height_mean": float(np.nanmean(candidate_height)),
+        "candidate_projected_height_median": float(np.nanmedian(candidate_height)),
+        "definition": "projected H36M17 bbox area/height proxy persisted by the existing map cache",
+    })
     _write_json(output_root / "doq_metrics.json", {name: methods[name] for name in ("DOQ-Equal", "DOQ-TrainCalibrated") if name in methods} | {"calibration": doq_calibration})
     _write_json(output_root / "uncertainty_visibility_metrics.json", uncertainty_metrics)
     _write_json(output_root / "geometric_fusion_metrics.json", {name: methods[name] for name in geometric_names})

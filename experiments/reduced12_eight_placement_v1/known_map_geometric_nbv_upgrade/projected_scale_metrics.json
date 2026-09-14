@@ -240,9 +240,10 @@
     "stay_rate": 0.0,
     "test_used": false
   },
-  "ProjectedArea": [
-    10080,
-    22
-  ],
-  "median_correct_scale_train": 0.10706418380141258
+  "median_correct_scale_train": 0.10706418380141258,
+  "candidate_projected_area_mean": 0.12269600480794907,
+  "candidate_projected_area_median": 0.09639407694339752,
+  "candidate_projected_height_mean": 0.46422889828681946,
+  "candidate_projected_height_median": 0.42420291900634766,
+  "definition": "projected H36M17 bbox area/height proxy persisted by the existing map cache"
 }
