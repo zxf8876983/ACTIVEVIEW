@@ -1,0 +1,13 @@
+{
+  "policy_test_used": false,
+  "train_supervision_used": true,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "future_candidate_observation_used_for_selector": false,
+  "future_candidate_feature_used_for_selector": false,
+  "future_candidate_logits_used_for_selector": false,
+  "gt_action_used_for_selector": false,
+  "frozen_stgcn_encoder_modified": false,
+  "multi_view_fusion": false,
+  "selected_observation_protocol": "O1-alone"
+}

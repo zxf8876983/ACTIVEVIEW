@@ -1,0 +1,23 @@
+{
+  "H_shared_vs_H_adapt_old": {
+    "candidate_level_spearman": 0.9083678521199701,
+    "within_context_spearman_mean": 0.790027702956924,
+    "within_context_spearman_median": 0.8999999999999998,
+    "oracle_top1_agreement": 0.7090277777777778,
+    "oracle_top3_overlap": 0.9512896825396825
+  },
+  "H_shared_vs_H_adapt_balanced": {
+    "candidate_level_spearman": 0.9543540496968317,
+    "within_context_spearman_mean": 0.9037769355917438,
+    "within_context_spearman_median": 0.9833333333333333,
+    "oracle_top1_agreement": 0.8593253968253968,
+    "oracle_top3_overlap": 0.9928571428571429
+  },
+  "H_adapt_old_vs_H_adapt_balanced": {
+    "candidate_level_spearman": 0.8604003341413611,
+    "within_context_spearman_mean": 0.7715543179889018,
+    "within_context_spearman_median": 0.8999999999999998,
+    "oracle_top1_agreement": 0.6883928571428571,
+    "oracle_top3_overlap": 0.9435515873015873
+  }
+}

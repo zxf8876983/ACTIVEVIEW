@@ -1,0 +1,7 @@
+{
+  "seed": 42,
+  "epochs": 20,
+  "obs_per_record": 16,
+  "option_geometry_dim": 18,
+  "test_used": false
+}

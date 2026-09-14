@@ -1,0 +1,8 @@
+{
+  "baseline_random_shared": 0.36507936507936506,
+  "head_gain": -0.010912698412698374,
+  "selector_gain_shared": 0.14107142857142857,
+  "selector_gain_adaptive": 0.1392857142857143,
+  "combined_gain": 0.12837301587301592,
+  "synergy": -0.0017857142857142794
+}

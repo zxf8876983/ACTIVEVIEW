@@ -1300,3 +1300,33 @@ and Shared prior → Original = 0.425000/0.402581 (B2), 0.461310/0.438192
 over Random B3), but the gain is mostly single-view quality/dataset prior;
 stable residual complementarity is not established and no strong absolute-ID
 shortcut is detected.
+
+## Adaptive head × strict Frame0 NBV combination audit — 2026-09-14
+
+Completed a CUDA Train/Moving-Val-only audit over 46,324 Train and 10,080
+Moving-Val contexts using the exact current/Stay + Stage-A legal candidate pool.
+The protocol was Frame0 current RGB/DINO + legal geometry/visibility selector,
+one selected legal viewpoint, then real O1-alone recognition. Policy Test and
+new perception were not read or generated.
+
+Historical strict Frame0 reproduction passed exactly at 0.506151/0.503722
+Accuracy/F1. The historical adaptive head reached matched s1
+0.530952/0.555852 but legal-candidate 0.369800/0.392751, marking it
+distribution-specialized. A new record-balanced legal-candidate head reached
+s1 0.488393/0.493137 and legal 0.364633/0.367584.
+
+Strict selector results were random+shared 0.365079/0.364567,
+historical-selector+shared 0.506151/0.503722, same selector+old adaptive
+0.523115/0.542017, retrained old-adaptive selector 0.526984/0.547002, and
+retrained balanced-adaptive selector 0.493452/0.497652. Candidate-only
+AnyCorrect coverage was 77.173% shared, 78.542% old and 74.712% balanced;
+candidate ranking Spearman was 0.908 shared/old and 0.954 shared/balanced.
+
+The balanced branch was -1.270pp below the historical strict baseline; gain
+decomposition gave head -1.091pp, shared-selector +14.107pp, adaptive-selector
++13.929pp and synergy -0.179pp. Under the preregistered <+1pp rule the
+decision is **KILL ADAPTIVE-HEAD × NBV COMBINATION**. Preserve the old head only
+as a matched s1 diagnostic and do not automatically start another experiment.
+
+Artifacts: `experiments/reduced12_eight_placement_v1/adaptive_head_frame0_nbv_audit/`;
+implementation: `activeview/scripts/experiments/run_reduced12_adaptive_head_frame0_nbv_audit.py`.

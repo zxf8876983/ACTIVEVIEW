@@ -237,6 +237,34 @@ not a change to the frozen ST-GCN protocol. Compact results are stored in
 - Habitat: `ACTIVEVIEW_HABITAT_DATA_ROOT` or configured `robot/DATA/`.
 - Historical documents: `docs/archive/legacy/`; not default context.
 
+## Adaptive head × strict Frame0 NBV audit (2026-09-14)
+
+The latest Train/Moving-Val-only audit evaluated whether adaptive frozen-ST-GCN
+heads combine with strict single-step Frame0 NBV. The exact action set was
+`current/Stay + Stage-A legal candidate_pool` over 46,324 Train and 10,080
+Moving-Val contexts. Selector inputs were current frame-0 DINO context, legal
+geometry and the existing visibility auxiliary; selected real O1 alone was
+used for terminal HAR. Policy Test, new perception and ST-GCN modifications
+were not used.
+
+The historical selector reproduction was exact (shared-head Accuracy/F1
+0.506151/0.503722). The old adaptive head reached s1 0.530952/0.555852 but
+legal-candidate 0.369800/0.392751, so it is distribution-specialized. The new
+record-balanced legal-candidate head reached s1 0.488393/0.493137 and legal
+0.364633/0.367584. Strict Frame0 Accuracy/F1: random+shared
+0.365079/0.364567; historical selector+shared 0.506151/0.503722; the same
+selector+old adaptive 0.523115/0.542017; retrained old-adaptive selector
+0.526984/0.547002; retrained balanced-adaptive selector 0.493452/0.497652.
+
+Candidate-only AnyCorrect coverage was 77.173% (shared), 78.542% (old) and
+74.712% (balanced). Shared/old and shared/balanced candidate utility rankings
+had Spearman 0.908 and 0.954. The balanced branch was -1.270pp below the
+historical strict Frame0 baseline; the preregistered decision is **KILL
+ADAPTIVE-HEAD × NBV COMBINATION**. The old head remains a matched s1 diagnostic,
+not a general NBV recognizer. Report and script are under
+`experiments/reduced12_eight_placement_v1/adaptive_head_frame0_nbv_audit/` and
+`activeview/scripts/experiments/run_reduced12_adaptive_head_frame0_nbv_audit.py`.
+
 ## Latest reduced12 sampling adjustment (2026-09-08)
 
 The active 12-class protocol keeps the Official Train cap at 300 per class

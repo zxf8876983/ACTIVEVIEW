@@ -1,0 +1,23 @@
+{
+  "D_frame0_shared": {
+    "candidate_level_spearman": 0.42552501620147204,
+    "within_context_spearman_mean": 0.30015736152505007,
+    "within_context_spearman_median": 0.4285714285714286,
+    "oracle_top1_agreement": 0.3236111111111111,
+    "oracle_top3_overlap": 0.7060515873015873
+  },
+  "G_frame0_adaptive_old_selector": {
+    "candidate_level_spearman": 0.40786156734797246,
+    "within_context_spearman_mean": 0.29697887659644073,
+    "within_context_spearman_median": 0.42857142857142855,
+    "oracle_top1_agreement": 0.33482142857142855,
+    "oracle_top3_overlap": 0.7153769841269841
+  },
+  "H_frame0_adapt_balanced": {
+    "candidate_level_spearman": 0.41366779363513817,
+    "within_context_spearman_mean": 0.2998926066280804,
+    "within_context_spearman_median": 0.41666666666666663,
+    "oracle_top1_agreement": 0.3200396825396825,
+    "oracle_top3_overlap": 0.6979166666666666
+  }
+}
