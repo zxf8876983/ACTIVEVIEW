@@ -1,0 +1,10 @@
+{
+  "encoder": "old",
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_no_kneel_clean_babel_diversity_v1/stgcn_reduced12_no_kneel_clean_best.pth",
+  "sha256": "078cff9490fb51fe52ebaa7d3fa4ac2802ff6c3eebba44de71c8276cd5e86a71",
+  "feature_extraction": "frozen ST-GCN forward_features, 256-D pre-FC representation",
+  "feature_shape_probe": [1, 256],
+  "native_classifier_bypassed": true,
+  "modified": false,
+  "test_used": false
+}

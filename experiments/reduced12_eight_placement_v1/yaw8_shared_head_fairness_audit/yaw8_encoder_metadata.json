@@ -1,0 +1,10 @@
+{
+  "encoder": "yaw8",
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/stgcn_reduced12_yaw8_v1/best.pt",
+  "sha256": "102d60416c7ed26265719a23f72f30a391fa0e5f49458ad05ad5d0a33ec1c761",
+  "feature_extraction": "frozen Yaw8 ST-GCN forward_features, 256-D pre-FC representation",
+  "feature_shape_probe": [1, 256],
+  "native_classifier_bypassed": true,
+  "modified": false,
+  "test_used": false
+}
