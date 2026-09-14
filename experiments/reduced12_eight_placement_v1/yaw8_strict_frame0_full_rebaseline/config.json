@@ -1,0 +1,8 @@
+{
+  "seed": 42,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "formal_action_set": "candidate-only Stage-A legal candidate_pool",
+  "recognizer": "frozen Yaw8 ST-GCN + frozen matched Policy-balanced head",
+  "test_used": false
+}

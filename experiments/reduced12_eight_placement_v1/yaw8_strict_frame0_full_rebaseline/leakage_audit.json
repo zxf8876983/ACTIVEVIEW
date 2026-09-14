@@ -1,0 +1,14 @@
+{
+  "policy_test_read": false,
+  "moving_val_used_for_training": false,
+  "moving_val_used_for_checkpoint_selection": false,
+  "candidate_observation_used_before_selection": false,
+  "candidate_feature_or_logits_used_before_selection": false,
+  "gt_action_used_at_inference": false,
+  "future_o0_frames_used": false,
+  "new_rgb_generated": false,
+  "new_skeleton_generated": false,
+  "yaw8_encoder_modified": false,
+  "yaw8_shared_head_modified": false,
+  "future_candidate_outputs_used_for_train_targets_or_terminal_only": true
+}

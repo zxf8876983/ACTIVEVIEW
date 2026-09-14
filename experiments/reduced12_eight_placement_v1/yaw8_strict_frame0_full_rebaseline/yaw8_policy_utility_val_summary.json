@@ -1,0 +1,8 @@
+{
+  "contexts": 10080,
+  "candidate_count": 68702,
+  "true_logp_mean": -1.7275174856185913,
+  "true_logp_std": 1.1689162254333496,
+  "margin_mean": -0.027036242187023163,
+  "margin_std": 1.738402247428894
+}

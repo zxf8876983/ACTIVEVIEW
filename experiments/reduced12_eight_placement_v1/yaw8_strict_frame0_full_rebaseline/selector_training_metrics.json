@@ -1,0 +1,856 @@
+{
+  "GeometryOnly-TrueLogP": {
+    "branch": "GeometryOnly-TrueLogP",
+    "seed": 42,
+    "epochs": 12,
+    "observations_per_record": 16,
+    "best_epoch": 12,
+    "best_internal_policy_train_holdout_loss": 1.4850919723510743,
+    "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 2.1892224311828614,
+        "internal_policy_train_holdout_loss": 2.294003629684448,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 2,
+        "train_loss": 2.07827513217926,
+        "internal_policy_train_holdout_loss": 2.1800809860229493,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.987205934524536,
+        "internal_policy_train_holdout_loss": 2.0727805852890016,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.8814374923706054,
+        "internal_policy_train_holdout_loss": 1.970837450027466,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.80843985080719,
+        "internal_policy_train_holdout_loss": 1.8745299339294434,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.7230782985687256,
+        "internal_policy_train_holdout_loss": 1.7851727724075317,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.6488523483276367,
+        "internal_policy_train_holdout_loss": 1.7055322885513307,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.5985154151916503,
+        "internal_policy_train_holdout_loss": 1.6379766702651977,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.5466427087783814,
+        "internal_policy_train_holdout_loss": 1.5828948259353637,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.5163349866867066,
+        "internal_policy_train_holdout_loss": 1.5400284767150878,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.4982904195785522,
+        "internal_policy_train_holdout_loss": 1.5079038858413696,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.4780669689178467,
+        "internal_policy_train_holdout_loss": 1.4850919723510743,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/GeometryOnly-TrueLogP.pth",
+    "test_used": false,
+    "moving_val_used_for_training_or_selection": false
+  },
+  "RGBGlobal-TrueLogP": {
+    "branch": "RGBGlobal-TrueLogP",
+    "seed": 42,
+    "epochs": 12,
+    "observations_per_record": 16,
+    "best_epoch": 9,
+    "best_internal_policy_train_holdout_loss": 1.4010803937911986,
+    "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.7317193031311036,
+        "internal_policy_train_holdout_loss": 1.533482313156128,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.4812857389450074,
+        "internal_policy_train_holdout_loss": 1.565083956718445,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.4596573114395142,
+        "internal_policy_train_holdout_loss": 1.4294443368911742,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.439735722541809,
+        "internal_policy_train_holdout_loss": 1.4235340356826782,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.421293568611145,
+        "internal_policy_train_holdout_loss": 1.4572792291641234,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.4088097095489502,
+        "internal_policy_train_holdout_loss": 1.4110206842422486,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.3957831859588623,
+        "internal_policy_train_holdout_loss": 1.4253496408462525,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.3970765113830566,
+        "internal_policy_train_holdout_loss": 1.424509882926941,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.392002558708191,
+        "internal_policy_train_holdout_loss": 1.4010803937911986,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.3898406267166137,
+        "internal_policy_train_holdout_loss": 1.4203256130218507,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.3972485065460205,
+        "internal_policy_train_holdout_loss": 1.4212805509567261,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.388136625289917,
+        "internal_policy_train_holdout_loss": 1.4074461460113525,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/RGBGlobal-TrueLogP.pth",
+    "test_used": false,
+    "moving_val_used_for_training_or_selection": false
+  },
+  "RGBGlobal-Margin": {
+    "branch": "RGBGlobal-Margin",
+    "seed": 42,
+    "epochs": 12,
+    "observations_per_record": 16,
+    "best_epoch": 7,
+    "best_internal_policy_train_holdout_loss": 1.7153280973434448,
+    "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.9631060123443604,
+        "internal_policy_train_holdout_loss": 1.7549137353897095,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.8565654277801513,
+        "internal_policy_train_holdout_loss": 1.788147783279419,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.8480221509933472,
+        "internal_policy_train_holdout_loss": 1.7265391111373902,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.8153796672821045,
+        "internal_policy_train_holdout_loss": 1.724532461166382,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.8203939914703369,
+        "internal_policy_train_holdout_loss": 1.7277090072631835,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.813150906562805,
+        "internal_policy_train_holdout_loss": 1.7293951988220215,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.805779719352722,
+        "internal_policy_train_holdout_loss": 1.7153280973434448,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.8034998178482056,
+        "internal_policy_train_holdout_loss": 1.7289570093154907,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.7979783058166503,
+        "internal_policy_train_holdout_loss": 1.723487639427185,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.805189609527588,
+        "internal_policy_train_holdout_loss": 1.729866886138916,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.821877360343933,
+        "internal_policy_train_holdout_loss": 1.7212092638015748,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.7969722032546998,
+        "internal_policy_train_holdout_loss": 1.7273182630538941,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/RGBGlobal-Margin.pth",
+    "test_used": false,
+    "moving_val_used_for_training_or_selection": false
+  },
+  "RGBGlobal-TrueLogP+VisibilityAux": {
+    "branch": "RGBGlobal-TrueLogP+VisibilityAux",
+    "seed": 42,
+    "epochs": 12,
+    "observations_per_record": 16,
+    "best_epoch": 11,
+    "best_internal_policy_train_holdout_loss": 1.8751255989074707,
+    "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 2.7447412490844725,
+        "internal_policy_train_holdout_loss": 2.336845588684082,
+        "internal_policy_train_holdout_aux_loss": 1.6816787242889404,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 2,
+        "train_loss": 2.183925437927246,
+        "internal_policy_train_holdout_loss": 2.0020670890808105,
+        "internal_policy_train_holdout_aux_loss": 1.0607361793518066,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 3,
+        "train_loss": 2.037734603881836,
+        "internal_policy_train_holdout_loss": 2.0447043895721437,
+        "internal_policy_train_holdout_aux_loss": 1.0389928936958313,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.9589054822921752,
+        "internal_policy_train_holdout_loss": 1.9771788358688354,
+        "internal_policy_train_holdout_aux_loss": 1.0325023531913757,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.9664940595626832,
+        "internal_policy_train_holdout_loss": 1.9470191240310668,
+        "internal_policy_train_holdout_aux_loss": 1.0262439846992493,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.9222444295883179,
+        "internal_policy_train_holdout_loss": 1.9536590099334716,
+        "internal_policy_train_holdout_aux_loss": 0.9832405090332031,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.8888065576553346,
+        "internal_policy_train_holdout_loss": 1.9179248571395875,
+        "internal_policy_train_holdout_aux_loss": 0.9648916721343994,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.878850793838501,
+        "internal_policy_train_holdout_loss": 1.8938358783721925,
+        "internal_policy_train_holdout_aux_loss": 0.9517038106918335,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.871447253227234,
+        "internal_policy_train_holdout_loss": 1.9051490306854248,
+        "internal_policy_train_holdout_aux_loss": 0.9459983587265015,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.8588132858276367,
+        "internal_policy_train_holdout_loss": 1.8803546190261842,
+        "internal_policy_train_holdout_aux_loss": 0.9429162025451661,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.8669800519943238,
+        "internal_policy_train_holdout_loss": 1.8751255989074707,
+        "internal_policy_train_holdout_aux_loss": 0.9501553297042846,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.856049084663391,
+        "internal_policy_train_holdout_loss": 1.8850291967391968,
+        "internal_policy_train_holdout_aux_loss": 0.9235061526298523,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/RGBGlobal-TrueLogP+VisibilityAux.pth",
+    "test_used": false,
+    "moving_val_used_for_training_or_selection": false
+  },
+  "Prior+GeometryResidual": {
+    "branch": "Prior+GeometryResidual",
+    "seed": 42,
+    "epochs": 12,
+    "observations_per_record": 16,
+    "best_epoch": 8,
+    "best_internal_policy_train_holdout_loss": 1.742425560951233,
+    "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.835612177848816,
+        "internal_policy_train_holdout_loss": 1.7563409090042115,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.8456938028335572,
+        "internal_policy_train_holdout_loss": 1.7536344051361084,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.8493940353393554,
+        "internal_policy_train_holdout_loss": 1.7508355617523192,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.8252868890762328,
+        "internal_policy_train_holdout_loss": 1.7482925653457642,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.8383658885955811,
+        "internal_policy_train_holdout_loss": 1.74678213596344,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.83099467754364,
+        "internal_policy_train_holdout_loss": 1.7441773653030395,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.8308815717697144,
+        "internal_policy_train_holdout_loss": 1.7425074577331543,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.831569504737854,
+        "internal_policy_train_holdout_loss": 1.742425560951233,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.831005072593689,
+        "internal_policy_train_holdout_loss": 1.7427392721176147,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.8386727809906005,
+        "internal_policy_train_holdout_loss": 1.7436724662780763,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.8529346466064454,
+        "internal_policy_train_holdout_loss": 1.7441664218902588,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.8350881338119507,
+        "internal_policy_train_holdout_loss": 1.7434753894805908,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/Prior+GeometryResidual.pth",
+    "test_used": false,
+    "moving_val_used_for_training_or_selection": false
+  },
+  "Prior+RGBResidual λ=0.5": {
+    "branch": "Prior+RGBResidual λ=0.5",
+    "seed": 42,
+    "epochs": 12,
+    "observations_per_record": 16,
+    "best_epoch": 5,
+    "best_internal_policy_train_holdout_loss": 1.7271571397781371,
+    "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.9323974132537842,
+        "internal_policy_train_holdout_loss": 1.753150224685669,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.8480181694030762,
+        "internal_policy_train_holdout_loss": 1.785762906074524,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.8498778820037842,
+        "internal_policy_train_holdout_loss": 1.7386838436126708,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.8132129907608032,
+        "internal_policy_train_holdout_loss": 1.7338359832763672,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.8248589277267455,
+        "internal_policy_train_holdout_loss": 1.7271571397781371,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.8170708894729615,
+        "internal_policy_train_holdout_loss": 1.7328636646270752,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.8105477809906005,
+        "internal_policy_train_holdout_loss": 1.7368017911911011,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.811218523979187,
+        "internal_policy_train_holdout_loss": 1.735332727432251,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.805226469039917,
+        "internal_policy_train_holdout_loss": 1.7385553121566772,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.8105080842971801,
+        "internal_policy_train_holdout_loss": 1.7459696054458618,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.825256085395813,
+        "internal_policy_train_holdout_loss": 1.7368852853775025,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.8065590381622314,
+        "internal_policy_train_holdout_loss": 1.746300745010376,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/Prior+RGBResidual_lambda=0.5.pth",
+    "test_used": false,
+    "moving_val_used_for_training_or_selection": false
+  },
+  "Prior+RGBResidual λ=1.0": {
+    "branch": "Prior+RGBResidual λ=1.0",
+    "seed": 42,
+    "epochs": 12,
+    "observations_per_record": 16,
+    "best_epoch": 3,
+    "best_internal_policy_train_holdout_loss": 1.7233561515808105,
+    "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.9143742084503175,
+        "internal_policy_train_holdout_loss": 1.7878618001937867,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.8607332229614257,
+        "internal_policy_train_holdout_loss": 1.7782845497131348,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.8429941654205322,
+        "internal_policy_train_holdout_loss": 1.7233561515808105,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.8170596361160278,
+        "internal_policy_train_holdout_loss": 1.7265205383300781,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.823443865776062,
+        "internal_policy_train_holdout_loss": 1.7388656377792358,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.8167538166046142,
+        "internal_policy_train_holdout_loss": 1.738219428062439,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.810339093208313,
+        "internal_policy_train_holdout_loss": 1.740306520462036,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 8,
+        "train_loss": 1.810683798789978,
+        "internal_policy_train_holdout_loss": 1.7317718744277955,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.8060811758041382,
+        "internal_policy_train_holdout_loss": 1.745636248588562,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.81000075340271,
+        "internal_policy_train_holdout_loss": 1.7464643955230712,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.8254498481750487,
+        "internal_policy_train_holdout_loss": 1.7375741720199585,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.8062240123748778,
+        "internal_policy_train_holdout_loss": 1.7451453924179077,
+        "internal_policy_train_holdout_aux_loss": null,
+        "fit_records": 282,
+        "holdout_records": 31,
+        "sampled_contexts": 4512
+      }
+    ],
+    "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/Prior+RGBResidual_lambda=1.0.pth",
+    "test_used": false,
+    "moving_val_used_for_training_or_selection": false
+  }
+}

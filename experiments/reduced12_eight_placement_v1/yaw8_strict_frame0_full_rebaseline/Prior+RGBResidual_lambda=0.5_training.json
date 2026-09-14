@@ -1,0 +1,122 @@
+{
+  "branch": "Prior+RGBResidual λ=0.5",
+  "seed": 42,
+  "epochs": 12,
+  "observations_per_record": 16,
+  "best_epoch": 5,
+  "best_internal_policy_train_holdout_loss": 1.7271571397781371,
+  "checkpoint_selection": "minimum objective on deterministic 10% Policy-Train record holdout",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.9323974132537842,
+      "internal_policy_train_holdout_loss": 1.753150224685669,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.8480181694030762,
+      "internal_policy_train_holdout_loss": 1.785762906074524,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.8498778820037842,
+      "internal_policy_train_holdout_loss": 1.7386838436126708,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.8132129907608032,
+      "internal_policy_train_holdout_loss": 1.7338359832763672,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.8248589277267455,
+      "internal_policy_train_holdout_loss": 1.7271571397781371,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.8170708894729615,
+      "internal_policy_train_holdout_loss": 1.7328636646270752,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.8105477809906005,
+      "internal_policy_train_holdout_loss": 1.7368017911911011,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.811218523979187,
+      "internal_policy_train_holdout_loss": 1.735332727432251,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.805226469039917,
+      "internal_policy_train_holdout_loss": 1.7385553121566772,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.8105080842971801,
+      "internal_policy_train_holdout_loss": 1.7459696054458618,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.825256085395813,
+      "internal_policy_train_holdout_loss": 1.7368852853775025,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.8065590381622314,
+      "internal_policy_train_holdout_loss": 1.746300745010376,
+      "internal_policy_train_holdout_aux_loss": null,
+      "fit_records": 282,
+      "holdout_records": 31,
+      "sampled_contexts": 4512
+    }
+  ],
+  "checkpoint": "/home/zxf/WorkSpace/code/data/ActiveView/checkpoints/policy_reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/Prior+RGBResidual_lambda=0.5.pth",
+  "test_used": false,
+  "moving_val_used_for_training_or_selection": false
+}

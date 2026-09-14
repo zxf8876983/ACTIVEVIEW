@@ -1,0 +1,82 @@
+{
+  "formal_task": "Frame0 -> exactly one Stage-A legal candidate -> selected real O1 alone",
+  "action_set": "candidate-only Stage-A legal candidate_pool; current/stay excluded from main action set",
+  "candidate_count_gate": {
+    "mean": 6.815674603174603,
+    "min": 2,
+    "max": 21,
+    "empty": 0
+  },
+  "yaw8_stgcn_checkpoint_sha256": "102d60416c7ed26265719a23f72f30a391fa0e5f49458ad05ad5d0a33ec1c761",
+  "yaw8_shared_head_checkpoint_sha256": "51b4497efcdca6ce887eb279abd1fd9a805271dcd14fce270d710061ff412f62",
+  "yaw8_cache_train": {
+    "encoder": "yaw8",
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_yaw8_policy_landscape/train.npz",
+    "source_sha256": "de62a5695dd0ba87e566209e82e7c7327d3352254ba0dbdfeb54eb7bffcf6802",
+    "feature_dim": 256,
+    "fields": [
+      "record_id",
+      "context_id",
+      "viewpoint_id",
+      "label",
+      "split",
+      "feature"
+    ],
+    "test_used": false
+  },
+  "yaw8_cache_moving_val": {
+    "encoder": "yaw8",
+    "split": "moving_val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "source_npz": "/home/zxf/WorkSpace/code/data/ActiveView/diagnostics/reduced12_yaw8_policy_landscape/moving_val.npz",
+    "source_sha256": "10bed5ca36bd0fa1ec1be9811d2f5de5c355f8d2a9cadd7b3248e89670f32b1b",
+    "feature_dim": 256,
+    "fields": [
+      "record_id",
+      "context_id",
+      "viewpoint_id",
+      "label",
+      "split",
+      "feature"
+    ],
+    "test_used": false
+  },
+  "frame0_dino_train": {
+    "split": "train",
+    "rows": 46324,
+    "signature": "f65112027b508d420cf8f9ad2376aae409b35556c1a4f6ffbe1ab1c3e127fbbe",
+    "encoder_name": "facebook/dinov2-base",
+    "model_version": "facebook/dinov2-base",
+    "embedding_shape": [
+      16,
+      768
+    ],
+    "dtype": "float16",
+    "frame_index": 0,
+    "source_rgb_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/rgb_reduced12_eight_placement_v1/frame0_current",
+    "candidate_rgb_used": false,
+    "test_used": false
+  },
+  "frame0_dino_moving_val": {
+    "split": "val",
+    "rows": 10080,
+    "signature": "19fbfda9250a83e38a0b3d1e2874d0917eecc2a08cc2706c39680132756bcde4",
+    "encoder_name": "facebook/dinov2-base",
+    "model_version": "facebook/dinov2-base",
+    "embedding_shape": [
+      16,
+      768
+    ],
+    "dtype": "float16",
+    "frame_index": 0,
+    "source_rgb_root": "/home/zxf/WorkSpace/code/data/ActiveView/datasets/rgb_reduced12_eight_placement_v1/frame0_current",
+    "candidate_rgb_used": false,
+    "test_used": false
+  },
+  "visibility_target_signature_checked": true,
+  "test_used": false
+}

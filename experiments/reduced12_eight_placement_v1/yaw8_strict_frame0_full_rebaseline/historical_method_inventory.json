@@ -1,0 +1,73 @@
+{
+  "entries": [
+    {
+      "method": "B0 Stay",
+      "historical": {
+        "accuracy": 0.30257936507936506,
+        "macro_f1": 0.2929764191434212
+      },
+      "strict_frame0_causal": false,
+      "rerun": false,
+      "reason": "diagnostic only; not a next-view action"
+    },
+    {
+      "method": "B1 Random legal",
+      "historical": {
+        "accuracy": 0.36507936507936506,
+        "macro_f1": 0.36456662782961136
+      },
+      "strict_frame0_causal": true,
+      "rerun": true,
+      "reason": "formal baseline"
+    },
+    {
+      "method": "B2 StaticViewPrior",
+      "historical": {
+        "accuracy": 0.5229166666666667,
+        "macro_f1": 0.5460398976246976
+      },
+      "strict_frame0_causal": true,
+      "rerun": true,
+      "reason": "Train-derived fixed viewpoint prior"
+    },
+    {
+      "method": "Visibility family V1-V4",
+      "historical": {
+        "accuracy": 0.49484126984126986,
+        "macro_f1": 0.49388096231821504
+      },
+      "selector_inputs": "frame0 scene/geometry and/or current DINO",
+      "rerun": true,
+      "reason": "exact cache/checkpoint available"
+    },
+    {
+      "method": "Utility family U1-U4",
+      "historical": {
+        "accuracy": 0.5061507936507936,
+        "macro_f1": 0.5037217440127477
+      },
+      "selector_inputs": "frame0 DINO + geometry",
+      "rerun": true,
+      "reason": "targets must be rebuilt for Yaw8Fair"
+    },
+    {
+      "method": "Prior residual P1-P3",
+      "historical": {
+        "accuracy": 0.5254960317460318,
+        "macro_f1": 0.5484739254845764
+      },
+      "selector_inputs": "Train prior + frame0 evidence",
+      "rerun": true,
+      "reason": "utility landscape changed under Yaw8Fair"
+    }
+  ],
+  "excluded_routes": [
+    "full O0/full temporal visibility",
+    "short-prefix or full-sequence fusion",
+    "B2-B4/OrderedConcat/streaming",
+    "VLM/map/structured observability/GT-action/pair/world-model",
+    "old adaptive or balanced adaptive head",
+    "full ST-GCN fine-tuning"
+  ],
+  "historical_results_are_reference_only": true
+}
