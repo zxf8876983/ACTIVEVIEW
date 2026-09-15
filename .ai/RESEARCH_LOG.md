@@ -1640,3 +1640,19 @@ future-candidate frame-0 keypoint confidence.  Moving confidence landscapes
 and the 0.809524 internal-to-moving Spearman are therefore proxy-qualified and
 were not used for prior tuning.  No RGB/skeleton was regenerated, no model was
 trained or modified, and Policy Test was not read.
+
+## PepperPose confidence–visibility complementarity audit (2026-09-16)
+
+Ran the minimal rank-normalized fusion audit using existing caches and the
+frozen true-facing frame-0 confidence table. Lambda was selected only on a
+deterministic 10% Policy-Train record holdout (highest HAR Accuracy, ties to
+smaller lambda); both selectors chose lambda 0.25.
+
+Moving Val results (10,080 contexts) were RGBGlobal 0.567361/0.582567 and
+RGBGlobal+confidence 0.567361/0.583573 (Accuracy/Macro-F1), while
+Frame0SceneVisibility 0.583929/0.598955 fell to 0.502579/0.524444 with
+confidence. On disagreements, confidence corrected 666 RGB errors but lost
+1,970 RGB-correct contexts; for Frame0Scene it corrected 539 and lost 2,010.
+The strict lower-tertile high-occlusion subset had 3,271 contexts and showed
+no useful fusion gain. Decision: **KILL ENTIRE PEPPERPOSE BRANCH**. No RGB or
+model training was performed and Policy Test was not read.

@@ -1,0 +1,32 @@
+{
+  "RGBGlobal_vs_Confidence": {
+    "primary": "RGBGlobal-Visibility",
+    "confidence": "GTYaw-PoseConfidencePrior",
+    "contexts": 10080,
+    "selected_view_agreement_count": 3184,
+    "selected_view_agreement_rate": 0.31587301587301586,
+    "primary_correct_confidence_wrong": 1970,
+    "primary_wrong_confidence_correct": 666,
+    "both_correct": 3749,
+    "both_wrong": 3695,
+    "pair_any_correct_count": 6385,
+    "pair_any_correct_rate": 0.6334325396825397,
+    "fused_accuracy": 0.5673611111111111,
+    "test_used": false
+  },
+  "Frame0SceneVisibility_vs_Confidence": {
+    "primary": "Frame0SceneVisibility",
+    "confidence": "GTYaw-PoseConfidencePrior",
+    "contexts": 10080,
+    "selected_view_agreement_count": 3276,
+    "selected_view_agreement_rate": 0.325,
+    "primary_correct_confidence_wrong": 2010,
+    "primary_wrong_confidence_correct": 539,
+    "both_correct": 3876,
+    "both_wrong": 3655,
+    "pair_any_correct_count": 6425,
+    "pair_any_correct_rate": 0.6374007936507936,
+    "fused_accuracy": 0.5025793650793651,
+    "test_used": false
+  }
+}
