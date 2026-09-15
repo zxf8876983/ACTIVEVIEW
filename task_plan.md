@@ -7,7 +7,7 @@ Build and evaluate a frozen Yaw8Fair relative-view quality prior using only a ra
 - [x] Phase 1: Confirm assets, split, angle convention and baseline loaders
 - [x] Phase 2: Implement internal landscape, frozen priors, fusion and diagnostics
 - [x] Phase 3: Run CUDA evaluation and inspect generated artifacts
-- [ ] Phase 4: Update project state, commit and push
+- [x] Phase 4: Update project state, commit and push
 
 ## Key Questions
 1. Does a relative body-view angle ranking learned from raw-train internal validation generalize to Moving Val?
@@ -23,4 +23,4 @@ Build and evaluate a frozen Yaw8Fair relative-view quality prior using only a ra
 - The Yaw8 checkpoint was stored under `checkpoints/stgcn_reduced12_yaw8_v1/best.pt`, not beside the dataset arrays; the script now resolves that canonical checkpoint path.
 
 ## Status
-**Ready for Phase 4** - CUDA evaluation completed and all required JSON/Markdown artifacts validated.
+**Completed** - CUDA evaluation completed, all required JSON/Markdown artifacts validated, and commit `4371ccd` pushed to `origin/main`.
