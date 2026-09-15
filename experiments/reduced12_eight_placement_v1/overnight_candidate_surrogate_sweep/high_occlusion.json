@@ -1,0 +1,74 @@
+{
+  "definition": "Moving contexts at or below the bottom tertile of existing Frame0SceneVisibility stay score",
+  "count": 3487,
+  "methods": {
+    "Random": {
+      "accuracy": null,
+      "macro_f1": null
+    },
+    "StaticPrior": {
+      "accuracy": null,
+      "macro_f1": null
+    },
+    "RGBGlobal": {
+      "accuracy": null,
+      "macro_f1": null
+    },
+    "Frame0SceneVisibility": {
+      "accuracy": null,
+      "macro_f1": null
+    },
+    "GT-TrueLogP Oracle": {
+      "accuracy": null,
+      "macro_f1": null
+    },
+    "AnyCorrect Coverage": {
+      "accuracy": null,
+      "macro_f1": null
+    },
+    "A Feature-kNN k10": {
+      "accuracy": 0.534270146257528,
+      "macro_f1": 0.5529178644252967
+    },
+    "A Feature-kNN k20": {
+      "accuracy": 0.5314023515916261,
+      "macro_f1": 0.5505231781429838
+    },
+    "B Global Mahalanobis": {
+      "accuracy": 0.4608546028104388,
+      "macro_f1": 0.48315924337194227
+    },
+    "B MinClass Mahalanobis": {
+      "accuracy": 0.47720103240607975,
+      "macro_f1": 0.5035670727541974
+    },
+    "C PCA64": {
+      "accuracy": 0.3794092342988242,
+      "macro_f1": 0.40390896997017683
+    },
+    "C PCA128": {
+      "accuracy": 0.3828505878979065,
+      "macro_f1": 0.40724696351130424
+    },
+    "D Perturbation Stability": {
+      "accuracy": 0.2406079724691712,
+      "macro_f1": 0.2332757866684152
+    },
+    "E Feature Medoid": {
+      "accuracy": 0.40665328362489245,
+      "macro_f1": 0.44056449406033443
+    },
+    "E Skeleton Medoid": {
+      "accuracy": 0.386578720963579,
+      "macro_f1": 0.42566539165337486
+    },
+    "E Record Consensus": {
+      "accuracy": 0.5428735302552338,
+      "macro_f1": 0.5596066222354021
+    },
+    "RGBGlobal + E Record Consensus (lambda=0.5)": {
+      "accuracy": 0.5339833667909377,
+      "macro_f1": 0.5545414207817797
+    }
+  }
+}

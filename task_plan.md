@@ -1,35 +1,40 @@
-# True-facing ST-GCN angle-prior re-audit
+# Overnight candidate utility surrogate sweep
 
 ## Goal
-Recompute the reduced12 relative-angle prior with the AMASS frame-0 body
-facing convention and determine whether the historical angle-prior failure was
-caused by placement-yaw misalignment.
+Run the preregistered, read-only capacity audit of action-independent
+candidate observation-quality surrogates on reduced12 Moving Val.
 
 ## Phases
-- [x] Reuse frozen Yaw8Fair/ST-GCN assets and verify Train-internal-Val and Moving-Val boundaries
-- [x] Recompute internal and Moving angle bins with `R_scene_yaw @ R_AMASS_root_frame0`
-- [x] Evaluate corrected angle priors against historical, visibility and oracle references
-- [x] Validate reports and prepare the scoped commit
+- [x] Inventory frozen Yaw8 assets, legal candidate cache and available archives
+- [x] Implement feature-manifold, PCA, stability and consensus surrogates
+- [x] Audit matched clean-perception artifact availability; run only if exact data exists
+- [x] Evaluate Moving Val selectors, correlations, high-occlusion subset and gates
+- [x] Validate reports, update project log, commit and push
 
 ## Key Questions
-1. Was the historical angle prior failure caused by using placement yaw instead of true body facing?
-2. Do corrected internal angle preferences generalize to Moving Val?
-3. Does a corrected angle prior beat the existing StaticPrior/visibility references?
+1. Which action-independent observation-quality surrogate is closest to HAR utility?
+2. Does matched clean-perception degradation explain candidate utility?
+3. Is any surrogate strong enough to promote or should surrogate search stop?
 
 ## Decisions Made
-- Corrected body-facing angle uses local +Z transformed by the AMASS frame-0
-  root rotation and scene yaw; no placement or recognizer changes were made.
-- Angle tables are frozen from raw-train-derived Yaw8 internal Val; Moving Val
-  is evaluation-only.
-- Final decision: KILL ST-GCN RELATIVE-ANGLE PRIOR. Corrected Q-margin and
-  Q-accuracy correlations are not both stable, and corrected selectors remain
-  below the StaticPrior baseline.
+- No angle prior, PepperPose prior, direct HAR utility predictor or future
+  evidence predictor will be added.
+- Only frozen Yaw8 encoder/shared head and existing Train/Moving-Val artifacts
+  are used; Policy Test is excluded.
+- F (matched clean perception) is conditional on exact reusable artifact
+  availability; no large rendering job will be launched implicitly.
 
 ## Errors Encountered
 - Policy rows omit raw motion `source_path`; resolved root yaw through the canonical raw-val manifest.
 - Existing visibility cache stores NaN in inactive padding slots; finite checks are restricted to legal mask entries.
 - Internal Yaw8 rows retain `start_frame/end_frame/fps` from the expanded manifest for AMASS root reconstruction.
+- Exact per-candidate HM3D-vs-clean perception cache is unavailable: historical
+  recovery reports zero exact Moving mappings, so F1/F2/F3 were explicitly
+  marked unavailable and no rendering was attempted.
+- The initial run correctly reproduced the fixed references, then was rerun
+  after enabling the conditional RGBGlobal+surrogate fusion gate for the
+  qualifying Record Consensus branch.
 
 ## Status
-**Completed** - CUDA read-only audit ran, reports were validated, and only this
-task's files are ready for commit. Policy Test was not read.
+**Complete** - A–E evaluated on GPU over Moving Val; F unavailable by artifact
+  gate; reports and conditional fusion result written.

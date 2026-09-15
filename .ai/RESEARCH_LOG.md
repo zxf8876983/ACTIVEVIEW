@@ -1680,3 +1680,26 @@ Frame0SceneVisibility 0.583929/0.598955, and GT-TrueLogP Oracle
 0.760714/0.775961. AnyCorrect Coverage was 0.776190. The final decision is
 **KILL ST-GCN RELATIVE-ANGLE PRIOR**. No training, model/data generation or
 Policy Test access occurred.
+
+## Overnight candidate utility surrogate sweep (2026-09-16)
+
+Ran the bounded Train-manifold/Moving-Val capacity audit with the frozen Yaw8
+encoder and Yaw8Fair shared head on 10,080 Moving contexts and 68,702 legal
+candidate observations. References reproduced exactly: Random 0.426786,
+StaticPrior 0.549901, RGBGlobal 0.567361, Frame0SceneVisibility 0.583929,
+GT-TrueLogP Oracle 0.760714 and AnyCorrect Coverage 0.776190.
+
+The strongest action-independent score was privileged Record-Level Feature
+Consensus at 0.608433 Accuracy / 0.624189 Macro-F1, with within-context
+Spearman 0.399427 (true-class log-probability) and 0.343204 (GT margin). This
+is **WEAK SURROGATE** under the preregistered 0.60–0.65 gate, not a promotion.
+Feature kNN k10/k20 reached 0.593254/0.592361 Accuracy; Mahalanobis, skeleton
+PCA, perturbation stability and medoid variants were weaker. The conditional
+RGBGlobal + Record Consensus fusion selected lambda=0.5 on a Policy-Train
+record holdout but fell to 0.595833 Accuracy, so it does not improve the
+surrogate alone. Exact matched clean-perception F1/F2/F3 could not be scored:
+the recovery audit reports no exact per-candidate cache and zero Moving
+mappings, and no rendering was attempted. No Policy Test, new perception or
+model training was used. The registered next direction is a low-cost
+candidate glimpse/active-probe information structure rather than more scalar
+surrogate search.

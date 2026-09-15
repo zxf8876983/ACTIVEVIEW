@@ -1,0 +1,20 @@
+{
+  "available": false,
+  "reason": "no exact per-candidate HM3D-vs-clean perception cache; historical Moving mapping is blocked",
+  "recovery_status": "HISTORICAL_CLEAN_RECOVERED_MOVING_MAPPING_BLOCKED",
+  "moving_clean_perception_asset_missing": true,
+  "exact_record_mapping": 0,
+  "rendering_attempted": false,
+  "F1_F2_F3": {
+    "F1 Matched Skeleton Error": {
+      "status": "UNAVAILABLE"
+    },
+    "F2 Matched Feature Distance": {
+      "status": "UNAVAILABLE"
+    },
+    "F3 Layerwise Feature Distance": {
+      "status": "UNAVAILABLE"
+    }
+  },
+  "test_used": false
+}
