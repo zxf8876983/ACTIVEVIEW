@@ -1,0 +1,11 @@
+{
+  "seed": 42,
+  "train_record_count": 2212,
+  "internal_val_record_count": 245,
+  "train_expanded_observation_count": 17696,
+  "internal_val_expanded_observation_count": 1960,
+  "no_record_overlap": true,
+  "overlap_count": 0,
+  "source": "reduced12 raw-train split expanded with frozen Yaw8 8-yaw rendering",
+  "policy_test_read": false
+}

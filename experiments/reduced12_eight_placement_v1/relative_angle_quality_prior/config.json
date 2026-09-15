@@ -1,0 +1,25 @@
+{
+  "seed": 42,
+  "angles_deg": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+  ],
+  "internal_source": "raw-train-derived Yaw8 internal validation only",
+  "moving_evaluation": "reduced12 Moving Val, Stage-A legal candidates",
+  "recognizer": "Frozen Yaw8 ST-GCN + frozen Policy-balanced shared head",
+  "angle_formula": "wrap(camera world azimuth - placement/body yaw); nearest 45-degree bin",
+  "camera_azimuth_reconstruction": "random.Random(42 + babel_sid).uniform(-25,25), matching frozen Yaw8 generator",
+  "fusion_lambda_candidates": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "policy_test_used": false,
+  "deployable_angle_prior": false
+}

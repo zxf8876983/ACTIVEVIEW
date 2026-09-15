@@ -1,34 +1,12 @@
-# Known-Map + Current-Depth Movement-Aware NBV — completed
+# Train-internal-Val Relative View Quality Prior — completed
 
-Train/Moving-Val only; no Policy Test, no model training, and no RGB/skeleton/
-DINO regeneration. The audit used the frozen reduced12 Yaw8 recognizer and
-the exact Stage-A legal candidate-only action set on 10,080 Moving-Val
-contexts (68,702 candidates).
-
-Current Frame-0 depth was rendered with Habitat using eight spawned workers.
-Raw depth and point clouds were transient; only compact per-candidate path,
-clearance and risk summaries were persisted under the runtime data root.
-Train was used only for the static prior and a record-holdout lambda choice.
+Implemented and ran `activeview/scripts/experiments/run_reduced12_relative_angle_quality_prior.py` with CUDA on the frozen Yaw8Fair recognizer. The angle prior was constructed only from the raw-train-derived Yaw8 internal validation split (2,212 train source records and 245 internal-validation source records, 1,960 expanded observations; no record overlap). Moving-Val evaluation used 10,080 contexts and 68,702 Stage-A legal candidate observations; Policy Test was not read.
 
 Key results:
 
-- StaticPrior: 0.549901 Accuracy / 0.571990 Macro-F1.
-- RGBGlobal-Visibility: 0.567361 / 0.582567; mean/median path 2.7876/2.2245 m.
-- RGBGlobal-Visibility + MapPath (lambda=.10): 0.564881 / 0.581486;
-  mean/median path 2.6633/2.1775 m (4.46% shorter, -0.248pp Accuracy).
-- RGBGlobal-Visibility + MapPath + CurrentDepth: 0.563690 / 0.580532;
-  mean/median path 2.5673/1.7881 m; selection switch 5.34%, clearance +5.15%
-  relative and depth-risk rate -5.45% relative to MapPath.
-- GT SceneVisibility: 0.583929 / 0.598955; GT-TrueLogP Oracle:
-  0.760714 / 0.775961.
-- Depth occupancy counts were 400,428,767 non-human and 50,413,318
-  bbox-attributed points; human-attributable fraction 0.1118 and navmesh
-  free-space proxy fraction 0.1625 (deterministic 2,048-point sample/context).
+- Internal angle Accuracy ranged from 0.648980 (180°) to 0.714286 (315°), a 6.531 pp gap. Accuracy ranking was 315°, 45°, 135°, 0°, 270°, 90°, 225°, 180°; margin ranking was 45°, 315°, 0°, 270°, 225°, 180°, 90°, 135°.
+- Internal-to-Moving ranking Spearman was 0.142857 for Accuracy and -0.333333 for mean GT-margin: `UNSTABLE`.
+- StaticPrior was 0.549901/0.571990 Accuracy/Macro-F1. RelativeAnglePrior-Acc, -F1, and -Margin reached 0.427877/0.459840, 0.430655/0.465148, and 0.413393/0.439744 respectively; the best relative prior was 11.925 pp below StaticPrior, so the preregistered decision is `KILL RELATIVE ANGLE PRIOR`.
+- RGBGlobal+Angle was 0.564980/0.579979 (-0.238 pp versus RGBGlobal); GT SceneVisibility+Angle was 0.507639/0.528509 (-7.629 pp versus GT SceneVisibility). GT-action-conditioned angle prior reached 0.439683/0.469918, only +2.629 pp over unified Margin.
 
-The preregistered 20% distance gate was not met, so PATH-COST NBV is not
-useful under this benchmark. Current depth changes 5.34% of selections and
-shows mixed but sub-gate local-risk evidence; no automatic follow-up was
-started. Reports are in
-`experiments/reduced12_eight_placement_v1/movement_aware_depth_nbv/` and the
-runner is
-`activeview/scripts/experiments/run_reduced12_movement_aware_depth_nbv.py`.
+Artifacts are under `experiments/reduced12_eight_placement_v1/relative_angle_quality_prior/`. This is a privileged, non-deployable diagnostic because Moving-Val scoring uses GT body yaw; no recognizer or selector was trained or modified.

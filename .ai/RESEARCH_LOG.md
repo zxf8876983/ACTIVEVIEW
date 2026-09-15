@@ -1596,3 +1596,21 @@ was 16.25% on a deterministic 2,048-point sample per context. Policy Test,
 model training and new perception data were not used.
 Report/script: `experiments/reduced12_eight_placement_v1/movement_aware_depth_nbv/`
 and `activeview/scripts/experiments/run_reduced12_movement_aware_depth_nbv.py`.
+
+## Train-internal-Val relative view quality prior audit (2026-09-15)
+
+Using CUDA and the frozen Yaw8 ST-GCN plus Policy-balanced shared head, built a
+relative body-view angle prior from only the raw-train-derived Yaw8 internal
+validation split (2,212 train source records, 245 internal-val source records,
+1,960 expanded observations, no record overlap). Moving-Val evaluation used
+10,080 contexts and 68,702 Stage-A legal candidates; Policy Test was not read.
+Internal angle Accuracy ranged 0.648980 at 180° to 0.714286 at 315° (6.531 pp),
+but internal→Moving ranking Spearman was 0.142857 for Accuracy and -0.333333
+for mean GT-margin (`UNSTABLE`). StaticPrior was 0.549901/0.571990; the best
+relative selector (F1 prior) was 0.430655/0.465148, 11.925 pp below StaticPrior.
+RGBGlobal+Angle and GT SceneVisibility+Angle gave -0.238 pp and -7.629 pp
+Accuracy changes respectively, while the GT-action-conditioned angle ceiling
+was 0.439683/0.469918. The preregistered decision is `KILL RELATIVE ANGLE
+PRIOR`; body yaw usage makes this a privileged non-deployable diagnostic.
+Report/script: `experiments/reduced12_eight_placement_v1/relative_angle_quality_prior/`
+and `activeview/scripts/experiments/run_reduced12_relative_angle_quality_prior.py`.

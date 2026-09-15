@@ -1,27 +1,26 @@
-# Task Plan: Known-map + current-depth movement-aware NBV audit
+# Task Plan: Train-internal-Val Relative View Quality Prior
 
 ## Goal
-Measure whether known Habitat navmesh path cost and current Frame-0 depth
-occupancy/dynamic-human risk can reduce movement while preserving HAR quality.
+Build and evaluate a frozen Yaw8Fair relative-view quality prior using only a raw-train-derived internal validation split, then test it once on Moving Val without reading Policy Test.
 
 ## Phases
-- [x] Validate reduced12 Yaw8 assets, CUDA and Stage-A candidate protocol
-- [x] Implement compact current-depth occupancy/path-risk cache (8 workers)
-- [x] Run Moving-Val evaluation and Train record-holdout lambda selection
-- [x] Write required metrics/analysis and verify outputs
+- [x] Phase 1: Confirm assets, split, angle convention and baseline loaders
+- [x] Phase 2: Implement internal landscape, frozen priors, fusion and diagnostics
+- [x] Phase 3: Run CUDA evaluation and inspect generated artifacts
+- [ ] Phase 4: Update project state, commit and push
 
-## Constraints
-- Policy Train and Moving Val only; no Policy Test.
-- Current frame 0 only; no candidate RGB/depth, future frames, or new skeleton/perception caches.
-- Frozen Yaw8 encoder/shared head and Stage-A legal candidate-only action set.
-- Do not submit raw depth, point clouds, large caches, or debug images.
+## Key Questions
+1. Does a relative body-view angle ranking learned from raw-train internal validation generalize to Moving Val?
+2. Does the relative prior beat StaticPrior or improve RGBGlobal-Visibility when fused?
+3. Is angle preference action-dependent or stable across actions?
+
+## Decisions Made
+- Use the existing raw-train-derived Yaw8 ST-GCN validation observations as the internal validation population (245 source records × 8 yaw variants).
+- Reconstruct the frozen Yaw8 camera azimuth from the recorded generation rule and `babel_sid`; do not inspect raw-val or Moving Val while constructing the angle prior.
+- Use the existing Yaw8Fair shared-head candidate cache and frozen Yaw8 checkpoint for Moving Val diagnostics only.
+
+## Errors Encountered
+- The Yaw8 checkpoint was stored under `checkpoints/stgcn_reduced12_yaw8_v1/best.pt`, not beside the dataset arrays; the script now resolves that canonical checkpoint path.
 
 ## Status
-**Completed** - 10,080 Moving-Val contexts and 68,702 legal candidates were
-evaluated with the frozen Yaw8 recognizer. Current depth was rendered only at
-the current Frame-0 viewpoint; raw depth and point clouds were not persisted.
-RGBGlobal-Visibility + MapPath selected lambda=0.10 on a Policy-Train record
-holdout, reducing mean path by 4.46% with a 0.248pp Accuracy drop, below the
-20% movement gate. Adding current depth switched 5.34% of selections and
-reduced depth-risk rate by 5.45% with 5.15% relative clearance improvement,
-but did not meet the strict depth KEEP criteria. Policy Test was not read.
+**Ready for Phase 4** - CUDA evaluation completed and all required JSON/Markdown artifacts validated.

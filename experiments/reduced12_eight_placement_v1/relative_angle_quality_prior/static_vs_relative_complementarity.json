@@ -1,0 +1,8 @@
+{
+  "static_correct_relative_wrong": 2089,
+  "static_wrong_relative_correct": 713,
+  "both_wrong": 3824,
+  "pair_anycorrect_rate": 0.6206349206349207,
+  "selected_view_agreement": 0.2757936507936508,
+  "pair_anycorrect_count": 6256
+}
