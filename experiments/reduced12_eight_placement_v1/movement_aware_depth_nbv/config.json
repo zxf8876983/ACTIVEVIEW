@@ -1,0 +1,14 @@
+{
+  "experiment_id": "REDUCED12_MOVEMENT_AWARE_DEPTH_NBV",
+  "workers": 8,
+  "device": "cuda:0",
+  "mu": 0.25,
+  "lambdas": [
+    0.0,
+    0.1,
+    0.25,
+    0.5
+  ],
+  "path_sampling_m": 0.1,
+  "test_used": false
+}

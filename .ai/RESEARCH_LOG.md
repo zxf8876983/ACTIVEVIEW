@@ -1572,3 +1572,27 @@ Only 7,051 Val contexts had non-empty mask point clouds. Both localization and
 route gates therefore kill simple RGB-D root localization; perfect human
 segmentation alone does not close the known-map NBV gap. Policy Test and model
 training were not used.
+
+## Known-map + current-depth movement-aware NBV audit (2026-09-15)
+
+Implemented and ran a Train/Moving-Val-only audit with the frozen reduced12
+Yaw8 recognizer on the Stage-A legal candidate pool. Habitat rendered current
+Frame-0 depth only (20 scenes, eight spawned workers); raw depth and point
+clouds were transient and only compact path/clearance/risk arrays were cached
+under the runtime data root. Train supplied the static prior and a deterministic
+record-holdout selection of lambda.
+
+On 10,080 Moving-Val contexts (68,702 legal candidates), StaticPrior reached
+0.549901/0.571990 and RGBGlobal-Visibility 0.567361/0.582567 Accuracy/F1.
+RGB+MapPath selected lambda=.10, reaching 0.564881/0.581486 with mean path
+2.6633 m versus 2.7876 m (4.46% reduction, -0.248pp Accuracy), below the
+20% movement gate. Adding current depth reached 0.563690/0.580532, switched
+5.34% of selections, improved mean human clearance by 5.15% relative and
+reduced depth-risk rate from .5622 to .5317. This is mixed evidence and does
+not meet the strict depth KEEP gate. GT SceneVisibility and GT-TrueLogP were
+0.583929/0.598955 and 0.760714/0.775961. Depth occupancy was 11.18%
+bbox-attributed to the coarse human footprint; the navmesh free-space proxy
+was 16.25% on a deterministic 2,048-point sample per context. Policy Test,
+model training and new perception data were not used.
+Report/script: `experiments/reduced12_eight_placement_v1/movement_aware_depth_nbv/`
+and `activeview/scripts/experiments/run_reduced12_movement_aware_depth_nbv.py`.

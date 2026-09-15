@@ -1,0 +1,42 @@
+{
+  "0.0": {
+    "accuracy": 0.5673611111111111,
+    "macro_f1": 0.5825673772319945,
+    "mean_geodesic_m": 2.7875526761843097,
+    "median_geodesic_m": 2.2244722843170166,
+    "p90_geodesic_m": 5.258270740509033,
+    "mean_human_clearance_m": 1.3671046870639438,
+    "minimum_human_clearance_m": 0.004380226135253906,
+    "depth_risk_path_rate": 0.5874007936507937
+  },
+  "0.1": {
+    "accuracy": 0.5648809523809524,
+    "macro_f1": 0.5814855971382187,
+    "mean_geodesic_m": 2.663346802747794,
+    "median_geodesic_m": 2.1775338649749756,
+    "p90_geodesic_m": 5.205863952636719,
+    "mean_human_clearance_m": 1.4388968929871264,
+    "minimum_human_clearance_m": 0.004380226135253906,
+    "depth_risk_path_rate": 0.562202380952381
+  },
+  "0.25": {
+    "accuracy": 0.5632936507936508,
+    "macro_f1": 0.5806057692456451,
+    "mean_geodesic_m": 2.487597353726862,
+    "median_geodesic_m": 1.7879315614700317,
+    "p90_geodesic_m": 4.993906021118164,
+    "mean_human_clearance_m": 1.5237928869533635,
+    "minimum_human_clearance_m": 0.004380226135253906,
+    "depth_risk_path_rate": 0.5373015873015873
+  },
+  "0.5": {
+    "accuracy": 0.5571428571428572,
+    "macro_f1": 0.5748982743822312,
+    "mean_geodesic_m": 2.2679279217585213,
+    "median_geodesic_m": 1.5028202533721924,
+    "p90_geodesic_m": 4.634092330932617,
+    "mean_human_clearance_m": 1.6300099668694312,
+    "minimum_human_clearance_m": 0.004380226135253906,
+    "depth_risk_path_rate": 0.5140873015873015
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "lambda_selection": {
+    "rgb": {
+      "selection_source": "Policy Train record holdout",
+      "holdout_records": 31,
+      "holdout_contexts": 4588,
+      "criterion": "highest holdout accuracy, tie lower path",
+      "candidates": {
+        "0.1": {
+          "holdout_accuracy": 0.4636006974716652,
+          "selected_mean_path_m": 2.760931968688965
+        },
+        "0.25": {
+          "holdout_accuracy": 0.45858761987794244,
+          "selected_mean_path_m": 2.760931968688965
+        },
+        "0.5": {
+          "holdout_accuracy": 0.451176983435048,
+          "selected_mean_path_m": 2.760931968688965
+        }
+      },
+      "selected_lambda": 0.1,
+      "test_used": false
+    },
+    "gt": {
+      "selection_source": "Policy Train record holdout",
+      "holdout_records": 31,
+      "holdout_contexts": 4588,
+      "criterion": "highest holdout accuracy, tie lower path",
+      "candidates": {
+        "0.1": {
+          "holdout_accuracy": 0.45510026155187444,
+          "selected_mean_path_m": 2.760931968688965
+        },
+        "0.25": {
+          "holdout_accuracy": 0.45379250217959893,
+          "selected_mean_path_m": 2.760931968688965
+        },
+        "0.5": {
+          "holdout_accuracy": 0.4492153443766347,
+          "selected_mean_path_m": 2.760931968688965
+        }
+      },
+      "selected_lambda": 0.1,
+      "test_used": false
+    }
+  },
+  "selection_disagreement": {
+    "rgb_vs_map": {
+      "switch_count": 682,
+      "switch_rate": 0.06765873015873015,
+      "old_correct_new_wrong": 104,
+      "old_wrong_new_correct": 79
+    },
+    "map_vs_depth": {
+      "switch_count": 538,
+      "switch_rate": 0.05337301587301587,
+      "old_correct_new_wrong": 88,
+      "old_wrong_new_correct": 76
+    }
+  },
+  "methods": {
+    "StaticPrior": {
+      "mean_geodesic_m": 2.8551877074268837,
+      "median_geodesic_m": 2.3553683757781982,
+      "p90_geodesic_m": 5.000061511993408,
+      "mean_human_clearance_m": 1.27636285717212,
+      "minimum_human_clearance_m": 0.004380226135253906,
+      "depth_risk_path_rate": 0.609920634920635
+    },
+    "RGBGlobal-Visibility": {
+      "mean_geodesic_m": 2.7875526761843097,
+      "median_geodesic_m": 2.2244722843170166,
+      "p90_geodesic_m": 5.258270740509033,
+      "mean_human_clearance_m": 1.3671046870639438,
+      "minimum_human_clearance_m": 0.004380226135253906,
+      "depth_risk_path_rate": 0.5874007936507937
+    },
+    "RGBGlobal-Visibility + MapPath": {
+      "mean_geodesic_m": 2.663346802747794,
+      "median_geodesic_m": 2.1775338649749756,
+      "p90_geodesic_m": 5.205863952636719,
+      "mean_human_clearance_m": 1.4388968929871264,
+      "minimum_human_clearance_m": 0.004380226135253906,
+      "depth_risk_path_rate": 0.562202380952381
+    },
+    "RGBGlobal-Visibility + MapPath + CurrentDepth": {
+      "mean_geodesic_m": 2.5673182810848902,
+      "median_geodesic_m": 1.788138508796692,
+      "p90_geodesic_m": 5.205863952636719,
+      "mean_human_clearance_m": 1.5129657368808749,
+      "minimum_human_clearance_m": 0.004380226135253906,
+      "depth_risk_path_rate": 0.5317460317460317
+    },
+    "GT SceneVisibility": {
+      "mean_geodesic_m": 2.904692171354379,
+      "median_geodesic_m": 2.4530911445617676,
+      "p90_geodesic_m": 5.047259330749512,
+      "mean_human_clearance_m": 1.224848620473305,
+      "minimum_human_clearance_m": 0.004463911056518555,
+      "depth_risk_path_rate": 0.6117063492063493
+    },
+    "GT SceneVisibility + MapPath": {
+      "mean_geodesic_m": 2.026797601636795,
+      "median_geodesic_m": 1.4168133735656738,
+      "p90_geodesic_m": 4.330821514129639,
+      "mean_human_clearance_m": 1.7855538810248297,
+      "minimum_human_clearance_m": 0.011758754961192608,
+      "depth_risk_path_rate": 0.4642857142857143
+    },
+    "GT SceneVisibility + MapPath + Depth": {
+      "mean_geodesic_m": 2.0106443436461543,
+      "median_geodesic_m": 1.4168131351470947,
+      "p90_geodesic_m": 4.3031110763549805,
+      "mean_human_clearance_m": 1.8368110476696065,
+      "minimum_human_clearance_m": 0.017200933769345284,
+      "depth_risk_path_rate": 0.40962301587301586
+    },
+    "GT-TrueLogP Oracle": {
+      "mean_geodesic_m": 2.9809376066047992,
+      "median_geodesic_m": 2.4530911445617676,
+      "p90_geodesic_m": 5.4761152267456055,
+      "mean_human_clearance_m": 1.4446773096093175,
+      "minimum_human_clearance_m": 0.004463911056518555,
+      "depth_risk_path_rate": 0.5723214285714285
+    },
+    "Random": {
+      "mean_geodesic_m": 3.095027244881919,
+      "median_geodesic_m": 2.460423231124878,
+      "p90_geodesic_m": 5.741979122161865,
+      "mean_human_clearance_m": 1.5035174336933206,
+      "minimum_human_clearance_m": 0.004266342148184776,
+      "depth_risk_path_rate": 0.5506944444444445
+    }
+  }
+}

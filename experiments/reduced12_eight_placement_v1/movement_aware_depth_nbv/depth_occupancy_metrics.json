@@ -1,0 +1,10 @@
+{
+  "rendered_rate": 1.0,
+  "obstacle_point_count": 400428767,
+  "human_bbox_point_count": 50413318,
+  "nonhuman_point_count": 400428767,
+  "human_attributable_fraction": 0.11182034614182036,
+  "nonhuman_navigable_fraction": 0.1625117614050752,
+  "definition": "navmesh is_navigable(point) proxy on a deterministic 2,048-point sample per context",
+  "test_used": false
+}
