@@ -1,0 +1,66 @@
+{
+  "0": {
+    "angle_bin": 0,
+    "count": 8752,
+    "mean_confidence": 0.6162110523028792,
+    "mean_confidence_correct": 0.7983879248930797,
+    "mean_confidence_wrong": 0.4805860534740175,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  },
+  "45": {
+    "angle_bin": 1,
+    "count": 8533,
+    "mean_confidence": 0.5777271541698444,
+    "mean_confidence_correct": 0.7418535787763986,
+    "mean_confidence_wrong": 0.46954349105177734,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  },
+  "90": {
+    "angle_bin": 2,
+    "count": 8676,
+    "mean_confidence": 0.5099811009113928,
+    "mean_confidence_correct": 0.6698071749468958,
+    "mean_confidence_wrong": 0.40355313916885743,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  },
+  "135": {
+    "angle_bin": 3,
+    "count": 8618,
+    "mean_confidence": 0.5197475184448734,
+    "mean_confidence_correct": 0.6597992852299095,
+    "mean_confidence_wrong": 0.4196548112638449,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  },
+  "180": {
+    "angle_bin": 4,
+    "count": 8449,
+    "mean_confidence": 0.5156865726331283,
+    "mean_confidence_correct": 0.6691214318236997,
+    "mean_confidence_wrong": 0.40368917848603847,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  },
+  "225": {
+    "angle_bin": 5,
+    "count": 8750,
+    "mean_confidence": 0.5207214898048235,
+    "mean_confidence_correct": 0.6683036741143402,
+    "mean_confidence_wrong": 0.389936760402706,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  },
+  "270": {
+    "angle_bin": 6,
+    "count": 8416,
+    "mean_confidence": 0.5174205356576642,
+    "mean_confidence_correct": 0.6754993036095763,
+    "mean_confidence_wrong": 0.3864723839738404,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  },
+  "315": {
+    "angle_bin": 7,
+    "count": 8508,
+    "mean_confidence": 0.5939046326928041,
+    "mean_confidence_correct": 0.7566771368957144,
+    "mean_confidence_wrong": 0.4615218799139666,
+    "confidence_source": "policy archive confidence[view], sequence-level mean over all frames (proxy; not frame-0)"
+  }
+}

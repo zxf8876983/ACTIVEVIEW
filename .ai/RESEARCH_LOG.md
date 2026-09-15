@@ -1614,3 +1614,29 @@ was 0.439683/0.469918. The preregistered decision is `KILL RELATIVE ANGLE
 PRIOR`; body yaw usage makes this a privileged non-deployable diagnostic.
 Report/script: `experiments/reduced12_eight_placement_v1/relative_angle_quality_prior/`
 and `activeview/scripts/experiments/run_reduced12_relative_angle_quality_prior.py`.
+
+## Frame0 true-facing + YOLO confidence angle prior audit (2026-09-16)
+
+Implemented and ran `run_reduced12_pepperpose_frame0_confidence_audit.py` on
+CUDA.  The true body-facing angle uses the AMASS/BABEL frame-0 root transform
+composed with the scene/placement yaw; the analytic convention check passed and
+old/new angle bins differed in 15/20 sanity samples.  The raw-train-derived
+Yaw8 internal validation archive exposes exact `(30,17)` confidence, so the
+frozen prior uses `mean(confidence[0,:])`: 0° was 0.937018 and 135° was
+0.713846 (0.223172 gap).
+
+On 10,080 Moving-Val contexts (68,702 Stage-A legal candidates), Random,
+StaticPrior, GTYaw-PoseConfidencePrior, RGBGlobal-Visibility,
+Frame0SceneVisibility and GT-TrueLogP Oracle were respectively
+0.426786/0.450423, 0.549901/0.571990, 0.437996/0.465250,
+0.567361/0.582567, 0.583929/0.598955 and 0.760714/0.775961
+(Accuracy/Macro-F1).  Candidate-only AnyCorrect Coverage was 0.776190.
+The privileged true-facing prior is below the 0.52 kill threshold, so the
+registered decision is `KILL PEPPERPOSE-STYLE ANGLE PRIOR`; fusion was skipped
+by the 0.54 gate.
+
+The policy archive stores only `(32,)` sequence-level confidence means, not
+future-candidate frame-0 keypoint confidence.  Moving confidence landscapes
+and the 0.809524 internal-to-moving Spearman are therefore proxy-qualified and
+were not used for prior tuning.  No RGB/skeleton was regenerated, no model was
+trained or modified, and Policy Test was not read.

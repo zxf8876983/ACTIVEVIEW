@@ -1,26 +1,26 @@
-# Task Plan: Train-internal-Val Relative View Quality Prior
+# Task Plan: Frame0 true-facing confidence prior audit
 
 ## Goal
-Build and evaluate a frozen Yaw8Fair relative-view quality prior using only a raw-train-derived internal validation split, then test it once on Moving Val without reading Policy Test.
+Audit a true-body-facing, frame-0 YOLO confidence angle prior using only existing Train/internal-Val and Moving-Val artifacts.
 
 ## Phases
-- [x] Phase 1: Confirm assets, split, angle convention and baseline loaders
-- [x] Phase 2: Implement internal landscape, frozen priors, fusion and diagnostics
-- [x] Phase 3: Run CUDA evaluation and inspect generated artifacts
-- [x] Phase 4: Update project state, commit and push
+- [x] Phase 1: Confirm protocol, schemas, and CUDA runtime
+- [x] Phase 2: Implement angle recovery, confidence-schema audit, and selectors
+- [x] Phase 3: Run internal prior and Moving-Val diagnostics
+- [x] Phase 4: Verify outputs, document limitations, commit and push
 
 ## Key Questions
-1. Does a relative body-view angle ranking learned from raw-train internal validation generalize to Moving Val?
-2. Does the relative prior beat StaticPrior or improve RGBGlobal-Visibility when fused?
-3. Is angle preference action-dependent or stable across actions?
+1. Is the frame-0 confidence schema available in the existing archives?
+2. Does the true-facing angle convention differ from the old placement-yaw convention?
+3. If exact confidence is available, does its Train-internal prior generalize to Moving Val?
 
 ## Decisions Made
-- Use the existing raw-train-derived Yaw8 ST-GCN validation observations as the internal validation population (245 source records × 8 yaw variants).
-- Reconstruct the frozen Yaw8 camera azimuth from the recorded generation rule and `babel_sid`; do not inspect raw-val or Moving Val while constructing the angle prior.
-- Use the existing Yaw8Fair shared-head candidate cache and frozen Yaw8 checkpoint for Moving Val diagnostics only.
+- Use AMASS/BABEL frame-0 root transform composed with placement scene yaw for body facing.
+- Enforce frame-0 keypoint confidence when the archive schema supports `(30,17)` confidence.
+- If eight-placement policy archives expose only sequence-level `(32,)` confidence, report it as a non-frame-0 proxy and never use it to claim an exact Moving frame-0 confidence landscape.
 
 ## Errors Encountered
-- The Yaw8 checkpoint was stored under `checkpoints/stgcn_reduced12_yaw8_v1/best.pt`, not beside the dataset arrays; the script now resolves that canonical checkpoint path.
+- Existing policy archives store only per-view sequence-mean confidence `(32,)`; exact Moving candidate frame-0 confidence is unavailable without forbidden RGB/YOLO regeneration.
 
 ## Status
-**Completed** - CUDA evaluation completed, all required JSON/Markdown artifacts validated, and commit `4371ccd` pushed to `origin/main`.
+**Completed** - CUDA run, artifacts verified, task ready to commit.

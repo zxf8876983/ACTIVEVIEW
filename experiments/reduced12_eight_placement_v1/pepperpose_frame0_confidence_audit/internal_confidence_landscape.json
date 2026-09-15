@@ -1,0 +1,66 @@
+{
+  "0": {
+    "angle_bin": 0,
+    "count": 245,
+    "mean_frame0_confidence": 0.937017784556564,
+    "mean_frame0_min_confidence": 0.4914469957199632,
+    "mean_frame0_keypoints_gt_0_5": 16.39183673469388,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  },
+  "45": {
+    "angle_bin": 1,
+    "count": 245,
+    "mean_frame0_confidence": 0.8684778274322043,
+    "mean_frame0_min_confidence": 0.12369971764749106,
+    "mean_frame0_keypoints_gt_0_5": 15.159183673469387,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  },
+  "90": {
+    "angle_bin": 2,
+    "count": 245,
+    "mean_frame0_confidence": 0.7448452175879965,
+    "mean_frame0_min_confidence": 0.031317770832731406,
+    "mean_frame0_keypoints_gt_0_5": 13.004081632653062,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  },
+  "135": {
+    "angle_bin": 3,
+    "count": 245,
+    "mean_frame0_confidence": 0.7138460379474018,
+    "mean_frame0_min_confidence": 0.02501189868935213,
+    "mean_frame0_keypoints_gt_0_5": 12.248979591836735,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  },
+  "180": {
+    "angle_bin": 4,
+    "count": 245,
+    "mean_frame0_confidence": 0.7661496111324855,
+    "mean_frame0_min_confidence": 0.03339679135123686,
+    "mean_frame0_keypoints_gt_0_5": 13.579591836734695,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  },
+  "225": {
+    "angle_bin": 5,
+    "count": 245,
+    "mean_frame0_confidence": 0.7686664386671417,
+    "mean_frame0_min_confidence": 0.02842916063964367,
+    "mean_frame0_keypoints_gt_0_5": 13.408163265306122,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  },
+  "270": {
+    "angle_bin": 6,
+    "count": 245,
+    "mean_frame0_confidence": 0.7762959229702853,
+    "mean_frame0_min_confidence": 0.030818393322810226,
+    "mean_frame0_keypoints_gt_0_5": 13.43673469387755,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  },
+  "315": {
+    "angle_bin": 7,
+    "count": 245,
+    "mean_frame0_confidence": 0.8972161577672374,
+    "mean_frame0_min_confidence": 0.14955438743820604,
+    "mean_frame0_keypoints_gt_0_5": 15.616326530612245,
+    "confidence_source": "exact confidence[0,:] from Yaw8 per-view NPZ"
+  }
+}

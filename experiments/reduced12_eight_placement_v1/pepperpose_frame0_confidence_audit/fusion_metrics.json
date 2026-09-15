@@ -1,0 +1,7 @@
+{
+  "status": "SKIPPED_BY_REGISTERED_GATE",
+  "gate": "GTYaw-PoseConfidencePrior Accuracy >= 0.54",
+  "pose_accuracy": 0.43799603174603174,
+  "reason": "Fusion was not run because the privileged pose prior did not reach the preregistered 0.54 gate.",
+  "policy_test_used": false
+}

@@ -1,0 +1,26 @@
+{
+  "internal_q_conf": [
+    0.937017784556564,
+    0.8684778274322043,
+    0.7448452175879965,
+    0.7138460379474018,
+    0.7661496111324855,
+    0.7686664386671417,
+    0.7762959229702853,
+    0.8972161577672374
+  ],
+  "moving_q_conf": [
+    0.6162110523028792,
+    0.5777271541698444,
+    0.5099811009113928,
+    0.5197475184448734,
+    0.5156865726331283,
+    0.5207214898048235,
+    0.5174205356576642,
+    0.5939046326928041
+  ],
+  "internal_to_moving_spearman": 0.8095238095238096,
+  "moving_confidence_is_exact_frame0": false,
+  "warning": "Moving archive confidence is a sequence-level mean; this correlation is proxy-only and was not used to tune the prior.",
+  "policy_test_used": false
+}

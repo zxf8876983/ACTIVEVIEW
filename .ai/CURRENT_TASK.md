@@ -1,12 +1,13 @@
-# Train-internal-Val Relative View Quality Prior — completed
+# Frame0 True-Facing + YOLO Confidence Angle Prior Audit — completed
 
-Implemented and ran `activeview/scripts/experiments/run_reduced12_relative_angle_quality_prior.py` with CUDA on the frozen Yaw8Fair recognizer. The angle prior was constructed only from the raw-train-derived Yaw8 internal validation split (2,212 train source records and 245 internal-validation source records, 1,960 expanded observations; no record overlap). Moving-Val evaluation used 10,080 contexts and 68,702 Stage-A legal candidate observations; Policy Test was not read.
+Implemented and ran `activeview/scripts/experiments/run_reduced12_pepperpose_frame0_confidence_audit.py` with CUDA on the frozen Yaw8Fair option cache. The prior was constructed from the raw-train-derived Yaw8 internal validation split only (245 source records × 8 yaw variants, 1,960 observations); Policy Test was not read and no model/data was regenerated.
 
 Key results:
 
-- Internal angle Accuracy ranged from 0.648980 (180°) to 0.714286 (315°), a 6.531 pp gap. Accuracy ranking was 315°, 45°, 135°, 0°, 270°, 90°, 225°, 180°; margin ranking was 45°, 315°, 0°, 270°, 225°, 180°, 90°, 135°.
-- Internal-to-Moving ranking Spearman was 0.142857 for Accuracy and -0.333333 for mean GT-margin: `UNSTABLE`.
-- StaticPrior was 0.549901/0.571990 Accuracy/Macro-F1. RelativeAnglePrior-Acc, -F1, and -Margin reached 0.427877/0.459840, 0.430655/0.465148, and 0.413393/0.439744 respectively; the best relative prior was 11.925 pp below StaticPrior, so the preregistered decision is `KILL RELATIVE ANGLE PRIOR`.
-- RGBGlobal+Angle was 0.564980/0.579979 (-0.238 pp versus RGBGlobal); GT SceneVisibility+Angle was 0.507639/0.528509 (-7.629 pp versus GT SceneVisibility). GT-action-conditioned angle prior reached 0.439683/0.469918, only +2.629 pp over unified Margin.
+- Internal frame-0 confidence ranged from 0.713846 at 135° to 0.937018 at 0° (22.317 pp gap).
+- True-facing analytic sanity passed; old placement-yaw and true-facing bins differed in 15/20 samples (0.750).
+- Random was 0.426786/0.450423, StaticPrior 0.549901/0.571990, GTYaw-PoseConfidencePrior 0.437996/0.465250, RGBGlobal-Visibility 0.567361/0.582567, Frame0SceneVisibility 0.583929/0.598955, and GT-TrueLogP Oracle 0.760714/0.775961 (Accuracy/Macro-F1).
+- Candidate-only AnyCorrect Coverage was 0.776190.
+- Internal-to-Moving confidence Spearman was 0.809524, but Moving archives expose only sequence-level `(32,)` confidence, so this correlation is proxy-qualified rather than an exact frame-0 test.
 
-Artifacts are under `experiments/reduced12_eight_placement_v1/relative_angle_quality_prior/`. This is a privileged, non-deployable diagnostic because Moving-Val scoring uses GT body yaw; no recognizer or selector was trained or modified.
+The registered decision is `KILL PEPPERPOSE-STYLE ANGLE PRIOR`: the privileged true-facing prior reached only 0.437996 Accuracy (<0.52), and fusion was correctly skipped by the 0.54 gate. Exact Moving frame-0 candidate confidence cannot be audited without forbidden RGB/YOLO regeneration; the report records this limitation explicitly. Artifacts are under `experiments/reduced12_eight_placement_v1/pepperpose_frame0_confidence_audit/`.
