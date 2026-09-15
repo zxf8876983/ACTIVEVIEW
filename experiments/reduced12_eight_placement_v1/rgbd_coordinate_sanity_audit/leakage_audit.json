@@ -1,0 +1,11 @@
+{
+  "policy_test_read": false,
+  "candidate_rgb_read": false,
+  "candidate_depth_read": false,
+  "future_frames_read": false,
+  "gt_joints_diagnostic_only": true,
+  "gt_joints_used_in_deployable_d2": false,
+  "gt_yaw_used_in_deployable_d2": false,
+  "moving_val_used_for_calibration": false,
+  "moving_val_used_for_convention_selection": false
+}

@@ -1,0 +1,10 @@
+{
+  "d1a_definition": "GT world joints + (estimated root - GT H36M root)",
+  "d1b_definition": "existing raycast D1 joints",
+  "mean_joint_difference_m": 1.556013096148945e-08,
+  "p95_joint_difference_m": 1.1920928955078125e-07,
+  "translation_only": true,
+  "estimated_yaw_used": false,
+  "template_used": false,
+  "test_used": false
+}

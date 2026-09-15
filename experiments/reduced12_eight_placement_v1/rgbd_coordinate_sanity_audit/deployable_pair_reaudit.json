@@ -1,0 +1,21 @@
+{
+  "D2+D0": {
+    "pair_any_correct_count": 6122,
+    "pair_any_correct_rate": 0.6073412698412698,
+    "first_correct_second_wrong": 236,
+    "first_wrong_second_correct": 1077
+  },
+  "D2+StaticPrior": {
+    "pair_any_correct_count": 6305,
+    "pair_any_correct_rate": 0.6254960317460317,
+    "first_correct_second_wrong": 762,
+    "first_wrong_second_correct": 1260
+  },
+  "D2+D1": {
+    "pair_any_correct_count": 5288,
+    "pair_any_correct_rate": 0.5246031746031746,
+    "first_correct_second_wrong": 250,
+    "first_wrong_second_correct": 243
+  },
+  "test_used": false
+}

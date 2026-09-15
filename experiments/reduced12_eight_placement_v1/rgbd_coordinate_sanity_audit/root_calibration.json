@@ -1,0 +1,10 @@
+{
+  "train_samples": 46324,
+  "median_gt_root_depth_minus_torso_surface_m": 0.3328283845419515,
+  "holdout_records": 31,
+  "holdout_raw_root_median_m": 0.32983057817801353,
+  "holdout_calibrated_root_median_m": 0.10346907124217193,
+  "calibration_enabled": true,
+  "hard_rule": "enable only if |median bias|>=0.05m and holdout median error improves >=20%",
+  "test_used": false
+}

@@ -1,0 +1,10 @@
+{
+  "pixel": "GT",
+  "depth": "Habitat rendered 5x5 median",
+  "mpjpe_m": 0.9626972912780232,
+  "median_joint_error_m": 0.5944219654758895,
+  "p90_joint_error_m": 2.195579115989756,
+  "visible_joint_mpjpe_m": 0.38867811009866154,
+  "occluded_joint_mpjpe_m": 1.6290611669470136,
+  "depth_abs_error_m": 0.9371757963313901
+}

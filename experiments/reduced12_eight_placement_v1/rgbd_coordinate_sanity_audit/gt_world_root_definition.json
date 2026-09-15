@@ -1,0 +1,8 @@
+{
+  "root_joint": "H36M17 pelvis/joint0",
+  "base_position_recorded": true,
+  "pelvis_link_position_recorded": true,
+  "pelvis_link_note": "male_0 URDF exposes no separate pelvis link; pelvis_link_position is explicitly recorded as the articulated root/base proxy",
+  "source": "independent Habitat humanoid FK from raw motion, placement and frame0",
+  "test_used": false
+}

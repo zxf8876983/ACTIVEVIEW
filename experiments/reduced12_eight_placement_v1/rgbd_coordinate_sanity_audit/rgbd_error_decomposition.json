@@ -1,0 +1,47 @@
+{
+  "L0_GT_pixel_GT_analytic_depth": {
+    "pixel": "GT",
+    "depth": "GT analytic",
+    "mpjpe_m": 0.0
+  },
+  "L1_GT_pixel_Habitat_depth": {
+    "pixel": "GT",
+    "depth": "Habitat rendered 5x5 median",
+    "mpjpe_m": 0.9626972912780232,
+    "median_joint_error_m": 0.5944219654758895,
+    "p90_joint_error_m": 2.195579115989756,
+    "visible_joint_mpjpe_m": 0.38867811009866154,
+    "occluded_joint_mpjpe_m": 1.6290611669470136,
+    "depth_abs_error_m": 0.9371757963313901
+  },
+  "L2A_YOLO_pixel_GT_depth": {
+    "pixel": "YOLO",
+    "depth": "GT analytic",
+    "mpjpe_m": 0.1571773766826371
+  },
+  "L2B_YOLO_pixel_Habitat_depth": {
+    "pixel": "YOLO",
+    "depth": "Habitat cached",
+    "mpjpe_m": 0.43670520348490804
+  },
+  "sample_contexts": 256,
+  "per_joint_l1_m": [
+    0.8800006576522291,
+    0.8936615411388691,
+    0.973953562610659,
+    1.0445759677097712,
+    0.8964824290513822,
+    0.9384966629103605,
+    1.0349586316504633,
+    0.8676591992559739,
+    0.9034975148515404,
+    0.9124615493275483,
+    0.8337469412043964,
+    0.8940248020799376,
+    1.4153156654176224,
+    1.2007038855528092,
+    0.900740142460978,
+    0.8727365163695142,
+    0.9028382824823372
+  ]
+}

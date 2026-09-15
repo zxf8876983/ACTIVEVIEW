@@ -1,29 +1,28 @@
-# RGB-D Human-State Recovery + Deployable Two-Policy Gate — completed
+# RGB-D Coordinate-System & D1 Sanity Audit — completed
 
-The reduced12 Train/Moving-Val audit is complete. Existing VideoPose3D was
-confirmed non-causal for frame 0 (filter widths `[3,3,3,3,3]`, padding 121,
-receptive field 243), so deployable D2 uses only current-frame RGB-D
-backprojection, current-frame YOLO26n-Pose, and a Train-derived H36M17
-template. No Policy Test data, candidate RGB/depth/YOLO, or future frames
-entered deployable selection.
+Train/Moving-Val only; no Policy Test, model training, recognizer changes, or
+new RGB/skeleton/DINO caches. The audit is in
+`experiments/reduced12_eight_placement_v1/rgbd_coordinate_sanity_audit/`.
 
-Moving Val (10,080 contexts; 68,702 legal candidates) with frozen Yaw8 ST-GCN
-plus Policy-balanced shared head:
+Key findings:
 
-- D0 privileged Frame0SceneVisibility: 0.583929 Accuracy / 0.598955 Macro-F1
-- D1 RGB-D root + GT relative pose: 0.499802 / 0.524925
-- D2 strict current RGB-D state: 0.500496 / 0.521328
-- D3 uncertainty-weighted visibility (alpha .25/.50): 0.500595 / 0.521707 and
-  0.500496 / 0.521462
-- Random legal: 0.426786 / 0.450423
-- Static prior: 0.523413 / 0.544567
+- StaticPrior protocol is repaired: 0.549901 Accuracy / 0.571990 Macro-F1,
+  matching the historical Train-derived prior; the earlier 0.523413 result
+  used a Val-derived prior inside `_policy_scores`.
+- Camera projection/backprojection closes at machine precision (100×17), with
+  Habitat world +Y, camera forward −Z, WXYZ camera→world rotation and one
+  1.10 m sensor-height addition.
+- Independent GT H36M17 root localization has median 0.354935 m and P90
+  2.362965 m; the old near-zero root metric was self-consistency, not GT error.
+- Synthetic yaw H0–H6 identifies a fixed +90° lateral-axis offset; H2 (−90°)
+  gives 0.472° median / 0.473° max error and passes the synthetic gate.
+- Error ladder (fixed 256-context depth sample): L0 0 m, L1 GT-pixel + Habitat
+  depth 0.9627 m (visible 0.3887 m, occluded 1.6291 m), L2A YOLO-pixel + GT
+  depth 0.1572 m, L2B YOLO-pixel + Habitat depth 0.4367 m.
+- Full Moving-Val D1 corrected remains 0.499802 / 0.524925 and D2c remains
+  0.500496 / 0.521328; D1a-vs-D1b difference is <1e−6 m, so D1 is strictly
+  translation-only and the independent root error is the main D1 concern.
 
-RGB-D depth caches were generated with eight spawned Habitat workers for
-current frame only; raw depth was not persisted. Root localization was
-numerically exact in the synthetic render (median 0 m); reconstructed
-world-joint MPJPE was 0.4098 m (0.2556 m observed and 0.6308 m template
-completed). D2 is 8.343 pp below D0, so the preregistered viability gate fails
-and human-state recovery is the current bottleneck. Train record-holdout
-complementarity selected `A_dep+C` (0.570978 pair AnyCorrect), below the 0.61
-gate threshold; no complex learned gate was trained. Results are in
-`experiments/reduced12_eight_placement_v1/rgbd_deployable_two_policy_gate_v1/`.
+The large D2 component gap appears when replacing estimated orientation with GT
+orientation on the fixed diagnostic subset; future work should first inspect
+pose orientation and depth/surface recovery rather than train a new gate.

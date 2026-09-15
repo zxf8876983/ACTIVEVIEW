@@ -1,0 +1,43 @@
+{
+  "hypotheses": {
+    "H0": {
+      "mean_abs_deg": 92.56133219705093,
+      "median_abs_deg": 92.57268792448033,
+      "p90_abs_deg": 167.17120003718478
+    },
+    "H1_yaw_plus_90": {
+      "mean_abs_deg": 89.38137185958652,
+      "median_abs_deg": 89.83174261550775,
+      "p90_abs_deg": 165.46791512445955
+    },
+    "H2_yaw_minus_90": {
+      "mean_abs_deg": 90.61862814041348,
+      "median_abs_deg": 90.16825738449226,
+      "p90_abs_deg": 165.97756781189204
+    },
+    "H3_neg_yaw": {
+      "mean_abs_deg": 97.23258103934326,
+      "median_abs_deg": 99.50675167860771,
+      "p90_abs_deg": 151.44986448019344
+    },
+    "H4_neg_yaw_plus_90": {
+      "mean_abs_deg": 89.59510942790713,
+      "median_abs_deg": 89.36595129122806,
+      "p90_abs_deg": 172.56009286561388
+    },
+    "H5_neg_yaw_minus_90": {
+      "mean_abs_deg": 90.4048905720929,
+      "median_abs_deg": 90.63404870877196,
+      "p90_abs_deg": 172.51679882390684
+    },
+    "H6_yaw_plus_180": {
+      "mean_abs_deg": 87.43866780294908,
+      "median_abs_deg": 87.42731207551967,
+      "p90_abs_deg": 165.61695998352104
+    }
+  },
+  "selected_by_synthetic_test": "H2_minus_90",
+  "synthetic_gate": true,
+  "moving_val_note": "estimated pose yaw compared with independent GT; no convention is selected from Moving Val",
+  "test_used": false
+}

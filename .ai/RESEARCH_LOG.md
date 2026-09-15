@@ -1538,3 +1538,18 @@ viability gate; human-state recovery is the current bottleneck. Train
 record-holdout complementarity selected A_dep+C at 0.570978 pair AnyCorrect,
 below the 0.61 gate threshold, so no complex gate was trained. Policy Test and
 future candidate observations were not used.
+
+## RGB-D coordinate-system and D1 sanity audit (2026-09-15)
+
+Reproduced the historical Train-derived StaticPrior on 10,080 Moving-Val
+contexts at 0.549901 Accuracy / 0.571990 Macro-F1 (the prior 0.523413 result
+was Val-derived). Projection/backprojection closure is machine-precision with
+Habitat +Y world-up, −Z camera-forward, WXYZ camera→world rotations and one
+1.10 m sensor-height addition. Independent GT root error is median 0.354935 m
+and P90 2.362965 m; the old near-zero metric was self-consistency. Synthetic
+H0–H6 yaw testing found a fixed +90° lateral-axis offset; H2 (−90°) leaves
+0.472° median / 0.473° max error. On a fixed 256-context depth sample, the
+error ladder is L0 0 m, L1 0.9627 m, L2A 0.1572 m, L2B 0.4367 m. Full-Val D1
+corrected is 0.499802/0.524925 and D2c is 0.500496/0.521328; D1a-vs-D1b is
+<1e−6 m, so D1 is translation-only. No model was trained or changed and no
+Policy Test data was read.

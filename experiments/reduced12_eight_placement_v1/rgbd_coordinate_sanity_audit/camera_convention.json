@@ -1,0 +1,16 @@
+{
+  "world_up": "+Y",
+  "camera_forward": "-Z",
+  "camera_right": "+X",
+  "camera_up": "+Y",
+  "quaternion": "WXYZ",
+  "rotation_direction": "camera-to-world active rotation; inverse world-to-camera is transpose",
+  "sensor_height_m": 1.1,
+  "sensor_height_applied_once": true,
+  "sensor_position_already_included": false,
+  "sample_count": 10,
+  "forward_dot_mean": 0.998611612027003,
+  "forward_dot_min": 0.9977734627962594,
+  "forward_points_toward_human": true,
+  "test_used": false
+}

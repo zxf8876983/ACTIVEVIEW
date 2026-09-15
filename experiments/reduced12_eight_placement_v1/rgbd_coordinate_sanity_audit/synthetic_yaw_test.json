@@ -1,0 +1,78 @@
+{
+  "cases": [
+    {
+      "gt_yaw_deg": 0.0,
+      "estimated_yaw_deg": 89.52771729708367,
+      "wrapped_error_deg": 89.52771729708367
+    },
+    {
+      "gt_yaw_deg": 45.0,
+      "estimated_yaw_deg": 134.5273434913568,
+      "wrapped_error_deg": 89.52734349135677
+    },
+    {
+      "gt_yaw_deg": 90.0,
+      "estimated_yaw_deg": 179.52771729708368,
+      "wrapped_error_deg": 89.52771729708368
+    },
+    {
+      "gt_yaw_deg": 135.0,
+      "estimated_yaw_deg": -135.47265650864324,
+      "wrapped_error_deg": 89.52734349135676
+    },
+    {
+      "gt_yaw_deg": 180.0,
+      "estimated_yaw_deg": -90.47228270291633,
+      "wrapped_error_deg": 89.52771729708365
+    },
+    {
+      "gt_yaw_deg": 225.0,
+      "estimated_yaw_deg": -45.47265650864324,
+      "wrapped_error_deg": 89.52734349135676
+    },
+    {
+      "gt_yaw_deg": 270.0,
+      "estimated_yaw_deg": -0.47228270291633023,
+      "wrapped_error_deg": 89.5277172970837
+    },
+    {
+      "gt_yaw_deg": 315.0,
+      "estimated_yaw_deg": 44.52734349135677,
+      "wrapped_error_deg": 89.52734349135676
+    }
+  ],
+  "hypotheses": {
+    "H0_identity": {
+      "median_abs_error_deg": 89.52753039422024,
+      "max_abs_error_deg": 89.5277172970837
+    },
+    "H1_plus_90": {
+      "median_abs_error_deg": 179.52753039422024,
+      "max_abs_error_deg": 179.52771729708368
+    },
+    "H2_minus_90": {
+      "median_abs_error_deg": 0.4724696057797738,
+      "max_abs_error_deg": 0.47265650864323655
+    },
+    "H3_negate": {
+      "median_abs_error_deg": 90.0,
+      "max_abs_error_deg": 179.5273434913568
+    },
+    "H4_negate_plus_90": {
+      "median_abs_error_deg": 90.00000000000003,
+      "max_abs_error_deg": 179.52771729708368
+    },
+    "H5_negate_minus_90": {
+      "median_abs_error_deg": 90.0,
+      "max_abs_error_deg": 179.52771729708368
+    },
+    "H6_plus_180": {
+      "median_abs_error_deg": 90.47246960577976,
+      "max_abs_error_deg": 90.47265650864325
+    }
+  },
+  "selected_hypothesis": "H2_minus_90",
+  "median_abs_error_deg": 0.4724696057797738,
+  "max_abs_error_deg": 0.47265650864323655,
+  "pass": true
+}
