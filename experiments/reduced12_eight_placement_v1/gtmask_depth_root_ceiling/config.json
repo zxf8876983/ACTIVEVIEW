@@ -1,0 +1,19 @@
+{
+  "seed": 42,
+  "device": "cuda:0",
+  "workers": 8,
+  "python": "3.9.25",
+  "torch": "2.6.0+cu124",
+  "cuda": "12.4",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "frame_index": 0,
+  "mask_sensor": "Habitat semantic OBJECT_ID == articulated human.object_id",
+  "depth_sensor": "Habitat SensorType.DEPTH depth_0 at same camera",
+  "point_cloud": "all human-mask pixels with finite metric depth backprojected to world",
+  "recognizer": "frozen Yaw8 encoder + Yaw8 shared head",
+  "action_set": "Stage-A legal candidate-only",
+  "policy_test_used": false,
+  "training_used": false,
+  "candidate_depth_used": false,
+  "candidate_rgb_used": false
+}

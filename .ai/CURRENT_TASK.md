@@ -1,28 +1,30 @@
-# RGB-D Coordinate-System & D1 Sanity Audit — completed
+# GT Human-Mask + Depth Root Recovery Ceiling Audit — completed
 
-Train/Moving-Val only; no Policy Test, model training, recognizer changes, or
-new RGB/skeleton/DINO caches. The audit is in
-`experiments/reduced12_eight_placement_v1/rgbd_coordinate_sanity_audit/`.
+Train/Moving-Val only; no Policy Test, model training, or new RGB/skeleton/
+DINO perception caches. The audit used current frame-0 Habitat depth plus a
+perfect semantic OBJECT_ID humanoid mask, an all-finite-mask point-cloud root,
+and the frozen Yaw8 recognizer on the Stage-A legal candidate pool.
 
-Key findings:
+Key results on 10,080 Moving-Val contexts (68,702 legal candidates):
 
-- StaticPrior protocol is repaired: 0.549901 Accuracy / 0.571990 Macro-F1,
-  matching the historical Train-derived prior; the earlier 0.523413 result
-  used a Val-derived prior inside `_policy_scores`.
-- Camera projection/backprojection closes at machine precision (100×17), with
-  Habitat world +Y, camera forward −Z, WXYZ camera→world rotation and one
-  1.10 m sensor-height addition.
-- Independent GT H36M17 root localization has median 0.354935 m and P90
-  2.362965 m; the old near-zero root metric was self-consistency, not GT error.
-- Synthetic yaw H0–H6 identifies a fixed +90° lateral-axis offset; H2 (−90°)
-  gives 0.472° median / 0.473° max error and passes the synthetic gate.
-- Error ladder (fixed 256-context depth sample): L0 0 m, L1 GT-pixel + Habitat
-  depth 0.9627 m (visible 0.3887 m, occluded 1.6291 m), L2A YOLO-pixel + GT
-  depth 0.1572 m, L2B YOLO-pixel + Habitat depth 0.4367 m.
-- Full Moving-Val D1 corrected remains 0.499802 / 0.524925 and D2c remains
-  0.500496 / 0.521328; D1a-vs-D1b difference is <1e−6 m, so D1 is strictly
-  translation-only and the independent root error is the main D1 concern.
+- StaticPrior: 0.549901 Accuracy / 0.571990 Macro-F1.
+- D0 GT-human-state SceneVisibility: 0.583929 / 0.598955.
+- Existing old joint-depth-root D1: 0.499802 / 0.524925.
+- GTMask RawRoot D1: 0.553671 / 0.572959.
+- GTMask Train-calibrated-root D1: 0.556548 / 0.576580.
+- Oracle GT-TrueLogP: 0.760714 / 0.775961.
 
-The large D2 component gap appears when replacing estimated orientation with GT
-orientation on the fixed diagnostic subset; future work should first inspect
-pose orientation and depth/surface recovery rather than train a new gate.
+The GTMask calibrated root has median Euclidean error 0.269271 m and P90
+3.172190 m (raw 0.394503 m / 3.193952 m); the old joint-depth reference is
+0.354935 m / 2.362966 m. Train-only radial offset b=0.272175 m. D0→best D1
+drops 2.738 pp, with selected-view agreement 0.884325 (raw) / 0.892956
+(calibrated). Only 7,051/10,080 Val contexts had non-empty human-mask point
+clouds.
+
+Conclusion: perfect current-frame human segmentation improves over the old
+joint-depth root but remains below D0 and fails the preregistered localization
+and route gates. Simple RGB-D root localization is killed; do not expand this
+route with additional point-cloud heuristics. Reports are in
+`experiments/reduced12_eight_placement_v1/gtmask_depth_root_ceiling/` and the
+script is
+`activeview/scripts/experiments/run_reduced12_gtmask_depth_root_ceiling.py`.

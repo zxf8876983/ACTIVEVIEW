@@ -1,32 +1,20 @@
-# Task Plan: RGB-D Human-State Recovery + Deployable Two-Policy Gate
+# Task Plan: GT human mask + depth root recovery ceiling audit
 
 ## Goal
-Implement and run the Train/Moving-Val RGB-D human-state recovery and two-policy gating audit without reading Policy Test or changing frozen models.
+Measure whether a perfect current-frame human mask plus Habitat depth can recover the root well enough to close the D1 NBV gap.
 
 ## Phases
-- [x] Phase 1: Verify protocol, paths, GPU and causal VideoPose3D behavior
-- [x] Phase 2: Build current-frame YOLO/depth compact caches and train-derived proxy
-- [x] Phase 3: Evaluate D0/D1/D2/D3 visibility and policy complementarity
-- [x] Phase 4: Write reports, validate code, update project records, commit and push
+- [x] Phase 1: Inspect existing RGB-D audit, dataset loaders, and Habitat render capabilities
+- [x] Phase 2: Implement compact GT-mask point-cloud root estimators and D1 evaluator
+- [x] Phase 3: Run Train/Moving-Val audit with Habitat CUDA and save reports
+- [x] Phase 4: Verify outputs, update project notes, commit and push
 
-## Key Questions
-1. Does the existing frame-0 VideoPose3D estimate read future frames?
-2. Can direct current-frame RGB-D state recover enough scene visibility for deployable gating?
-3. Which, if any, deployable policy pair and gate improve over D2?
-
-## Decisions Made
-- Use only Policy Train and Moving Val; never open Test artifacts.
-- D2 will use direct RGB-D backprojection plus a Train-derived canonical template when VideoPose3D is non-causal.
-- Raw RGB/depth/large checkpoints remain outside Git; reports contain compact summaries only.
-
-## Errors Encountered
-- The first metric pass repeatedly recomputed `select_actions` inside per-row
-  comprehensions, making gate evaluation quadratic.  The final runner
-  materializes Train/Val actions once before gate analysis.
-- The policy-landscape cache stores logits before the frozen Policy-balanced
-  head; the final runner correctly uses the Yaw8Fair feature cache and shared
-  head to preserve the matched recognizer protocol.
+## Constraints
+- Policy Train and Moving Val only; no Policy Test.
+- Current frame 0 only; no candidate RGB/depth, future frames, or new skeleton/perception caches.
+- Frozen Yaw8 encoder/shared head and Stage-A legal candidate-only action set.
+- Do not submit raw depth, masks, point clouds, large NPZ, or debug images.
 
 ## Status
-**Completed** - reports and compact runtime-cache metadata are written under
-`experiments/reduced12_eight_placement_v1/rgbd_deployable_two_policy_gate_v1/`.
+**Completed** - the audit ran on CUDA with eight Habitat workers; compact
+reports were generated and are ready for review.

@@ -1553,3 +1553,22 @@ error ladder is L0 0 m, L1 0.9627 m, L2A 0.1572 m, L2B 0.4367 m. Full-Val D1
 corrected is 0.499802/0.524925 and D2c is 0.500496/0.521328; D1a-vs-D1b is
 <1e−6 m, so D1 is translation-only. No model was trained or changed and no
 Policy Test data was read.
+
+## GT human-mask + depth root recovery ceiling audit (2026-09-15)
+
+Completed a Train/Moving-Val-only privileged diagnostic with eight Habitat
+workers. Current frame-0 depth and perfect humanoid semantic OBJECT_ID mask
+were backprojected into a compact human-surface point cloud; no raw depth,
+mask, candidate observation, or Test artifact was persisted. On 10,080 Val
+contexts and 68,702 Stage-A legal candidates, StaticPrior was
+0.549901/0.571990 and D0 GT-human-state SceneVisibility was 0.583929/0.598955
+(Accuracy/Macro-F1). Existing old joint-depth-root D1 was 0.499802/0.524925;
+GTMask RawRoot D1 was 0.553671/0.572959 and Train-calibrated Root D1 was
+0.556548/0.576580. The calibrated root median/P90 Euclidean error was
+0.269271/3.172190 m (raw 0.394503/3.193952 m), compared with the old reference
+0.354935/2.362966 m; Train-only radial offset b=0.272175 m. D0→best D1 dropped
+2.738 pp and selected-view agreement was 0.884325/0.892956 (raw/calibrated).
+Only 7,051 Val contexts had non-empty mask point clouds. Both localization and
+route gates therefore kill simple RGB-D root localization; perfect human
+segmentation alone does not close the known-map NBV gap. Policy Test and model
+training were not used.
