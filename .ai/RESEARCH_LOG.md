@@ -1656,3 +1656,27 @@ confidence. On disagreements, confidence corrected 666 RGB errors but lost
 The strict lower-tertile high-occlusion subset had 3,271 contexts and showed
 no useful fusion gain. Decision: **KILL ENTIRE PEPPERPOSE BRANCH**. No RGB or
 model training was performed and Policy Test was not read.
+
+## True-facing ST-GCN angle-prior re-audit (2026-09-16)
+
+Ran the read-only reduced12 angle-prior audit on CUDA. The corrected body
+facing composes `R_scene_yaw @ R_AMASS_root_frame0` and maps camera world
+azimuth relative to local +Z forward into 8 bins. Compared with historical
+placement-yaw bins, 1,440/1,960 internal Yaw8 observations (0.734694) and
+57,609/68,702 Moving legal candidate samples (0.838535) changed bins.
+
+Corrected internal Q_acc is [0.693878, 0.693878, 0.677551, 0.657143,
+0.697959, 0.706122, 0.653061, 0.693878] for 0–315 degrees, and Q_margin is
+[0.838470, 0.841644, 0.790725, 0.722954, 0.832321, 0.923692, 0.846000,
+0.866751]. Train→Moving Spearman is 0.238095 for Q_acc versus accuracy and
+0.547619 for Q_margin versus mean GT margin, improving the historical
+0.142857/-0.333333 but not yielding a stable accuracy prior.
+
+On 10,080 Moving contexts with the unchanged Stage-A legal candidate pool,
+TrueFacingAnglePrior-Acc and -Margin reached 0.450099/0.477597 and
+0.451587/0.483006 Accuracy/Macro-F1, respectively. StaticPrior was
+0.549901/0.571990, RGBGlobal-Visibility 0.567361/0.582567,
+Frame0SceneVisibility 0.583929/0.598955, and GT-TrueLogP Oracle
+0.760714/0.775961. AnyCorrect Coverage was 0.776190. The final decision is
+**KILL ST-GCN RELATIVE-ANGLE PRIOR**. No training, model/data generation or
+Policy Test access occurred.

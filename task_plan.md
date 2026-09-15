@@ -1,28 +1,35 @@
-# Task Plan: PepperPose confidence–visibility complementarity audit
+# True-facing ST-GCN angle-prior re-audit
 
 ## Goal
-Evaluate whether the frozen true-facing frame-0 pose-confidence angle prior adds complementary value to existing visibility selectors on Moving Val.
+Recompute the reduced12 relative-angle prior with the AMASS frame-0 body
+facing convention and determine whether the historical angle-prior failure was
+caused by placement-yaw misalignment.
 
 ## Phases
-- [x] Phase 1: Confirm frozen artifacts, schemas, and Train/Moving-Val row alignment
-- [x] Phase 2: Implement rank-normalized fusion and complementarity diagnostics
-- [x] Phase 3: Run CUDA-only Train-holdout lambda selection and Moving-Val evaluation
-- [x] Phase 4: Verify reports, update project log, commit, and push
+- [x] Reuse frozen Yaw8Fair/ST-GCN assets and verify Train-internal-Val and Moving-Val boundaries
+- [x] Recompute internal and Moving angle bins with `R_scene_yaw @ R_AMASS_root_frame0`
+- [x] Evaluate corrected angle priors against historical, visibility and oracle references
+- [x] Validate reports and prepare the scoped commit
 
 ## Key Questions
-1. Does confidence correct visibility selector errors on disagreement contexts?
-2. Does rank-normalized fusion improve RGBGlobal or Frame0SceneVisibility?
-3. Is any gain reproduced on the fixed high-occlusion subset?
+1. Was the historical angle prior failure caused by using placement yaw instead of true body facing?
+2. Do corrected internal angle preferences generalize to Moving Val?
+3. Does a corrected angle prior beat the existing StaticPrior/visibility references?
 
 ## Decisions Made
-- Reuse the prior internal true-facing confidence table; do not recompute angle sanity or confidence landscapes.
-- Select lambda only on a deterministic 10% Policy-Train record holdout; Moving Val is evaluation-only.
-- Preserve the existing candidate-only selector/action protocol and frozen Yaw8Fair recognizer.
+- Corrected body-facing angle uses local +Z transformed by the AMASS frame-0
+  root rotation and scene yaw; no placement or recognizer changes were made.
+- Angle tables are frozen from raw-train-derived Yaw8 internal Val; Moving Val
+  is evaluation-only.
+- Final decision: KILL ST-GCN RELATIVE-ANGLE PRIOR. Corrected Q-margin and
+  Q-accuracy correlations are not both stable, and corrected selectors remain
+  below the StaticPrior baseline.
 
 ## Errors Encountered
 - Policy rows omit raw motion `source_path`; resolved root yaw through the canonical raw-val manifest.
 - Existing visibility cache stores NaN in inactive padding slots; finite checks are restricted to legal mask entries.
-- The prior helper's holdout function returns one index array; imported the strict rebaseline helper for `(fit_idx, holdout_idx)`.
+- Internal Yaw8 rows retain `start_frame/end_frame/fps` from the expanded manifest for AMASS root reconstruction.
 
 ## Status
-**Completed** - CUDA diagnostic ran, all requested reports were validated, and the work is ready to commit.
+**Completed** - CUDA read-only audit ran, reports were validated, and only this
+task's files are ready for commit. Policy Test was not read.

@@ -1,29 +1,25 @@
-# PepperPose confidence–visibility complementarity audit — completed
+# True-facing ST-GCN angle-prior re-audit — completed
 
-Implemented and ran `activeview/scripts/eval/analyze_reduced12_pepperpose_visibility_fusion.py`
-with CUDA using only the existing reduced12 Policy Train/Moving-Val artifacts.
-The true-facing frame-0 confidence table was loaded from the preceding
-`pepperpose_frame0_confidence_audit`; angle sanity and confidence landscapes
-were not recomputed. Lambda selection used a deterministic 10% Policy-Train
-record holdout, while Moving Val remained evaluation-only.
+Implemented and ran
+`activeview/scripts/eval/analyze_reduced12_true_facing_stgcn_angle_reaudit.py`
+with CUDA using the frozen Yaw8 ST-GCN encoder, Yaw8Fair shared head, existing
+candidate cache, scene metadata, visibility cache and current-frame DINO cache.
+No model was trained or modified, no RGB/skeleton was generated, and Policy
+Test was not read.
 
-Moving Val (10,080 contexts) results were:
+The AMASS frame-0 body-facing convention is
+`R_body_world = R_scene_yaw @ R_AMASS_root_frame0`, with local +Z as forward.
+The old placement-yaw bin changed for 1,440/1,960 internal observations
+(0.734694) and for 57,609/68,702 Moving legal candidates (0.838535).
 
-- RGBGlobal-Visibility: 0.567361/0.582567 Accuracy/Macro-F1.
-- RGBGlobal-Visibility + confidence (lambda 0.25): 0.567361/0.583573.
-- Frame0SceneVisibility: 0.583929/0.598955.
-- Frame0SceneVisibility + confidence (lambda 0.25): 0.502579/0.524444.
-- GTYaw-PoseConfidencePrior: 0.437996/0.465250.
-- GT-TrueLogP Oracle: 0.760714/0.775961.
+Corrected internal angle accuracy is highest at 225° (0.706122) and lowest at
+270° (0.653061). Train→Moving Spearman is 0.238095 for Q_acc versus angle
+accuracy and 0.547619 for Q_margin versus mean margin, compared with historical
+0.142857 and -0.333333. Moving selectors were TrueFacing-Acc 0.450099/0.477597
+and TrueFacing-Margin 0.451587/0.483006 Accuracy/Macro-F1, below StaticPrior
+0.549901/0.571990 and visibility references. The registered decision is
+**KILL ST-GCN RELATIVE-ANGLE PRIOR**; the next diagnostic should be Clean-to-
+Observed ST-GCN feature degradation rather than another angle prior.
 
-The RGB fusion Accuracy gain was 0.000 pp and the Frame0Scene fusion gain
-was -8.135 pp. On selector disagreements, confidence corrected 666 RGB
-errors but lost 1,970 RGB-correct contexts; for Frame0Scene it corrected 539
-errors and lost 2,010. The fixed strict lower-tertile high-occlusion subset
-contained 3,271 contexts and showed no useful fusion gain. The registered
-decision is **KILL ENTIRE PEPPERPOSE BRANCH**.
-
-The Moving policy archive still exposes sequence-level `(32,)` confidence,
-not exact future-candidate frame-0 confidence. The audit therefore retains
-the prior's explicit proxy limitation. No RGB was generated, no model was
-trained or modified, and Policy Test was not read.
+The new reports are under
+`experiments/reduced12_eight_placement_v1/true_facing_stgcn_angle_reaudit/`.

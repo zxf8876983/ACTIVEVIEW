@@ -1,0 +1,18 @@
+{
+  "formula": "theta_body = R_scene_yaw @ R_AMASS_root_frame0 applied to local +Z; bin wrap(camera_world_azimuth - theta_body) to nearest 45 degrees",
+  "internal": {
+    "observation_count": 1960,
+    "old_bin_changed_count": 1440,
+    "old_bin_changed_fraction": 0.7346938775510204
+  },
+  "moving": {
+    "comparison": "placement-yaw bin vs true body-facing bin",
+    "changed_count": 57609,
+    "total_count": 68702,
+    "changed_fraction": 0.8385345404791709,
+    "changed_context_count": 8461,
+    "context_count": 10080
+  },
+  "analytic_convention_check": "PASS: local +Z forward; R_body_world = R_scene_yaw @ R_AMASS_root_frame0",
+  "policy_test_used": false
+}
