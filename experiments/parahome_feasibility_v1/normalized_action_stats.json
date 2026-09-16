@@ -1,0 +1,317 @@
+{
+  "carry_move_object": {
+    "instance_count": 698,
+    "total_duration_seconds": 4069.2,
+    "mean_duration_seconds": 5.829799426934097,
+    "median_duration_seconds": 5.016666666666667,
+    "p10_duration_seconds": 3.0,
+    "p90_duration_seconds": 9.0,
+    "unique_sequences": 205,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Move bowl from washing machine to table": 1,
+      "Move kettle and cup from desk to sink": 1,
+      "Move cup from sink to table": 6,
+      "Move laundry from bookshelf to washing machine": 91,
+      "Move cup from table to sink": 16,
+      "Move kettle from table to sink": 26,
+      "Move book from bookshelf to table": 59,
+      "Move pan from gas stove to table": 34,
+      "Move kettle from sink to desk": 3,
+      "Move pot from gas stove to table": 50,
+      "Move book from desk to bookshelf": 27,
+      "Move kettle from desk to sink": 26,
+      "Move laundry from washing machine to bookshelf": 25,
+      "Move kettle and cup from table to sink": 1,
+      "Move cup from table to desk": 50,
+      "Move cup from desk to sink": 32,
+      "Move kettle from sink to table": 6,
+      "Move kettle and cup from sink to table": 4,
+      "Move chair from desk to table": 15,
+      "Move cup from sink to desk": 6,
+      "Move kettle from desk to table": 17,
+      "Move bowl from gas stove to table": 16,
+      "Move kettle and cup from table to desk": 1,
+      "Move kettle from table to desk": 40,
+      "Move bowl from refrigerator to gas stove": 2,
+      "Move cup and kettle from table to desk": 7,
+      "Move ingredients from microwave to table": 2,
+      "Move cup and kettle": 1,
+      "Move cup": 1,
+      "Move cup and kettle from desk to sink": 18,
+      "Move bowl from refrigerator to table": 5,
+      "Move ingredients to table": 5,
+      "Move chair": 17,
+      "Move book from table to bookshelf": 3,
+      "Move laptop from table to desk": 17,
+      "Move cutting board and knife to table": 1,
+      "Move cutting board and knife from sink to table": 1,
+      "Move cutting board and knife from table to sink": 1,
+      "Move bowl from sink to table": 6,
+      "Move cup from desk to table": 16,
+      "Move STH from drawer to desk": 3,
+      "Move laptop from desk to table": 13,
+      "Move cup and kettle from table to sink": 7,
+      "Move chair from table to desk": 9,
+      "Move bowl and pan from gas stove to table": 1,
+      "Move pan from table to gas stove": 1,
+      "Move cup and kettle from desk to table": 1,
+      "Move cup from desk to desk": 3,
+      "Move chair from desk to desk": 1,
+      "Move STH from table to desk": 2,
+      "Move cup from bookshelf to table": 1
+    }
+  },
+  "close": {
+    "instance_count": 897,
+    "total_duration_seconds": 1922.6333333333332,
+    "mean_duration_seconds": 2.143403939056113,
+    "median_duration_seconds": 2.0,
+    "p10_duration_seconds": 1.0,
+    "p90_duration_seconds": 3.0,
+    "unique_sequences": 206,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Close cabinet": 331,
+      "Close microwave": 120,
+      "Close refrigerator": 162,
+      "Close washing machine": 116,
+      "Close laptop": 92,
+      "Close drawer": 21,
+      "Close freezer": 49,
+      "Close pot lid": 6
+    }
+  },
+  "cut": {
+    "instance_count": 104,
+    "total_duration_seconds": 873.0666666666667,
+    "mean_duration_seconds": 8.394871794871795,
+    "median_duration_seconds": 8.216666666666667,
+    "p10_duration_seconds": 5.0,
+    "p90_duration_seconds": 11.433333333333334,
+    "unique_sequences": 104,
+    "unique_subjects": 37,
+    "raw_labels_included": {
+      "Cut ingredients on cutting board": 104
+    }
+  },
+  "drink": {
+    "instance_count": 110,
+    "total_duration_seconds": 717.1333333333334,
+    "mean_duration_seconds": 6.51939393939394,
+    "median_duration_seconds": 6.0,
+    "p10_duration_seconds": 4.52,
+    "p90_duration_seconds": 8.820000000000002,
+    "unique_sequences": 109,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Drink from cup": 110
+    }
+  },
+  "move_furniture": {
+    "instance_count": 72,
+    "total_duration_seconds": 165.63333333333333,
+    "mean_duration_seconds": 2.3004629629629627,
+    "median_duration_seconds": 2.0,
+    "p10_duration_seconds": 1.0600000000000003,
+    "p90_duration_seconds": 3.0,
+    "unique_sequences": 49,
+    "unique_subjects": 25,
+    "raw_labels_included": {
+      "Push in chair": 41,
+      "Pull out chair": 31
+    }
+  },
+  "open": {
+    "instance_count": 949,
+    "total_duration_seconds": 2293.866666666667,
+    "mean_duration_seconds": 2.4171408500175624,
+    "median_duration_seconds": 2.0,
+    "p10_duration_seconds": 1.0,
+    "p90_duration_seconds": 4.0,
+    "unique_sequences": 205,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Open cabinet": 333,
+      "Open pot lid": 59,
+      "Open microwave": 122,
+      "Open refrigerator": 162,
+      "Open washing machine": 116,
+      "Open laptop": 106,
+      "Open freezer": 51
+    }
+  },
+  "operate_appliance": {
+    "instance_count": 220,
+    "total_duration_seconds": 747.8666666666668,
+    "mean_duration_seconds": 3.39939393939394,
+    "median_duration_seconds": 3.0,
+    "p10_duration_seconds": 2.0,
+    "p90_duration_seconds": 5.0,
+    "unique_sequences": 129,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Turn on gas stove": 128,
+      "Turn off gas stove": 92
+    }
+  },
+  "pour": {
+    "instance_count": 108,
+    "total_duration_seconds": 795.6666666666667,
+    "mean_duration_seconds": 7.367283950617285,
+    "median_duration_seconds": 6.583333333333334,
+    "p10_duration_seconds": 5.0,
+    "p90_duration_seconds": 11.0,
+    "unique_sequences": 106,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Pour from kettle": 108
+    }
+  },
+  "put_place": {
+    "instance_count": 813,
+    "total_duration_seconds": 3016.733333333333,
+    "mean_duration_seconds": 3.7106191061910616,
+    "median_duration_seconds": 3.0,
+    "p10_duration_seconds": 1.4733333333333334,
+    "p90_duration_seconds": 7.0,
+    "unique_sequences": 198,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Put pot on gas stove": 62,
+      "Put ingredients in pot": 42,
+      "Put salt in cabinet": 7,
+      "Put bowl on washing machine": 1,
+      "Put food from pot to bowl": 10,
+      "Put STH in washing machine": 87,
+      "Put STH on desk": 79,
+      "Put cutting board and knife in sink": 96,
+      "Put pan on gas stove": 61,
+      "Put ingredients in pan": 32,
+      "Put ingredients in microwave": 59,
+      "Put ingredients on desk": 11,
+      "Put knife in sink": 4,
+      "Put cutting board in sink": 5,
+      "Put ingredients on cutting board": 97,
+      "Put ingredients from cutting board to pan": 46,
+      "Put ingredients from cutting board to pot": 36,
+      "Put food from pan to bowl": 21,
+      "Put ingredients on table": 1,
+      "Put kettle in sink": 14,
+      "Put ingredients in bowl": 1,
+      "Put cup in sink": 13,
+      "Put STH on table": 1,
+      "Put pan in sink": 3,
+      "Put bowl in sink": 3,
+      "Put salt in sink": 7,
+      "Put cup and kettle in sink": 6,
+      "Put cutting board and knife on sink": 1,
+      "Put bowl from refrigerator to table": 1,
+      "Put laundry in washing machine": 2,
+      "Put pan in cabinet": 1,
+      "Put kettle and cup in sink": 3
+    }
+  },
+  "read_look": {
+    "instance_count": 51,
+    "total_duration_seconds": 347.0,
+    "mean_duration_seconds": 6.803921568627451,
+    "median_duration_seconds": 7.0,
+    "p10_duration_seconds": 4.0,
+    "p90_duration_seconds": 9.0,
+    "unique_sequences": 50,
+    "unique_subjects": 22,
+    "raw_labels_included": {
+      "Look at book": 51
+    }
+  },
+  "sit": {
+    "instance_count": 226,
+    "total_duration_seconds": 958.0333333333334,
+    "mean_duration_seconds": 4.239085545722714,
+    "median_duration_seconds": 4.0,
+    "p10_duration_seconds": 2.0,
+    "p90_duration_seconds": 6.083333333333334,
+    "unique_sequences": 156,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Sit on chair": 226
+    }
+  },
+  "sprinkle": {
+    "instance_count": 97,
+    "total_duration_seconds": 680.5666666666667,
+    "mean_duration_seconds": 7.016151202749142,
+    "median_duration_seconds": 7.0,
+    "p10_duration_seconds": 4.420000000000001,
+    "p90_duration_seconds": 10.0,
+    "unique_sequences": 97,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Sprinkle salt": 97
+    }
+  },
+  "stand_up": {
+    "instance_count": 184,
+    "total_duration_seconds": 658.2666666666667,
+    "mean_duration_seconds": 3.577536231884058,
+    "median_duration_seconds": 3.0,
+    "p10_duration_seconds": 1.2333333333333334,
+    "p90_duration_seconds": 6.0,
+    "unique_sequences": 132,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Get up from chair": 184
+    }
+  },
+  "take_out": {
+    "instance_count": 718,
+    "total_duration_seconds": 2760.5666666666666,
+    "mean_duration_seconds": 3.8448003714020427,
+    "median_duration_seconds": 3.0,
+    "p10_duration_seconds": 1.1566666666666667,
+    "p90_duration_seconds": 7.8,
+    "unique_sequences": 197,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Take out pot from cabinet": 62,
+      "Take out ingredients from microwave": 57,
+      "Take out salt from cabinet": 97,
+      "Take out bowl from refrigerator": 33,
+      "Take out STH from drawer": 100,
+      "Take out cutting board and knife from cabinet": 103,
+      "Take out ingredients from refrigerator": 130,
+      "Take out pan from cabinet": 59,
+      "Take out STH from washing machine": 26,
+      "Take out knife from cabinet": 1,
+      "Take out cutting board from cabinet": 1,
+      "Take out ingredients from freezer": 49
+    }
+  },
+  "throw": {
+    "instance_count": 99,
+    "total_duration_seconds": 604.8666666666667,
+    "mean_duration_seconds": 6.1097643097643095,
+    "median_duration_seconds": 5.566666666666666,
+    "p10_duration_seconds": 3.9733333333333336,
+    "p90_duration_seconds": 9.06,
+    "unique_sequences": 99,
+    "unique_subjects": 37,
+    "raw_labels_included": {
+      "Throw away STH in trash can": 99
+    }
+  },
+  "type": {
+    "instance_count": 130,
+    "total_duration_seconds": 670.0999999999999,
+    "mean_duration_seconds": 5.154615384615384,
+    "median_duration_seconds": 5.0,
+    "p10_duration_seconds": 3.0,
+    "p90_duration_seconds": 7.0,
+    "unique_sequences": 114,
+    "unique_subjects": 38,
+    "raw_labels_included": {
+      "Type on laptop": 130
+    }
+  }
+}

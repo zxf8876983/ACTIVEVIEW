@@ -1,0 +1,646 @@
+{
+  "dataset": {
+    "dataset": "ParaHome",
+    "root": "/home/zxf/MG08/robot/ParaHome",
+    "sequence_count": 207,
+    "subject_count": 38,
+    "subject_ids": [
+      "p1",
+      "p10",
+      "p11",
+      "p12",
+      "p13",
+      "p14",
+      "p15",
+      "p16",
+      "p17",
+      "p18",
+      "p19",
+      "p2",
+      "p20",
+      "p21",
+      "p22",
+      "p23",
+      "p24",
+      "p25",
+      "p26",
+      "p27",
+      "p28",
+      "p29",
+      "p3",
+      "p30",
+      "p31",
+      "p32",
+      "p33",
+      "p34",
+      "p35",
+      "p36",
+      "p37",
+      "p38",
+      "p4",
+      "p5",
+      "p6",
+      "p7",
+      "p8",
+      "p9"
+    ],
+    "total_frames": 875395,
+    "fps": 30.0,
+    "fps_source": "inferred; no per-sequence fps field",
+    "total_duration_seconds": 29179.833333333332,
+    "total_duration_minutes": 486.3305555555555,
+    "total_duration_hours": 8.105509259259259,
+    "annotation_count": 5476,
+    "sequences_with_smplx": 207,
+    "scan_object_directory_count": 22,
+    "policy_test_used": false,
+    "activeview_formal_pipeline_modified": false
+  },
+  "normalized_class_count": 16,
+  "standard_viable_class_count": 16,
+  "strict_viable_class_count": 16,
+  "duration": {
+    "median_seconds": 3.0,
+    "fraction_at_least_2_seconds": 0.8466033601168736,
+    "fraction_at_least_5_seconds": 0.3130021913805698,
+    "capacity_class_summary": {
+      "decision_interval_1s": {
+        "classes_with_any_instance_supporting_2_cycles": 16,
+        "classes_with_at_least_half_instances_supporting_2_cycles": 9,
+        "fraction_by_class": {
+          "carry_move_object": 0.8710601719197708,
+          "close": 0.0713489409141583,
+          "cut": 0.9807692307692307,
+          "drink": 0.9818181818181818,
+          "move_furniture": 0.08333333333333333,
+          "open": 0.1285563751317176,
+          "operate_appliance": 0.3181818181818182,
+          "pour": 0.9907407407407407,
+          "put_place": 0.34071340713407133,
+          "read_look": 0.9607843137254902,
+          "sit": 0.6238938053097345,
+          "sprinkle": 0.9278350515463918,
+          "stand_up": 0.4076086956521739,
+          "take_out": 0.43036211699164345,
+          "throw": 0.898989898989899,
+          "type": 0.8615384615384616
+        }
+      },
+      "decision_interval_2s": {
+        "classes_with_any_instance_supporting_2_cycles": 16,
+        "classes_with_at_least_half_instances_supporting_2_cycles": 5,
+        "fraction_by_class": {
+          "carry_move_object": 0.4713467048710602,
+          "close": 0.006688963210702341,
+          "cut": 0.8557692307692307,
+          "drink": 0.6727272727272727,
+          "move_furniture": 0.013888888888888888,
+          "open": 0.020021074815595362,
+          "operate_appliance": 0.07272727272727272,
+          "pour": 0.7685185185185185,
+          "put_place": 0.16482164821648215,
+          "read_look": 0.7450980392156863,
+          "sit": 0.2168141592920354,
+          "sprinkle": 0.7319587628865979,
+          "stand_up": 0.1793478260869565,
+          "take_out": 0.21309192200557103,
+          "throw": 0.494949494949495,
+          "type": 0.35384615384615387
+        }
+      }
+    }
+  },
+  "representation": {
+    "hand_operation": {
+      "sequence_id": "s78",
+      "duration_seconds": 38.3,
+      "status": "audited",
+      "para_joint_positions_shape": [
+        1149,
+        73,
+        3
+      ],
+      "body_joint_orientations_shape": [
+        1149,
+        23,
+        6
+      ],
+      "body_global_transform_shape": [
+        1149,
+        4,
+        4
+      ],
+      "body_rotation_representation": "6D first-two-columns, reconstructed with Gram-Schmidt",
+      "rotation6d_orthogonality_mean_abs_error": 2.9075669377647977e-08,
+      "rotation6d_determinant_min": 0.9999998211860657,
+      "rotation6d_determinant_max": 1.0000004768371582,
+      "smplx_representation": {
+        "body_pose_shape": [
+          1149,
+          63
+        ],
+        "global_orient_shape": [
+          1149,
+          3
+        ],
+        "transl_shape": [
+          1149,
+          3
+        ],
+        "hand_pose_shape": [
+          1149,
+          90
+        ],
+        "translation_units": "meters (empirically consistent with joint positions)",
+        "rotation_units": "axis-angle radians",
+        "hand_pose": "30 joints × 3 axis-angle values, left then right"
+      },
+      "para_to_habitat_alignment": [
+        [
+          0.03753419885651238,
+          -0.9989598260802658,
+          0.025893045280238117,
+          -0.4124520948195196
+        ],
+        [
+          -0.018372069455823432,
+          0.025217088869722726,
+          0.9995131642418956,
+          -0.02040844081955928
+        ],
+        [
+          -0.99912644393996,
+          -0.03799163469266828,
+          -0.01740645608010578,
+          0.007794648915520286
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "alignment_root_rmse_m": 0.050545883153764244,
+      "key_objects_for_distance_check": [
+        "laptop",
+        "cup",
+        "kettle"
+      ],
+      "ten_frame_human_object_distance_max_abs_error_m": 0.0671041208321822,
+      "root_metrics": {
+        "root_path_length_m": 4.139407840790785,
+        "root_displacement_m": 1.8191026295229535,
+        "root_step_median": 0.0012986513474115122,
+        "root_step_p99": 0.02836503018791831,
+        "root_step_max": 0.03447698267648061,
+        "root_y_min_m": -0.014063334092497826,
+        "root_y_max_m": 1.907273530960083
+      },
+      "articulated_joint_state_range": 1.7341346928135455
+    },
+    "locomotion": {
+      "sequence_id": "s3",
+      "duration_seconds": 111.43333333333334,
+      "status": "audited",
+      "para_joint_positions_shape": [
+        3343,
+        73,
+        3
+      ],
+      "body_joint_orientations_shape": [
+        3343,
+        23,
+        6
+      ],
+      "body_global_transform_shape": [
+        3343,
+        4,
+        4
+      ],
+      "body_rotation_representation": "6D first-two-columns, reconstructed with Gram-Schmidt",
+      "rotation6d_orthogonality_mean_abs_error": 2.765166458754612e-08,
+      "rotation6d_determinant_min": 0.9999997615814209,
+      "rotation6d_determinant_max": 1.0000003576278687,
+      "smplx_representation": {
+        "body_pose_shape": [
+          3343,
+          63
+        ],
+        "global_orient_shape": [
+          3343,
+          3
+        ],
+        "transl_shape": [
+          3343,
+          3
+        ],
+        "hand_pose_shape": [
+          3343,
+          90
+        ],
+        "translation_units": "meters (empirically consistent with joint positions)",
+        "rotation_units": "axis-angle radians",
+        "hand_pose": "30 joints × 3 axis-angle values, left then right"
+      },
+      "para_to_habitat_alignment": [
+        [
+          0.009710707767555535,
+          -0.9999352271337545,
+          0.005936639758321703,
+          -0.3021353544221187
+        ],
+        [
+          0.004388150208520047,
+          0.0059794758209217955,
+          0.9999724946250546,
+          -0.026796260816209228
+        ],
+        [
+          -0.9999432215343033,
+          -0.009684389803904125,
+          0.004445930917753531,
+          -0.0224314508742188
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "alignment_root_rmse_m": 0.04676687466885363,
+      "key_objects_for_distance_check": [
+        "laptop",
+        "chair",
+        "pan"
+      ],
+      "ten_frame_human_object_distance_max_abs_error_m": 0.06407928098341364,
+      "root_metrics": {
+        "root_path_length_m": 22.537657467211183,
+        "root_displacement_m": 2.4527270207300136,
+        "root_step_median": 0.0034681880037984577,
+        "root_step_p99": 0.0289668113131154,
+        "root_step_max": 0.03677845800384255,
+        "root_y_min_m": -0.8161540627479553,
+        "root_y_max_m": 0.6265276074409485
+      },
+      "articulated_joint_state_range": 2.4781452525627734
+    },
+    "articulated_object": {
+      "sequence_id": "s162",
+      "duration_seconds": 81.73333333333333,
+      "status": "audited",
+      "para_joint_positions_shape": [
+        2452,
+        73,
+        3
+      ],
+      "body_joint_orientations_shape": [
+        2452,
+        23,
+        6
+      ],
+      "body_global_transform_shape": [
+        2452,
+        4,
+        4
+      ],
+      "body_rotation_representation": "6D first-two-columns, reconstructed with Gram-Schmidt",
+      "rotation6d_orthogonality_mean_abs_error": 2.9056598543575745e-08,
+      "rotation6d_determinant_min": 0.9999997019767761,
+      "rotation6d_determinant_max": 1.0000004768371582,
+      "smplx_representation": {
+        "body_pose_shape": [
+          2452,
+          63
+        ],
+        "global_orient_shape": [
+          2452,
+          3
+        ],
+        "transl_shape": [
+          2452,
+          3
+        ],
+        "hand_pose_shape": [
+          2452,
+          90
+        ],
+        "translation_units": "meters (empirically consistent with joint positions)",
+        "rotation_units": "axis-angle radians",
+        "hand_pose": "30 joints × 3 axis-angle values, left then right"
+      },
+      "para_to_habitat_alignment": [
+        [
+          0.001495827839367053,
+          -0.9986299891377713,
+          -0.05230590113714696,
+          -0.28978770378945057
+        ],
+        [
+          -0.014631793514238208,
+          -0.05232221697502776,
+          0.9985230574350172,
+          -0.10656606281808312
+        ],
+        [
+          -0.999891830708518,
+          -0.0007282894425459742,
+          -0.014690012826958537,
+          0.02069118527300648
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "alignment_root_rmse_m": 0.04193303321359391,
+      "key_objects_for_distance_check": [
+        "book",
+        "pan"
+      ],
+      "ten_frame_human_object_distance_max_abs_error_m": 0.04816550046543955,
+      "root_metrics": {
+        "root_path_length_m": 14.555308051307517,
+        "root_displacement_m": 1.3879336453362712,
+        "root_step_median": 0.002793399617134916,
+        "root_step_p99": 0.03043527231558825,
+        "root_step_max": 0.04265600223076214,
+        "root_y_min_m": -0.5394298434257507,
+        "root_y_max_m": 0.7360981106758118
+      },
+      "articulated_joint_state_range": 2.6505094050954003
+    }
+  },
+  "replay": {
+    "status": "PASS",
+    "scene_id": "NONE",
+    "sequence_id": "s78",
+    "human_replay": "PASS",
+    "rigid_object_replay": "PASS",
+    "objects_replayed": [
+      "laptop",
+      "cup",
+      "kettle",
+      "chair"
+    ],
+    "frames_rendered": [
+      0,
+      287,
+      574,
+      861,
+      1148
+    ],
+    "views_rendered": [
+      "diagonal",
+      "front",
+      "side"
+    ],
+    "snapshot_count": 15,
+    "snapshots": [
+      {
+        "frame_id": 0,
+        "view": "front",
+        "path": "visualizations/s78/frame_0000_front.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.0684163570404053,
+          0.6336914300918579,
+          -1.180376648902893
+        ]
+      },
+      {
+        "frame_id": 0,
+        "view": "side",
+        "path": "visualizations/s78/frame_0000_side.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.0684163570404053,
+          0.6336914300918579,
+          -1.180376648902893
+        ]
+      },
+      {
+        "frame_id": 0,
+        "view": "diagonal",
+        "path": "visualizations/s78/frame_0000_diagonal.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.0684163570404053,
+          0.6336914300918579,
+          -1.180376648902893
+        ]
+      },
+      {
+        "frame_id": 287,
+        "view": "front",
+        "path": "visualizations/s78/frame_0287_front.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.06472110748291,
+          0.7191051244735718,
+          -1.0970778465270996
+        ]
+      },
+      {
+        "frame_id": 287,
+        "view": "side",
+        "path": "visualizations/s78/frame_0287_side.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.06472110748291,
+          0.7191051244735718,
+          -1.0970778465270996
+        ]
+      },
+      {
+        "frame_id": 287,
+        "view": "diagonal",
+        "path": "visualizations/s78/frame_0287_diagonal.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.06472110748291,
+          0.7191051244735718,
+          -1.0970778465270996
+        ]
+      },
+      {
+        "frame_id": 574,
+        "view": "front",
+        "path": "visualizations/s78/frame_0574_front.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.1744384765625,
+          0.7638559341430664,
+          -1.1431899070739746
+        ]
+      },
+      {
+        "frame_id": 574,
+        "view": "side",
+        "path": "visualizations/s78/frame_0574_side.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.1744384765625,
+          0.7638559341430664,
+          -1.1431899070739746
+        ]
+      },
+      {
+        "frame_id": 574,
+        "view": "diagonal",
+        "path": "visualizations/s78/frame_0574_diagonal.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -2.1744384765625,
+          0.7638559341430664,
+          -1.1431899070739746
+        ]
+      },
+      {
+        "frame_id": 861,
+        "view": "front",
+        "path": "visualizations/s78/frame_0861_front.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -1.769512414932251,
+          0.9974325895309448,
+          -1.1738646030426025
+        ]
+      },
+      {
+        "frame_id": 861,
+        "view": "side",
+        "path": "visualizations/s78/frame_0861_side.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -1.769512414932251,
+          0.9974325895309448,
+          -1.1738646030426025
+        ]
+      },
+      {
+        "frame_id": 861,
+        "view": "diagonal",
+        "path": "visualizations/s78/frame_0861_diagonal.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -1.769512414932251,
+          0.9974325895309448,
+          -1.1738646030426025
+        ]
+      },
+      {
+        "frame_id": 1148,
+        "view": "front",
+        "path": "visualizations/s78/frame_1148_front.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -0.4016709625720978,
+          0.9810594916343689,
+          -0.4702540636062622
+        ]
+      },
+      {
+        "frame_id": 1148,
+        "view": "side",
+        "path": "visualizations/s78/frame_1148_side.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -0.4016709625720978,
+          0.9810594916343689,
+          -0.4702540636062622
+        ]
+      },
+      {
+        "frame_id": 1148,
+        "view": "diagonal",
+        "path": "visualizations/s78/frame_1148_diagonal.png",
+        "shape": [
+          640,
+          640,
+          4
+        ],
+        "human_translation": [
+          -0.4016709625720978,
+          0.9810594916343689,
+          -0.4702540636062622
+        ]
+      }
+    ],
+    "para_to_habitat_root_alignment_rmse_m": 0.050545883153764244,
+    "grounding_offset_min_m": 0.6044173240661621,
+    "grounding_offset_max_m": 1.0313189029693604,
+    "converted_root_step_median": 0.002091570757329464,
+    "converted_root_step_p99": 0.030264867059886444,
+    "converted_root_step_max": 0.038282573223114014,
+    "continuous_playback_note": "five timestamp snapshots validate the same frame-by-frame pose path; no continuous video file was required",
+    "scene_note": "Habitat scene_id=NONE with diagnostic floor; this is a clean replay, not HM3D integration"
+  },
+  "verdict": "CONDITIONAL PROMOTE",
+  "flags": {
+    "policy_test_used": false,
+    "activeview_formal_pipeline_modified": false,
+    "har_model_training_used": false,
+    "hm3d_integration_used": false
+  }
+}

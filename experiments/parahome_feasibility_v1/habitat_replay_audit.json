@@ -1,0 +1,261 @@
+{
+  "status": "PASS",
+  "scene_id": "NONE",
+  "sequence_id": "s78",
+  "human_replay": "PASS",
+  "rigid_object_replay": "PASS",
+  "objects_replayed": [
+    "laptop",
+    "cup",
+    "kettle",
+    "chair"
+  ],
+  "frames_rendered": [
+    0,
+    287,
+    574,
+    861,
+    1148
+  ],
+  "views_rendered": [
+    "diagonal",
+    "front",
+    "side"
+  ],
+  "snapshot_count": 15,
+  "snapshots": [
+    {
+      "frame_id": 0,
+      "view": "front",
+      "path": "visualizations/s78/frame_0000_front.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.0684163570404053,
+        0.6336914300918579,
+        -1.180376648902893
+      ]
+    },
+    {
+      "frame_id": 0,
+      "view": "side",
+      "path": "visualizations/s78/frame_0000_side.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.0684163570404053,
+        0.6336914300918579,
+        -1.180376648902893
+      ]
+    },
+    {
+      "frame_id": 0,
+      "view": "diagonal",
+      "path": "visualizations/s78/frame_0000_diagonal.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.0684163570404053,
+        0.6336914300918579,
+        -1.180376648902893
+      ]
+    },
+    {
+      "frame_id": 287,
+      "view": "front",
+      "path": "visualizations/s78/frame_0287_front.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.06472110748291,
+        0.7191051244735718,
+        -1.0970778465270996
+      ]
+    },
+    {
+      "frame_id": 287,
+      "view": "side",
+      "path": "visualizations/s78/frame_0287_side.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.06472110748291,
+        0.7191051244735718,
+        -1.0970778465270996
+      ]
+    },
+    {
+      "frame_id": 287,
+      "view": "diagonal",
+      "path": "visualizations/s78/frame_0287_diagonal.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.06472110748291,
+        0.7191051244735718,
+        -1.0970778465270996
+      ]
+    },
+    {
+      "frame_id": 574,
+      "view": "front",
+      "path": "visualizations/s78/frame_0574_front.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.1744384765625,
+        0.7638559341430664,
+        -1.1431899070739746
+      ]
+    },
+    {
+      "frame_id": 574,
+      "view": "side",
+      "path": "visualizations/s78/frame_0574_side.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.1744384765625,
+        0.7638559341430664,
+        -1.1431899070739746
+      ]
+    },
+    {
+      "frame_id": 574,
+      "view": "diagonal",
+      "path": "visualizations/s78/frame_0574_diagonal.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -2.1744384765625,
+        0.7638559341430664,
+        -1.1431899070739746
+      ]
+    },
+    {
+      "frame_id": 861,
+      "view": "front",
+      "path": "visualizations/s78/frame_0861_front.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -1.769512414932251,
+        0.9974325895309448,
+        -1.1738646030426025
+      ]
+    },
+    {
+      "frame_id": 861,
+      "view": "side",
+      "path": "visualizations/s78/frame_0861_side.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -1.769512414932251,
+        0.9974325895309448,
+        -1.1738646030426025
+      ]
+    },
+    {
+      "frame_id": 861,
+      "view": "diagonal",
+      "path": "visualizations/s78/frame_0861_diagonal.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -1.769512414932251,
+        0.9974325895309448,
+        -1.1738646030426025
+      ]
+    },
+    {
+      "frame_id": 1148,
+      "view": "front",
+      "path": "visualizations/s78/frame_1148_front.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -0.4016709625720978,
+        0.9810594916343689,
+        -0.4702540636062622
+      ]
+    },
+    {
+      "frame_id": 1148,
+      "view": "side",
+      "path": "visualizations/s78/frame_1148_side.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -0.4016709625720978,
+        0.9810594916343689,
+        -0.4702540636062622
+      ]
+    },
+    {
+      "frame_id": 1148,
+      "view": "diagonal",
+      "path": "visualizations/s78/frame_1148_diagonal.png",
+      "shape": [
+        640,
+        640,
+        4
+      ],
+      "human_translation": [
+        -0.4016709625720978,
+        0.9810594916343689,
+        -0.4702540636062622
+      ]
+    }
+  ],
+  "para_to_habitat_root_alignment_rmse_m": 0.050545883153764244,
+  "grounding_offset_min_m": 0.6044173240661621,
+  "grounding_offset_max_m": 1.0313189029693604,
+  "converted_root_step_median": 0.002091570757329464,
+  "converted_root_step_p99": 0.030264867059886444,
+  "converted_root_step_max": 0.038282573223114014,
+  "continuous_playback_note": "five timestamp snapshots validate the same frame-by-frame pose path; no continuous video file was required",
+  "scene_note": "Habitat scene_id=NONE with diagnostic floor; this is a clean replay, not HM3D integration"
+}

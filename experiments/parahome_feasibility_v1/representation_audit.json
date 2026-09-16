@@ -1,0 +1,265 @@
+{
+  "hand_operation": {
+    "sequence_id": "s78",
+    "duration_seconds": 38.3,
+    "status": "audited",
+    "para_joint_positions_shape": [
+      1149,
+      73,
+      3
+    ],
+    "body_joint_orientations_shape": [
+      1149,
+      23,
+      6
+    ],
+    "body_global_transform_shape": [
+      1149,
+      4,
+      4
+    ],
+    "body_rotation_representation": "6D first-two-columns, reconstructed with Gram-Schmidt",
+    "rotation6d_orthogonality_mean_abs_error": 2.9075669377647977e-08,
+    "rotation6d_determinant_min": 0.9999998211860657,
+    "rotation6d_determinant_max": 1.0000004768371582,
+    "smplx_representation": {
+      "body_pose_shape": [
+        1149,
+        63
+      ],
+      "global_orient_shape": [
+        1149,
+        3
+      ],
+      "transl_shape": [
+        1149,
+        3
+      ],
+      "hand_pose_shape": [
+        1149,
+        90
+      ],
+      "translation_units": "meters (empirically consistent with joint positions)",
+      "rotation_units": "axis-angle radians",
+      "hand_pose": "30 joints × 3 axis-angle values, left then right"
+    },
+    "para_to_habitat_alignment": [
+      [
+        0.03753419885651238,
+        -0.9989598260802658,
+        0.025893045280238117,
+        -0.4124520948195196
+      ],
+      [
+        -0.018372069455823432,
+        0.025217088869722726,
+        0.9995131642418956,
+        -0.02040844081955928
+      ],
+      [
+        -0.99912644393996,
+        -0.03799163469266828,
+        -0.01740645608010578,
+        0.007794648915520286
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "alignment_root_rmse_m": 0.050545883153764244,
+    "key_objects_for_distance_check": [
+      "laptop",
+      "cup",
+      "kettle"
+    ],
+    "ten_frame_human_object_distance_max_abs_error_m": 0.0671041208321822,
+    "root_metrics": {
+      "root_path_length_m": 4.139407840790785,
+      "root_displacement_m": 1.8191026295229535,
+      "root_step_median": 0.0012986513474115122,
+      "root_step_p99": 0.02836503018791831,
+      "root_step_max": 0.03447698267648061,
+      "root_y_min_m": -0.014063334092497826,
+      "root_y_max_m": 1.907273530960083
+    },
+    "articulated_joint_state_range": 1.7341346928135455
+  },
+  "locomotion": {
+    "sequence_id": "s3",
+    "duration_seconds": 111.43333333333334,
+    "status": "audited",
+    "para_joint_positions_shape": [
+      3343,
+      73,
+      3
+    ],
+    "body_joint_orientations_shape": [
+      3343,
+      23,
+      6
+    ],
+    "body_global_transform_shape": [
+      3343,
+      4,
+      4
+    ],
+    "body_rotation_representation": "6D first-two-columns, reconstructed with Gram-Schmidt",
+    "rotation6d_orthogonality_mean_abs_error": 2.765166458754612e-08,
+    "rotation6d_determinant_min": 0.9999997615814209,
+    "rotation6d_determinant_max": 1.0000003576278687,
+    "smplx_representation": {
+      "body_pose_shape": [
+        3343,
+        63
+      ],
+      "global_orient_shape": [
+        3343,
+        3
+      ],
+      "transl_shape": [
+        3343,
+        3
+      ],
+      "hand_pose_shape": [
+        3343,
+        90
+      ],
+      "translation_units": "meters (empirically consistent with joint positions)",
+      "rotation_units": "axis-angle radians",
+      "hand_pose": "30 joints × 3 axis-angle values, left then right"
+    },
+    "para_to_habitat_alignment": [
+      [
+        0.009710707767555535,
+        -0.9999352271337545,
+        0.005936639758321703,
+        -0.3021353544221187
+      ],
+      [
+        0.004388150208520047,
+        0.0059794758209217955,
+        0.9999724946250546,
+        -0.026796260816209228
+      ],
+      [
+        -0.9999432215343033,
+        -0.009684389803904125,
+        0.004445930917753531,
+        -0.0224314508742188
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "alignment_root_rmse_m": 0.04676687466885363,
+    "key_objects_for_distance_check": [
+      "laptop",
+      "chair",
+      "pan"
+    ],
+    "ten_frame_human_object_distance_max_abs_error_m": 0.06407928098341364,
+    "root_metrics": {
+      "root_path_length_m": 22.537657467211183,
+      "root_displacement_m": 2.4527270207300136,
+      "root_step_median": 0.0034681880037984577,
+      "root_step_p99": 0.0289668113131154,
+      "root_step_max": 0.03677845800384255,
+      "root_y_min_m": -0.8161540627479553,
+      "root_y_max_m": 0.6265276074409485
+    },
+    "articulated_joint_state_range": 2.4781452525627734
+  },
+  "articulated_object": {
+    "sequence_id": "s162",
+    "duration_seconds": 81.73333333333333,
+    "status": "audited",
+    "para_joint_positions_shape": [
+      2452,
+      73,
+      3
+    ],
+    "body_joint_orientations_shape": [
+      2452,
+      23,
+      6
+    ],
+    "body_global_transform_shape": [
+      2452,
+      4,
+      4
+    ],
+    "body_rotation_representation": "6D first-two-columns, reconstructed with Gram-Schmidt",
+    "rotation6d_orthogonality_mean_abs_error": 2.9056598543575745e-08,
+    "rotation6d_determinant_min": 0.9999997019767761,
+    "rotation6d_determinant_max": 1.0000004768371582,
+    "smplx_representation": {
+      "body_pose_shape": [
+        2452,
+        63
+      ],
+      "global_orient_shape": [
+        2452,
+        3
+      ],
+      "transl_shape": [
+        2452,
+        3
+      ],
+      "hand_pose_shape": [
+        2452,
+        90
+      ],
+      "translation_units": "meters (empirically consistent with joint positions)",
+      "rotation_units": "axis-angle radians",
+      "hand_pose": "30 joints × 3 axis-angle values, left then right"
+    },
+    "para_to_habitat_alignment": [
+      [
+        0.001495827839367053,
+        -0.9986299891377713,
+        -0.05230590113714696,
+        -0.28978770378945057
+      ],
+      [
+        -0.014631793514238208,
+        -0.05232221697502776,
+        0.9985230574350172,
+        -0.10656606281808312
+      ],
+      [
+        -0.999891830708518,
+        -0.0007282894425459742,
+        -0.014690012826958537,
+        0.02069118527300648
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "alignment_root_rmse_m": 0.04193303321359391,
+    "key_objects_for_distance_check": [
+      "book",
+      "pan"
+    ],
+    "ten_frame_human_object_distance_max_abs_error_m": 0.04816550046543955,
+    "root_metrics": {
+      "root_path_length_m": 14.555308051307517,
+      "root_displacement_m": 1.3879336453362712,
+      "root_step_median": 0.002793399617134916,
+      "root_step_p99": 0.03043527231558825,
+      "root_step_max": 0.04265600223076214,
+      "root_y_min_m": -0.5394298434257507,
+      "root_y_max_m": 0.7360981106758118
+    },
+    "articulated_joint_state_range": 2.6505094050954003
+  }
+}

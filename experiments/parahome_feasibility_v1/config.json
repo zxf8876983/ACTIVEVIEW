@@ -1,0 +1,19 @@
+{
+  "parahome_root": "/home/zxf/MG08/robot/ParaHome",
+  "output": "/home/zxf/WorkSpace/code/code/ActiveView/experiments/parahome_feasibility_v1",
+  "fps": 30.0,
+  "fps_is_inferred": true,
+  "har_window_seconds": 2.0,
+  "decision_intervals_seconds": [
+    1.0,
+    2.0
+  ],
+  "representatives": {
+    "hand_operation": "s78",
+    "locomotion": "s3",
+    "articulated_object": "s162"
+  },
+  "replay_sequence": "s78",
+  "policy_test_used": false,
+  "formal_activeview_pipeline_modified": false
+}

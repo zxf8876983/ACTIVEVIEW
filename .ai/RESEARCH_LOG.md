@@ -1703,3 +1703,18 @@ mappings, and no rendering was attempted. No Policy Test, new perception or
 model training was used. The registered next direction is a low-cost
 candidate glimpse/active-probe information structure rather than more scalar
 surrogate search.
+
+## ParaHome feasibility audit (2026-09-16)
+
+Audited all 207 ParaHome sequences (38 subjects, 486.33 minutes, 5,476
+annotations) without touching the reduced12/BABEL pipeline or Policy Test.
+Conservative normalization produced 16 classes meeting both 30/15/8 and
+50/20/10 coverage thresholds. With a reserved 2 s HAR window, 9/16 classes
+have at least half of intervals supporting two 1 s decision cycles, while 5/16
+meet the same criterion for 2 s cycles. The existing Habitat MotionConverter
+accepts ParaHome SMPL-X through a thin 162-D pose adapter; representative
+root-alignment RMSE was 0.042--0.051 m. A clean `scene_id=NONE` replay of s78
+with a humanoid and four scanned rigid objects passed, rendering 15 snapshots;
+the verdict is **CONDITIONAL PROMOTE** pending taxonomy, timing and
+coordinate/gender/scene adapter work. No HAR training, HM3D integration or
+Policy Test access was used.

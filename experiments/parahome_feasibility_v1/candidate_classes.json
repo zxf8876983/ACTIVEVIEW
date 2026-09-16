@@ -1,0 +1,51 @@
+{
+  "standard_threshold": {
+    "instance_count": 30,
+    "unique_sequences": 15,
+    "unique_subjects": 8
+  },
+  "strict_threshold": {
+    "instance_count": 50,
+    "unique_sequences": 20,
+    "unique_subjects": 10
+  },
+  "standard_viable_classes": [
+    "carry_move_object",
+    "close",
+    "cut",
+    "drink",
+    "move_furniture",
+    "open",
+    "operate_appliance",
+    "pour",
+    "put_place",
+    "read_look",
+    "sit",
+    "sprinkle",
+    "stand_up",
+    "take_out",
+    "throw",
+    "type"
+  ],
+  "strict_viable_classes": [
+    "carry_move_object",
+    "close",
+    "cut",
+    "drink",
+    "move_furniture",
+    "open",
+    "operate_appliance",
+    "pour",
+    "put_place",
+    "read_look",
+    "sit",
+    "sprinkle",
+    "stand_up",
+    "take_out",
+    "throw",
+    "type"
+  ],
+  "standard_viable_count": 16,
+  "strict_viable_count": 16,
+  "unresolved_classes_excluded_from_viability": []
+}
