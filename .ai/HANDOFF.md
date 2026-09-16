@@ -68,5 +68,24 @@ interaction residual; candidate-only H1/K0 and full-oracle Accuracy are
 four-step search is only 0.558234.  No current diagnostic read policy Test,
 modified a formal checkpoint, trained a model, or regenerated perception/data.
 
+## Side task closed (2026-09-17)
+
+ParaHome → Habitat humanoid replay/rendering is fixed and confirmed in the real
+Habitat simulator. Five defects were resolved: Habitat articulated link order;
+`PARAHOME_TO_HABITAT` being a reflection (`det = -1`, which flipped the body
+frame ~180° while hand positions stayed right); world-space twist loss for
+single-child joints; cross-rig joint-definition mismatches at the pelvis/lumbar
+(protruding belly); and unmatched hip spacing (legs pressed together). Code is in
+`activeview/data/motion/parahome_retarget.py` with regressions in
+`tests/unit/test_parahome_retarget.py`. Render-verified conventions: `male_0`
+faces **+Z** at rest, URDF joint `rpy = 0`, Habitat link order =
+`HABITAT_MALE_0_JOINT_ORDER`, grounding on the **skinned mesh** (not the URDF
+debug boxes), and a single **static** robot-eye camera 1.2 m above the floor.
+Evidence, videos and reusable validators/renderers live in
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/`. Details:
+`.ai/CURRENT_TASK.md` (consolidated), `.ai/PROJECT_STATE.md` (ParaHome section),
+`.learnings/LEARNINGS.md` LRN-20260917-001/002/003 and
+`.learnings/ERRORS.md` ERR-20260917-001/002.
+
 Status: **CLEAN**.  Await explicit researcher authorization before starting a
 new experiment.

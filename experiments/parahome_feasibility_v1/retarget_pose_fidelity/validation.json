@@ -1,0 +1,148 @@
+{
+  "sequence_metrics": {
+    "s78": {
+      "pre_fix_world_space": {
+        "facing_vs_observed_shoulder_geometry_deg": {
+          "spine1": 136.44584910909097,
+          "spine3": 25.09109209049801,
+          "head": 120.40531294936224
+        },
+        "head_vs_chest_relative_rotation_deg": {
+          "mean": 143.27609948761904,
+          "max": 179.82124699267922,
+          "std": 41.48133654095086
+        },
+        "head_tip_drift_in_head_frame_deg": {
+          "mean": 18.1287559102651,
+          "max": 47.89390515965844
+        },
+        "segment_direction_fit_error_deg": {
+          "mean": 6.843386091803058,
+          "max": 61.39604122848942
+        },
+        "segment_direction_fit_error_matched_joints_deg": {
+          "mean": 1.3365919192557085,
+          "max": 9.744046654489177
+        }
+      },
+      "shipped_hierarchical": {
+        "facing_vs_observed_shoulder_geometry_deg": {
+          "spine1": 8.73630012752155,
+          "spine3": 25.091091958518344,
+          "head": 27.320011808697007
+        },
+        "head_vs_chest_relative_rotation_deg": {
+          "mean": 13.696308242039098,
+          "max": 20.89007865721135,
+          "std": 3.4226310592534386
+        },
+        "head_tip_drift_in_head_frame_deg": {
+          "mean": 7.279479765999701,
+          "max": 18.53391805901352
+        },
+        "segment_direction_fit_error_deg": {
+          "mean": 8.623164447317086,
+          "max": 61.98592671230799
+        },
+        "segment_direction_fit_error_matched_joints_deg": {
+          "mean": 1.4212841605928435,
+          "max": 9.744046654489177
+        }
+      }
+    },
+    "s50": {
+      "pre_fix_world_space": {
+        "facing_vs_observed_shoulder_geometry_deg": {
+          "spine1": 124.6994391085013,
+          "spine3": 53.02136094952822,
+          "head": 111.26255752352154
+        },
+        "head_vs_chest_relative_rotation_deg": {
+          "mean": 110.29651064105452,
+          "max": 179.8764102162549,
+          "std": 45.95336052855563
+        },
+        "head_tip_drift_in_head_frame_deg": {
+          "mean": 14.261555338350478,
+          "max": 37.39846955198845
+        },
+        "segment_direction_fit_error_deg": {
+          "mean": 6.843385860807914,
+          "max": 61.396036823997406
+        },
+        "segment_direction_fit_error_matched_joints_deg": {
+          "mean": 1.3365916249843832,
+          "max": 9.744070506784569
+        }
+      },
+      "shipped_hierarchical": {
+        "facing_vs_observed_shoulder_geometry_deg": {
+          "spine1": 15.163709338273572,
+          "spine3": 53.021360984198765,
+          "head": 50.67332046190216
+        },
+        "head_vs_chest_relative_rotation_deg": {
+          "mean": 6.823298564836754,
+          "max": 18.35912141656542,
+          "std": 3.790487552183615
+        },
+        "head_tip_drift_in_head_frame_deg": {
+          "mean": 8.71538287619442,
+          "max": 35.9321355783236
+        },
+        "segment_direction_fit_error_deg": {
+          "mean": 9.467075204233737,
+          "max": 61.98432264252558
+        },
+        "segment_direction_fit_error_matched_joints_deg": {
+          "mean": 1.4211748469891712,
+          "max": 9.744070506784494
+        }
+      }
+    }
+  },
+  "synthetic_whole_body_yaw_180_deg": {
+    "pre_fix_world_space": {
+      "pelvis": 0.0,
+      "spine1": 126.56866383929002,
+      "spine2": 121.81433682167595,
+      "spine3": 1.2074182697257333e-06,
+      "neck": 117.9594812487915,
+      "head": 117.9594812487915
+    },
+    "shipped_hierarchical": {
+      "pelvis": 0.0,
+      "spine1": 0.0,
+      "spine2": 0.0,
+      "spine3": 0.0,
+      "neck": 11.335727312422307,
+      "head": 11.335727312422307
+    }
+  },
+  "chirality_across_sequences": {
+    "s3": {
+      "proper_det_plus_1": 0.8436777397002126,
+      "reflection_det_minus_1": -0.9003560714771806
+    },
+    "s50": {
+      "proper_det_plus_1": 0.5927404555991994,
+      "reflection_det_minus_1": -0.5875729758860083
+    },
+    "s78": {
+      "proper_det_plus_1": 0.9029958197390597,
+      "reflection_det_minus_1": -0.9481388637704627
+    },
+    "s99": {
+      "proper_det_plus_1": 0.9795981172170716,
+      "reflection_det_minus_1": -0.9861286495905098
+    },
+    "s121": {
+      "proper_det_plus_1": 0.9484850740486265,
+      "reflection_det_minus_1": -0.9893553625591484
+    },
+    "s162": {
+      "proper_det_plus_1": 0.9347880372780577,
+      "reflection_det_minus_1": -0.9801583919629436
+    }
+  }
+}

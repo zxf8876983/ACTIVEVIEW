@@ -582,3 +582,47 @@ start another method family. Complete artifacts are under
 `experiments/reduced12_eight_placement_v1/yaw8_strict_frame0_full_rebaseline/`
 with runner
 `activeview/scripts/experiments/run_reduced12_yaw8_strict_frame0_rebaseline.py`.
+
+## ParaHome feasibility and humanoid retarget (2026-09-17)
+
+ParaHome was audited as a candidate continuous Active HAR dataset and its
+23-joint SMPL-X fits were retargeted into the Habitat `male_0` humanoid.  The
+dataset audit is read-only and unchanged: 207 sequences, 38 subjects, 486.33
+minutes, 5,476 annotations, 16 classes meeting the 30/15/8 and 50/20/10 coverage
+thresholds, verdict **CONDITIONAL PROMOTE** (taxonomy duration/coverage and a
+coordinate/gender/scene adapter are still required).  No reduced12/BABEL
+artifact, recognizer, frozen checkpoint or Policy Test data was touched.
+
+The replay path is a ParaHome-specific hierarchical segment-direction retarget
+(`activeview/data/motion/parahome_retarget.py`) that leaves the frozen
+AMASS/BABEL `MotionConverter` untouched.  Five defects were found and fixed,
+each verified in the real Habitat simulator (CUDA, RTX 4090):
+
+1. Habitat's articulated link order differs from the URDF declaration order
+   (`HABITAT_MALE_0_JOINT_ORDER`).
+2. `PARAHOME_TO_HABITAT` was a reflection (`det = -1`); because solved joint
+   rotations are proper rotations, the `pelvis`/`spine3` fit flipped the body
+   frame ~180 deg and the avatar faced away from its own arms.  It is now the
+   proper rotation `[[0,-1,0],[0,0,1],[-1,0,0]]` (`det = +1`).
+3. The solver discarded the parent twist for single-child joints; it now solves
+   top-down and inherits the parent frame.
+4. The two rigs use different anatomical joints under the same names (ParaHome
+   hip centre vs the `male_0` pelvis link; ParaHome L5/L4 vs the rig's lordotic
+   spine), which pushed the abdomen mesh forward; the pelvis is now solved from
+   the hip line plus the spine axis and `spine1`/`spine2` keep the rig's rest
+   curvature.
+5. Joint spacing was never matched (rig hips 12.5 cm vs recorded 18.8-21.9 cm)
+   and the recorded stance is narrower than the rig's own rest stance, so the
+   legs interpenetrated; `match_hip_width` corrects the stance width without
+   dropping below the rig's rest knee separation.
+
+Verified render conventions: `male_0` faces +Z at rest, all 54 URDF joint origins
+have `rpy = 0`, grounding must use the skinned mesh (not the URDF debug boxes),
+and sample renders use a single **static** robot-eye camera (platform fixed,
+camera 1.2 m above the floor, aimed at 1.0 m) placed from the centre of the
+recorded trajectory.  Evidence, validators, videos and comparison stills are in
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/`; unit regressions
+are in `tests/unit/test_parahome_retarget.py` (81 unit/integration tests pass).
+Still open: the bone twist is unobservable from positions (no independent head
+yaw / palm roll), rig proportions differ from the recorded subjects, and only the
+`male_0` body shape is available locally.

@@ -1718,3 +1718,195 @@ with a humanoid and four scanned rigid objects passed, rendering 15 snapshots;
 the verdict is **CONDITIONAL PROMOTE** pending taxonomy, timing and
 coordinate/gender/scene adapter work. No HAR training, HM3D integration or
 Policy Test access was used.
+
+## ParaHome retarget pose fidelity: twist inheritance (2026-09-17)
+
+> **SUPERSEDED / CORRECTION:** this twist loss is real and the fix is kept, but
+> it is **not** the cause of the visible "face and torso turned against the arms"
+> artifact. The dominant cause is the mirrored coordinate mapping documented in
+> the next entry ("corrected root cause and pose fix"); read that one first.
+
+Root-caused the remaining ParaHome→Habitat avatar artifact (torso/head reading
+as turned against the arms after the earlier joint-order fix). The released
+retargeter solved every joint independently in world space, and a segment
+direction never fixes the rotation about that segment, so single-child joints
+(`spine1`, `spine2`, `neck`, collars, shoulders, elbows, hips, knees, ankles)
+lost the twist the parent chain carried while `pelvis`/`spine3` (three children
+each) stayed correct. `_solve_global_rotations` now walks the rig top-down and
+lets each joint inherit its parent frame, adding only the minimal rotation for
+its own segment; multi-child joints keep the identical least-squares solution
+because the alignment residual is invariant under the parent rotation. A
+synthetic whole-body yaw-180 ground truth drops from 118–127° orientation error
+on `spine1`/`spine2`/`neck`/`head` to 0.0° (11.3° residual on the neck bone
+twist, which joint positions cannot observe); on s78/s50 the fitted
+segment-direction error is bit-identical before and after (6.84° mean, 61.40°
+max), `spine1` facing agrees with the observed shoulder-line forward within
+5.4–6.2° (was 43.8–55.5°), and the head-vs-chest relative rotation max drops
+from 178–179° to 33–40° with std 2.7–3.4°. Record:
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/`. No frozen
+reduced12/BABEL artifact, recognizer or Policy Test data was touched. Open
+finding recorded but not changed: `PARAHOME_TO_HABITAT` has det = -1, so the
+retargeted motion is left/right mirrored; the proper rotation would be
+`[[0,-1,0],[0,0,1],[-1,0,0]]`.
+
+## ParaHome retarget: corrected root cause and pose fix (2026-09-17, later)
+
+A real Habitat render (CUDA, RTX 4090) showed the earlier twist fix was
+necessary but not sufficient: the dominant cause of the "face and torso turned
+against the arms" artifact is that `PARAHOME_TO_HABITAT` was a **reflection**
+(`[[0,1,0],[0,0,1],[-1,0,0]]`, det = -1). All solved joint rotations are proper
+rotations, and a proper rotation cannot fit a mirrored target, so the
+multi-child joints (pelvis, spine3) flipped the body frame by ~180° (chest
+facing dot recorded facing = -0.99/-0.91/-0.84 at s78 frames 480/574/660) while
+the arm/hand positions stayed faithful. The mapping is now the proper rotation
+`[[0,-1,0],[0,0,1],[-1,0,0]]` (det = +1, forward/up mapping unchanged; the same
+poses give +0.93/+0.87/+0.80). A relabelled rest-pose render also shows `male_0`
+faces **+Z** at rest (an earlier probe had its labels swapped). Under the
+corrected mapping the before/after solver comparison (s78/s50, 150 frames) is
+spine1 facing error 136.4/124.7 deg -> 8.8/7.7 deg, head-vs-chest relative
+rotation mean/max 143.3/179.8 and 110.3/179.9 deg -> 13.7/20.9 and 6.8/18.4 deg,
+with the segment-direction fit error bit-identical (6.84/61.40 deg). Re-rendered
+s78 frames 445-700 sample videos (shipped vs pre-fix solver, three body-relative
+cameras) show the fixed avatar sitting facing the laptop with the head bowed down
+and both hands in front of the torso. 80 unit/integration tests pass; no
+recognizer, frozen artifact or Policy Test data was touched. The mapping defect
+and the fix were then checked on more samples: body facing · recorded facing
+(25 frames per sequence) is +0.59…+0.98 under the proper mapping for
+s3/s50/s78/s99/s121/s162 versus -0.59…-0.99 under the pre-fix reflection, and
+sample videos for s50 (drink from cup, frames 1890-2070) and s3 (sprinkle salt,
+frames 300-620) show the same result as s78: face, chest and hands share one
+facing with the shipped solver, while the pre-fix solver keeps the torso wrung
+against the arms.
+
+## ParaHome retarget: real Habitat sample video verification (2026-09-17)
+
+Re-ran the same fix under the Conda Habitat environment on CUDA (RTX 4090,
+driver 550.54.14, torch 2.6.0+cu124). Habitat rendering is available once the
+device nodes are visible; the earlier "windowless EGL context" failure was a
+sandbox artifact, not an environment problem. Rendered s78 frames 445-700
+(255 frames, 8.5 s at 30 fps) in the clean `scene_id=NONE` replay with the
+scanned chair/laptop/cup/kettle objects and a grounded male_0, three cameras
+(front | side | top) side by side, twice: shipped hierarchical retargeter and
+the pre-fix world-space solver with identical cameras and root trajectory
+(`experiments/parahome_feasibility_v1/retarget_pose_fidelity/videos/`). A
+rest-pose probe from four azimuths shows male_0 faces -Z at rest, so facing
+arrows and body-relative cameras use -Z. In the fixed video the chest, head and
+arms share one body facing (bent over the laptop, head bowed forward, both hands
+in front of the torso); in the pre-fix video the shoulders/arms keep the
+recorded yaw while the torso and head stay near the rest facing. No recognizer,
+frozen artifact or Policy Test data was touched.
+
+## ParaHome retarget: protruding belly from joint-definition mismatch (2026-09-17)
+
+A third defect surfaced after the mapping and twist fixes: the rendered abdomen
+bulged forward. The two rigs use different anatomical joints under the same
+names. ParaHome `hip` is the hip *centre*, so its two hips are 178.3 deg apart,
+while the `male_0` pelvis link sits ~10 cm above its hip joints so the hip
+offsets are only 60.5 deg apart; ParaHome `spine1`/`spine2` are lumbar vertebrae
+(L5/L4, bones 0.05-0.07 m) while the `male_0` spine1/spine2 are higher up the
+spine (0.125/0.164 m) and carry a ~20 deg lordotic rest offset. Fitting the raw
+offsets left a ~60 deg pelvis residual and forced the rig's long lordotic lumbar
+onto the recorded short straight bones, swinging the abdomen mesh forward
+(+0.043 m along the body front on s50 against +0.011 m in the rest pose). The
+pelvis is now solved from the derivation-invariant hip line
+(`left_hip - right_hip`) plus the spine axis (residual 2.7 deg), and
+`spine1`/`spine2` are `REST_SHAPE_JOINTS`: they keep the rig's own rest curvature
+while `spine3` still carries the recorded trunk bend solved in world space.
+Measured with the skinned mesh and the recorded objects, the median
+hand-to-object distance improves everywhere (s50 cup 17->13 cm, s78 laptop min
+21->17 cm, s3 pan 34->30 cm, s3 gasstove 47->39 cm; source references 17 cm and
+15 cm), the abdomen offset returns to +0.021 m, and the anatomically matched
+bone-direction fit stays ~1.4 deg mean / 9.7 deg max (the all-pairs diagnostic
+grew only because it includes the definitionally mismatched joints). The belly
+comparison is in
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/renders/belly_fixed_vs_old_solver.png`.
+
+## ParaHome retarget: standing legs pressed together (hip-width mismatch) (2026-09-17)
+
+Bone directions are matched by the retarget but joint spacing is not: the
+`male_0` hip joints are 12.5 cm apart while ParaHome's hips (hip-centre
+convention) are 18.8-21.9 cm apart depending on the subject and constant within
+a sequence. The whole leg chain, driven by the recorded thigh directions, stayed
+~8 cm narrower than the recording (s3 hips/knees/ankles 12/12/12 cm vs recorded
+20/19/19 cm), which reads as the legs being pressed together. The retargeter now
+takes `match_hip_width=True` by default: it scales the lateral component of the
+two hip offsets by the recorded/rig separation ratio (clamped to 0.8-2.0 so a bad
+fit cannot tear the mesh), which translates the legs outward and reproduces the
+recorded stance (20/19/19 cm). The pelvis mesh only stretches in the hip crease.
+Comparison render:
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/renders/hip_width_matched_vs_rig.png`.
+
+## ParaHome retarget: stance never narrower than the rig's own rest stance (2026-09-17)
+
+After matching the recorded hip width (below) the standing avatar's legs still
+looked pressed together. Measurement showed why: the recorded stance (knees
+19-20 cm apart) is narrower than the `male_0` rig's *own rest stance* (knees
+24.4 cm), so the model's thick legs interpenetrate - knee-level skinned-mesh gap
++1.1 cm at s3 frame 420 and -5.9 cm at frame 580 (versus +5.2 cm at the rig's
+rest). The hip-width target therefore never drops below the rig's rest knee
+separation: the same frames now give a knee joint separation of 23/21 cm and a
+mesh gap of +5.0/-2.0 cm, which reads as a normal relaxed stance. The trade-off
+is deliberate and documented: the stance can be up to ~5 cm wider than the
+recording because the recorded person's legs are thinner than the model's;
+`match_hip_width=False` restores the exact recorded spacing. Comparison render:
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/renders/stance_clearance_ab.png`.
+
+## ParaHome retarget: whole-sequence render check (s158) (2026-09-17)
+
+A randomly picked full sequence (s158, subject p29, 6,308 frames = 3.5 min, 27
+annotated actions) was rendered end to end with three body-relative cameras at
+320 px panels (`experiments/parahome_feasibility_v1/retarget_pose_fidelity/videos/s158_retarget_fixed.mp4`).
+The retarget stays stable and plausible across the whole recording: standing
+stances keep the corrected leg gap, the seated actions place the body on the
+chair, and the drinking / pouring / cutting poses keep the hands in front of the
+torso (stills in `renders/s158_sequence_stills.png`). No drift, blow-up or
+per-frame artifact was observed over the sequence.
+
+## ParaHome retarget renders: single robot-eye camera and mesh grounding (2026-09-17)
+
+Sample renders now use one robot-eye camera (default `--camera robot`): the robot
+stands on the floor 2.8 m from the human, 30 deg off the human's facing, with the
+camera 1.2 m above the ground aimed at 1.0 m, so the floor stays in frame; the
+legacy three body-relative views remain available via `--camera body3`. Grounding
+now uses the skinned mesh (lowest deformed vertex on the floor) instead of the
+URDF debug boxes used by `precompute_grounding_offsets`, which left the visible
+feet of seated poses ~15 cm in the air. All samples were re-rendered (s78 fixed
+and pre-fix A/B, s50, s3, and the whole randomly picked s158 sequence, 6,308
+frames, now a single 10 MB video).
+
+## ParaHome retarget renders: static robot platform (2026-09-17)
+
+The sample renders now use a single **static** robot-eye camera: the platform
+neither translates nor rotates for the whole clip. It is placed once from the
+centre of the recorded ground trajectory (2.8 m from the human, 30 deg off the
+initial facing), with the camera 1.2 m above the floor aimed at 1.0 m, so the
+human stays inside the field of view for the entire recording while the
+background remains fixed - the check was the randomly picked whole s158 sequence
+(6,308 frames / 3.5 min). `--robot-anchor follow` and `--robot-aim track` keep the
+moving-platform and panning-camera variants available. All samples were
+re-rendered in this view; static sheets are in
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/renders/`.
+
+## ParaHome dataset: consolidated issues and resolutions (2026-09-17, summary)
+
+Summary of the five ParaHome entries above; details and per-metric evidence are
+in `.ai/CURRENT_TASK.md` and
+`experiments/parahome_feasibility_v1/retarget_pose_fidelity/`.
+
+| # | Issue | Cause | Resolution |
+| --- | --- | --- | --- |
+| 1 | Tilted head / straight arm | quaternions written in URDF declaration order, not Habitat's articulated link order | write `HABITAT_MALE_0_JOINT_ORDER` (verified against `get_link_name`) |
+| 2 | Face and torso turned against the arms | `PARAHOME_TO_HABITAT` was a reflection (`det = -1`); proper rotations cannot fit a mirrored target, so the `pelvis`/`spine3` fit flipped the body frame ~180 deg while hand positions stayed right | proper rotation `[[0,-1,0],[0,0,1],[-1,0,0]]` (`det = +1`) |
+| 3 | Spine/head not following the body yaw | per-joint world-space solve discarded the parent twist for single-child joints | top-down solve inheriting the parent frame (`_hierarchy_order`) |
+| 4 | Protruding belly | ParaHome `hip` is the hip centre (hips 178.3 deg apart) vs the `male_0` pelvis link ~10 cm above its hips (60.5 deg), and ParaHome `spine1`/`spine2` are L5/L4 bones vs the rig's higher lordotic spine | pelvis from the hip line + spine axis (residual 60 deg -> 2.7 deg); `REST_SHAPE_JOINTS` keep the rig's rest curvature |
+| 5 | Standing legs pressed together | joint *spacing* is not matched (rig hips 12.5 cm vs recorded 18.8–21.9 cm) and the recorded stance is narrower than the rig's own rest stance (knees 19–20 cm vs 24.4 cm) | `match_hip_width` scales the lateral hip offsets, never below the rest knee separation |
+
+Verification: synthetic whole-body yaw-180 deg ground truth, s78/s50 facing and
+head-vs-chest metrics, cross-sequence chirality check (s3/s50/s78/s99/s121/s162),
+hand-to-object distances (s50 cup 17->13 cm, s78 laptop min 21->17 cm, s3 pan
+34->30 cm), and a whole randomly picked sequence (s158, 6,308 frames) rendered
+end to end. Render conventions established: `male_0` faces +Z at rest, URDF joint
+`rpy = 0`, grounding on the skinned mesh (not the URDF debug boxes), single
+static robot camera at 1.2 m above the floor. Dataset-level result unchanged:
+CONDITIONAL PROMOTE (16 viable classes; taxonomy/timing and a
+coordinate/gender/scene adapter remain open).

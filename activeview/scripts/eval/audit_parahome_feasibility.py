@@ -34,6 +34,7 @@ from activeview.data.motion.babel_clean_dataset_generator import (  # noqa: E402
     precompute_grounding_offsets,
 )
 from activeview.data.motion.motion_converter import MotionConverter  # noqa: E402
+from activeview.data.motion.parahome_retarget import ParaHomeSkeletonRetargeter  # noqa: E402
 
 
 FPS = 30.0
@@ -519,9 +520,9 @@ def _run_replay(root: Path, output: Path, records: Sequence[Mapping[str, Any]]) 
     if sequence_id not in by_id or not by_id[sequence_id]["has_smplx"]:
         return {"status": "FAIL", "reason": f"replay sequence {sequence_id} missing or has no SMPL-X"}
     sequence_path = _sequence_path(root, sequence_id)
-    pose_data = _smplx_normalized_motion(root, sequence_id)
-    converter = MotionConverter(get_humanoid_urdf_path("male_0"))
-    converted = converter.convert(pose_data)
+    source_joints = _as_numpy(_load_pickle(sequence_path / "joint_positions.pkl")).astype(np.float32)
+    retargeter = ParaHomeSkeletonRetargeter(get_humanoid_urdf_path("male_0"))
+    converted, pose_diagnostics = retargeter.retarget(source_joints, fps=FPS)
     joints = np.asarray(converted["pose_motion"]["joints_array"], dtype=np.float32)
     roots = np.asarray(converted["pose_motion"]["transform_array"], dtype=np.float32)
     para_root = _as_numpy(_load_pickle(sequence_path / "body_global_transform.pkl"))[:, :3, 3].astype(np.float64)
@@ -581,6 +582,8 @@ def _run_replay(root: Path, output: Path, records: Sequence[Mapping[str, Any]]) 
         "snapshot_count": len(frame_ids) * len(REPLAY_VIEWS),
         "snapshots": snapshots,
         "para_to_habitat_root_alignment_rmse_m": align_rmse,
+        "retarget_mean_joint_rmse_m": pose_diagnostics.mean_joint_rmse_m,
+        "retarget_mean_bone_angle_error_deg": dict(pose_diagnostics.mean_bone_angle_error_deg),
         "grounding_offset_min_m": float(offsets_array.min()),
         "grounding_offset_max_m": float(offsets_array.max()),
         "converted_root_step_median": float(np.median(root_steps)),
@@ -659,8 +662,8 @@ def _write_reports(output: Path, records: Sequence[Mapping[str, Any]], action_st
         "",
         "## Representation compatibility",
         "- ParaHome provides 23 body joints as 6D rotations, 73 global joint positions (23 body + 50 hand), a 4x4 body-to-world transform, and optional SMPL-X axis-angle body/root/hand pose.",
-        "- The existing ACTIVEVIEW `MotionConverter` accepts the SMPL-X representation after a thin adapter that pads the 21-body-joint pose and inserts 15+15 hand rotations into the converter's expected 54-joint layout. Root coordinates require one rigid ParaHome-to-Habitat alignment; this is not a direct coordinate identity.",
-        "- The three representative conversions report finite tensors, valid 6D rotations, and an explicit rigid alignment error; details are in `representation_audit.json`.",
+        "- Directly copying ParaHome fitted SMPL-X local rotations into Habitat is invalid because the fitted model and `male_0` URDF do not share the same rest/joint frames. The clean replay instead uses the released 23-joint world skeleton and hierarchical segment-direction retargeting.",
+        "- The retargeter is ParaHome-specific and leaves the frozen AMASS/BABEL `MotionConverter` unchanged. Root/object coordinates still use one rigid ParaHome-to-Habitat alignment.",
         "",
         "## Habitat clean replay",
         f"- Replay status: **{replay.get('status')}**; human replay **{replay.get('human_replay', 'FAIL')}**, rigid-object replay **{replay.get('rigid_object_replay', 'FAIL')}**.",
@@ -671,7 +674,7 @@ def _write_reports(output: Path, records: Sequence[Mapping[str, Any]], action_st
         "1. **Scale:** The 207-sequence/38-subject scale is sufficient for a dataset audit and matches the published aggregate, but taxonomy viability depends on the normalized class thresholds above.",
         f"2. **Viable classes:** {candidates['standard_viable_count']} classes satisfy >=30 instances, >=15 sequences and >=8 subjects; stricter count is {candidates['strict_viable_count']}.",
         f"3. **Repeated decisions:** With a 2s HAR window, **{duration['capacity_class_summary']['decision_interval_1s']['classes_with_at_least_half_instances_supporting_2_cycles']} / {len(action_stats)}** classes have at least half of their intervals supporting two 1s decision cycles; the corresponding 2s-cycle count is **{duration['capacity_class_summary']['decision_interval_2s']['classes_with_at_least_half_instances_supporting_2_cycles']} / {len(action_stats)}**. Raw per-class counts are in `duration_analysis.json`.",
-        "4. **Motion compatibility:** **Thin adapter**, not direct identity: SMPL-X pose is compatible with the existing converter, while ParaHome world coordinates need a single rigid alignment and ParaHome hand/body data need explicit mapping.",
+        "4. **Motion compatibility:** **Explicit skeletal retarget required**: the ParaHome fitted SMPL-X local rotations are not pose-faithful on Habitat `male_0`; released world joints are retargeted by segment direction instead.",
         f"5. **Replay:** **{replay.get('status')}** for the selected clean-scene sequence; human/object snapshots and alignment checks are saved under `visualizations/`.",
         f"6. **Verdict:** **{verdict}** — the motion representation and minimal clean replay are feasible, but taxonomy duration/coverage and the coordinate/gender/scene adapter must be addressed before making ParaHome the continuous Active HAR mainline.",
         "",
@@ -684,9 +687,9 @@ def _write_reports(output: Path, records: Sequence[Mapping[str, Any]], action_st
     representation_lines = [
         "# Representation audit",
         "",
-        "ParaHome body_joint_orientations are 6D rotations (first two matrix columns), body_global_transform is a 4x4 body-to-world transform, and joint_positions contains 73 global positions. The optional smplx_pose stores axis-angle radians for 21 body joints, root orientation, translation and 30 hand joints. The existing ACTIVEVIEW MotionConverter expects the same SMPL-X axis-angle convention but a padded 162-value pose vector; the audit uses a thin deterministic adapter and retains hand rotations.",
+        "ParaHome body_joint_orientations are 6D rotations (first two matrix columns), body_global_transform is a 4x4 body-to-world transform, and joint_positions contains 73 global positions. Although the optional smplx_pose has the expected axis-angle dimensions, direct local-rotation transfer to Habitat `male_0` is not pose-faithful because the rigs have incompatible rest/joint frames.",
         "",
-        "ParaHome coordinates are not numerically identical to the converter's Habitat frame. A single Kabsch rigid transform is fitted from ParaHome body-root trajectories to converted Habitat root trajectories and applied to rigid-object transforms, preserving human-object relative geometry. Per-sequence metrics and ten-frame distance errors are in `representation_audit.json`.",
+        "The fixed replay uses ParaHome's released 23-joint world positions to solve Habitat joint rotations hierarchically from body-segment directions. This is a generic geometric retarget, not an action-specific arm/head correction, and it does not modify the AMASS/BABEL converter. A single Kabsch rigid transform maps ParaHome rigid-object transforms into the resulting Habitat root frame.",
         "",
         "The selected replay uses the existing `scene_id=NONE` clean floor and male_0 URDF. ParaHome gender metadata is retained in `sequence_audit.json`; a production replay should add a gender-specific asset or document the male_0 approximation.",
     ]

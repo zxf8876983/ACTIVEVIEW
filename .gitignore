@@ -30,3 +30,7 @@ datasets/
 *.npz
 activeview/perception/videopose3d/images/
 .claude/logs/
+
+# ParaHome retarget diagnostic renders (regenerable from the committed scripts)
+experiments/parahome_feasibility_v1/retarget_pose_fidelity/renders/
+experiments/parahome_feasibility_v1/retarget_pose_fidelity/videos/
